@@ -1,0 +1,37 @@
+<div class='card'>
+  <div class='card-header'>
+    <h3>
+      <%= name.abbr_name %>
+    </h3>
+  </div>
+  <div class='card-body'>
+    <dl>
+      <dt>Reported in</dt>
+      <dd>
+        <% fc = name.publications.last %>
+        <%= link_to fc.short_citation, fc %>
+        <% if name.publications.count > 2 %>
+          and <%= name.publications.count - 1 %> other publications
+        <% elsif name.publications.count == 2 %>
+          <% lc = name.publications.first %>
+          and <%= link_to lc.short_citation, lc %>
+        <% end %>
+      </dd>
+    </dl>
+  </div>
+  <div class='card-footer text-right bg-dark-ce'>
+    <ul class='list-inline' style='margin: 0;'>
+      <li class='list-inline-item'>
+        <%= link_to name.ncbi_search_url, title: 'Search genomes', target: '_blank' do %>
+          <%= icon 'fas', 'dna' %>
+        <% end %>
+      </li>
+      <li class='list-inline-item'>
+        <%= link_to name, title: 'See more' do %>
+          <%= icon 'fas', 'plus-circle' %>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>
+

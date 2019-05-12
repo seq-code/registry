@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Names</h1>
+<hr/>
+
+<%= pager @names %>
+<div class='card-columns'>
+  <% @names.each do |name| %>
+    <%= render name %>
+  <% end %>
+</div>
+<%= pager @names %>
+
+<br>

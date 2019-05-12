@@ -1,0 +1,62 @@
+<%= form_with(model: publication, local: true) do |form| %>
+  <% if publication.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(publication.errors.count, "error") %> prohibited this publication from being saved:</h2>
+
+      <ul>
+      <% publication.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title, id: :publication_title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :journal %>
+    <%= form.text_field :journal, id: :publication_journal %>
+  </div>
+
+  <div class="field">
+    <%= form.label :journal_loc %>
+    <%= form.text_field :journal_loc, id: :publication_journal_loc %>
+  </div>
+
+  <div class="field">
+    <%= form.label :journal_date %>
+    <%= form.date_select :journal_date, id: :publication_journal_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :doi %>
+    <%= form.text_field :doi, id: :publication_doi %>
+  </div>
+
+  <div class="field">
+    <%= form.label :url %>
+    <%= form.text_field :url, id: :publication_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :pub_type %>
+    <%= form.text_field :pub_type, id: :publication_pub_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :crossref_json %>
+    <%= form.text_field :crossref_json, id: :publication_crossref_json %>
+  </div>
+
+  <div class="field">
+    <%= form.label :abstract %>
+    <%= form.text_field :abstract, id: :publication_abstract %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

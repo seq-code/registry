@@ -1,0 +1,28 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @name.name_html %></h1>
+<hr/>
+
+<dl class='main-section'>
+  <dt>Search sequences</dt>
+  <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
+        target: '_blank' %></dd>
+  <% unless @publications.empty? %>
+    <dt>Oldest registered citation</dt>
+    <dd><%= link_to @oldest_publication.short_citation, @oldest_publication %></dd>
+  <% end %>
+</dl>
+
+<hr/>
+<h2>
+  Publications
+  <small class='text-muted'>(<%= @publications.count %>)</small>
+</h2>
+<%= pager @publications %>
+<div class='card-columns card-columns-wide'>
+  <% @publications.each do |publication| %>
+    <%= render publication %>
+  <% end %>
+</div>
+<%= pager @publications %>
+

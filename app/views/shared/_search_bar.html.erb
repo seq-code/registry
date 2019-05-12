@@ -1,0 +1,22 @@
+<% autofocus ||= false %>
+<%= form_tag search_path, method: :get, class: '' do %>
+  <div class='form-row input-group'>
+    <div class='input-group-prepend'>
+      <select class='form-control custom-select btn bg-light' name='what'>
+        <% %w[names publications authors subjects].each do |i| %>
+          <option value='<%= i %>' <%= 'selected' if @what.to_s == i %>>
+            <%= i.capitalize %>
+          </option>
+        <% end %>
+      </select>
+    </div>
+    <input type='text' class='form-control bg-light'
+          placeholder='Search' name='q' value='<%= @q %>'
+          <%= "autofocus=autofocus" if autofocus %> />
+    <div class='input-group-append'>
+      <button type='submit' class='btn btn-primary form-control'>
+        <%= icon 'fas', 'search' %>
+      </button>
+    </div>
+  </div>
+<% end %>

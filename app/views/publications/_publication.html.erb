@@ -1,0 +1,28 @@
+<div class='card'>
+  <div class='card-header'>
+    <h3><%= publication.title %></h3>
+  </div>
+  <div class='card-body'>
+    <dl>
+      <%= render partial: 'publications/basic_info',
+        locals: { publication: publication } %>
+    </dl>
+  </div>
+  <div class='card-footer text-right bg-dark-ce'>
+    <ul class='list-inline' style='margin: 0;'>
+      <li class='list-inline-item'>
+        <%= link_to publication.url,
+              title: 'Link to publication', target: '_blank' do %>
+          <%= icon 'fas', 'file-alt' %>
+        <% end %>
+      </li>
+      <li class='list-inline-item'>
+        <%= link_to publication, title: 'See more' do %>
+          <%= icon 'fas', 'plus-circle' %>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>
+
+

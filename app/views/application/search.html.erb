@@ -1,0 +1,19 @@
+<h1 class='mt-3'>
+  Search results
+  <small class='text-muted'>(<%= @results.count %>)</small>
+</h1>
+<%= render partial: 'shared/search_bar' %>
+<hr/>
+<% if @results.empty? %>
+  <div class='jumbotron text-center'><h1>No results found</h1></div>
+<% else %>
+  <%= pager @results %>
+  <div class='<%= [:authors,:subjects].include?(@what) ?
+          'text-center' : 'card-columns' %>
+        <%= 'card-columns-wide' if @what == :publications %>'>
+    <% @results.each do |i| %>
+      <%= render i %>
+    <% end %>
+  </div>
+  <%= pager @results %>
+<% end %>

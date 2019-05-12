@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @publication.title %></h1>
+<hr/>
+
+<dl class='main-section'>
+  <%= render partial: 'basic_info', locals: { publication: @publication } %>
+  <dt>Authors</dt>
+  <dd>
+    <ul>
+      <% @publication.publication_authors.each do |publication_author| %>
+        <% author = publication_author.author %>
+        <li><%= link_to author.full_name, author %> (<%= publication_author.sequence %>)</li>
+      <% end %>
+    </ul>
+  </dd>
+  <dt>Publication date</dt>
+  <dd><%= @publication.journal_date %></dd>
+  <dt>DOI</dt>
+  <dd><%= link_to @publication.doi, @publication.url, target: '_blank' %></dd>
+  <dt>Crossref JSON</dt>
+  <dd class='text-muted small'><%= @publication.crossref_json %></dd>
+</dl>
+
+
+

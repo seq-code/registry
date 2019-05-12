@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @author.full_name %></h1>
+<hr/>
+
+<h2>
+  Publications
+  <small class='text-muted'>(<%= @publications.count %>)</small>
+</h2>
+<%= pager @publications %>
+<div class='card-columns card-columns-wide'>
+  <% @publications.each do |publication| %>
+    <%= render publication %>
+  <% end %>
+</div>
+<%= pager @publications %>
+

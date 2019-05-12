@@ -1,0 +1,13 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Publications</h1>
+<hr/>
+
+<%= pager @publications %>
+<div class='card-columns card-columns-wide'>
+  <% @publications.each do |publication| %>
+    <%= render publication %>
+  <% end %>
+</div>
+<%= pager @publications %>
+

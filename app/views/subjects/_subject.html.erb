@@ -1,0 +1,7 @@
+<%= link_to subject,
+      class: 'btn btn-sm btn-secondary', style: 'margin: 0.2em;' do %>
+  <%= subject.name %>
+  <span class='badge badge-pill badge-light'>
+    <%= subject.publications.count %>
+  </span>
+<% end %>

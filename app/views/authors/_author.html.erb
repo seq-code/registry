@@ -1,0 +1,4 @@
+<%= link_to author, class: 'btn btn-secondary', style: 'margin: 0.2em;' do %>
+  <%= author.full_name %>
+  <span class='badge badge-pill badge-light'><%= author.publications.count %></span>
+<% end %>

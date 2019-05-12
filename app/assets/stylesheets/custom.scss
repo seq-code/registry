@@ -1,0 +1,24 @@
+
+.bg-dark-ce {
+  background-color: #322348 !important;
+}
+.bg-vdark-ce {
+  background-color: #221831 !important;
+}
+.bg-dark-ce, .bg-vdark-ce {
+  a {
+    color: rgba(255, 255, 255, 0.5);
+    &:hover{
+      color: white;
+    }
+  }
+}
+
+.main-section {
+  background-color: var(--light);
+  padding: 2em;
+  dd {
+    margin-left: 2em;
+  }
+}
+

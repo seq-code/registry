@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  journal: MyString
+  journal_loc: MyString
+  journal_date: 2019-04-11
+  doi: MyString
+  url: MyString
+  type: 
+  crossref_json: MyString
+
+two:
+  title: MyString
+  journal: MyString
+  journal_loc: MyString
+  journal_date: 2019-04-11
+  doi: MyString
+  url: MyString
+  type: 
+  crossref_json: MyString

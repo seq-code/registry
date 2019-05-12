@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Subjects</h1>
+<hr/>
+
+<div class='text-center'>
+<% @subjects.each do |subject| %>
+  <%= render subject %>
+<% end %>
+</div>
+<br/><br/>
+

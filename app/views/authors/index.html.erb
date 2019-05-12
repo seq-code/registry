@@ -1,0 +1,13 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Authors</h1>
+<hr/>
+
+<%= pager @authors %>
+<div class='text-center'>
+  <% @authors.each do |author| %>
+    <%= render author %>
+  <% end %>
+</div>
+<br/>
+<%= pager @authors %>

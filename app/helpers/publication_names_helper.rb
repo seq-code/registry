@@ -1,0 +1,2 @@
+module PublicationNamesHelper
+end

@@ -1,0 +1,36 @@
+<dt>Citation</dt>
+<dd>
+  <%= publication.authors_et_al %>
+  <% unless publication.journal.empty? %>
+    (<%= publication.journal_date.year %>).
+    <em><%= publication.journal %></em> <%= publication.journal_loc %>
+  <% else %>
+    [<%= publication.pub_type.tr('-', ' ') %>,
+    <%= publication.journal_date.year %>]
+  <% end %>
+</dd>
+
+<% unless publication.names.empty? %>
+  <dt>Names</dt>
+  <dd>
+    <% publication.names.each do |name| %>
+      <%= link_to name.abbr_name, name, class: 'badge badge-pill badge-primary' %>
+    <% end %>
+  </dd>
+<% end %>
+
+<% unless publication.subjects.empty? %>
+  <dt>Subjects</dt>
+  <dd>
+  <% publication.subjects.each do |subject| %>
+    <%= link_to subject.name, subject,
+      class: 'badge badge-pill badge-secondary' %>
+  <% end %>
+  </dd>
+<% end %>
+
+<% if publication.abstract %>
+  <dt>Abstract</dt>
+  <dd class='text-sm text-muted'><%= publication.clean_abstract %></dd>
+<% end %>
+

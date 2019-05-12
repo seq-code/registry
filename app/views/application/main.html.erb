@@ -1,0 +1,20 @@
+<div class='text-center bg-light rounded-lg border my-5 p-5'>
+  <h1>Candidatus Excubia</h1>
+  <p class='lead'>
+    Following <i>Candidatus</i> names in the published literature.
+  </p>
+  <hr/>
+  <p>
+    We have found
+    <%= link_to pluralize(@publications.count, 'publication'),
+          publications_path %> from
+    <%= link_to pluralize(@authors.count, 'author'),
+          authors_path %>, and identified
+    <%= link_to pluralize(@names.count, 'name'),
+          names_path %>.
+  </p>
+  <div class='m-5'>
+    <%= render partial: 'shared/search_bar' %>
+  </div>
+</div>
+

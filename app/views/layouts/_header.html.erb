@@ -1,0 +1,28 @@
+<nav class='navbar navbar-dark bg-vdark-ce'>
+  <%= link_to 'Candidatus Excubia', '/', class: 'navbar-brand' %>
+  <div class='navbar-text'>cognitis nominibus</div>
+</nav>
+<% if @crumbs %>
+  <nav class='navbar small sticky-top navbar-expand navbar-dark bg-dark-ce justify-content-between'>
+    <div class='navbar-nav'>
+      <div class="collapse navbar-collapse">
+        <%= link_to '/', class: 'nav-item nav-link', title: 'Home' do %>
+          <%= icon 'fas', 'university' %>
+        <% end %>
+        <% @crumbs.each do |i| %>
+          <% if i.is_a? Array %>
+            <%= link_to i[0], i[1], class: 'nav-item nav-link' %>
+          <% else %>
+            <%= content_tag :span, i, class: 'nav-item nav-link active' %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div>
+      <%= link_to search_path, class: '' do %>
+        <%= icon 'fas', 'search' %>
+      <% end %>
+    </div>
+  </nav>
+<% end %>
+
