@@ -10,11 +10,25 @@
   <% end %>
 </dd>
 
-<% unless publication.names.empty? %>
+<% if current_contributor? or not publication.names.empty? %>
   <dt>Names</dt>
   <dd>
-    <% publication.names.each do |name| %>
+    <% publication.publication_names.each do |publication_name| %>
+      <% name = publication_name.name %>
       <%= link_to name.abbr_name, name, class: 'badge badge-pill badge-primary' %>
+      <% if current_contributor? %>
+        <%= link_to publication_name, method: :delete,
+              class: 'badge badge-pill badge-info', title: 'unlink name',
+              data: {confirm: 'Are you sure?'} do %>
+          <%= icon 'fas', 'trash-alt' %>
+        <% end %>
+      <% end %>
+    <% end %>
+    <% if current_contributor? %>
+      <%= link_to link_publication_name_path(publication),
+            class: 'badge badge-pill badge-info', title: 'link names' do %>
+        <%= icon 'fas', 'link' %>
+      <% end %>
     <% end %>
   </dd>
 <% end %>

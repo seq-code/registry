@@ -1,0 +1,16 @@
+<h1>User: <%= @user.username %></h1>
+<hr/>
+
+<dl class='main-section'>
+  <dt>Email</dt>
+  <dd><%= @user.email %></dd>
+  <dt>Affiliation</dt>
+  <dd><%= @user.affiliation %></dd>
+  <dt>Roles</dt>
+  <dd><%= @user.roles.to_sentence %></dd>
+  <dt>Contributor statement</dt>
+  <dd><%= @user.contributor_statement %></dd>
+  <dt>Registered</dt>
+  <dd><%= @user.created_at.strftime('%B %e, %Y') %></dd>
+</dl>
+

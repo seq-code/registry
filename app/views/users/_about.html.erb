@@ -1,0 +1,7 @@
+<h1>About</h1>
+<hr/>
+<p>
+  <b>Username:</b> <%= current_user.username %><br/>
+  <b>Registered:</b> <%= current_user.created_at.strftime('%B %e, %Y') %><br/>
+  <b>Roles:</b> <%= current_user.roles.to_sentence %><br/>
+</p>

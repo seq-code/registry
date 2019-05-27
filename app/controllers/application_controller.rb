@@ -34,6 +34,16 @@ class ApplicationController < ActionController::Base
   def search_query
   end
 
+  protected
+
+    def authenticate_admin!
+      authenticate_role! :admin?
+    end
+
+    def authenticate_contributor!
+      authenticate_role! :contributor?
+    end
+
   private
     
     def search_by(k)
@@ -44,4 +54,12 @@ class ApplicationController < ActionController::Base
       end
       o
     end
+
+    def authenticate_role!(role)
+      unless current_user.try(role)
+        flash[:alert] = 'Action not allowed'
+	redirect_to root_path
+      end
+    end
+
 end

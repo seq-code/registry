@@ -1,0 +1,26 @@
+<h1>Administrator Dashboard</h1>
+<hr/>
+<h2>Contributor applications</h2>
+<% if @contributor_applications.empty? %>
+  None pending
+<% else %>
+  <ul>
+    <% @contributor_applications.each do |u| %>
+      <li>
+        <b><%= link_to u.username, u %></b>:
+        <%= u.contributor_statement %>
+        <br/>
+        <%= link_to contributor_grant_path(u), method: :post,
+              class: 'btn text-info btn-sm',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= icon 'fas', 'check-circle' %> Grant
+        <% end %>
+        <%= link_to contributor_deny_path(u), method: :post,
+              class: 'btn text-danger btn-sm',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= icon 'fas', 'ban' %> Deny
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

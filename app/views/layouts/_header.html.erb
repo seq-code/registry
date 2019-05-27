@@ -1,6 +1,9 @@
 <nav class='navbar navbar-dark bg-vdark-ce'>
   <%= link_to 'Candidatus Excubia', '/', class: 'navbar-brand' %>
-  <div class='navbar-text'>cognitis nominibus</div>
+  <div class='navbar-text'>
+    <span class='mx-3'>cognitis nominibus</span>
+    <%= render partial: 'shared/user_links' %>
+  </div>
 </nav>
 <% if @crumbs %>
   <nav class='navbar small sticky-top navbar-expand navbar-dark bg-dark-ce justify-content-between'>

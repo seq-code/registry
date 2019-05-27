@@ -1,5 +1,6 @@
 class PublicationsController < ApplicationController
-  before_action :set_publication, only: [:show, :edit, :update, :destroy]
+  before_action :set_publication, only: [:show, :edit, :update, :destroy, :link_names, :link_names_commit]
+  before_action :authenticate_contributor!, only: [:new, :edit, :create, :update, :destroy, :link_names, :link_names_commit]
 
   # GET /publications
   # GET /publications.json
@@ -24,18 +25,12 @@ class PublicationsController < ApplicationController
   end
 
   # POST /publications
-  # POST /publications.json
   def create
-    @publication = Publication.new(publication_params)
-
-    respond_to do |format|
-      if @publication.save
-        format.html { redirect_to @publication, notice: 'Publication was successfully created.' }
-        format.json { render :show, status: :created, location: @publication }
-      else
-        format.html { render :new }
-        format.json { render json: @publication.errors, status: :unprocessable_entity }
-      end
+    @publication = Publication.by_doi(params['publication']['doi'])
+    if @publication.new_record?
+      render 'new'
+    else
+      redirect_to @publication
     end
   end
 
@@ -66,7 +61,8 @@ class PublicationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_publication
-      @publication = Publication.find(params[:id])
+      @publication = params[:id] ? Publication.find(params[:id]) :
+        params[:doi] ? Publication.find_by(doi: params[:doi]) : nil
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

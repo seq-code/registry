@@ -1,0 +1,11 @@
+<% if user_signed_in? %>
+  <%= link_to dashboard_path, title: 'Dashboard' do %>
+    <%= icon 'fas', 'cog' %><% end %>&nbsp;
+  <%= link_to destroy_user_session_path, method: :delete, title: 'Logout' do %>
+    <%= icon 'fas', 'sign-out-alt' %><% end %>
+<% else %>
+  <%= link_to new_user_session_path, title: 'Login' do %>
+    <%= icon 'fas', 'user-circle' %><% end %>&nbsp;
+  <%= link_to new_user_registration_path, title: 'Register' do %>
+    <%= icon 'fas', 'user-plus' %><% end %>
+<% end %>

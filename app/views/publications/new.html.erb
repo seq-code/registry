@@ -1,5 +1,14 @@
+<br/>
 <h1>New Publication</h1>
+<p class='lead'>
+  Only publications with assigned
+  <%= link_to 'DOI', 'https://doi.org/', title: 'Digital Object Identifier' %>
+  can be registered.
+</p>
 
-<%= render 'form', publication: @publication %>
-
+<%= simple_form_for(@publication, hrml: { method: :post }) do |f| %>
+  <%= f.input :doi, required: true, autofocus: true, label: 'DOI' %>
+  <%= f.button :submit, 'Register' %>
+<% end %>
+<hr/>
 <%= link_to 'Back', publications_path %>

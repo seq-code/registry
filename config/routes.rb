@@ -1,10 +1,22 @@
 Rails.application.routes.draw do
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
+  get 'sysusers' => 'users#index(.:format)', as: :users
+  get 'sysusers/:username(.:format)' => 'users#show', as: :user
+  get 'dashboard' => 'users#dashboard', as: :dashboard
+  get 'contributor' => 'users#contributor_request', as: :contributor_request
+  post 'contributor' => 'users#contributor_apply', as: :contributor_apply
+  post 'contributor/grant/:username' => 'users#contributor_grant', as: :contributor_grant
+  post 'contributor/deny/:username' => 'users#contributor_deny', as: :contributor_deny
   root to: 'application#main'
   get 'search' => 'application#search', as: :search
-  resources :publication_names
   resources :names
   resources :authors
+  resources :publication_names
+  get 'doi/:doi' => 'publications#show', as: :doi, doi: /.+/
+  get 'publication/:id/link_names' => 'publication_names#link_names', as: :link_publication_name
+  post 'publication/:id/link_names' => 'publication_names#link_names_commit', as: :link_publication_name_commit
   resources :publications
   resources :subjects
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

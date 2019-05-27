@@ -9,7 +9,11 @@
       <dt>Reported in</dt>
       <dd>
         <% fc = name.publications.last %>
-        <%= link_to fc.short_citation, fc %>
+        <% if fc %>
+          <%= link_to fc.short_citation, fc %>
+        <% else %>
+          <em>Unknown</em>
+        <% end %>
         <% if name.publications.count > 2 %>
           and <%= name.publications.count - 1 %> other publications
         <% elsif name.publications.count == 2 %>

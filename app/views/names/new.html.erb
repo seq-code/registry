@@ -1,5 +1,12 @@
+<br/>
 <h1>New Name</h1>
+<p class='lead'>
+  Carefully revise the spelling of the name before submitting.
+</p>
 
-<%= render 'form', name: @name %>
-
+<%= simple_form_for(@name, hrml: { method: :post }) do |f| %>
+  <%= f.input :name, required: true, autofocus: true %>
+  <%= f.button :submit, 'Register' %>
+<% end %>
+<hr/>
 <%= link_to 'Back', names_path %>

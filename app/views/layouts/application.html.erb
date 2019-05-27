@@ -11,11 +11,20 @@
   <body>
     <%= render partial: 'layouts/header' %>
     <%= render partial: 'layouts/flash' %>
+        <br/>
     <div class="container">
       <div class="row">
-        <div class="col-12">
-          <%= yield %>
-        </div>
+	<% if devise_controller? %>
+          <div class="col-md-9 col-lg-6">
+            <div class="rounded-lg bg-light border my-5 p-5 text-right" id='devise-well'>
+              <%= yield %>
+            </div>
+          </div>
+        <% else %>
+          <div class="col-12">
+            <%= yield %>
+          </div>
+        <% end %>
       </div>
     </div>
     <%= render partial: 'layouts/footer' %>

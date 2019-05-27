@@ -1,6 +1,9 @@
-<p id="notice"><%= notice %></p>
-
 <h1>Names</h1>
+<% if current_contributor? %>
+  <%= link_to new_name_path do %>
+    <%= icon 'fas', 'plus-circle' %> Register names
+  <% end %>
+<% end %>
 <hr/>
 
 <%= pager @names %>

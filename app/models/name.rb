@@ -4,6 +4,8 @@ class Name < ApplicationRecord
   has_many :publication_names, dependent: :destroy
   has_many :publications, through: :publication_names
 
+  validates :name, presence: true, uniqueness: true
+
   def abbr_name
     name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
   end

@@ -61,4 +61,6 @@ gem 'jquery-rails'
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
 gem 'font-awesome-sass'
+gem 'devise'
+gem 'simple_form'
 
