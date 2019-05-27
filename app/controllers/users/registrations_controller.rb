@@ -40,7 +40,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_account_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:username, :affiliation])
+    plus_attrs = [:username, :affiliation]
+    devise_parameter_sanitizer.permit(:sign_up, keys: plus_attrs)
+    devise_parameter_sanitizer.permit(:account_update, keys: plus_attrs)
   end
 
   # The path used after sign up.
