@@ -6,14 +6,21 @@
       </div>
     </div>
     <div class='col-md-6' id='dashboard-actions'>
-      <div class='bg-light rounded-lg border my-md-3 p-5'>
+      <div class='my-md-3 p-5'>
         <%= render partial: 'actions' %>
       </div>
     </div>
     <% if current_admin? %>
       <div class='col-12'>
-        <div class='bg-light rounded-lg border p-5'>
+        <div class='my-3 p-5'>
           <%= render partial: 'admin' %>
+        </div>
+      </div>
+    <% end %>
+    <% if current_contributor? %>
+      <div class='col-12'>
+        <div class='my-3 p-5'>
+          <%= render partial: 'contributor' %>
         </div>
       </div>
     <% end %>
