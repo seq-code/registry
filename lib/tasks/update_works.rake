@@ -20,8 +20,8 @@ namespace :works do
       # Query CrossRef
       works = Serrano.works(query: 'candidatus',
         sort: 'deposited', order: 'asc', offset: offset,
-        filter: { 'from-pub-date' => '2019-03-01',
-          'until-pub-date' => '2020-01-01' } )
+        filter: { 'from-pub-date' => (Date.today - 4.months).to_s,
+          'until-pub-date' => (Date.today + 3.months).to_s} )
       unless works['status'] == 'ok'
         raise "#{works['message-type']}: #{
           works['message'].map{ |i| i['message'] }.join('; ') }"
