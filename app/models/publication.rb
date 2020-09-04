@@ -2,7 +2,7 @@ require 'serrano'
 
 class Publication < ApplicationRecord
   default_scope { order(journal_date: :desc) }
-  
+
   has_many :publication_authors, dependent: :destroy
   has_many :publication_subjects, dependent: :destroy
   has_many :publication_names, dependent: :destroy
