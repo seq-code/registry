@@ -54,7 +54,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Custom gems:
-gem 'serrano'
+gem 'serrano', '~> 0.6'
 gem 'devise'
 gem 'bootstrap', '~> 4.3'
 gem 'jquery-rails'
