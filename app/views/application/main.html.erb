@@ -1,20 +1,48 @@
-<div class='text-center bg-light rounded-lg border my-5 p-5'>
+<div class='text-center bg-light rounded-lg border my-5 mx-3 p-5'>
   <h1>Candidatus Excubia</h1>
   <p class='lead'>
     Following <i>Candidatus</i> names in the published literature.
   </p>
   <hr/>
   <p>
-    We have found
+    We have identified
+    <%= link_to pluralize(@names.count, 'name'),
+          names_path %> in
     <%= link_to pluralize(@publications.count, 'publication'),
           publications_path %> from
     <%= link_to pluralize(@authors.count, 'author'),
-          authors_path %>, and identified
-    <%= link_to pluralize(@names.count, 'name'),
-          names_path %>.
+          authors_path %>.
   </p>
   <div class='m-5'>
     <%= render partial: 'shared/search_bar' %>
   </div>
 </div>
 
+<div class='container'>
+  <div class='row'>
+    <div class='col-lg-4'>
+      <div class='text-center bg-light rounded-lg border p-5'>
+        <h2>Recent Names</h2>
+        <% @names.first(5).each do |name| %>
+          <hr/><%= link_to(name.abbr_name, name) %>
+        <% end %>
+      </div>
+    </div>
+    <div class='col-lg-4'>
+      <div class='text-center bg-light rounded-lg border p-5'>
+        <h2>Recent Publications</h2>
+        <% @publications.first(5).each do |publication| %>
+          <hr/><%= link_to(publication.short_citation, publication) %>
+        <% end %>
+      </div>
+    </div>
+    <div class='col-lg-4'>
+      <div class='text-center bg-light rounded-lg border p-5'>
+        <h2>Recent Authors</h2>
+        <% @authors.first(5).each do |author| %>
+          <hr/><%= link_to(author.full_name, author) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
