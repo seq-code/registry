@@ -9,14 +9,14 @@ namespace :names do
       exit 0
     end
 
-    non_epithets = %w[by through for that has is and are was were affiliated
+    non_epithets = %w[by through for that has is as and are was were affiliated
       archaeon bacterium bacteria archaea a an transmitted
       belonging reveals community communities on which in clades? lineages?
       associated taxon taxa revised be the from infecting genes? particles?
       spp? species gen genus genera fam family families
       cla class classes ord orders? phylum phyla]
     non_hyphen = %w[like related associated infected ]
-    Publication.all.each do |pub|
+    Publication.where(scanned: false).each do |pub|
       $stderr.puts "o #{pub.doi}"
       ca = "#{pub.title} #{pub.abstract}".
         gsub(/<[^>]+>/,'').gsub(/[^A-Za-z0-9 -]/,'.').gsub(/\s+/,' ').
@@ -35,6 +35,7 @@ namespace :names do
           PublicationName.new(publication: pub, name: n).save
         end
       end
+      pub.update(scanned: true)
     end
 
   end

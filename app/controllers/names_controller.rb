@@ -4,7 +4,15 @@ class NamesController < ApplicationController
   # GET /names
   # GET /names.json
   def index
-    @names = Name.order(name: :asc).paginate(page: params[:page], per_page: 30)
+    @sort = params[:sort]
+    @names =
+      case @sort
+      when 'created'
+        @names = Name.order(created_at: :desc)
+      else
+        @names = Name.order(name: :asc)
+      end
+    @names = @names.paginate(page: params[:page], per_page: 30)
     @crumbs = ['Names']
   end
 
