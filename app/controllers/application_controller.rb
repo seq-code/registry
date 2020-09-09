@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
       obj = @@search_obj[k]
       o = obj[0].none
       if q =~ /^(\S+)::(.+)/ && obj[1].include?($1)
-        o = o.or(obj[0].where("LOWER(#{$1}) = ?", q.downcase))
+        o = o.or(obj[0].where("LOWER(#{$1}) = ?", $2.downcase))
       else
         obj[1].each do |i|
           o = o.or(obj[0].where("LOWER(#{i}) LIKE ?", "%#{q.downcase}%"))
