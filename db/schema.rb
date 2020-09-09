@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_010730) do
+ActiveRecord::Schema.define(version: 2020_09_09_004141) do
 
   create_table "authors", force: :cascade do |t|
     t.string "given"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_010730) do
     t.string "abstract"
     t.boolean "scanned", default: false
     t.index ["doi"], name: "index_publications_on_doi", unique: true
+    t.index ["journal"], name: "index_publications_on_journal"
   end
 
   create_table "subjects", force: :cascade do |t|

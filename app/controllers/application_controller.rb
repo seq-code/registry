@@ -21,8 +21,10 @@ class ApplicationController < ActionController::Base
       @what = params[:what].to_sym
       if @@search_obj[@what]
         @q = params[:q]
-        @results = search_by(@what).paginate(page: params[:page],
-            per_page: @what == :authors ? 100 : @what == :publications ? 10 : 30)
+        @results = search_by(@what, @q).paginate(
+          page: params[:page],
+          per_page: @what == :authors ? 100 : @what == :publications ? 10 : 30
+        )
         redirect_to @results.first if @results.count == 1
       else
         flash[:danger] = 'Unsupported object.'
@@ -46,11 +48,15 @@ class ApplicationController < ActionController::Base
 
   private
     
-    def search_by(k)
+    def search_by(k, q)
       obj = @@search_obj[k]
       o = obj[0].none
-      obj[1].each do |i|
-        o = o.or(obj[0].where("LOWER(#{i}) LIKE ?", "%#{@q.downcase}%"))
+      if q =~ /^(\S+)::(.+)/ && obj[1].include?($1)
+        o = o.or(obj[0].where("LOWER(#{$1}) = ?", q.downcase))
+      else
+        obj[1].each do |i|
+          o = o.or(obj[0].where("LOWER(#{i}) LIKE ?", "%#{q.downcase}%"))
+        end
       end
       o
     end
