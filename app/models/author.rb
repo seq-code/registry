@@ -2,6 +2,14 @@ class Author < ApplicationRecord
   has_many :publication_authors, dependent: :destroy
   has_many :publications, through: :publication_authors
 
+  class << self
+    def find_or_create(given, family)
+      par = { given: given, family: family }
+      author = where(par).first
+      author ||= Author.new(par).tap(&:save)
+    end
+  end
+
   def full_name
     family + ( given ? ", #{given}" : '' )
   end

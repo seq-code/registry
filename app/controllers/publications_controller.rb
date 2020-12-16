@@ -5,7 +5,18 @@ class PublicationsController < ApplicationController
   # GET /publications
   # GET /publications.json
   def index
-    @publications = Publication.paginate(page: params[:page], per_page: 10)
+    @sort = params[:sort]
+    @publications =
+      case @sort
+      when 'names'
+        Publication
+          .left_joins(:publication_names).group(:id)
+          .reorder('COUNT(publication_names.id) DESC')
+      else
+        @sort = 'date'
+        Publication
+      end
+    @publications = @publications.paginate(page: params[:page], per_page: 10)
     @crumbs = ['Publications']
   end
 

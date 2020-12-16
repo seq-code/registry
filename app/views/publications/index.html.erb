@@ -1,6 +1,12 @@
 <h1>Publications</h1>
+Sort by
+<% %w[date names].map do |sort| %>
+  <span class='text-muted'>·</span>
+  <%= sort == @sort ? sort : link_to(sort, publications_path(sort: sort)) %>
+<% end %>
+
 <% if current_contributor? %>
-  <%= link_to new_publication_path do %>
+  | <%= link_to new_publication_path do %>
     <%= icon 'fas', 'plus-circle' %> Add publications
   <% end %>
 <% end %>

@@ -1,5 +1,7 @@
 class NamesController < ApplicationController
-  before_action :set_name, only: [:show, :edit, :update, :destroy]
+  before_action :set_name, only: [:show, :edit, :update, :destroy,
+    :proposed_by, :emended_by]
+  before_action :authenticate_contributor!, only: [:proposed_by, :emended_by]
 
   # GET /names
   # GET /names.json
@@ -7,10 +9,15 @@ class NamesController < ApplicationController
     @sort = params[:sort]
     @names =
       case @sort
-      when 'created'
-        @names = Name.order(created_at: :desc)
+      when 'date'
+        Name.order(created_at: :desc)
+      when 'citations'
+        Name
+          .left_joins(:publication_names).group(:id)
+          .order('COUNT(publication_names.id) DESC')
       else
-        @names = Name.order(name: :asc)
+        @sort = 'alphabetically'
+        Name.order(name: :asc)
       end
     @names = @names.paginate(page: params[:page], per_page: 30)
     @crumbs = ['Names']
@@ -19,7 +26,7 @@ class NamesController < ApplicationController
   # GET /names/1
   # GET /names/1.json
   def show
-    @publications = @name.publications.paginate(page: params[:page], per_page: 10)
+    @publication_names = @name.publication_names.paginate(page: params[:page], per_page: 10)
     @oldest_publication = @name.publications.last
     @crumbs = [['Names', names_path], @name.abbr_name]
   end
@@ -71,6 +78,22 @@ class NamesController < ApplicationController
       format.html { redirect_to names_url, notice: 'Name was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  # POST /names/1/proposed_by?publication_id=2
+  def proposed_by
+    publication = Publication.where(id: params[:publication_id]).first
+    @name.update(proposed_by: publication)
+    redirect_back(fallback_location: @name)
+  end
+
+  # POST /names/1/emended_by/2
+  # POST /names/1/emended_by/2?not=true
+  def emended_by
+    @name.publication_names
+      .where(publication_id: params[:publication_id])
+      .update(emends: !params[:not])
+    redirect_back(fallback_location: @name)
   end
 
   private

@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   get 'doi/:doi' => 'publications#show', as: :doi, doi: /.+/
   get 'publication/:id/link_names' => 'publication_names#link_names', as: :link_publication_name
   post 'publication/:id/link_names' => 'publication_names#link_names_commit', as: :link_publication_name_commit
+  post 'name/:id/proposed_by' => 'names#proposed_by', as: :name_proposed_by
+  post 'name/:id/emended_by/:publication_id' => 'names#emended_by', as: :name_emended_by
   resources :publications
   resources :subjects
 end

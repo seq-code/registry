@@ -1,9 +1,10 @@
 <h1>Names</h1>
-<% if @sort == 'created' %>
-  <%= link_to('sort alphabetically', names_path) %>
-<% else %>
-  <%= link_to('sort by date', names_path(sort: :created)) %>
+Sort by
+<% %w[date citations alphabetically].map do |sort| %>
+  <span class='text-muted'>·</span>
+  <%= sort == @sort ? sort : link_to(sort, names_path(sort: sort)) %>
 <% end %>
+
 <% if current_contributor? %>
   | <%= link_to new_name_path do %>
     <%= icon 'fas', 'plus-circle' %> Register names

@@ -5,7 +5,40 @@
   <dt>Search sequences</dt>
   <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
         target: '_blank' %></dd>
-  <% unless @publications.empty? %>
+  <% if @name.proposed_by %>
+    <dt>Proposed by</dt>
+    <dd>
+      <%= link_to @name.proposed_by.short_citation, @name.proposed_by %>
+      <% if current_contributor? %>
+        <%= link_to name_proposed_by_url(@name, publication_id: nil),
+              class: 'badge badge-pill badge-info',
+              method: :post, title: 'Did not propose this name',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= icon 'fas', 'star' %>
+          <%= icon 'fas', 'unlink' %>
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
+  <% unless @name.emended_by.empty? %>
+    <dt>Emended by</dt>
+    <dd>
+      <% @name.emended_by.each do |emended| %>
+        <%= link_to emended.short_citation, emended %>
+        <% if current_contributor? %>
+          <%= link_to name_emended_by_url(@name, emended, not: true),
+                class: 'badge badge-pill badge-info',
+                method: :post, title: 'Did not emend this name',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= icon 'fas', 'star-of-life' %>
+            <%= icon 'fas', 'unlink' %>
+          <% end %>
+        <% end %>
+        <br/>
+      <% end %>
+    </dd>
+  <% end %>
+  <% unless @publication_names.empty? %>
     <dt>Oldest registered citation</dt>
     <dd><%= link_to @oldest_publication.short_citation, @oldest_publication %></dd>
   <% end %>
@@ -23,13 +56,64 @@
 <hr/>
 <h2>
   Publications
-  <small class='text-muted'>(<%= @publications.count %>)</small>
+  <small class='text-muted'>(<%= @publication_names.count %>)</small>
 </h2>
-<%= pager @publications %>
-<div class='card-columns card-columns-wide'>
-  <% @publications.each do |publication| %>
-    <%= render publication %>
-  <% end %>
-</div>
-<%= pager @publications %>
+<%= pager @publication_names %>
+<table class='table table-hover'>
+  <thead>
+    <tr>
+      <th>Citation</th>
+      <th>Title</th>
+      <th></th>
+      <% if current_contributor? %>
+        <th>Actions</th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @publication_names.each do |publication_name| %>
+      <% publication = publication_name.publication %>
+      <tr>
+        <td><%= link_to publication.citation, publication %></td>
+        <td><%= publication.title %></td>
+        <td>
+          <% if @name.proposed_by? publication %>
+            <div class='badge'><%= icon 'fas', 'star' %> Proposed this name</div>
+          <% end %>
+          <% if @name.emended_by? publication %>
+            <div class='badge'><%= icon 'fas', 'star-of-life' %> Emended this name</div>
+          <% end %>
+        </td>
+        <td>
+          <% if current_contributor? %>
+            <% unless publication_name.proposes? %>
+              <%= link_to name_proposed_by_url(@name, publication_id: publication),
+                    class: 'badge badge-pill badge-info',
+                    method: :post, title: 'Proposed this name',
+                    data: { confirm: 'Are you sure?' } do %>
+                <%= icon 'fas', 'star' %>
+              <% end %>
+            <% end %>
+
+            <% unless publication_name.emends? %>
+              <%= link_to name_emended_by_url(@name, publication),
+                    class: 'badge badge-pill badge-info',
+                    method: :post, title: 'Emended this name',
+                    data: { confirm: 'Are you sure?' } do %>
+                <%= icon 'fas', 'star-of-life' %>
+              <% end %>
+            <% end %>
+
+            <%= link_to publication_name, class: 'badge badge-pill badge-info',
+                  method: :delete, title: 'Unlink this publication',
+                  data: { confirm: 'Are you sure?' } do %>
+              <%= icon 'fas', 'trash-alt' %>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= pager @publication_names %>
 

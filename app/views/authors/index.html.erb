@@ -1,4 +1,9 @@
 <h1>Authors</h1>
+Sort by
+<% %w[date publications alphabetically].map do |sort| %>
+  <span class='text-muted'>·</span>
+  <%= sort == @sort ? sort : link_to(sort, authors_path(sort: sort)) %>
+<% end %>
 <hr/>
 
 <%= pager @authors %>

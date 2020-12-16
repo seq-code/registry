@@ -4,7 +4,20 @@ class AuthorsController < ApplicationController
   # GET /authors
   # GET /authors.json
   def index
-    @authors = Author.order(family: :asc).paginate(page: params['page'], per_page: 100)
+    @sort = params[:sort]
+    @authors =
+      case @sort
+      when 'created'
+        Author.order(created_at: :desc)
+      when 'publications'
+        Author
+          .left_joins(:publications).group(:id)
+          .order('COUNT(publications.id) DESC')
+      else
+        @sort = 'alphabetically'
+        Author.order(name: :asc)
+      end
+    @authors = @authors.paginate(page: params[:page], per_page: 100)
     @crumbs = ['Authors']
   end
 
