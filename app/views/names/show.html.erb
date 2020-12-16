@@ -30,7 +30,7 @@
                 class: 'badge badge-pill badge-info',
                 method: :post, title: 'Did not emend this name',
                 data: { confirm: 'Are you sure?' } do %>
-            <%= icon 'fas', 'star-of-life' %>
+            <%= icon 'fas', 'asterisk' %>
             <%= icon 'fas', 'unlink' %>
           <% end %>
         <% end %>
@@ -81,7 +81,7 @@
             <div class='badge'><%= icon 'fas', 'star' %> Proposed this name</div>
           <% end %>
           <% if @name.emended_by? publication %>
-            <div class='badge'><%= icon 'fas', 'star-of-life' %> Emended this name</div>
+            <div class='badge'><%= icon 'fas', 'asterisk' %> Emended this name</div>
           <% end %>
         </td>
         <td>
@@ -100,7 +100,7 @@
                     class: 'badge badge-pill badge-info',
                     method: :post, title: 'Emended this name',
                     data: { confirm: 'Are you sure?' } do %>
-                <%= icon 'fas', 'star-of-life' %>
+                <%= icon 'fas', 'asterisk' %>
               <% end %>
             <% end %>
 
