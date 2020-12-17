@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   post 'publication/:id/link_names' => 'publication_names#link_names_commit', as: :link_publication_name_commit
   post 'name/:id/proposed_by' => 'names#proposed_by', as: :name_proposed_by
   post 'name/:id/emended_by/:publication_id' => 'names#emended_by', as: :name_emended_by
+  get 'name/:id/edit_etymology' => 'names#edit_etymology', as: :edit_name_etymology
   resources :publications
   resources :subjects
 end

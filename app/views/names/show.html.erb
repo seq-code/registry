@@ -2,9 +2,6 @@
 <hr/>
 
 <dl class='main-section'>
-  <dt>Search sequences</dt>
-  <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
-        target: '_blank' %></dd>
   <% if @name.proposed_by %>
     <dt>Proposed by</dt>
     <dd>
@@ -20,6 +17,7 @@
       <% end %>
     </dd>
   <% end %>
+
   <% unless @name.emended_by.empty? %>
     <dt>Emended by</dt>
     <dd>
@@ -38,16 +36,35 @@
       <% end %>
     </dd>
   <% end %>
+
   <% unless @publication_names.empty? %>
     <dt>Oldest registered citation</dt>
     <dd><%= link_to @oldest_publication.short_citation, @oldest_publication %></dd>
   <% end %>
+
+  <% if @name.syllabication? %>
+    <dt>Syllabication</dt>
+    <dd><%= @name.syllabication %></dd>
+  <% end %>
+
+  <% if @name.etymology? %>
+    <dt>Etymology</dt>
+    <dd><%= @name.full_etymology(true) %></dd>
+  <% end %>
+
+  <dt>Search sequences</dt>
+  <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
+        target: '_blank' %></dd>
+
   <% if current_contributor? %>
     <dt>Actions</dt>
     <dd>
       <%= link_to @name, class: 'btn btn-sm btn-secondary',
             method: :delete, data: {confirm: 'Are you sure?'} do %>
         <%= icon 'fas', 'minus-circle' %> Remove name
+      <% end %>
+      <%= link_to edit_name_etymology_url(@name), class: 'btn btn-sm btn-info' do %>
+        <%= icon 'fas', 'language' %> Edit etymology
       <% end %>
     </dd>
   <% end %>

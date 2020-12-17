@@ -1,0 +1,47 @@
+<h1><%= @name.name_html %></h1>
+<h3>&raquo; Etymology of the epithet <u><b><%= @name.last_epithet %></b></u></h3>
+<hr/>
+
+<%= simple_form_for(@name) do |f| %>
+  <%= f.input :syllabication, required: true, autofocus: true %>
+
+  <br/>
+  <table class='table table-hover table-responsive-lg'>
+    <thead>
+      <th>Component</th>
+      <th>Language</th>
+      <th>Grammar</th>
+      <th>Particle</th>
+      <th>Description</th>
+    </thead>
+    <tbody>
+      <%
+        components = {
+          p1: '1st particle', p2: '2nd particle', p3: '3rd particle',
+          p4: '4th particle', p5: '5th particle', xx: 'Full epithet'
+        }
+        fields = { lang: 5, grammar: 15, particle: 15, description: 30 }
+      %>
+      <% components.each do |k, v| %>
+        <tr class='<%= 'table-active' if k == :xx %>'>
+          <td><b><%= v %></b></td>
+          <% fields.each do |i, size| %>
+            <% entry = :"etymology_#{ k }_#{ i }" %>
+            <td>
+              <% if i == :particle && k == :xx %>
+                <i><%= @name.last_epithet %></i>
+              <% else %>
+                <%= f.input entry, input_html: { size: size }, label: false %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <br/>
+  <%= f.button :submit, 'Submit' %>
+  <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+

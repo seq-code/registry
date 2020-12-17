@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_15_170102) do
+ActiveRecord::Schema.define(version: 2020_12_17_175915) do
 
   create_table "authors", force: :cascade do |t|
     t.string "given"
@@ -25,6 +25,31 @@ ActiveRecord::Schema.define(version: 2020_12_15_170102) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "proposed_by"
+    t.string "syllabication"
+    t.boolean "syllabication_reviewed"
+    t.string "etymology_xx_lang"
+    t.string "etymology_xx_grammar"
+    t.string "etymology_xx_description"
+    t.string "etymology_p1_lang"
+    t.string "etymology_p1_grammar"
+    t.string "etymology_p1_particle"
+    t.string "etymology_p1_description"
+    t.string "etymology_p2_lang"
+    t.string "etymology_p2_grammar"
+    t.string "etymology_p2_particle"
+    t.string "etymology_p2_description"
+    t.string "etymology_p3_lang"
+    t.string "etymology_p3_grammar"
+    t.string "etymology_p3_particle"
+    t.string "etymology_p3_description"
+    t.string "etymology_p4_lang"
+    t.string "etymology_p4_grammar"
+    t.string "etymology_p4_particle"
+    t.string "etymology_p4_description"
+    t.string "etymology_p5_lang"
+    t.string "etymology_p5_grammar"
+    t.string "etymology_p5_particle"
+    t.string "etymology_p5_description"
     t.index ["name"], name: "index_names_on_name", unique: true
   end
 

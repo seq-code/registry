@@ -1,7 +1,8 @@
 class NamesController < ApplicationController
   before_action :set_name, only: [:show, :edit, :update, :destroy,
-    :proposed_by, :emended_by]
-  before_action :authenticate_contributor!, only: [:proposed_by, :emended_by]
+    :proposed_by, :emended_by, :edit_etymology]
+  before_action :authenticate_contributor!, only: [:proposed_by, :emended_by,
+    :edit_etymology]
 
   # GET /names
   # GET /names.json
@@ -59,12 +60,13 @@ class NamesController < ApplicationController
   # PATCH/PUT /names/1
   # PATCH/PUT /names/1.json
   def update
+    params[:name][:syllabication_reviewed] = true if name_params[:syllabication]
     respond_to do |format|
       if @name.update(name_params)
         format.html { redirect_to @name, notice: 'Name was successfully updated.' }
         format.json { render :show, status: :ok, location: @name }
       else
-        format.html { render :edit }
+        format.html { render(name_params[:name] ? :edit : :edit_etymology) }
         format.json { render json: @name.errors, status: :unprocessable_entity }
       end
     end
@@ -104,6 +106,9 @@ class NamesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def name_params
-      params.require(:name).permit(:name)
+      etymology_pars = Name.etymology_particles.map do |i|
+        Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
+      end.flatten
+      params.require(:name).permit(:name, :syllabication, *etymology_pars)
     end
 end
