@@ -1,8 +1,10 @@
 class NamesController < ApplicationController
   before_action :set_name, only: [:show, :edit, :update, :destroy,
-    :proposed_by, :emended_by, :edit_etymology]
-  before_action :authenticate_contributor!, only: [:proposed_by, :emended_by,
-    :edit_etymology]
+    :proposed_by, :emended_by, :edit_etymology,
+    :link_parent, :link_parent_commit]
+  before_action :authenticate_contributor!, only: [:new, :create, :edit,
+    :update, :destroy, :proposed_by, :emended_by, :edit_etymology,
+    :link_parent, :link_parent_commit]
 
   # GET /names
   # GET /names.json
@@ -98,6 +100,21 @@ class NamesController < ApplicationController
     redirect_back(fallback_location: @name)
   end
 
+  # GET /names/1/link_parent
+  def link_parent
+  end
+
+  # POST /names/1/link_parent
+  def link_parent_commit
+    parent = Name.find_by(name: params[:name][:parent])
+    if @name.update(parent: parent)
+      flash[:notice] = 'Parent linked to the name'
+      redirect_to @name
+    else
+      render :link_parent
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_name
@@ -109,6 +126,7 @@ class NamesController < ApplicationController
       etymology_pars = Name.etymology_particles.map do |i|
         Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
       end.flatten
-      params.require(:name).permit(:name, :syllabication, *etymology_pars)
+      params.require(:name)
+        .permit(:name, :description, :syllabication, *etymology_pars)
     end
 end

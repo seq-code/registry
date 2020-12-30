@@ -5,21 +5,23 @@ Rails.application.routes.draw do
   get 'sysusers' => 'users#index(.:format)', as: :users
   get 'sysusers/:username(.:format)' => 'users#show', as: :user
   get 'dashboard' => 'users#dashboard', as: :dashboard
-  get 'contributor' => 'users#contributor_request', as: :contributor_request
-  post 'contributor' => 'users#contributor_apply', as: :contributor_apply
-  post 'contributor/grant/:username' => 'users#contributor_grant', as: :contributor_grant
-  post 'contributor/deny/:username' => 'users#contributor_deny', as: :contributor_deny
+  get 'contributors' => 'users#contributor_request', as: :contributor_request
+  post 'contributors' => 'users#contributor_apply', as: :contributor_apply
+  post 'contributors/grant/:username' => 'users#contributor_grant', as: :contributor_grant
+  post 'contributors/deny/:username' => 'users#contributor_deny', as: :contributor_deny
   root to: 'application#main'
   get 'search' => 'application#search', as: :search
   resources :names
   resources :authors
   resources :publication_names
   get 'doi/:doi' => 'publications#show', as: :doi, doi: /.+/
-  get 'publication/:id/link_names' => 'publication_names#link_names', as: :link_publication_name
-  post 'publication/:id/link_names' => 'publication_names#link_names_commit', as: :link_publication_name_commit
-  post 'name/:id/proposed_by' => 'names#proposed_by', as: :name_proposed_by
-  post 'name/:id/emended_by/:publication_id' => 'names#emended_by', as: :name_emended_by
-  get 'name/:id/edit_etymology' => 'names#edit_etymology', as: :edit_name_etymology
+  get 'publications/:id/link_names' => 'publication_names#link_names', as: :link_publication_name
+  post 'publications/:id/link_names' => 'publication_names#link_names_commit', as: :link_publication_name_commit
+  post 'names/:id/proposed_by' => 'names#proposed_by', as: :name_proposed_by
+  post 'names/:id/emended_by/:publication_id' => 'names#emended_by', as: :name_emended_by
+  get 'names/:id/edit_etymology' => 'names#edit_etymology', as: :edit_name_etymology
+  get 'names/:id/link_parent' => 'names#link_parent', as: :name_link_parent
+  post 'names/:id/link_parent' => 'names#link_parent_commit', as: :name_link_parent_commit
   resources :publications
   resources :subjects
 end

@@ -1,5 +1,5 @@
 class PublicationNamesController < ApplicationController
-  before_action :set_publication_name, only: [:show, :edit, :update, :destroy]
+  before_action :set_publication_name, only: [:show, :destroy]
   before_action :set_publication, only: [:link_names, :link_names_commit]
   before_action :authenticate_contributor!, only: [:destroy, :link_names, :link_names_commit]
 

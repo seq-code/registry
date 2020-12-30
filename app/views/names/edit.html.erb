@@ -1,6 +1,13 @@
-<h1>Editing Name</h1>
+<h1><%= @name.name_html %></h1>
+<hr/>
 
-<%= render 'form', name: @name %>
+<%= simple_form_for(@name) do |f| %>
+  <%= f.input :name, required: true %>
+  <%= f.input :description, as: :rich_text_area %>
 
-<%= link_to 'Show', @name %> |
-<%= link_to 'Back', names_path %>
+  <br/>
+  <%= f.button :submit, 'Submit' %>
+  <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+

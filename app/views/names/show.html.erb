@@ -52,6 +52,25 @@
     <dd><%= @name.full_etymology(true) %></dd>
   <% end %>
 
+  <% unless @name.description.empty? %>
+    <dt>Description</dt>
+    <dd><%= @name.description %></dd>
+  <% end %>
+
+  <% if @name.parent %>
+    <dt>Parent</dt>
+    <dd><%= link_to(@name.parent.name_html, @name.parent) %></dd>
+  <% end %>
+
+  <% unless @name.children.empty? %>
+    <dt>Children<dt>
+    <dd><ul class='pl-3'>
+      <% @name.children.each do |child| %>
+        <li><%= link_to(child.name_html, child) %></li>
+      <% end %>
+    </ul></dd>
+  <% end %>
+
   <dt>Search sequences</dt>
   <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
         target: '_blank' %></dd>
@@ -63,8 +82,14 @@
             method: :delete, data: {confirm: 'Are you sure?'} do %>
         <%= icon 'fas', 'minus-circle' %> Remove name
       <% end %>
+      <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
+        <%= icon 'fas', 'edit' %> Edit description
+      <% end %>
       <%= link_to edit_name_etymology_url(@name), class: 'btn btn-sm btn-info' do %>
         <%= icon 'fas', 'language' %> Edit etymology
+      <% end %>
+      <%= link_to name_link_parent_url(@name), class: 'btn btn-sm btn-info' do %>
+        <%= icon 'fas', 'code-branch' %> Link parent node
       <% end %>
     </dd>
   <% end %>

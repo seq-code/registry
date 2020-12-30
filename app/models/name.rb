@@ -3,7 +3,10 @@ class Name < ApplicationRecord
   has_many :publications, through: :publication_names
   belongs_to :proposed_by, optional: true,
     class_name: 'Publication', foreign_key: 'proposed_by'
+  belongs_to :parent, optional: true, class_name: 'Name'
 
+  has_rich_text :description
+  
   validates :name, presence: true, uniqueness: true
   validates :syllabication,
     format: {
@@ -85,5 +88,9 @@ class Name < ApplicationRecord
 
   def emended_by?(publication)
     emended_by.include? publication
+  end
+
+  def children
+    @children ||= Name.where(parent: self)
   end
 end
