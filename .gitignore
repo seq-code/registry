@@ -6,7 +6,6 @@
 
 # Ignore bundler config.
 /.bundle
-Gemfile.lock
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -19,7 +18,7 @@ Gemfile.lock
 !/tmp/.keep
 *.swp
 
-/node_modules
+# /node_modules
 /yarn-error.log
 
 .byebug_history
