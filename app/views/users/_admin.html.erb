@@ -13,12 +13,12 @@
         <%= link_to contributor_grant_path(u), method: :post,
               class: 'btn text-info btn-sm',
               data: { confirm: 'Are you sure?' } do %>
-          <%= icon 'fas', 'check-circle' %> Grant
+          <%= fa_icon 'check-circle' %> Grant
         <% end %>
         <%= link_to contributor_deny_path(u), method: :post,
               class: 'btn text-danger btn-sm',
               data: { confirm: 'Are you sure?' } do %>
-          <%= icon 'fas', 'ban' %> Deny
+          <%= fa_icon 'ban' %> Deny
         <% end %>
       </li>
     <% end %>

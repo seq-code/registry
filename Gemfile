@@ -61,7 +61,6 @@ gem 'bootstrap', '~> 4.3'
 gem 'jquery-rails'
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
-gem 'font-awesome-sass', '~> 5.15'
-gem 'devise'
+gem 'font-awesome-rails', '~> 4.7'
 gem 'simple_form'
 

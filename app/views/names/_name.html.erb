@@ -27,15 +27,14 @@
     <ul class='list-inline' style='margin: 0;'>
       <li class='list-inline-item'>
         <%= link_to name.ncbi_search_url, title: 'Search genomes', target: '_blank' do %>
-          <%= icon 'fas', 'dna' %>
+          <%= fa_icon 'dna' %>
         <% end %>
       </li>
       <li class='list-inline-item'>
         <%= link_to name, title: 'See more' do %>
-          <%= icon 'fas', 'arrow-circle-right' %>
+          <%= fa_icon 'arrow-circle-right' %>
         <% end %>
       </li>
     </ul>
   </div>
 </div>
-

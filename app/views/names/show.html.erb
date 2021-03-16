@@ -11,8 +11,8 @@
               class: 'badge badge-pill badge-info',
               method: :post, title: 'Did not propose this name',
               data: { confirm: 'Are you sure?' } do %>
-          <%= icon 'fas', 'star' %>
-          <%= icon 'fas', 'unlink' %>
+          <%= fa_icon 'star' %>
+          <%= fa_icon 'unlink' %>
         <% end %>
       <% end %>
     </dd>
@@ -28,8 +28,8 @@
                 class: 'badge badge-pill badge-info',
                 method: :post, title: 'Did not emend this name',
                 data: { confirm: 'Are you sure?' } do %>
-            <%= icon 'fas', 'asterisk' %>
-            <%= icon 'fas', 'unlink' %>
+            <%= fa_icon 'asterisk' %>
+            <%= fa_icon 'unlink' %>
           <% end %>
         <% end %>
         <br/>
@@ -80,16 +80,16 @@
     <dd>
       <%= link_to @name, class: 'btn btn-sm btn-secondary',
             method: :delete, data: {confirm: 'Are you sure?'} do %>
-        <%= icon 'fas', 'minus-circle' %> Remove name
+        <%= fa_icon 'minus-circle' %> Remove name
       <% end %>
       <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= icon 'fas', 'edit' %> Edit description
+        <%= fa_icon 'edit' %> Edit description
       <% end %>
       <%= link_to edit_name_etymology_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= icon 'fas', 'language' %> Edit etymology
+        <%= fa_icon 'language' %> Edit etymology
       <% end %>
       <%= link_to name_link_parent_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= icon 'fas', 'code-branch' %> Link parent node
+        <%= fa_icon 'code-branch' %> Link parent node
       <% end %>
     </dd>
   <% end %>
@@ -120,10 +120,10 @@
         <td><%= publication.title %></td>
         <td>
           <% if @name.proposed_by? publication %>
-            <div class='badge'><%= icon 'fas', 'star' %> Proposed this name</div>
+            <div class='badge'><%= fa_icon 'star' %> Proposed this name</div>
           <% end %>
           <% if @name.emended_by? publication %>
-            <div class='badge'><%= icon 'fas', 'asterisk' %> Emended this name</div>
+            <div class='badge'><%= fa_icon 'asterisk' %> Emended this name</div>
           <% end %>
         </td>
         <td>
@@ -133,7 +133,7 @@
                     class: 'badge badge-pill badge-info',
                     method: :post, title: 'Proposed this name',
                     data: { confirm: 'Are you sure?' } do %>
-                <%= icon 'fas', 'star' %>
+                <%= fa_icon 'star' %>
               <% end %>
             <% end %>
 
@@ -142,14 +142,14 @@
                     class: 'badge badge-pill badge-info',
                     method: :post, title: 'Emended this name',
                     data: { confirm: 'Are you sure?' } do %>
-                <%= icon 'fas', 'asterisk' %>
+                <%= fa_icon 'asterisk' %>
               <% end %>
             <% end %>
 
             <%= link_to publication_name, class: 'badge badge-pill badge-info',
                   method: :delete, title: 'Unlink this publication',
                   data: { confirm: 'Are you sure?' } do %>
-              <%= icon 'fas', 'trash-alt' %>
+              <%= fa_icon 'trash-alt' %>
             <% end %>
           <% end %>
         </td>
@@ -158,4 +158,3 @@
   </tbody>
 </table>
 <%= pager @publication_names %>
-

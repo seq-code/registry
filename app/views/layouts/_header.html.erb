@@ -10,7 +10,7 @@
     <div class='navbar-nav'>
       <div class="collapse navbar-collapse">
         <%= link_to root_url, class: 'nav-item nav-link', title: 'Home' do %>
-          <%= icon 'fas', 'university' %>
+          <%= fa_icon 'university' %>
         <% end %>
         <% @crumbs.each do |i| %>
           <% if i.is_a? Array %>
@@ -23,9 +23,8 @@
     </div>
     <div>
       <%= link_to search_path, class: '' do %>
-        <%= icon 'fas', 'search' %>
+        <%= fa_icon 'search' %>
       <% end %>
     </div>
   </nav>
 <% end %>
-

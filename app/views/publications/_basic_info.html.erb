@@ -27,14 +27,14 @@
         <%= link_to publication_name, method: :delete,
               class: 'badge badge-pill badge-info', title: 'unlink name',
               data: {confirm: 'Are you sure?'} do %>
-          <%= icon 'fas', 'trash-alt' %>
+          <%= fa_icon 'trash-alt' %>
         <% end %>
       <% end %>
     <% end %>
     <% if current_contributor? %>
       <%= link_to link_publication_name_path(publication),
             class: 'badge badge-pill badge-info', title: 'link names' do %>
-        <%= icon 'fas', 'link' %>
+        <%= fa_icon 'link' %>
       <% end %>
     <% end %>
   </dd>
