@@ -14,7 +14,7 @@ namespace :names do
       belonging reveals community communities on which in clades? lineages?
       associated taxon taxa revised be the from infecting genes? particles?
       spp? species gen genus genera fam family families
-      cla class classes ord orders? phylum phyla]
+      cla class classes ord orders? phylum phyla instead of preferred provided]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
       $stderr.puts "o #{pub.doi}"

@@ -49,6 +49,7 @@ class Publication < ApplicationRecord
       p = Publication.new(params)
       p.save or return p
     end
+
     work.fetch('subject', []).each do |subject|
       next unless subject
       s = Subject.find_by(name: subject)
@@ -57,10 +58,14 @@ class Publication < ApplicationRecord
       PublicationSubject.
         new(publication_id: p.id, subject_id: s.id).save
     end
+
     work.fetch('author', []).each do |author|
       author['family'] ||= author['name']
       next unless author['family']
+
       a = Author.find_or_create(author['given'], author['family'])
+      next if p.authors.include? a
+
       PublicationAuthor.
         new(publication_id: p.id, author_id: a.id,
           sequence: author['sequence']).save
