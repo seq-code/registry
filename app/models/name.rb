@@ -24,12 +24,24 @@ class Name < ApplicationRecord
     end
   end
 
+  def candidatus?
+    name.match? /^Candidatus /
+  end
+
   def abbr_name
-    name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
+    if candidatus?
+      name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
+    else
+      "<i>#{name}</i>".html_safe
+    end
   end
 
   def name_html
-    name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
+    if candidatus?
+      name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
+    else
+      "<i>#{name}</i>".html_safe
+    end
   end
 
   def last_epithet
