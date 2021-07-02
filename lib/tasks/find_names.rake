@@ -9,12 +9,15 @@ namespace :names do
       exit 0
     end
 
-    non_epithets = %w[by through for that has is as and are was were affiliated
+    non_epithets = %w[
+      by through for that has is as and are was were affiliated
       archaeon bacterium bacteria archaea a an transmitted
       belonging reveals community communities on which in clades? lineages?
       associated taxon taxa revised be the from infecting genes? particles?
       spp? species gen genus genera fam family families
-      cla class classes ord orders? phylum phyla instead of preferred provided]
+      cla class classes ord orders? phylum phyla instead of preferred provided
+      list uncovers
+    ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
       $stderr.puts "o #{pub.doi}"
