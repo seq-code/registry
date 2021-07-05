@@ -96,6 +96,9 @@
     </ul></dd>
   <% end %>
 
+  <dt>Formal styling</dt>
+  <dd><%= @name.formal_html %></dd>
+
   <dt>Search sequences</dt>
   <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
         target: '_blank' %></dd>

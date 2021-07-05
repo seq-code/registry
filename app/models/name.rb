@@ -56,6 +56,14 @@ class Name < ApplicationRecord
     name_html(corrigendum_from)
   end
 
+  def formal_html
+    y = name_html
+    y = "&#8220;#{y}&#8221;" if candidatus?
+    y += " corrig." if corrigendum_by
+    y += " #{proposed_by.short_citation}" if proposed_by
+    y.html_safe
+  end
+
   def last_epithet
     name.gsub(/.* /, '')
   end
