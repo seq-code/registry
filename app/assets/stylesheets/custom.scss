@@ -38,3 +38,10 @@
   }
 }
 
+trix-editor {
+  &.form-control {
+    min-height: 5rem;
+    height: auto;
+  }
+}
+
