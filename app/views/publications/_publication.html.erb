@@ -1,7 +1,9 @@
 <div class='card'>
-  <div class='card-header'>
-    <h3><%= publication.title %></h3>
-  </div>
+  <%= link_to(publication, class: 'card-header-link') do %>
+    <div class='card-header'>
+      <h3><%= publication.title %></h3>
+    </div>
+  <% end %>
   <div class='card-body'>
     <dl>
       <%= render partial: 'publications/basic_info',

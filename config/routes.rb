@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   get 'publications/:id/link_names' => 'publication_names#link_names', as: :link_publication_name
   post 'publications/:id/link_names' => 'publication_names#link_names_commit', as: :link_publication_name_commit
   post 'names/:id/proposed_by' => 'names#proposed_by', as: :name_proposed_by
+  get 'names/:id/corrigendum_by' => 'names#corrigendum_by', as: :name_corrigendum_by
+  post 'names/:id/corrigendum' => 'names#corrigendum', as: :name_corrigendum
   post 'names/:id/emended_by/:publication_id' => 'names#emended_by', as: :name_emended_by
   get 'names/:id/edit_etymology' => 'names#edit_etymology', as: :edit_name_etymology
   get 'names/:id/link_parent' => 'names#link_parent', as: :name_link_parent

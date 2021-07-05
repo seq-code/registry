@@ -1,0 +1,18 @@
+<h1><%= @name.name_html %></h1>
+<hr/>
+
+<%= simple_form_for(@name, url: name_corrigendum_path(@name), html: { method: :post }) do |f| %>
+  <h4>
+    Corrigendum by <%= link_to(@publication.short_citation, @publication) %>
+  </h4>
+  <%= f.hidden_field(:corrigendum_by) %>
+  <%= f.hidden_field(:redirect_to, value: request.referrer) %>
+  <%=
+    f.input(
+      :corrigendum_from, required: true, autofocus: true,
+      label: 'Original name'
+    )
+  %>
+  <%= f.button :submit, 'Submit' %>
+<% end %>
+

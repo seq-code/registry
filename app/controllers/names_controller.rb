@@ -1,10 +1,19 @@
 class NamesController < ApplicationController
-  before_action :set_name, only: [:show, :edit, :update, :destroy,
-    :proposed_by, :emended_by, :edit_etymology,
-    :link_parent, :link_parent_commit]
-  before_action :authenticate_contributor!, only: [:new, :create, :edit,
-    :update, :destroy, :proposed_by, :emended_by, :edit_etymology,
-    :link_parent, :link_parent_commit]
+  before_action(
+    :set_name,
+    only: %i[
+      show edit update destroy proposed_by corrigendum_by corrigendum emended_by
+      edit_etymology link_parent link_parent_commit
+    ]
+  )
+  before_action(
+    :authenticate_contributor!,
+    only: %i[
+      new create edit update destroy
+      proposed_by corrigendum_by corrigendum emended_by
+      edit_etymology link_parent link_parent_commit
+    ]
+  )
 
   # GET /names
   # GET /names.json
@@ -89,6 +98,25 @@ class NamesController < ApplicationController
     publication = Publication.where(id: params[:publication_id]).first
     @name.update(proposed_by: publication)
     redirect_back(fallback_location: @name)
+  end
+
+  # GET /names/1/corrigendum_by?publication_id=2
+  def corrigendum_by
+    @publication = Publication.where(id: params[:publication_id]).first
+    if @publication.nil?
+      @name.update(corrigendum_by: nil, corrigendum_from: nil)
+      redirect_back(fallback_location: @name)
+    else
+      @name.corrigendum_by = @publication
+    end
+  end
+
+  # POST /names/1/corrigendum
+  def corrigendum
+    par = params.require(:name).permit(:corrigendum_by, :corrigendum_from)
+    par[:corrigendum_by] = Publication.find(par[:corrigendum_by])
+    @name.update(par)
+    redirect_to(params[:name][:redirect_to] || @name)
   end
 
   # POST /names/1/emended_by/2

@@ -3,6 +3,8 @@ class Name < ApplicationRecord
   has_many :publications, through: :publication_names
   belongs_to :proposed_by, optional: true,
     class_name: 'Publication', foreign_key: 'proposed_by'
+  belongs_to :corrigendum_by, optional: true,
+    class_name: 'Publication', foreign_key: 'corrigendum_by'
   belongs_to :parent, optional: true, class_name: 'Name'
 
   has_rich_text :description
@@ -28,7 +30,8 @@ class Name < ApplicationRecord
     name.match? /^Candidatus /
   end
 
-  def abbr_name
+  def abbr_name(name = nil)
+    name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
     else
@@ -36,12 +39,21 @@ class Name < ApplicationRecord
     end
   end
 
-  def name_html
+  def name_html(name = nil)
+    name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
     else
       "<i>#{name}</i>".html_safe
     end
+  end
+
+  def abbr_corr_name
+    abbr_name(corrigendum_from)
+  end
+
+  def corr_name_html
+    name_html(corrigendum_from)
   end
 
   def last_epithet
@@ -92,6 +104,10 @@ class Name < ApplicationRecord
 
   def proposed_by?(publication)
     publication == proposed_by
+  end
+
+  def corrigendum_by?(publication)
+    publication == corrigendum_by
   end
 
   def emended_by

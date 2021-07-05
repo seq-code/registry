@@ -11,8 +11,33 @@
               class: 'badge badge-pill badge-info',
               method: :post, title: 'Did not propose this name',
               data: { confirm: 'Are you sure?' } do %>
-          <%= fa_icon 'star' %>
           <%= fa_icon 'unlink' %>
+          <%= fa_icon 'star' %>
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% if @name.corrigendum_by %>
+    <dt>Corrigendum</dt>
+    <dd>
+      <%= link_to @name.corrigendum_by.short_citation, @name.corrigendum_by %>
+      <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
+        from &#8220;<%= @name.corrigendum_from %>&#8221;
+      <% end %>
+      <% if current_contributor? %>
+        <%= link_to name_corrigendum_by_url(@name, publication_id: @name.corrigendum_by),
+              class: 'badge badge-pill badge-info',
+              title: 'Edit original name' do %>
+          <%= fa_icon 'edit' %>
+          <%= fa_icon 'pen-fancy' %>
+        <% end %>
+        <%= link_to name_corrigendum_by_url(@name, publication_id: nil),
+              class: 'badge badge-pill badge-info',
+              title: 'Did not correct this name',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= fa_icon 'unlink' %>
+          <%= fa_icon 'pen-fancy' %>
         <% end %>
       <% end %>
     </dd>
@@ -28,8 +53,8 @@
                 class: 'badge badge-pill badge-info',
                 method: :post, title: 'Did not emend this name',
                 data: { confirm: 'Are you sure?' } do %>
-            <%= fa_icon 'asterisk' %>
             <%= fa_icon 'unlink' %>
+            <%= fa_icon 'asterisk' %>
           <% end %>
         <% end %>
         <br/>
@@ -120,10 +145,13 @@
         <td><%= publication.title %></td>
         <td>
           <% if @name.proposed_by? publication %>
-            <div class='badge'><%= fa_icon 'star' %> Proposed this name</div>
+            <div class="badge"><%= fa_icon 'star' %> Proposed this name</div>
+          <% end %>
+          <% if @name.corrigendum_by? publication %>
+            <div class="badge"><%= fa_icon 'pen-fancy' %> Corrigendum</div>
           <% end %>
           <% if @name.emended_by? publication %>
-            <div class='badge'><%= fa_icon 'asterisk' %> Emended this name</div>
+            <div class="badge"><%= fa_icon 'asterisk' %> Emended this name</div>
           <% end %>
         </td>
         <td>
@@ -137,18 +165,32 @@
               <% end %>
             <% end %>
 
+            <% unless publication_name.corrigendum? %>
+              <%= link_to(
+                    name_corrigendum_by_url(@name, publication_id: publication),
+                    class: 'badge badge-pill badge-info',
+                    title: 'Corrigendum'
+                  ) do %>
+                <%= fa_icon 'pen-fancy' %>
+              <% end %>
+            <% end %>
+
             <% unless publication_name.emends? %>
-              <%= link_to name_emended_by_url(@name, publication),
+              <%= link_to(
+                    name_emended_by_url(@name, publication),
                     class: 'badge badge-pill badge-info',
                     method: :post, title: 'Emended this name',
-                    data: { confirm: 'Are you sure?' } do %>
+                    data: { confirm: 'Are you sure?' }
+                  ) do %>
                 <%= fa_icon 'asterisk' %>
               <% end %>
             <% end %>
 
-            <%= link_to publication_name, class: 'badge badge-pill badge-info',
+            <%= link_to(
+                  publication_name, class: 'badge badge-pill badge-info',
                   method: :delete, title: 'Unlink this publication',
-                  data: { confirm: 'Are you sure?' } do %>
+                  data: { confirm: 'Are you sure?' }
+                ) do %>
               <%= fa_icon 'trash-alt' %>
             <% end %>
           <% end %>

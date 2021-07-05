@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_30_144356) do
+ActiveRecord::Schema.define(version: 2021_07_05_080832) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -83,6 +83,8 @@ ActiveRecord::Schema.define(version: 2020_12_30_144356) do
     t.string "etymology_p5_description"
     t.text "description"
     t.integer "parent_id"
+    t.integer "corrigendum_by"
+    t.string "corrigendum_from"
     t.index ["name"], name: "index_names_on_name", unique: true
   end
 
