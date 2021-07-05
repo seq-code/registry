@@ -99,7 +99,11 @@ class Name < ApplicationRecord
   end
 
   def ncbi_search_url
-    "https://www.ncbi.nlm.nih.gov/nuccore/?term=%22#{name.tr(' ', '+')}%22"
+    q = "%22#{name}%22"
+    unless corrigendum_from.nil? || corrigendum_from.empty?
+      q += " OR %22#{corrigendum_from}%22"
+    end
+    "https://www.ncbi.nlm.nih.gov/nuccore/?term=#{q}".gsub(' ', '%20')
   end
 
   def proposed_by?(publication)
