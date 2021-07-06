@@ -20,11 +20,11 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-lg-12 text-center">
+    <div class="col-lg-12 text-center mt-5">
       <h1>Recent entries</h1>
       <hr/>
     </div>
-    <div class="col-lg-4 pb-1">
+    <div class="col-lg-4 pb-5">
       <div class="text-center bg-light rounded-lg border p-5">
         <h2>Names</h2>
         <% @names.first(5).each do |name| %>
@@ -33,7 +33,7 @@
         <hr/><%= link_to('more...', names_path) %>
       </div>
     </div>
-    <div class="col-lg-4 pb-1">
+    <div class="col-lg-4 pb-5">
       <div class="text-center bg-light rounded-lg border p-5">
         <h2>Publications</h2>
         <% @publications.first(5).each do |publication| %>
@@ -42,7 +42,7 @@
         <hr/><%= link_to('more...', publications_path) %>
       </div>
     </div>
-    <div class="col-lg-4 pb-1">
+    <div class="col-lg-4 pb-5">
       <div class="text-center bg-light rounded-lg border p-5">
         <h2>Authors</h2>
         <% @authors.first(5).each do |author| %>
