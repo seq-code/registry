@@ -30,7 +30,7 @@
         <% @names.first(5).each do |name| %>
           <hr/><%= link_to(name.abbr_name, name) %>
         <% end %>
-        <hr/><%= link_to('more...', names_path) %>
+        <hr/><%= link_to('more...', names_path(sort: :date)) %>
       </div>
     </div>
     <div class="col-lg-4 pb-5">
@@ -39,7 +39,7 @@
         <% @publications.first(5).each do |publication| %>
           <hr/><%= link_to(publication.short_citation, publication) %>
         <% end %>
-        <hr/><%= link_to('more...', publications_path) %>
+        <hr/><%= link_to('more...', publications_path(sort: :date)) %>
       </div>
     </div>
     <div class="col-lg-4 pb-5">

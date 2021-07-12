@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   def main
     @publications = Publication.all.order(journal_date: :desc)
     @authors = Author.all.order(created_at: :desc)
-    @names = Name.all.order(created_at: :desc)
+    @names = Name.where('name LIKE "Candidatus %"').order(created_at: :desc)
   end
 
   def search
