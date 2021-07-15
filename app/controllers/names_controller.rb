@@ -3,7 +3,7 @@ class NamesController < ApplicationController
     :set_name,
     only: %i[
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
-      edit_etymology link_parent link_parent_commit
+      edit_notes edit_etymology link_parent link_parent_commit
     ]
   )
   before_action(
@@ -11,7 +11,7 @@ class NamesController < ApplicationController
     only: %i[
       new create edit update destroy
       proposed_by corrigendum_by corrigendum emended_by
-      edit_etymology link_parent link_parent_commit
+      edit_notes edit_etymology link_parent link_parent_commit
     ]
   )
 
@@ -50,6 +50,10 @@ class NamesController < ApplicationController
 
   # GET /names/1/edit
   def edit
+  end
+
+  # GET /names/1/edit_notes
+  def edit_notes
   end
 
   # POST /names
@@ -151,10 +155,11 @@ class NamesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def name_params
-      etymology_pars = Name.etymology_particles.map do |i|
-        Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
-      end.flatten
+      etymology_pars =
+        Name.etymology_particles.map do |i|
+          Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
+        end.flatten
       params.require(:name)
-        .permit(:name, :description, :syllabication, *etymology_pars)
+        .permit(:name, :description, :notes, :syllabication, *etymology_pars)
     end
 end

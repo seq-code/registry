@@ -82,6 +82,11 @@
     <dd><%= @name.description %></dd>
   <% end %>
 
+  <% unless @name.notes.empty? %>
+    <dt>Notes</dt>
+    <dd><%= @name.notes %></dd>
+  <% end %>
+
   <% if @name.parent %>
     <dt>Parent</dt>
     <dd><%= link_to(@name.parent.name_html, @name.parent) %></dd>
@@ -112,6 +117,9 @@
       <% end %>
       <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
         <%= fa_icon 'edit' %> Edit description
+      <% end %>
+      <%= link_to edit_name_notes_url(@name), class: 'btn btn-sm btn-info' do %>
+        <%= fa_icon 'sticky-note' %> Edit notes
       <% end %>
       <%= link_to edit_name_etymology_url(@name), class: 'btn btn-sm btn-info' do %>
         <%= fa_icon 'language' %> Edit etymology

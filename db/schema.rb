@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_05_080832) do
+ActiveRecord::Schema.define(version: 2021_07_06_214401) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 2021_07_05_080832) do
     t.integer "parent_id"
     t.integer "corrigendum_by"
     t.string "corrigendum_from"
+    t.text "notes"
     t.index ["name"], name: "index_names_on_name", unique: true
   end
 

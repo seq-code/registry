@@ -8,6 +8,7 @@ class Name < ApplicationRecord
   belongs_to :parent, optional: true, class_name: 'Name'
 
   has_rich_text :description
+  has_rich_text :notes
   
   validates :name, presence: true, uniqueness: true
   validates :syllabication,

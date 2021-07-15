@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   post 'names/:id/corrigendum' => 'names#corrigendum', as: :name_corrigendum
   post 'names/:id/emended_by/:publication_id' => 'names#emended_by', as: :name_emended_by
   get 'names/:id/edit_etymology' => 'names#edit_etymology', as: :edit_name_etymology
+  get 'names/:id/edit_notes' => 'names#edit_notes', as: :edit_name_notes
   get 'names/:id/link_parent' => 'names#link_parent', as: :name_link_parent
   post 'names/:id/link_parent' => 'names#link_parent_commit', as: :name_link_parent_commit
   resources :publications
