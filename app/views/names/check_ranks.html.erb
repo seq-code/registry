@@ -1,0 +1,42 @@
+<h1>
+  Determine name ranks
+  <small class='text-muted'>(<%= @names.count %>)</small>
+</h1>
+<hr/>
+
+<%= pager @names %>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Inferred rank</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @names.each do |name| %>
+      <tr>
+        <td><%= link_to(name.name_html, name) %></td>
+        <td><%= name.inferred_rank %></td>
+        <td>
+          <%= link_to(
+                name_path(
+                  name,
+                  name: { rank: name.inferred_rank },
+                  return_to: check_ranks_path
+                ),
+                method: :patch, class: 'btn btn-sm btn-success'
+              ) do %>
+            <%= fa_icon 'check' %> Confirm
+          <% end %>
+          <%= link_to(edit_name_rank_url(name), class: 'btn btn-sm btn-primary') do %>
+            <%= fa_icon 'edit' %> Edit
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= pager @names %>
+
+<br>

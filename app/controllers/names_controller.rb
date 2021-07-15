@@ -9,7 +9,7 @@ class NamesController < ApplicationController
   before_action(
     :authenticate_contributor!,
     only: %i[
-      new create edit update destroy
+      new create edit update destroy check_ranks
       proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology link_parent link_parent_commit
     ]
@@ -82,7 +82,7 @@ class NamesController < ApplicationController
     params[:name][:syllabication_reviewed] = true if name_params[:syllabication]
     respond_to do |format|
       if @name.update(name_params)
-        format.html { redirect_to @name, notice: 'Name was successfully updated.' }
+        format.html { redirect_to params[:return_to] || @name, notice: 'Name was successfully updated.' }
         format.json { render :show, status: :ok, location: @name }
       else
         format.html { render(name_params[:name] ? :edit : :edit_etymology) }
@@ -99,6 +99,12 @@ class NamesController < ApplicationController
       format.html { redirect_to names_url, notice: 'Name was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  # GET /check_ranks
+  def check_ranks
+    @names = Name.where(rank: nil).order(created_at: :asc)
+    @names = @names.paginate(page: params[:page], per_page: 30)
   end
 
   # POST /names/1/proposed_by?publication_id=2
