@@ -148,7 +148,7 @@ class Name < ApplicationRecord
       elsif name =~ /ales$/
         'order'
       elsif name =~ /ia$/
-        if children.first&.rank&.== 'species'
+        if children.first&.inferred_rank&.== 'species'
           'genus'
         else
           'class'
