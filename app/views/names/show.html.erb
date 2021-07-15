@@ -3,7 +3,7 @@
 
 <dl class='main-section'>
   <% if @name.proposed_by %>
-    <dt>Proposed by</dt>
+    <dt><%= fa_icon 'star' %> Proposed by</dt>
     <dd>
       <%= link_to @name.proposed_by.short_citation, @name.proposed_by %>
       <% if current_contributor? %>
@@ -12,14 +12,13 @@
               method: :post, title: 'Did not propose this name',
               data: { confirm: 'Are you sure?' } do %>
           <%= fa_icon 'unlink' %>
-          <%= fa_icon 'star' %>
         <% end %>
       <% end %>
     </dd>
   <% end %>
 
   <% if @name.corrigendum_by %>
-    <dt>Corrigendum</dt>
+    <dt><%= fa_icon 'pen-fancy' %> Corrigendum</dt>
     <dd>
       <%= link_to @name.corrigendum_by.short_citation, @name.corrigendum_by %>
       <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
@@ -30,7 +29,6 @@
               class: 'badge badge-pill badge-info',
               title: 'Edit original name' do %>
           <%= fa_icon 'edit' %>
-          <%= fa_icon 'pen-fancy' %>
         <% end %>
         <%= link_to name_corrigendum_by_url(@name, publication_id: nil),
               class: 'badge badge-pill badge-info',
@@ -44,7 +42,7 @@
   <% end %>
 
   <% unless @name.emended_by.empty? %>
-    <dt>Emended by</dt>
+    <dt><%= fa_icon 'asterisk' %> Emended by</dt>
     <dd>
       <% @name.emended_by.each do |emended| %>
         <%= link_to emended.short_citation, emended %>
@@ -54,7 +52,6 @@
                 method: :post, title: 'Did not emend this name',
                 data: { confirm: 'Are you sure?' } do %>
             <%= fa_icon 'unlink' %>
-            <%= fa_icon 'asterisk' %>
           <% end %>
         <% end %>
         <br/>
