@@ -3,7 +3,7 @@ class NamesController < ApplicationController
     :set_name,
     only: %i[
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
-      edit_notes edit_etymology link_parent link_parent_commit
+      edit_rank edit_notes edit_etymology link_parent link_parent_commit
     ]
   )
   before_action(
@@ -11,7 +11,7 @@ class NamesController < ApplicationController
     only: %i[
       new create edit update destroy
       proposed_by corrigendum_by corrigendum emended_by
-      edit_notes edit_etymology link_parent link_parent_commit
+      edit_rank edit_notes edit_etymology link_parent link_parent_commit
     ]
   )
 
@@ -54,6 +54,10 @@ class NamesController < ApplicationController
 
   # GET /names/1/edit_notes
   def edit_notes
+  end
+
+  # GET /names/1/edit_rank
+  def edit_rank
   end
 
   # POST /names
@@ -160,6 +164,6 @@ class NamesController < ApplicationController
           Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
         end.flatten
       params.require(:name)
-        .permit(:name, :description, :notes, :syllabication, *etymology_pars)
+        .permit(:name, :rank, :description, :notes, :syllabication, *etymology_pars)
     end
 end

@@ -67,6 +67,21 @@
     <dd><%= link_to @oldest_publication.short_citation, @oldest_publication %></dd>
   <% end %>
 
+  <dt>Rank</dt>
+  <dd>
+    <% if @name.rank? %>
+      <%= @name.rank.capitalize %>
+    <% else %>
+      <i><%= @name.inferred_rank.capitalize %> (inferred)</i>
+    <% end %>
+
+    <% if current_contributor? %>
+      <%= link_to edit_name_rank_url(@name), class: 'badge badge-pill badge-info' do %>
+        <%= fa_icon 'edit' %>
+      <% end %>
+    <% end %>
+  </dd>
+
   <% if @name.syllabication? %>
     <dt>Syllabication</dt>
     <dd><%= @name.syllabication %></dd>
@@ -77,12 +92,12 @@
     <dd><%= @name.full_etymology(true) %></dd>
   <% end %>
 
-  <% unless @name.description.empty? %>
+  <% if @name.description? %>
     <dt>Description</dt>
     <dd><%= @name.description %></dd>
   <% end %>
 
-  <% unless @name.notes.empty? %>
+  <% if @name.notes? %>
     <dt>Notes</dt>
     <dd><%= @name.notes %></dd>
   <% end %>
@@ -130,8 +145,9 @@
     </dd>
   <% end %>
 </dl>
-
 <hr/>
+
+<br/><br/>
 <h2>
   Publications
   <small class='text-muted'>(<%= @publication_names.count %>)</small>
@@ -211,3 +227,4 @@
   </tbody>
 </table>
 <%= pager @publication_names %>
+<br/><br/>

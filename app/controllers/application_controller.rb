@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   @@search_obj = {
     publications: [Publication, %w[title doi journal abstract]],
     authors: [Author, %w[given family]],
-    names: [Name, %w[name]],
+    names: [Name, %w[name description corrigendum_from]],
     subjects: [Subject, %w[name]]
   }
 

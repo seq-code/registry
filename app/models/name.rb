@@ -25,6 +25,10 @@ class Name < ApplicationRecord
     def etymology_fields
       %i[lang grammar particle description]
     end
+
+    def ranks
+      %w[phylum class order family genus species]
+    end
   end
 
   def candidatus?
@@ -133,5 +137,26 @@ class Name < ApplicationRecord
 
   def children
     @children ||= Name.where(parent: self)
+  end
+
+  def inferred_rank
+    @inferred_rank ||=
+      if name.sub(/^Candidatus /, '') =~ / /
+        'species'
+      elsif name =~ /aceae$/
+        'family'
+      elsif name =~ /ales$/
+        'order'
+      elsif name =~ /ia$/
+        if children.first&.rank&.== 'species'
+          'genus'
+        else
+          'class'
+        end
+      elsif name =~ /ota$/
+        'phylum'
+      else
+        'genus'
+      end
   end
 end
