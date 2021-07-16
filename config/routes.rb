@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: {
-    registrations: 'users/registrations'
-  }
+  devise_for :users, controllers: { registrations: 'users/registrations' }
   get 'sysusers' => 'users#index(.:format)', as: :users
   get 'sysusers/:username(.:format)' => 'users#show', as: :user
   get 'dashboard' => 'users#dashboard', as: :dashboard
@@ -29,4 +27,7 @@ Rails.application.routes.draw do
   post 'names/:id/link_parent' => 'names#link_parent_commit', as: :name_link_parent_commit
   resources :publications
   resources :subjects
+
+  # Helpers
+  get 'autocomplete_names.json' => 'names#autocomplete', as: :autocomplete_names
 end

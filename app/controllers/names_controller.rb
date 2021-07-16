@@ -15,6 +15,11 @@ class NamesController < ApplicationController
     ]
   )
 
+  # GET /autocomplete_names.json?q=Abc
+  def autocomplete
+    @names = Name.where('lower(name) LIKE ?', "%#{params[:q].downcase}%")
+  end
+
   # GET /names
   # GET /names.json
   def index
