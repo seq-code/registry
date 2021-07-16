@@ -2,6 +2,12 @@
 <hr/>
 
 <dl class='main-section name-details'>
+  <h2>Citation</h2>
+  <hr/>
+
+  <dt><%= fa_icon 'signature' %> Formal styling</dt>
+  <dd><%= @name.formal_html %></dd>
+
   <% if @name.proposed_by %>
     <dt><%= fa_icon 'star' %> Proposed by</dt>
     <dd>
@@ -11,7 +17,7 @@
               class: 'badge badge-pill badge-info',
               method: :post, title: 'Did not propose this name',
               data: { confirm: 'Are you sure?' } do %>
-          <%= fa_icon 'unlink' %>
+          <%= fa_icon 'unlink' %> Unlink
         <% end %>
       <% end %>
     </dd>
@@ -28,13 +34,13 @@
         <%= link_to name_corrigendum_by_url(@name, publication_id: @name.corrigendum_by),
               class: 'badge badge-pill badge-info',
               title: 'Edit original name' do %>
-          <%= fa_icon 'edit' %>
+          <%= fa_icon 'edit' %> Edit
         <% end %>
         <%= link_to name_corrigendum_by_url(@name, publication_id: nil),
               class: 'badge badge-pill badge-info',
               title: 'Did not correct this name',
               data: { confirm: 'Are you sure?' } do %>
-          <%= fa_icon 'unlink' %>
+          <%= fa_icon 'unlink' %> Unlink
         <% end %>
       <% end %>
     </dd>
@@ -50,7 +56,7 @@
                 class: 'badge badge-pill badge-info',
                 method: :post, title: 'Did not emend this name',
                 data: { confirm: 'Are you sure?' } do %>
-            <%= fa_icon 'unlink' %>
+            <%= fa_icon 'unlink' %> Unlink
           <% end %>
         <% end %>
         <br/>
@@ -60,9 +66,15 @@
 
   <% unless @publication_names.empty? %>
     <dt><%= fa_icon 'history' %> Oldest registered citation</dt>
-    <dd><%= link_to @oldest_publication.short_citation, @oldest_publication %></dd>
+    <dd>
+      <%= link_to @oldest_publication.short_citation, @oldest_publication %>
+    </dd>
   <% end %>
+</dl>
 
+
+<dl class='main-section name-details'>
+  <h2>Nomenclature</h2>
   <hr/>
 
   <dt><%= fa_icon 'sitemap' %> Rank</dt>
@@ -79,7 +91,7 @@
             class: 'badge badge-pill badge-info',
             title: 'edit rank'
           ) do %>
-        <%= fa_icon 'edit' %>
+        <%= fa_icon 'edit' %> Edit
       <% end %>
     <% end %>
   </dd>
@@ -89,24 +101,74 @@
     <dd><%= @name.syllabication %></dd>
   <% end %>
 
-  <% if @name.etymology? %>
-    <dt><%= fa_icon 'language' %> Etymology</dt>
-    <dd><%= @name.full_etymology(true) %></dd>
-  <% end %>
+  <dt><%= fa_icon 'language' %> Etymology</dt>
+  <dd>
+    <%= @name.full_etymology(true) %>
+    <% if current_contributor? %>
+      <br/>
+      <%= link_to(
+            edit_name_etymology_url(@name),
+            class: 'badge badge-pill badge-info',
+            title: 'edit etymology'
+          ) do %>
+        <%= fa_icon 'edit' %> Edit
+      <% end %>
+    <% end %>
+  </dd>
+</dl>
 
-  <% if @name.description? %>
+
+
+<dl class='main-section name-details'>
+  <h2>Taxonomy</h2>
+  <hr/>
+
+  <% if @name.description? || current_contributor? %>
     <dt><%= fa_icon 'file-alt' %> Description</dt>
-    <dd><%= @name.description %></dd>
+    <dd>
+      <%= @name.description %>
+      <% if current_contributor? %>
+        <%= link_to(
+              edit_name_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit description'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
   <% end %>
 
-  <% if @name.notes? %>
+  <% if @name.notes? || current_contributor? %>
     <dt><%= fa_icon 'sticky-note' %> Notes</dt>
-    <dd><%= @name.notes %></dd>
+    <dd>
+      <%= @name.notes %>
+      <% if current_contributor? %>
+        <%= link_to(
+              edit_name_notes_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit notes'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
   <% end %>
 
-  <% if @name.parent %>
+  <% if @name.parent || current_contributor? %>
     <dt><%= fa_icon 'sort-amount-up-alt' %> Parent</dt>
-    <dd><%= link_to(@name.parent.name_html, @name.parent) %></dd>
+    <dd>
+      <%= link_to(@name.parent.name_html, @name.parent) if @name.parent %>
+      <% if current_contributor? %>
+        <%= link_to(
+              name_link_parent_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit parent'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
   <% end %>
 
   <% unless @name.children.empty? %>
@@ -118,9 +180,9 @@
     </ul></dd>
   <% end %>
 
-  <dt><%= fa_icon 'signature' %> Formal styling</dt>
-  <dd><%= @name.formal_html %></dd>
-
+</dl>
+<dl class='main-section name-details'>
+  <h2>Metadata</h2>
   <hr/>
 
   <dt><%= fa_icon :dna %> Search sequences</dt>
@@ -140,28 +202,22 @@
     <% end %>
   </dd>
 
-  <% if current_contributor? %>
-    <dt><%= fa_icon 'exclamation-circle' %> Actions</dt>
-    <dd class="pt-1">
+</dl>
+
+<% if current_contributor? %>
+  <dl class='main-section name-details'>
+    <h2>Contributor Actions</h2>
+    <dd class="pt-2">
       <%= link_to @name, class: 'btn btn-sm btn-secondary',
             method: :delete, data: {confirm: 'Are you sure?'} do %>
         <%= fa_icon 'minus-circle' %> Remove name
       <% end %>
       <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= fa_icon 'file-alt' %> Edit description
-      <% end %>
-      <%= link_to edit_name_notes_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= fa_icon 'sticky-note' %> Edit notes
-      <% end %>
-      <%= link_to edit_name_etymology_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= fa_icon 'language' %> Edit etymology
-      <% end %>
-      <%= link_to name_link_parent_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= fa_icon 'code-branch' %> Link parent node
+        <%= fa_icon 'edit' %> Edit spelling
       <% end %>
     </dd>
-  <% end %>
-</dl>
+  </dl>
+<% end %>
 <hr/>
 
 <br/><br/>
