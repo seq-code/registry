@@ -1,0 +1,61 @@
+<dl class='main-section name-details'>
+  <h2>Taxonomy</h2>
+  <hr/>
+
+  <% if @name.description? || current_contributor? %>
+    <dt><%= fa_icon 'file-alt' %> Description</dt>
+    <dd>
+      <%= @name.description %>
+      <% if current_contributor? %>
+        <%= link_to(
+              edit_name_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit description'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% if @name.notes? || current_contributor? %>
+    <dt><%= fa_icon 'sticky-note' %> Notes</dt>
+    <dd>
+      <%= @name.notes %>
+      <% if current_contributor? %>
+        <%= link_to(
+              edit_name_notes_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit notes'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% if @name.parent || current_contributor? %>
+    <dt><%= fa_icon 'sort-amount-up-alt' %> Parent</dt>
+    <dd>
+      <%= link_to(@name.parent.name_html, @name.parent) if @name.parent %>
+      <% if current_contributor? %>
+        <%= link_to(
+              name_link_parent_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit parent'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% unless @name.children.empty? %>
+    <dt><%= fa_icon 'sort-amount-down-alt' %> Children<dt>
+    <dd><ul class='pl-3'>
+      <% @name.children.each do |child| %>
+        <li><%= link_to(child.name_html, child) %></li>
+      <% end %>
+    </ul></dd>
+  <% end %>
+</dl>

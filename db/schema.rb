@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_15_143451) do
+ActiveRecord::Schema.define(version: 2021_07_16_175717) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_143451) do
     t.string "corrigendum_from"
     t.text "notes"
     t.string "rank"
+    t.integer "ncbi_taxonomy"
     t.index ["name"], name: "index_names_on_name", unique: true
   end
 

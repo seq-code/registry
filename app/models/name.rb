@@ -159,4 +159,20 @@ class Name < ApplicationRecord
         'genus'
       end
   end
+
+  def links?
+    ncbi_taxonomy?
+  end
+
+  def ncbi_taxonomy_url
+    return unless ncbi_taxonomy?
+
+    'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=%i' % ncbi_taxonomy
+  end
+
+  def ncbi_genomes_url
+    return unless ncbi_taxonomy?
+
+    'https://www.ncbi.nlm.nih.gov/datasets/genomes/?txid=%i' % ncbi_taxonomy
+  end
 end

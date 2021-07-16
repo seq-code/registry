@@ -1,0 +1,43 @@
+<dl class='main-section name-details'>
+  <h2>Nomenclature</h2>
+  <hr/>
+
+  <dt><%= fa_icon 'sitemap' %> Rank</dt>
+  <dd>
+    <% if @name.rank? %>
+      <%= @name.rank.capitalize %>
+    <% else %>
+      <i><%= @name.inferred_rank.capitalize %> (inferred)</i>
+    <% end %>
+
+    <% if current_contributor? %>
+      <%= link_to(
+            edit_name_rank_url(@name),
+            class: 'badge badge-pill badge-info',
+            title: 'edit rank'
+          ) do %>
+        <%= fa_icon 'edit' %> Edit
+      <% end %>
+    <% end %>
+  </dd>
+
+  <% if @name.syllabication? %>
+    <dt><%= fa_icon 'comment-dots' %> Syllabication</dt>
+    <dd><%= @name.syllabication %></dd>
+  <% end %>
+
+  <dt><%= fa_icon 'language' %> Etymology</dt>
+  <dd>
+    <%= @name.full_etymology(true) %>
+    <% if current_contributor? %>
+      <br/>
+      <%= link_to(
+            edit_name_etymology_url(@name),
+            class: 'badge badge-pill badge-info',
+            title: 'edit etymology'
+          ) do %>
+        <%= fa_icon 'edit' %> Edit
+      <% end %>
+    <% end %>
+  </dd>
+</dl>

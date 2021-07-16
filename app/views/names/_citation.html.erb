@@ -1,0 +1,71 @@
+<dl class='main-section name-details'>
+  <h2>Citation</h2>
+  <hr/>
+
+  <dt><%= fa_icon 'signature' %> Formal styling</dt>
+  <dd><%= @name.formal_html %></dd>
+
+  <% if @name.proposed_by %>
+    <dt><%= fa_icon 'star' %> Proposed by</dt>
+    <dd>
+      <%= link_to @name.proposed_by.short_citation, @name.proposed_by %>
+      <% if current_contributor? %>
+        <%= link_to name_proposed_by_url(@name, publication_id: nil),
+              class: 'badge badge-pill badge-info',
+              method: :post, title: 'Did not propose this name',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= fa_icon 'unlink' %> Unlink
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% if @name.corrigendum_by %>
+    <dt><%= fa_icon 'pen-fancy' %> Corrigendum</dt>
+    <dd>
+      <%= link_to @name.corrigendum_by.short_citation, @name.corrigendum_by %>
+      <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
+        from &#8220;<%= @name.corrigendum_from %>&#8221;
+      <% end %>
+      <% if current_contributor? %>
+        <%= link_to name_corrigendum_by_url(@name, publication_id: @name.corrigendum_by),
+              class: 'badge badge-pill badge-info',
+              title: 'Edit original name' do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+        <%= link_to name_corrigendum_by_url(@name, publication_id: nil),
+              class: 'badge badge-pill badge-info',
+              title: 'Did not correct this name',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= fa_icon 'unlink' %> Unlink
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% unless @name.emended_by.empty? %>
+    <dt><%= fa_icon 'asterisk' %> Emended by</dt>
+    <dd>
+      <% @name.emended_by.each do |emended| %>
+        <%= link_to emended.short_citation, emended %>
+        <% if current_contributor? %>
+          <%= link_to name_emended_by_url(@name, emended, not: true),
+                class: 'badge badge-pill badge-info',
+                method: :post, title: 'Did not emend this name',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon 'unlink' %> Unlink
+          <% end %>
+        <% end %>
+        <br/>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% unless @publication_names.empty? %>
+    <dt><%= fa_icon 'history' %> Oldest registered citation</dt>
+    <dd>
+      <%= link_to @oldest_publication.short_citation, @oldest_publication %>
+    </dd>
+  <% end %>
+</dl>
+

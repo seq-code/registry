@@ -1,0 +1,53 @@
+<dl class='main-section name-details'>
+  <h2>Metadata</h2>
+  <hr/>
+
+  <% if @name.links? %>
+    <dt><%= fa_icon 'link' %> Outside links</dt>
+    <dd>
+      <ul>
+        <% if @name.ncbi_taxonomy? %>
+          <li>
+            <%= link_to(@name.ncbi_taxonomy_url, target: '_blank') do %>
+              NCBI Taxonomy
+              <%= fa_icon 'external-link-alt' %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </dd>
+  <% end %>
+
+  <dt><%= fa_icon :dna %> Search sequences</dt>
+  <dd>
+    <ul>
+      <li>
+        <%= link_to(@name.ncbi_search_url, target: '_blank') do %>
+          NCBI Nucleotide
+          <%= fa_icon 'external-link-alt' %>
+        <% end %>
+      </li>
+      <% if @name.ncbi_taxonomy? %>
+        <li>
+          <%= link_to(@name.ncbi_genomes_url, target: '_blank') do %>
+            NCBI Genomes
+            <%= fa_icon 'external-link-alt' %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </dd>
+
+  <dt><%= fa_icon 'calendar' %> Local history</dt>
+  <dd>
+    This name was first registered in the system
+    <u title="<%= @name.created_at %>"><%= time_ago_in_words(@name.created_at) %> ago</u>
+    and it
+    <% if @name.created_at == @name.updated_at %>
+      has not been modified.
+    <% else %>
+      was last modified
+      <u title="<%= @name.updated_at %>"><%= time_ago_in_words(@name.updated_at) %> ago</u>.
+    <% end %>
+  </dd>
+</dl>

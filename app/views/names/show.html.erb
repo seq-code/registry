@@ -1,208 +1,10 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
-<dl class='main-section name-details'>
-  <h2>Citation</h2>
-  <hr/>
-
-  <dt><%= fa_icon 'signature' %> Formal styling</dt>
-  <dd><%= @name.formal_html %></dd>
-
-  <% if @name.proposed_by %>
-    <dt><%= fa_icon 'star' %> Proposed by</dt>
-    <dd>
-      <%= link_to @name.proposed_by.short_citation, @name.proposed_by %>
-      <% if current_contributor? %>
-        <%= link_to name_proposed_by_url(@name, publication_id: nil),
-              class: 'badge badge-pill badge-info',
-              method: :post, title: 'Did not propose this name',
-              data: { confirm: 'Are you sure?' } do %>
-          <%= fa_icon 'unlink' %> Unlink
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% if @name.corrigendum_by %>
-    <dt><%= fa_icon 'pen-fancy' %> Corrigendum</dt>
-    <dd>
-      <%= link_to @name.corrigendum_by.short_citation, @name.corrigendum_by %>
-      <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
-        from &#8220;<%= @name.corrigendum_from %>&#8221;
-      <% end %>
-      <% if current_contributor? %>
-        <%= link_to name_corrigendum_by_url(@name, publication_id: @name.corrigendum_by),
-              class: 'badge badge-pill badge-info',
-              title: 'Edit original name' do %>
-          <%= fa_icon 'edit' %> Edit
-        <% end %>
-        <%= link_to name_corrigendum_by_url(@name, publication_id: nil),
-              class: 'badge badge-pill badge-info',
-              title: 'Did not correct this name',
-              data: { confirm: 'Are you sure?' } do %>
-          <%= fa_icon 'unlink' %> Unlink
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% unless @name.emended_by.empty? %>
-    <dt><%= fa_icon 'asterisk' %> Emended by</dt>
-    <dd>
-      <% @name.emended_by.each do |emended| %>
-        <%= link_to emended.short_citation, emended %>
-        <% if current_contributor? %>
-          <%= link_to name_emended_by_url(@name, emended, not: true),
-                class: 'badge badge-pill badge-info',
-                method: :post, title: 'Did not emend this name',
-                data: { confirm: 'Are you sure?' } do %>
-            <%= fa_icon 'unlink' %> Unlink
-          <% end %>
-        <% end %>
-        <br/>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% unless @publication_names.empty? %>
-    <dt><%= fa_icon 'history' %> Oldest registered citation</dt>
-    <dd>
-      <%= link_to @oldest_publication.short_citation, @oldest_publication %>
-    </dd>
-  <% end %>
-</dl>
-
-
-<dl class='main-section name-details'>
-  <h2>Nomenclature</h2>
-  <hr/>
-
-  <dt><%= fa_icon 'sitemap' %> Rank</dt>
-  <dd>
-    <% if @name.rank? %>
-      <%= @name.rank.capitalize %>
-    <% else %>
-      <i><%= @name.inferred_rank.capitalize %> (inferred)</i>
-    <% end %>
-
-    <% if current_contributor? %>
-      <%= link_to(
-            edit_name_rank_url(@name),
-            class: 'badge badge-pill badge-info',
-            title: 'edit rank'
-          ) do %>
-        <%= fa_icon 'edit' %> Edit
-      <% end %>
-    <% end %>
-  </dd>
-
-  <% if @name.syllabication? %>
-    <dt><%= fa_icon 'comment-dots' %> Syllabication</dt>
-    <dd><%= @name.syllabication %></dd>
-  <% end %>
-
-  <dt><%= fa_icon 'language' %> Etymology</dt>
-  <dd>
-    <%= @name.full_etymology(true) %>
-    <% if current_contributor? %>
-      <br/>
-      <%= link_to(
-            edit_name_etymology_url(@name),
-            class: 'badge badge-pill badge-info',
-            title: 'edit etymology'
-          ) do %>
-        <%= fa_icon 'edit' %> Edit
-      <% end %>
-    <% end %>
-  </dd>
-</dl>
-
-
-
-<dl class='main-section name-details'>
-  <h2>Taxonomy</h2>
-  <hr/>
-
-  <% if @name.description? || current_contributor? %>
-    <dt><%= fa_icon 'file-alt' %> Description</dt>
-    <dd>
-      <%= @name.description %>
-      <% if current_contributor? %>
-        <%= link_to(
-              edit_name_url(@name),
-              class: 'badge badge-pill badge-info',
-              title: 'edit description'
-            ) do %>
-          <%= fa_icon 'edit' %> Edit
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% if @name.notes? || current_contributor? %>
-    <dt><%= fa_icon 'sticky-note' %> Notes</dt>
-    <dd>
-      <%= @name.notes %>
-      <% if current_contributor? %>
-        <%= link_to(
-              edit_name_notes_url(@name),
-              class: 'badge badge-pill badge-info',
-              title: 'edit notes'
-            ) do %>
-          <%= fa_icon 'edit' %> Edit
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% if @name.parent || current_contributor? %>
-    <dt><%= fa_icon 'sort-amount-up-alt' %> Parent</dt>
-    <dd>
-      <%= link_to(@name.parent.name_html, @name.parent) if @name.parent %>
-      <% if current_contributor? %>
-        <%= link_to(
-              name_link_parent_url(@name),
-              class: 'badge badge-pill badge-info',
-              title: 'edit parent'
-            ) do %>
-          <%= fa_icon 'edit' %> Edit
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% unless @name.children.empty? %>
-    <dt><%= fa_icon 'sort-amount-down-alt' %> Children<dt>
-    <dd><ul class='pl-3'>
-      <% @name.children.each do |child| %>
-        <li><%= link_to(child.name_html, child) %></li>
-      <% end %>
-    </ul></dd>
-  <% end %>
-
-</dl>
-<dl class='main-section name-details'>
-  <h2>Metadata</h2>
-  <hr/>
-
-  <dt><%= fa_icon :dna %> Search sequences</dt>
-  <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
-        target: '_blank' %></dd>
-
-  <dt><%= fa_icon 'calendar' %> Local history</dt>
-  <dd>
-    This name was first registered in the system
-    <u title="<%= @name.created_at %>"><%= time_ago_in_words(@name.created_at) %> ago</u>
-    and it
-    <% if @name.created_at == @name.updated_at %>
-      has not been modified.
-    <% else %>
-      was last modified
-      <u title="<%= @name.updated_at %>"><%= time_ago_in_words(@name.updated_at) %> ago</u>.
-    <% end %>
-  </dd>
-
-</dl>
+<%= render partial: 'citation' %>
+<%= render partial: 'nomenclature' %>
+<%= render partial: 'taxonomy' %>
+<%= render partial: 'metadata' %>
 
 <% if current_contributor? %>
   <dl class='main-section name-details'>
@@ -215,11 +17,17 @@
       <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
         <%= fa_icon 'edit' %> Edit spelling
       <% end %>
+      <%= link_to(
+            edit_name_links_url(@name),
+            class: 'btn btn-secondary btn-sm'
+          ) do %>
+        <%= fa_icon 'edit' %> Edit outside links
+      <% end %>
     </dd>
   </dl>
 <% end %>
-<hr/>
 
+<hr/>
 <br/><br/>
 <h2>
   Publications
