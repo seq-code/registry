@@ -1,7 +1,7 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
-<dl class='main-section'>
+<dl class='main-section name-details'>
   <% if @name.proposed_by %>
     <dt><%= fa_icon 'star' %> Proposed by</dt>
     <dd>
@@ -59,11 +59,13 @@
   <% end %>
 
   <% unless @publication_names.empty? %>
-    <dt>Oldest registered citation</dt>
+    <dt><%= fa_icon 'history' %> Oldest registered citation</dt>
     <dd><%= link_to @oldest_publication.short_citation, @oldest_publication %></dd>
   <% end %>
 
-  <dt>Rank</dt>
+  <hr/>
+
+  <dt><%= fa_icon 'sitemap' %> Rank</dt>
   <dd>
     <% if @name.rank? %>
       <%= @name.rank.capitalize %>
@@ -72,39 +74,43 @@
     <% end %>
 
     <% if current_contributor? %>
-      <%= link_to edit_name_rank_url(@name), class: 'badge badge-pill badge-info' do %>
+      <%= link_to(
+            edit_name_rank_url(@name),
+            class: 'badge badge-pill badge-info',
+            title: 'edit rank'
+          ) do %>
         <%= fa_icon 'edit' %>
       <% end %>
     <% end %>
   </dd>
 
   <% if @name.syllabication? %>
-    <dt>Syllabication</dt>
+    <dt><%= fa_icon 'comment-dots' %> Syllabication</dt>
     <dd><%= @name.syllabication %></dd>
   <% end %>
 
   <% if @name.etymology? %>
-    <dt>Etymology</dt>
+    <dt><%= fa_icon 'language' %> Etymology</dt>
     <dd><%= @name.full_etymology(true) %></dd>
   <% end %>
 
   <% if @name.description? %>
-    <dt>Description</dt>
+    <dt><%= fa_icon 'file-alt' %> Description</dt>
     <dd><%= @name.description %></dd>
   <% end %>
 
   <% if @name.notes? %>
-    <dt>Notes</dt>
+    <dt><%= fa_icon 'sticky-note' %> Notes</dt>
     <dd><%= @name.notes %></dd>
   <% end %>
 
   <% if @name.parent %>
-    <dt>Parent</dt>
+    <dt><%= fa_icon 'sort-amount-up-alt' %> Parent</dt>
     <dd><%= link_to(@name.parent.name_html, @name.parent) %></dd>
   <% end %>
 
   <% unless @name.children.empty? %>
-    <dt>Children<dt>
+    <dt><%= fa_icon 'sort-amount-down-alt' %> Children<dt>
     <dd><ul class='pl-3'>
       <% @name.children.each do |child| %>
         <li><%= link_to(child.name_html, child) %></li>
@@ -112,22 +118,37 @@
     </ul></dd>
   <% end %>
 
-  <dt>Formal styling</dt>
+  <dt><%= fa_icon 'signature' %> Formal styling</dt>
   <dd><%= @name.formal_html %></dd>
 
-  <dt>Search sequences</dt>
+  <hr/>
+
+  <dt><%= fa_icon :dna %> Search sequences</dt>
   <dd><%= link_to 'NCBI Nucleotide', @name.ncbi_search_url,
         target: '_blank' %></dd>
 
+  <dt><%= fa_icon 'calendar' %> Local history</dt>
+  <dd>
+    This name was first registered in the system
+    <u title="<%= @name.created_at %>"><%= time_ago_in_words(@name.created_at) %> ago</u>
+    and it
+    <% if @name.created_at == @name.updated_at %>
+      has not been modified.
+    <% else %>
+      was last modified
+      <u title="<%= @name.updated_at %>"><%= time_ago_in_words(@name.updated_at) %> ago</u>.
+    <% end %>
+  </dd>
+
   <% if current_contributor? %>
-    <dt>Actions</dt>
-    <dd>
+    <dt><%= fa_icon 'exclamation-circle' %> Actions</dt>
+    <dd class="pt-1">
       <%= link_to @name, class: 'btn btn-sm btn-secondary',
             method: :delete, data: {confirm: 'Are you sure?'} do %>
         <%= fa_icon 'minus-circle' %> Remove name
       <% end %>
       <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= fa_icon 'edit' %> Edit description
+        <%= fa_icon 'file-alt' %> Edit description
       <% end %>
       <%= link_to edit_name_notes_url(@name), class: 'btn btn-sm btn-info' do %>
         <%= fa_icon 'sticky-note' %> Edit notes
