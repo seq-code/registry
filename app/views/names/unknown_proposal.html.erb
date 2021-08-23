@@ -1,0 +1,29 @@
+<h1>
+  Names with unknown proposal
+  <small class='text-muted'>(<%= @names.count %>)</small>
+</h1>
+<hr/>
+
+<%= pager @names %>
+<table class='table table-hover'>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Rank</th>
+      <th>Citations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @names.each do |name| %>
+      <tr>
+        <td><%= link_to(name.name_html, name) %></td>
+        <td><%= name.inferred_rank %></td>
+        <td><%= name.publication_names.count %></td>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= pager @names %>
+
+<br>

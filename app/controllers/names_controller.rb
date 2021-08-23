@@ -10,7 +10,7 @@ class NamesController < ApplicationController
   before_action(
     :authenticate_contributor!,
     only: %i[
-      new create edit update destroy check_ranks
+      new create edit update destroy check_ranks unknown_proposal
       proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links
       link_parent link_parent_commit
@@ -45,7 +45,10 @@ class NamesController < ApplicationController
   # GET /names/1
   # GET /names/1.json
   def show
-    @publication_names = @name.publication_names.paginate(page: params[:page], per_page: 10)
+    @publication_names =
+      @name.publication_names.left_joins(:publication)
+           .order(journal_date: :desc)
+           .paginate(page: params[:page], per_page: 10)
     @oldest_publication = @name.publications.last
     @crumbs = [['Names', names_path], @name.abbr_name]
   end
@@ -115,6 +118,12 @@ class NamesController < ApplicationController
   # GET /check_ranks
   def check_ranks
     @names = Name.where(rank: nil).order(created_at: :asc)
+    @names = @names.paginate(page: params[:page], per_page: 30)
+  end
+
+  # GET /unknown_proposal
+  def unknown_proposal
+    @names = Name.where(proposed_by: nil).where('name LIKE ?', 'Candidatus %').order(created_at: :asc)
     @names = @names.paginate(page: params[:page], per_page: 30)
   end
 

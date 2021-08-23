@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   post 'contributors/grant/:username' => 'users#contributor_grant', as: :contributor_grant
   post 'contributors/deny/:username' => 'users#contributor_deny', as: :contributor_deny
   get 'check_ranks' => 'names#check_ranks', as: :check_ranks
+  get 'unknown_proposal' => 'names#unknown_proposal', as: :unknown_proposal
   root to: 'application#main'
   get 'search' => 'application#search', as: :search
   resources :names
