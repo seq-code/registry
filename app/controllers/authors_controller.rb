@@ -8,7 +8,7 @@ class AuthorsController < ApplicationController
     @sort = params[:sort]
     @authors =
       case @sort
-      when 'created'
+      when 'date'
         Author.order(created_at: :desc)
       when 'publications'
         Author
