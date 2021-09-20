@@ -1,0 +1,19 @@
+<h1><%= @name.name_html %></h1>
+<hr/>
+
+<%= simple_form_for(@name) do |f| %>
+  <%=
+    f.input(
+      :type_material,
+      label: 'Material',
+      collection: @name.possible_type_materials.map { |k, v| [v[:name], k] }
+    )
+  %>
+  <%= f.input(:type_accession, label: 'Accession') %>
+
+  <br/>
+  <%= f.button :submit, 'Submit' %>
+  <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+

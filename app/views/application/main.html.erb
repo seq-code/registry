@@ -1,6 +1,6 @@
-<div class='text-center bg-light rounded-lg border my-5 mx-3 p-5'>
+<div class="text-center bg-light rounded-lg border my-5 mx-3 p-5">
   <h1>Candidatus Excubia</h1>
-  <p class='lead'>
+  <p class="lead">
     Following <i>Candidatus</i> names in the published literature.
   </p>
   <hr/>
@@ -17,6 +17,24 @@
     <%= render partial: 'shared/search_bar' %>
   </div>
 </div>
+
+<% if user_signed_in? && (current_contributor? || current_curator?) %>
+  <div class="text-center bg-light rounded-lg border my-5 mx-3 p-5">
+    <h1>User Actions</h1>
+    <hr/>
+
+    <% if current_contributor? %>
+      <%= link_to('My names', user_names_path, class: 'btn btn-info') %>
+      <%= link_to('Register a name', new_name_path, class: 'btn btn-info') %>
+      <%= link_to('Register names in batch', '#', class: 'btn btn-info') %>
+    <% end %>
+
+    <% if current_curator? %>
+      <%= link_to('Review submitted', submitted_names_path, class: 'btn btn-primary') %>
+      <%= link_to('Unknown proposals', unknown_proposal_path, class: 'btn btn-primary') %>
+    <% end %>
+  </div>
+<% end %>
 
 <div class="container">
   <div class="row">

@@ -1,28 +1,16 @@
 <h1>Contributor Dashboard</h1>
 <hr/>
-<ul class='nav flex-column'>
-  <li class='nav-item'>
-    <%= link_to new_publication_path do %>
-      <%= fa_icon 'plus-circle' %>
+<ul class="nav flex-column">
+  <li class="nav-item">
+    <%= link_to(new_publication_path) do %>
+      <%= fa_icon('plus-circle') %>
       Add publications
     <% end %>
   </li>
-  <li class='nav-item'>
-    <%= link_to new_name_path do %>
-      <%= fa_icon 'plus-circle' %>
+  <li class="nav-item">
+    <%= link_to(new_name_path) do %>
+      <%= fa_icon('plus-circle') %>
       Add names
-    <% end %>
-  </li>
-  <li class='nav-item'>
-    <%= link_to check_ranks_path do %>
-      <%= fa_icon 'check-circle' %>
-      Determine ranks
-    <% end %>
-  </li>
-  <li class='nav-item'>
-    <%= link_to unknown_proposal_path do %>
-      <%= fa_icon 'check-circle' %>
-      Unknown proposal
     <% end %>
   </li>
 </ul>

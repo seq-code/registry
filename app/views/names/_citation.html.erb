@@ -9,7 +9,7 @@
     <dt><%= fa_icon 'star' %> Proposed by</dt>
     <dd>
       <%= link_to @name.proposed_by.short_citation, @name.proposed_by %>
-      <% if current_contributor? %>
+      <% if @name.can_edit?(current_user) %>
         <%= link_to name_proposed_by_url(@name, publication_id: nil),
               class: 'badge badge-pill badge-info',
               method: :post, title: 'Did not propose this name',
@@ -27,7 +27,7 @@
       <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
         from &#8220;<%= @name.corrigendum_from %>&#8221;
       <% end %>
-      <% if current_contributor? %>
+      <% if @name.can_edit?(current_user) %>
         <%= link_to name_corrigendum_by_url(@name, publication_id: @name.corrigendum_by),
               class: 'badge badge-pill badge-info',
               title: 'Edit original name' do %>
@@ -48,7 +48,7 @@
     <dd>
       <% @name.emended_by.each do |emended| %>
         <%= link_to emended.short_citation, emended %>
-        <% if current_contributor? %>
+        <% if @name.can_edit?(current_user) %>
           <%= link_to name_emended_by_url(@name, emended, not: true),
                 class: 'badge badge-pill badge-info',
                 method: :post, title: 'Did not emend this name',
@@ -67,5 +67,12 @@
       <%= link_to @oldest_publication.short_citation, @oldest_publication %>
     </dd>
   <% end %>
+
+  <dt>Status</dt>
+  <dd>
+    <%= @name.status_name %>
+    <%= fa_icon('question-circle',
+                title: @name.status_help, class: 'hover-help') %>
+  </dd>
 </dl>
 

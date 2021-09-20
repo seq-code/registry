@@ -2,11 +2,11 @@
   <h2>Taxonomy</h2>
   <hr/>
 
-  <% if @name.description? || current_contributor? %>
+  <% if @name.description? || @name.can_edit?(current_user) %>
     <dt><%= fa_icon 'file-alt' %> Description</dt>
     <dd>
       <%= @name.description %>
-      <% if current_contributor? %>
+      <% if @name.can_edit?(current_user) %>
         <%= link_to(
               edit_name_url(@name),
               class: 'badge badge-pill badge-info',
@@ -18,11 +18,11 @@
     </dd>
   <% end %>
 
-  <% if @name.notes? || current_contributor? %>
+  <% if @name.notes? || @name.can_edit?(current_user) %>
     <dt><%= fa_icon 'sticky-note' %> Notes</dt>
     <dd>
       <%= @name.notes %>
-      <% if current_contributor? %>
+      <% if @name.can_edit?(current_user) %>
         <%= link_to(
               edit_name_notes_url(@name),
               class: 'badge badge-pill badge-info',
@@ -34,11 +34,11 @@
     </dd>
   <% end %>
 
-  <% if @name.parent || current_contributor? %>
+  <% if @name.parent || @name.can_edit?(current_user) %>
     <dt><%= fa_icon 'sort-amount-up-alt' %> Parent</dt>
     <dd>
       <%= link_to(@name.parent.name_html, @name.parent) if @name.parent %>
-      <% if current_contributor? %>
+      <% if @name.can_edit?(current_user) %>
         <%= link_to(
               name_link_parent_url(@name),
               class: 'badge badge-pill badge-info',
@@ -51,11 +51,29 @@
   <% end %>
 
   <% unless @name.children.empty? %>
-    <dt><%= fa_icon 'sort-amount-down-alt' %> Children<dt>
+    <dt><%= fa_icon('sort-amount-down-alt') %> Children<dt>
     <dd><ul class='pl-3'>
       <% @name.children.each do |child| %>
         <li><%= link_to(child.name_html, child) %></li>
       <% end %>
     </ul></dd>
+  <% end %>
+
+  <% if @name.type? || @name.can_edit?(current_user) %>
+    <dt><%= fa_icon('clipboard-check') %> Type material</dt>
+    <dd>
+      <% if @name.type? %>
+        <%= link_to_name_type(@name) %>
+      <% end %>
+      <% if @name.can_edit?(current_user) %>
+        <%= link_to(
+              edit_name_type_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit parent'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
   <% end %>
 </dl>

@@ -1,5 +1,6 @@
 <h1>Administrator Dashboard</h1>
 <hr/>
+
 <h2>Contributor applications</h2>
 <% if @contributor_applications.empty? %>
   None pending
@@ -16,6 +17,32 @@
           <%= fa_icon 'check-circle' %> Grant
         <% end %>
         <%= link_to contributor_deny_path(u), method: :post,
+              class: 'btn text-danger btn-sm',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= fa_icon 'ban' %> Deny
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+<br/><br/>
+
+<h2>Curator applications</h2>
+<% if @curator_applications.empty? %>
+  None pending
+<% else %>
+  <ul>
+    <% @curator_applications.each do |u| %>
+      <li>
+        <b><%= link_to u.username, u %></b>:
+        <%= u.curator_statement %>
+        <br/>
+        <%= link_to curator_grant_path(u), method: :post,
+              class: 'btn text-info btn-sm',
+              data: { confirm: 'Are you sure?' } do %>
+          <%= fa_icon 'check-circle' %> Grant
+        <% end %>
+        <%= link_to curator_deny_path(u), method: :post,
               class: 'btn text-danger btn-sm',
               data: { confirm: 'Are you sure?' } do %>
           <%= fa_icon 'ban' %> Deny

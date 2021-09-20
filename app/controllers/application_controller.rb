@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
+  protect_from_forgery(with: :exception)
   
   @@search_obj = {
     publications: [Publication, %w[title doi journal abstract]],
@@ -11,7 +11,10 @@ class ApplicationController < ActionController::Base
   def main
     @publications = Publication.all.order(journal_date: :desc)
     @authors = Author.all.order(created_at: :desc)
-    @names = Name.where('name LIKE "Candidatus %"').order(created_at: :desc)
+    @names =
+      Name.where(status: Name.public_status)
+          .where('name LIKE "Candidatus %"')
+          .order(created_at: :desc)
   end
 
   def search
@@ -36,6 +39,13 @@ class ApplicationController < ActionController::Base
   def search_query
   end
 
+  # GET /set/list
+  def set_list
+    list_preference = cookies['list'] || 'cards'
+    cookies.permanent[:list] = list_preference == 'cards' ? 'table' : 'cards'
+    redirect_back(fallback_location: root_url)
+  end
+
   protected
 
     def authenticate_admin!
@@ -46,8 +56,12 @@ class ApplicationController < ActionController::Base
       authenticate_role! :contributor?
     end
 
+    def authenticate_curator!
+      authenticate_role! :curator?
+    end
+
   private
-    
+
     def search_by(k, q)
       obj = @@search_obj[k]
       o = obj[0].none

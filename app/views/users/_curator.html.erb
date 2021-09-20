@@ -1,0 +1,22 @@
+<h1>Curator Dashboard</h1>
+<hr/>
+<ul class="nav flex-column">
+  <li class="nav-item">
+    <%= link_to(check_ranks_path) do %>
+      <%= fa_icon('check-circle') %>
+      Determine ranks
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to(unknown_proposal_path) do %>
+      <%= fa_icon('check-circle') %>
+      Unknown proposal
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to(submitted_names_path) do %>
+      <%= fa_icon('check-circle') %>
+      Review submitted
+    <% end %>
+  </li>
+</ul>

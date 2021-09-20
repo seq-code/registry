@@ -10,7 +10,7 @@
       <i><%= @name.inferred_rank.capitalize %> (inferred)</i>
     <% end %>
 
-    <% if current_contributor? %>
+    <% if @name.can_edit?(current_user) %>
       <%= link_to(
             edit_name_rank_url(@name),
             class: 'badge badge-pill badge-info',
@@ -29,7 +29,7 @@
   <dt><%= fa_icon 'language' %> Etymology</dt>
   <dd>
     <%= @name.full_etymology(true) %>
-    <% if current_contributor? %>
+    <% if @name.can_edit?(current_user) %>
       <br/>
       <%= link_to(
             edit_name_etymology_url(@name),

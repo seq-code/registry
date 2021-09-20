@@ -3,18 +3,25 @@ class NamesController < ApplicationController
     :set_name,
     only: %i[
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
-      edit_rank edit_notes edit_etymology edit_links
-      link_parent link_parent_commit
+      edit_rank edit_notes edit_etymology edit_links edit_type
+      link_parent link_parent_commit submit return validate
+    ]
+  )
+  before_action(
+    :authenticate_can_edit!,
+    only: %i[
+      edit update destroy proposed_by corrigendum_by corrigendum emended_by
+      edit_rank edit_notes edit_etymology edit_links edit_type
+      link_parent link_parent_commit submit
     ]
   )
   before_action(
     :authenticate_contributor!,
-    only: %i[
-      new create edit update destroy check_ranks unknown_proposal
-      proposed_by corrigendum_by corrigendum emended_by
-      edit_rank edit_notes edit_etymology edit_links
-      link_parent link_parent_commit
-    ]
+    only: %i[new create]
+  )
+  before_action(
+    :authenticate_curator!,
+    only: %i[check_ranks unknown_proposal submitted return validate]
   )
 
   # GET /autocomplete_names.json?q=Abc
@@ -24,8 +31,25 @@ class NamesController < ApplicationController
 
   # GET /names
   # GET /names.json
-  def index
-    @sort = params[:sort]
+  def index(opts = {})
+    @submitted ||= false
+    @sort      ||= params[:sort] || 'date'
+    @status    ||= params[:status] || 'public'
+
+    opts[:status] ||=
+      case @status
+      when 'public'
+        Name.public_status
+      when 'automated'
+        0
+      when 'SeqCode'
+        15
+      when 'ICNP'
+        20
+      when 'valid'
+        Name.valid_status
+      end
+
     @names =
       case @sort
       when 'date'
@@ -38,8 +62,24 @@ class NamesController < ApplicationController
         @sort = 'alphabetically'
         Name.order(name: :asc)
       end
+    @names = @names.where(status: opts[:status])
+    @names = @names.where(opts[:where]) if opts[:where]
     @names = @names.paginate(page: params[:page], per_page: 30)
     @crumbs = ['Names']
+  end
+
+  # GET /user-names
+  def user_names
+    index(where: { created_by: current_user }, status: Name.status_hash.keys)
+    render(:index)
+  end
+
+  # GET /submitted
+  def submitted
+    @submitted = true
+    @status = 'submitted'
+    index(status: 10)
+    render(:index)
   end
 
   # GET /names/1
@@ -74,14 +114,20 @@ class NamesController < ApplicationController
   def edit_links
   end
 
+  # GET /names/1/edit_type
+  def edit_type
+  end
+
   # POST /names
   # POST /names.json
   def create
     @name = Name.new(name_params)
+    @name.status = 5 # All new names begin as drafts
+    @name.created_by = current_user
 
     respond_to do |format|
       if @name.save
-        format.html { redirect_to @name, notice: 'Name was successfully created.' }
+        format.html { redirect_to @name, notice: 'Name was successfully created' }
         format.json { render :show, status: :created, location: @name }
       else
         format.html { render :new }
@@ -94,9 +140,20 @@ class NamesController < ApplicationController
   # PATCH/PUT /names/1.json
   def update
     params[:name][:syllabication_reviewed] = true if name_params[:syllabication]
+    if name_params[:type_material]&.==('name') 
+      type_name =
+        if name_params[:type_accession] =~ /\A[0-9]+\z/
+          Name.where(id: name_params[:type_accession]).first
+        else
+          Name.where(name: name_params[:type_accession]).first
+        end
+      params[:name][:type_accession] = type_name&.id
+      flash[:alert] = 'Type name does not exist' if type_name.nil?
+    end
+
     respond_to do |format|
       if @name.update(name_params)
-        format.html { redirect_to params[:return_to] || @name, notice: 'Name was successfully updated.' }
+        format.html { redirect_to params[:return_to] || @name, notice: 'Name was successfully updated' }
         format.json { render :show, status: :ok, location: @name }
       else
         format.html { render(name_params[:name] ? :edit : :edit_etymology) }
@@ -110,7 +167,7 @@ class NamesController < ApplicationController
   def destroy
     @name.destroy
     respond_to do |format|
-      format.html { redirect_to names_url, notice: 'Name was successfully destroyed.' }
+      format.html { redirect_to names_url, notice: 'Name was successfully destroyed' }
       format.json { head :no_content }
     end
   end
@@ -177,10 +234,63 @@ class NamesController < ApplicationController
     end
   end
 
+  # POST /names/1/submit
+  def submit
+    if @name.status >= 10
+      flash[:alert]  = 'Name status is incompatible with submission'
+    elsif @name.update(status: 10)
+      flash[:notice] = 'Name submitted, awaiting expert review'
+    else
+      flash[:alert]  = 'An unexpected error occurred'
+    end
+    redirect_to(@name)
+  end
+
+  # POST /names/1/return
+  def return
+    if @name.status < 10
+      flash[:alert]  = 'Name status is incompatible with return'
+    elsif @name.update(status: 5)
+      flash[:notice] = 'Name returned to author'
+    else
+      flash[:alert]  = 'An unexpected error occurred'
+    end
+    redirect_to(@name)
+  end
+
+  # POST /names/1/validate
+  def validate
+    new_status = params[:code] == 'icnp' ? 20 : 15
+    par = {
+      status: new_status, validated_by: current_user, validated_at: Time.now
+    }
+    if @name.status > 10
+      flash[:alert] = 'Name status is incompatible with validation'
+    elsif @name.update(par)
+      flash[:notice] = 'Name successfully validated'
+    else
+      flash[:alert] = 'An unexpected error occurred'
+    end
+    redirect_to(@name)
+  end
+
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_name
       @name = Name.find(params[:id])
+
+      unless @name.can_see?(current_user)
+        flash[:alert] = 'User cannot access name'
+        redirect_to(root_path)
+      end
+    end
+
+    def authenticate_can_edit!
+      unless @name.can_edit?(current_user)
+        flash[:alert] = 'User cannot edit name'
+        redirect_to(root_path)
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -189,10 +299,11 @@ class NamesController < ApplicationController
         Name.etymology_particles.map do |i|
           Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
         end.flatten
+
       params.require(:name)
         .permit(
           :name, :rank, :description, :notes, :syllabication, :ncbi_taxonomy,
-          *etymology_pars
+          :type_material, :type_accession, :etymology_text, *etymology_pars
         )
     end
 end

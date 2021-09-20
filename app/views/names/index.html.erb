@@ -1,23 +1,64 @@
-<h1>Names</h1>
-Sort by
-<% %w[date citations alphabetically].map do |sort| %>
-  <span class='text-muted'>·</span>
-  <%= sort == @sort ? sort : link_to(sort, names_path(sort: sort)) %>
-<% end %>
-
-<% if current_contributor? %>
-  | <%= link_to new_name_path do %>
-    <%= fa_icon 'plus-circle' %> Register names
+<h1>
+  <% if @submitted %>
+    Review submitted
+  <% else %>
+    Names
   <% end %>
-<% end %>
+</h1>
+<div class="container p-0">
+  <div class="row">
+    <div class="col-sm-9">
+      <b>Sort by</b>
+      <% %w[date citations alphabetically].map do |sort| %>
+        <span class='text-muted'>·</span>
+        <%=
+          sort == @sort ?
+            sort :
+            link_to(
+              sort,
+              @submitted ?
+                submitted_names_path(sort: sort, status: @status) :
+                names_path(sort: sort, status: @status)
+            )
+        %>
+      <% end %>
+
+      <br/>
+      <b>Status</b>
+      <% %w[public automated SeqCode ICNP valid].map do |status| %>
+        <span class="text-muted">·</span>
+        <%=
+          status == @status ?
+            status : link_to(status, names_path(status: status, sort: @sort))
+        %>
+      <% end %>
+    </div>
+    <div class="col-sm-3 text-right">
+      <% if current_contributor? %>
+        <%= link_to new_name_path do %>
+          Register name
+          <%= fa_icon 'plus-circle' %>
+        <% end %>
+      <% end %>
+
+      <br/>
+      <%= link_to(set_list_url) do %>
+        <% if list_preference == 'table' %>
+          See as cards
+          <%= fa_icon('th') %>
+        <% else %>
+          See as table
+          <%= fa_icon('list') %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
 <hr/>
 
-<%= pager @names %>
-<div class='card-columns'>
+<%= adaptable_list(set: @names) do |list| %>
   <% @names.each do |name| %>
-    <%= render name %>
+    <%= render(partial: name, locals: { list: list }) %>
   <% end %>
-</div>
-<%= pager @names %>
+<% end %>
 
-<br>

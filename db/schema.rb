@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_16_175717) do
+ActiveRecord::Schema.define(version: 2021_09_20_215620) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -88,6 +88,13 @@ ActiveRecord::Schema.define(version: 2021_07_16_175717) do
     t.text "notes"
     t.string "rank"
     t.integer "ncbi_taxonomy"
+    t.integer "status", default: 0
+    t.integer "created_by"
+    t.integer "validated_by"
+    t.datetime "validated_at"
+    t.text "etymology_text"
+    t.string "type_material"
+    t.text "type_accession"
     t.index ["name"], name: "index_names_on_name", unique: true
   end
 
@@ -172,6 +179,8 @@ ActiveRecord::Schema.define(version: 2021_07_16_175717) do
     t.boolean "admin", default: false
     t.boolean "contributor", default: false
     t.text "contributor_statement"
+    t.boolean "curator", default: false
+    t.text "curator_statement"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

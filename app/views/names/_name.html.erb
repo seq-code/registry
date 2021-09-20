@@ -1,29 +1,34 @@
-<div class='card'>
-  <%= link_to(name, class: 'card-header-link') do %>
-    <div class='card-header'>
-      <h3><%= name.abbr_name %></h3>
-    </div>
+<%= adaptable_entry(list, name.abbr_name, name) do |entry| %>
+  <%= adaptable_value(entry, 'Reported in') do %>
+    <% fc = name.publications.last %>
+    <% if fc %>
+      <%= link_to fc.short_citation, fc %>
+    <% else %>
+      <em>Unknown</em>
+    <% end %>
+    <% if name.publications.count > 2 %>
+      and <%= name.publications.count - 1 %> other publications
+    <% elsif name.publications.count == 2 %>
+      <% lc = name.publications.first %>
+      and <%= link_to lc.short_citation, lc %>
+    <% end %>
   <% end %>
-  <div class='card-body'>
-    <dl>
-      <dt>Reported in</dt>
-      <dd>
-        <% fc = name.publications.last %>
-        <% if fc %>
-          <%= link_to fc.short_citation, fc %>
-        <% else %>
-          <em>Unknown</em>
-        <% end %>
-        <% if name.publications.count > 2 %>
-          and <%= name.publications.count - 1 %> other publications
-        <% elsif name.publications.count == 2 %>
-          <% lc = name.publications.first %>
-          and <%= link_to lc.short_citation, lc %>
-        <% end %>
-      </dd>
-    </dl>
-  </div>
-  <div class='card-footer text-right bg-dark-ce'>
+  <%= adaptable_value(entry, 'Status') do %>
+    <%= name.status_name %>
+    <%= fa_icon('question-circle',
+                title: name.status_help, class: 'hover-help') %>
+  <% end %>
+  <%= adaptable_value(entry, 'Registered by') do %>
+    <% if name.created_by %>
+      <%= link_to(name.created_by.username, name.created_by) %>
+    <% else %>
+      Excubia Bot
+    <% end %>
+    <u class="hover-help"
+       title="<%= name.created_at %>"
+       ><%= time_ago_in_words(name.created_at) %> ago</u>
+  <% end %>
+  <% entry.footer do %>
     <ul class='list-inline' style='margin: 0;'>
       <li class='list-inline-item'>
         <%= link_to name.ncbi_search_url, title: 'Search genomes', target: '_blank' do %>
@@ -36,5 +41,6 @@
         <% end %>
       </li>
     </ul>
-  </div>
-</div>
+  <% end %>
+<% end %>
+

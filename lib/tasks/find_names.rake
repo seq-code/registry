@@ -16,7 +16,7 @@ namespace :names do
       associated taxon taxa revised be the from infecting genes? particles?
       spp? species gen genus genera fam family families
       cla class classes ord orders? phylum phyla instead of preferred provided
-      list uncovers rhetoricae predominate[ds]? detection have
+      list uncovers rhetoricae predominate[ds]? detection have genomes?
     ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|

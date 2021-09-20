@@ -6,9 +6,14 @@ class Name < ApplicationRecord
   belongs_to :corrigendum_by, optional: true,
     class_name: 'Publication', foreign_key: 'corrigendum_by'
   belongs_to :parent, optional: true, class_name: 'Name'
+  belongs_to :created_by, optional: true,
+    class_name: 'User', foreign_key: 'created_by'
+  belongs_to :validated_by, optional: true,
+    class_name: 'User', foreign_key: 'validated_by'
 
   has_rich_text :description
   has_rich_text :notes
+  has_rich_text :etymology_text
   
   validates :name, presence: true, uniqueness: true
   validates :syllabication,
@@ -27,7 +32,70 @@ class Name < ApplicationRecord
     end
 
     def ranks
-      %w[phylum class order family genus species]
+      %w[domain phylum class order family genus species]
+    end
+
+    def status_hash
+      {
+        0 => {
+          symbol: :auto, name: 'Automated discovery',
+          public: true, valid: false,
+          help: <<~TXT
+            This name was automatically created by the system and has not
+            undergone expert review
+          TXT
+        },
+        5 => {
+          symbol: :draft, name: 'Draft',
+          public: false, valid: false,
+          help: <<~TXT
+            This name was created by an author or other registered user,
+            and has not undergone expert review
+          TXT
+        },
+        10 => {
+          symbol: :submit, name: 'Submitted',
+          public: false, valid: false,
+          help: <<~TXT
+            This name has been submitted for review by the author or other
+            registered user and cannot be modified until expert review takes
+            place
+          TXT
+        },
+        15 => {
+          symbol: :seqcode, name: 'Valid (SeqCode)',
+          public: true, valid: true,
+          help: <<~TXT
+            This name has been validly published under the rules of the SeqCode
+            and has priority in the scientific record
+          TXT
+        },
+        20 => {
+          symbol: :icnp, name: 'Valid (ICNP)',
+          public: true, valid: true,
+          help: <<~TXT
+            This name has been validly published under the rules of the ICNP
+            and has priority in the scientific record
+          TXT
+        }
+      }
+    end
+
+    def public_status
+      status_hash.select { |_, v| v[:public] }.keys
+    end
+
+    def valid_status
+      status_hash.select { |_, v| v[:valid] }.keys
+    end
+
+    def type_material_hash
+      {
+        name: { name: 'Name', sp: false },
+        nuccore: { name: 'INSDC Nucleotide', sp: true },
+        assembly: { name: 'NCBI Assembly', sp: true },
+        other: { name: 'Other', sp: true }
+      }
     end
   end
 
@@ -39,8 +107,10 @@ class Name < ApplicationRecord
     name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
-    else
+    elsif validated?
       "<i>#{name}</i>".html_safe
+    else
+      "&#8220;#{name}&#8221;".html_safe
     end
   end
 
@@ -48,8 +118,10 @@ class Name < ApplicationRecord
     name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
-    else
+    elsif validated?
       "<i>#{name}</i>".html_safe
+    else
+      "&#8220;#{name}&#8221;".html_safe
     end
   end
 
@@ -69,6 +141,30 @@ class Name < ApplicationRecord
     y.html_safe
   end
 
+  def status_hash
+    self.class.status_hash[status]
+  end
+
+  def status_name
+    status_hash[:name]
+  end
+
+  def status_help
+    status_hash[:help].gsub(/\n/, ' ')
+  end
+
+  def status_symbol
+    status_hash[:symbol]
+  end
+
+  def validated?
+    status_hash[:valid]
+  end
+
+  def public?
+    status_hash[:public]
+  end
+
   def last_epithet
     name.gsub(/.* /, '')
   end
@@ -86,12 +182,19 @@ class Name < ApplicationRecord
   end
 
   def etymology?
+    return true if etymology_text?
+
     Name.etymology_particles.any? do |i|
       Name.etymology_fields.any? { |j| etymology(i, j) }
     end
   end
 
   def full_etymology(html = false)
+    if etymology_text?
+      y = etymology_text.body
+      return(html ? y : y.to_plain_text)
+    end
+
     y = Name.etymology_particles.map do |component|
       partial_etymology(component, html)
     end.compact.join('; ')
@@ -141,7 +244,11 @@ class Name < ApplicationRecord
 
   def inferred_rank
     @inferred_rank ||=
-      if name.sub(/^Candidatus /, '') =~ / /
+      if rank
+        rank
+      elsif %w[Archaea Bacteria Eukarya].include?(name)
+        'domain'
+      elsif name.sub(/^Candidatus /, '') =~ / /
         'species'
       elsif name =~ /aceae$/
         'family'
@@ -174,5 +281,61 @@ class Name < ApplicationRecord
     return unless ncbi_taxonomy?
 
     'https://www.ncbi.nlm.nih.gov/datasets/genomes/?txid=%i' % ncbi_taxonomy
+  end
+
+  def type?
+    type_material? && type_accession?
+  end
+
+  def type_is_name?
+    type? && type_material == 'name'
+  end
+
+  def type_link
+    @type_link ||=
+      case type_material
+      when 'assembly', 'nuccore'
+        "https://www.ncbi.nlm.nih.gov/#{type_material}/#{type_accession}"
+      end
+  end
+
+  def type_name
+    if type_is_name?
+      @type_name ||= Name.where(id: type_accession).first
+    end
+  end
+
+  def type_material_name
+    self.class.type_material_hash[type_material.to_sym][:name] if type?
+  end
+
+  def type_text
+    if type?
+      @type_text ||= "#{type_material_name}: #{type_accession}"
+    end
+  end
+
+  def possible_type_materials
+    self.class.type_material_hash.select do |_, v|
+      v[:sp] == (inferred_rank == 'species')
+    end
+  end
+
+  def user?(user)
+    created_by == user
+  end
+
+  def can_see?(user)
+    return true if self.public?
+
+    (!user.nil?) && (user.curator? || user?(user))
+  end
+
+  def can_edit?(user)
+    return false if user.nil?
+    return false if status >= 15
+    return true if user.curator?
+    return true if status == 5 && user?(user)
+    false
   end
 end

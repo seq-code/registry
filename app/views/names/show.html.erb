@@ -5,30 +5,11 @@
 <%= render partial: 'nomenclature' %>
 <%= render partial: 'taxonomy' %>
 <%= render partial: 'metadata' %>
+<%= render partial: 'contributor' %>
+<%= render partial: 'curator' %>
 
-<% if current_contributor? %>
-  <dl class='main-section name-details'>
-    <h2>Contributor Actions</h2>
-    <dd class="pt-2">
-      <%= link_to @name, class: 'btn btn-sm btn-secondary',
-            method: :delete, data: {confirm: 'Are you sure?'} do %>
-        <%= fa_icon 'minus-circle' %> Remove name
-      <% end %>
-      <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
-        <%= fa_icon 'edit' %> Edit spelling
-      <% end %>
-      <%= link_to(
-            edit_name_links_url(@name),
-            class: 'btn btn-secondary btn-sm'
-          ) do %>
-        <%= fa_icon 'edit' %> Edit outside links
-      <% end %>
-    </dd>
-  </dl>
-<% end %>
+<hr/><br/><br/>
 
-<hr/>
-<br/><br/>
 <h2>
   Publications
   <small class='text-muted'>(<%= @publication_names.count %>)</small>
@@ -40,7 +21,7 @@
       <th>Citation</th>
       <th>Title</th>
       <th></th>
-      <% if current_contributor? %>
+      <% if @name.can_edit?(current_user) %>
         <th>Actions</th>
       <% end %>
     </tr>
@@ -63,7 +44,7 @@
           <% end %>
         </td>
         <td>
-          <% if current_contributor? %>
+          <% if @name.can_edit?(current_user) %>
             <% unless publication_name.proposes? %>
               <%= link_to name_proposed_by_url(@name, publication_id: publication),
                     class: 'badge badge-pill badge-info',

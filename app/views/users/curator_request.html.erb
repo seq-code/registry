@@ -1,17 +1,17 @@
 <br/>
-<h2>Apply for contributor status</h2>
+<h2>Apply for curator status</h2>
 <p class=lead>
-  Please state below the reasons for your application as a contributor to
+  Please state below the reasons for your application as a curator to
   <b>Candidatus excubia</b> and any additional information and/or relevant
   qualifications. Our administrators will evaluate your application and grant or
   reject the status change promptly.
 </p>
 
-<%= simple_form_for(current_user, url: contributor_apply_path, html: { method: :post }) do |f| %>
+<%= simple_form_for(current_user, url: curator_apply_path, html: { method: :post }) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input(:contributor_statement, required: true, autofocus: true) %>
+    <%= f.input(:curator_statement, required: true, autofocus: true) %>
   </div>
 
   <div class="form-actions">

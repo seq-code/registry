@@ -1,0 +1,25 @@
+<% if current_curator? %>
+  <dl class="main-section name-details">
+    <h2>Curator Actions</h2>
+    <dd class="pt-2">
+      <% if @name.status <= 10 %>
+        <%= link_to(
+              validate_name_url(@name),
+              method: :post,
+              class: 'btn btn-primary btn-sm',
+              data: { confirm: 'Are you sure? This action cannot be undone' }
+            ) do %>
+          <%= fa_icon('certificate') %> Validate under SeqCode
+        <% end %>
+        <%= link_to(
+              validate_name_url(@name, code: :icnp),
+              method: :post,
+              class: 'btn btn-primary btn-sm',
+              data: { confirm: 'Are you sure? This action cannot be undone' }
+            ) do %>
+          <%= fa_icon('stamp') %> Report valid under ICNP
+        <% end %>
+      <% end %>
+    </dd>
+  </dl>
+<% end %>

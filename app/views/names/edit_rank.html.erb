@@ -3,7 +3,7 @@
 
 <% @name.rank ||= @name.inferred_rank %>
 <%= simple_form_for(@name) do |f| %>
-  <%= f.input(:rank, collection: Name.ranks, ) %>
+  <%= f.input(:rank, collection: Name.ranks) %>
 
   <br/>
   <%= f.button :submit, 'Submit' %>

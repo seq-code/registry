@@ -1,17 +1,25 @@
 <h1>Actions</h1>
 <hr/>
-<ul class='nav flex-column'>
-  <li class='nav-item'>
-    <%= link_to edit_user_registration_path, class: 'nav-link' do %>
+<ul class="nav flex-column">
+  <li class="nav-item">
+    <%= link_to(edit_user_registration_path, class: 'nav-link') do %>
       <%= fa_icon 'user-edit' %>
       Edit profile information
     <% end %>
   </li>
-  <% unless current_user.contributor? %>
-    <li class='nav-item'>
-      <%= link_to contributor_request_path, class: 'nav-link ' do %>
-        <%= fa_icon 'user-astronaut' %>
+  <% unless current_contributor? %>
+    <li class="nav-item">
+      <%= link_to(contributor_request_path, class: 'nav-link') do %>
+        <%= fa_icon('user-check') %>
         Request contributor status
+      <% end %>
+    </li>
+  <% end %>
+  <% unless current_curator? %>
+    <li class="nav-item">
+      <%= link_to(curator_request_path, class: 'nav-link') do %>
+        <%= fa_icon('user-astronaut') %>
+        Request curator status
       <% end %>
     </li>
   <% end %>

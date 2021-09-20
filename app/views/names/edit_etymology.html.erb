@@ -3,7 +3,7 @@
 <hr/>
 
 <%= simple_form_for(@name) do |f| %>
-  <%= f.input :syllabication, required: true, autofocus: true %>
+  <%= f.input(:syllabication, required: false, autofocus: true) %>
 
   <br/>
   <table class='table table-hover table-responsive-lg'>
@@ -40,6 +40,17 @@
     </tbody>
   </table>
   <br/>
+
+  <hr/>
+  <%=
+    f.input(
+      :etymology_text,
+      as: :rich_text_area,
+      label: 'Alternatively, provide a formatted etymology text (optional)'
+    )
+  %>
+  <br/>
+
   <%= f.button :submit, 'Submit' %>
   <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
   <br/><br/>
