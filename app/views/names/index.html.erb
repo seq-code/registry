@@ -42,15 +42,7 @@
       <% end %>
 
       <br/>
-      <%= link_to(set_list_url) do %>
-        <% if list_preference == 'table' %>
-          See as cards
-          <%= fa_icon('th') %>
-        <% else %>
-          See as table
-          <%= fa_icon('list') %>
-        <% end %>
-      <% end %>
+      <%= list_type_selector %>
     </div>
   </div>
 </div>

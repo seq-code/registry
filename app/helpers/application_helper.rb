@@ -11,6 +11,18 @@ module ApplicationHelper
     )
   end
 
+  def list_type_selector
+    link_to(set_list_url) do
+      if list_preference.to_s == 'table'
+        content_tag(:span, 'See as cards ') +
+          fa_icon('th')
+      else
+        content_tag(:span, 'See as table ') +
+          fa_icon('list')
+      end
+    end
+  end
+
   def current_contributor?
     current_user.try :contributor?
   end
