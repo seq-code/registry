@@ -51,7 +51,7 @@
       was last modified
       <u class="hover-help"
          title="<%= @name.updated_at %>"
-         ><%= time_ago_in_words(@name.updated_at) %> ago</u>.
+         ><%= time_ago_in_words(@name.updated_at) %> ago</u>
     <% end %>
   </dd>
 
@@ -70,7 +70,7 @@
       <%= link_to(@name.validated_by.username, @name.validated_by) %>
       <u class="hover-help"
          title="<%= @name.validated_at %>"
-         ><%= time_ago_in_words(@name.validated_at) %> ago</u>.
+         ><%= time_ago_in_words(@name.validated_at) %> ago</u>
     </dd>
   <% end %>
 </dl>

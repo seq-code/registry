@@ -1,0 +1,17 @@
+<%= adaptable_entry(list, user.username, user) do |entry| %>
+  <%= adaptable_value(entry, 'Email') do %>
+    <%= user.email %>
+  <% end %>
+  <%= adaptable_value(entry, 'Affiliation') do %>
+    <%= user.affiliation %>
+  <% end %>
+  <%= adaptable_value(entry, 'Roles') do %>
+    <%= user.roles.to_sentence %>
+  <% end %>
+  <%= adaptable_value(entry, 'Registered') do %>
+    <u class="hover-help"
+       title="<%= user.created_at %>"
+       ><%= time_ago_in_words(user.created_at) %> ago</u>
+  <% end %>
+<% end %>
+

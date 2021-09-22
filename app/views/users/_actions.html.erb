@@ -23,11 +23,13 @@
       <% end %>
     </li>
   <% end %>
-  <li class='nav-item'>
-    <%= link_to user_registration_path, data: { confirm: 'Are you sure?' },
-          method: :delete, class: 'nav-link ' do %>
-      <%= fa_icon 'user-minus' %>
-      Remove my account
-    <% end %>
-  </li>
+  <% if false # Do not include this option for now %>
+    <li class='nav-item'>
+      <%= link_to user_registration_path, data: { confirm: 'Are you sure?' },
+            method: :delete, class: 'nav-link ' do %>
+        <%= fa_icon 'user-minus' %>
+        Remove my account
+      <% end %>
+    </li>
+  <% end %>
 </ul>

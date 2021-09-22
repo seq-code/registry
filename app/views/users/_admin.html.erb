@@ -5,9 +5,9 @@
 <% if @contributor_applications.empty? %>
   None pending
 <% else %>
-  <ul>
+  <ul class="nav flex-column">
     <% @contributor_applications.each do |u| %>
-      <li>
+      <li class="nav-item">
         <b><%= link_to u.username, u %></b>:
         <%= u.contributor_statement %>
         <br/>
@@ -31,9 +31,9 @@
 <% if @curator_applications.empty? %>
   None pending
 <% else %>
-  <ul>
+  <ul class="nav flex-column">
     <% @curator_applications.each do |u| %>
-      <li>
+      <li class="nav-item">
         <b><%= link_to u.username, u %></b>:
         <%= u.curator_statement %>
         <br/>
@@ -51,3 +51,14 @@
     <% end %>
   </ul>
 <% end %>
+
+<hr/>
+<ul class="nav flex-column">
+  <li class="nav-item">
+    <%= link_to(users_path) do %>
+      <%= fa_icon('list-alt') %>
+      All registered users
+    <% end %>
+  </li>
+</ul>
+

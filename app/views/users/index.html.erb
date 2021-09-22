@@ -1,0 +1,24 @@
+<h1>Users</h1>
+<div class="container p-0">
+  <div class="row">
+    <div class="col-sm-12 text-right">
+      <%= link_to(set_list_url) do %>
+        <% if list_preference == 'table' %>
+          See as cards
+          <%= fa_icon('th') %>
+        <% else %>
+          See as table
+          <%= fa_icon('list') %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<hr/>
+
+<%= adaptable_list(set: @users) do |list| %>
+  <% @users.each do |user| %>
+    <%= render(partial: user, locals: { list: list }) %>
+  <% end %>
+<% end %>
+

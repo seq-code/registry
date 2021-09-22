@@ -4,9 +4,11 @@ module ApplicationHelper
   end
 
   def pager(object)
-    will_paginate object,
+    will_paginate(
+      object,
       renderer: WillPaginate::ActionView::BootstrapLinkRenderer,
       list_classes: %w(pagination justify-content-center)
+    )
   end
 
   def current_contributor?

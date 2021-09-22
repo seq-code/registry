@@ -19,19 +19,45 @@
 </div>
 
 <% if user_signed_in? && (current_contributor? || current_curator?) %>
-  <div class="text-center bg-light rounded-lg border my-5 mx-3 p-5">
-    <h1>User Actions</h1>
-    <hr/>
+  <div class="text-center bg-light rounded-lg border my-5 mx-3 p-5 ">
+    <div class="row">
+      <div class="col-md-3 mb-2 text-right">
+        <h3>User</h3>
+      </div>
+      <div class="col-md-9 mb-2 text-left">
+        <%= link_to(dashboard_path, class: 'btn btn-secondary') do %>
+          <%= fa_icon('tachometer-alt') %> User Dashboard
+        <% end %>
+        <%= link_to(destroy_user_session_path,
+                    method: :delete, class: 'btn btn-secondary') do %>
+          <%= fa_icon('sign-out-alt') %> Logout
+        <% end %>
+      </div>
+    </div>
 
     <% if current_contributor? %>
-      <%= link_to('My names', user_names_path, class: 'btn btn-info') %>
-      <%= link_to('Register a name', new_name_path, class: 'btn btn-info') %>
-      <%= link_to('Register names in batch', '#', class: 'btn btn-info') %>
+      <div class="row">
+        <div class="col-md-3 mb-2 text-right">
+          <h3>Contributor</h3>
+        </div>
+        <div class="col-md-9 mb-2 text-left">
+          <%= link_to('My names', user_names_path, class: 'btn btn-info') %>
+          <%= link_to('Register a name', new_name_path, class: 'btn btn-info') %>
+          <%= link_to('Register names in batch', new_name_batch_path, class: 'btn btn-info') %>
+        </div>
+      </div>
     <% end %>
 
     <% if current_curator? %>
-      <%= link_to('Review submitted', submitted_names_path, class: 'btn btn-primary') %>
-      <%= link_to('Unknown proposals', unknown_proposal_path, class: 'btn btn-primary') %>
+      <div class="row">
+        <div class="col-md-3 mb-2 text-right">
+          <h3>Curator</h3>
+        </div>
+        <div class="col-md-9 mb-2 text-left">
+          <%= link_to('Review submitted', submitted_names_path, class: 'btn btn-primary') %>
+          <%= link_to('Unknown proposals', unknown_proposal_path, class: 'btn btn-primary') %>
+        </div>
+      </div>
     <% end %>
   </div>
 <% end %>

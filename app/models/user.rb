@@ -21,9 +21,9 @@ class User < ApplicationRecord
 
   def roles
     o = ['User']
-    o << 'Admin' if admin?
     o << 'Contributor' if contributor?
     o << 'Curator' if curator?
+    o << 'Admin' if admin?
     o
   end
 

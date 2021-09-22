@@ -1,11 +1,11 @@
 <% if user_signed_in? %>
-  <%= link_to dashboard_path, title: 'Dashboard' do %>
-    <%= fa_icon 'cog' %><% end %>&nbsp;
-  <%= link_to destroy_user_session_path, method: :delete, title: 'Logout' do %>
-    <%= fa_icon 'sign-out-alt' %><% end %>
+  <%= link_to(dashboard_path, title: 'Dashboard') do %>
+    <%= fa_icon('tachometer-alt') %><% end %>&nbsp;
+  <%= link_to(destroy_user_session_path, method: :delete, title: 'Logout') do %>
+    <%= fa_icon('sign-out-alt') %><% end %>
 <% else %>
-  <%= link_to new_user_session_path, title: 'Login' do %>
-    <%= fa_icon 'user-circle' %><% end %>&nbsp;
-  <%= link_to new_user_registration_path, title: 'Register' do %>
-    <%= fa_icon 'user-plus' %><% end %>
+  <%= link_to(new_user_session_path, title: 'Login') do %>
+    <%= fa_icon('user-circle') %><% end %>&nbsp;
+  <%= link_to(new_user_registration_path, title: 'Register') do %>
+    <%= fa_icon('user-plus') %><% end %>
 <% end %>

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'users/registrations' }
   get 'set/list' => 'application#set_list', as: :set_list
-  get 'sysusers' => 'users#index(.:format)', as: :users
+  get 'sysusers(.:format)' => 'users#index', as: :users
   get 'sysusers/:username(.:format)' => 'users#show', as: :user
   get 'dashboard' => 'users#dashboard', as: :dashboard
   get 'contributors' => 'users#contributor_request', as: :contributor_request
@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'user-names' => 'names#user_names', as: :user_names
   root to: 'application#main'
   get 'search' => 'application#search', as: :search
+  get 'names/batch' => 'names#batch', as: :new_name_batch
   resources :names
   resources :authors
   resources :publication_names

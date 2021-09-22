@@ -1,16 +1,17 @@
-<h1>User: <%= @user.username %></h1>
+<h1>User details</h1>
 <hr/>
 
-<dl class='main-section'>
-  <dt>Email</dt>
-  <dd><%= @user.email %></dd>
-  <dt>Affiliation</dt>
-  <dd><%= @user.affiliation %></dd>
-  <dt>Roles</dt>
-  <dd><%= @user.roles.to_sentence %></dd>
-  <dt>Contributor statement</dt>
-  <dd><%= @user.contributor_statement %></dd>
-  <dt>Registered</dt>
-  <dd><%= @user.created_at.strftime('%B %e, %Y') %></dd>
-</dl>
+<%= adaptable_list(set: [@user].paginate, type: :cards) do |list| %>
+  <%= render(partial: @user, locals: { list: list }) %>
+<% end %>
+
+<% if @user.contributor_statement? %>
+  <h2>Contributor statement</h2>
+  <p><%= @user.contributor_statement %></p>
+<% end %>
+
+<% if @user.curator_statement? %>
+  <h2>Curator statement</h2>
+  <p><%= @user.curator_statement %></p>
+<% end %>
 

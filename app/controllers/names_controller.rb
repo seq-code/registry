@@ -17,7 +17,7 @@ class NamesController < ApplicationController
   )
   before_action(
     :authenticate_contributor!,
-    only: %i[new create]
+    only: %i[new create batch]
   )
   before_action(
     :authenticate_curator!,
@@ -96,6 +96,10 @@ class NamesController < ApplicationController
   # GET /names/new
   def new
     @name = Name.new
+  end
+
+  # GET /names/batch
+  def batch
   end
 
   # GET /names/1/edit

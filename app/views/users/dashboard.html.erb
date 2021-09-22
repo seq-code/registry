@@ -17,17 +17,17 @@
         </div>
       </div>
     <% end %>
-    <% if current_contributor? %>
-      <div class="col-12">
-        <div class="my-3 p-5">
-          <%= render(partial: 'contributor') %>
-        </div>
-      </div>
-    <% end %>
     <% if current_curator? %>
       <div class="col-12">
         <div class="my-3 p-5">
           <%= render(partial: 'curator') %>
+        </div>
+      </div>
+    <% end %>
+    <% if current_contributor? %>
+      <div class="col-12">
+        <div class="my-3 p-5">
+          <%= render(partial: 'contributor') %>
         </div>
       </div>
     <% end %>

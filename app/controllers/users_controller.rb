@@ -2,7 +2,9 @@ class UsersController < ApplicationController
   before_action(:authenticate_user!)
   before_action(
     :authenticate_admin!,
-    only: %i[index show contributor_grant contributor_deny curator_grant curator_deny]
+    only: %i[
+      index show contributor_grant contributor_deny curator_grant curator_deny
+    ]
   )
   before_action(
     :set_user,
@@ -10,7 +12,7 @@ class UsersController < ApplicationController
   )
 
   def index
-    @users = User.all
+    @users = User.all.paginate(page: params[:page], per_page: 30)
   end
 
   def show

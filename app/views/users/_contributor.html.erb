@@ -2,15 +2,27 @@
 <hr/>
 <ul class="nav flex-column">
   <li class="nav-item">
-    <%= link_to(new_publication_path) do %>
-      <%= fa_icon('plus-circle') %>
-      Add publications
+    <%= link_to(user_names_path) do %>
+      <%= fa_icon('list-alt') %>
+      My names
     <% end %>
   </li>
   <li class="nav-item">
     <%= link_to(new_name_path) do %>
       <%= fa_icon('plus-circle') %>
-      Add names
+      Register a name
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to(new_name_batch_path) do %>
+      <%= fa_icon('plus-circle') %>
+      Register names in batch
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to(new_publication_path) do %>
+      <%= fa_icon('plus-circle') %>
+      Register publication
     <% end %>
   </li>
 </ul>
