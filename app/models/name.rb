@@ -8,6 +8,8 @@ class Name < ApplicationRecord
   belongs_to :parent, optional: true, class_name: 'Name'
   belongs_to :created_by, optional: true,
     class_name: 'User', foreign_key: 'created_by'
+  belongs_to :submitted_by, optional: true,
+    class_name: 'User', foreign_key: 'submitted_by'
   belongs_to :validated_by, optional: true,
     class_name: 'User', foreign_key: 'validated_by'
 
@@ -337,5 +339,10 @@ class Name < ApplicationRecord
     return true if user.curator?
     return true if status == 5 && user?(user)
     false
+  end
+
+  def can_claim?(user)
+    return false unless user.contributor? && created_by.nil?
+    status <= 10
   end
 end

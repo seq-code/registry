@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_20_215620) do
+ActiveRecord::Schema.define(version: 2021_09_22_160522) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -95,6 +95,8 @@ ActiveRecord::Schema.define(version: 2021_09_20_215620) do
     t.text "etymology_text"
     t.string "type_material"
     t.text "type_accession"
+    t.integer "submitted_by"
+    t.datetime "submitted_at"
     t.index ["name"], name: "index_names_on_name", unique: true
   end
 

@@ -4,7 +4,7 @@ class NamesController < ApplicationController
     only: %i[
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
-      link_parent link_parent_commit submit return validate
+      link_parent link_parent_commit submit return validate claim
     ]
   )
   before_action(
@@ -17,7 +17,7 @@ class NamesController < ApplicationController
   )
   before_action(
     :authenticate_contributor!,
-    only: %i[new create batch]
+    only: %i[new create batch claim]
   )
   before_action(
     :authenticate_curator!,
@@ -240,9 +240,10 @@ class NamesController < ApplicationController
 
   # POST /names/1/submit
   def submit
+    par = { status: 10, submitted_at: Time.now, submitted_by: current_user }
     if @name.status >= 10
       flash[:alert]  = 'Name status is incompatible with submission'
-    elsif @name.update(status: 10)
+    elsif @name.update(par)
       flash[:notice] = 'Name submitted, awaiting expert review'
     else
       flash[:alert]  = 'An unexpected error occurred'
@@ -252,9 +253,10 @@ class NamesController < ApplicationController
 
   # POST /names/1/return
   def return
+    par = { status: 5 }
     if @name.status < 10
       flash[:alert]  = 'Name status is incompatible with return'
-    elsif @name.update(status: 5)
+    elsif @name.update(par)
       flash[:notice] = 'Name returned to author'
     else
       flash[:alert]  = 'An unexpected error occurred'
@@ -276,6 +278,20 @@ class NamesController < ApplicationController
       flash[:alert] = 'An unexpected error occurred'
     end
     redirect_to(@name)
+  end
+
+  # POST /names/1/claim
+  def claim
+    par = { created_by: current_user }
+    par[:status] = 5 if @name.status == 0
+    if !@name.can_claim?(current_user)
+      flash[:alert]  = 'You cannot claim this name'
+    elsif @name.update(par)
+      flash[:notice] = 'Name successfully claimed'
+    else
+      flash[:alert]  = 'An unexpected error occurred'
+    end
+    redirect_to @name
   end
 
   private

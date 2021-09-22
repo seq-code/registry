@@ -20,6 +20,18 @@
           <%= fa_icon('stamp') %> Report valid under ICNP
         <% end %>
       <% end %>
+      <% if @name.status == 10 %>
+        <%= link_to(
+              return_name_url(@name),
+              method: :post,
+              class: 'btn btn-primary btn-sm',
+              data: {
+                confirm: 'Are you sure? The author will regain edit access'
+              }
+            ) do %>
+          <%= fa_icon('undo-alt') %> Return to submitter
+        <% end %>
+      <% end %>
     </dd>
   </dl>
 <% end %>
