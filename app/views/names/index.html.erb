@@ -1,6 +1,8 @@
 <h1>
   <% if @submitted %>
-    Review submitted
+    Review Submitted
+  <% elsif @drafts %>
+    Review Drafts
   <% else %>
     Names
   <% end %>
@@ -18,6 +20,8 @@
               sort,
               @submitted ?
                 submitted_names_path(sort: sort, status: @status) :
+                @drafts ?
+                draft_names_path(sort: sort, status: @status) :
                 names_path(sort: sort, status: @status)
             )
         %>

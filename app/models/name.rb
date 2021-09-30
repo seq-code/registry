@@ -123,7 +123,7 @@ class Name < ApplicationRecord
         type: :identical_base_name,
         message: 'Base name already exists with different qualifiers',
         link_text: identical_base_name.abbr_name,
-        link_to: [identical_base_name],
+        link_to: [:name_url, identical_base_name],
         link_public: true
       }
     end

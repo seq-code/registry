@@ -21,7 +21,7 @@ class NamesController < ApplicationController
   )
   before_action(
     :authenticate_curator!,
-    only: %i[check_ranks unknown_proposal submitted return validate]
+    only: %i[check_ranks unknown_proposal submitted drafts return validate]
   )
 
   # GET /autocomplete_names.json?q=Abc
@@ -33,6 +33,7 @@ class NamesController < ApplicationController
   # GET /names.json
   def index(opts = {})
     @submitted ||= false
+    @drafts    ||= false
     @sort      ||= params[:sort] || 'date'
     @status    ||= params[:status] || 'public'
 
@@ -82,6 +83,14 @@ class NamesController < ApplicationController
     render(:index)
   end
 
+  # GET /drafts
+  def drafts
+    @drafts = true
+    @status = 'draft'
+    index(status: 5)
+    render(:index)
+  end
+
   # GET /names/1
   # GET /names/1.json
   def show
@@ -120,6 +129,10 @@ class NamesController < ApplicationController
 
   # GET /names/1/edit_type
   def edit_type
+    unless @name.rank?
+      flash[:alert] = 'You must define the rank before the type material'
+      redirect_to(@name)
+    end
   end
 
   # POST /names

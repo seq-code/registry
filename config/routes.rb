@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   get 'check_ranks' => 'names#check_ranks', as: :check_ranks
   get 'unknown_proposal' => 'names#unknown_proposal', as: :unknown_proposal
   get 'submitted' => 'names#submitted', as: :submitted_names
+  get 'drafts' => 'names#drafts', as: :draft_names
   get 'user-names' => 'names#user_names', as: :user_names
   root to: 'application#main'
   get 'search' => 'application#search', as: :search
