@@ -108,6 +108,7 @@ class Name < ApplicationRecord
     return @qc_warnings unless @qc_warnings.nil?
 
     @qc_warnings = []
+    return @qc_warnings if inferred_rank == 'domain'
 
     unless rank?
       @qc_warnings << {
@@ -234,7 +235,7 @@ class Name < ApplicationRecord
     name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
-    elsif validated?
+    elsif validated? || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe
     else
       "&#8220;#{name}&#8221;".html_safe
