@@ -230,7 +230,17 @@ class NamesController < ApplicationController
   # POST /names/1/link_parent
   def link_parent_commit
     parent = Name.find_by(name: params[:name][:parent])
-    if @name.update(parent: parent)
+    if parent.nil?
+      parent = Name.new(name: params[:name][:parent])
+      parent.status = 5
+      parent.created_by = current_user
+      unless parent.save
+        flash[:alert] = 'Parent name could not be registered'
+        parent = nil
+      end
+    end
+
+    if !parent.nil? && @name.update(parent: parent)
       flash[:notice] = 'Parent linked to the name'
       redirect_to @name
     else

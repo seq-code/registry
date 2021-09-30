@@ -29,6 +29,7 @@ class PublicationsController < ApplicationController
   # GET /publications/new
   def new
     @publication = Publication.new
+    @name = Name.find(params[:link_name]) if params[:link_name]
   end
 
   # GET /publications/1/edit
@@ -39,9 +40,15 @@ class PublicationsController < ApplicationController
   def create
     @publication = Publication.by_doi(params['publication']['doi'])
     if @publication.new_record?
-      render 'new'
+      render('new')
     else
-      redirect_to @publication
+      if params[:link_name] && params[:link_name][:id]
+        @name = Name.find(params[:link_name][:id])
+        par = { publication: @publication, name: @name }
+        PublicationName.new(par).save if PublicationName.where(par).empty?
+      end
+
+      redirect_to(@publication)
     end
   end
 

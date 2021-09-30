@@ -34,7 +34,7 @@ class Name < ApplicationRecord
     end
 
     def ranks
-      %w[domain phylum class order family genus species]
+      %w[domain phylum class order family genus species subspecies]
     end
 
     def status_hash
@@ -83,6 +83,8 @@ class Name < ApplicationRecord
       }
     end
 
+    # --- STATUS ---
+
     def public_status
       status_hash.select { |_, v| v[:public] }.keys
     end
@@ -101,8 +103,131 @@ class Name < ApplicationRecord
     end
   end
 
+  # --- QUALITY CHECKS ---
+  def qc_warnings
+    return @qc_warnings unless @qc_warnings.nil?
+
+    @qc_warnings = []
+
+    unless rank?
+      @qc_warnings << {
+        type: :missing_rank,
+        message: 'The taxon has not been assigned a rank',
+        link_text: 'Define rank',
+        link_to: [:edit_name_rank_url, self]
+      }
+    end
+
+    unless identical_base_name.nil?
+      @qc_warnings << {
+        type: :identical_base_name,
+        message: 'Base name already exists with different qualifiers',
+        link_text: identical_base_name.abbr_name,
+        link_to: [identical_base_name],
+        link_public: true
+      }
+    end
+
+    unless description?
+      @qc_warnings << {
+        type: :missing_description,
+        message: 'The name has no registered description',
+        link_text: 'Edit description',
+        link_to: [:edit_name_url, self]
+      }
+    end
+
+    if proposed_by.nil?
+      @qc_warnings << {
+        type: :missing_proposal,
+        message: 'The publication proposing this name has not been identified',
+        link_text: 'Register publication',
+        link_to: [:new_publication_url, { link_name: id }]
+      }
+    end
+
+    unless correct_suffix?
+      @qc_warnings << {
+        type: :incorrect_suffix,
+        message: 'The ending of the name is incompatible with the rank of ' +
+                 rank,
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self]
+      }
+    end
+
+    unless type?
+      @qc_warnings << {
+        type: :missing_type,
+        message: 'The name is missing a type definition',
+        link_text: 'Edit type',
+        link_to: [:edit_name_type_url, self]
+      }
+    end
+
+    unless !rank? || top_rank? || !parent.nil?
+      @qc_warnings << {
+        type: :missing_parent,
+        message: 'The taxon has not been assigned a higher classification',
+        link_text: 'Link parent',
+        link_to: [:name_link_parent_url, self]
+      }
+    end
+
+    unless consistent_parent_rank?
+      @qc_warnings << {
+        type: :inconsistent_parent_rank,
+        message: "The parent rank (#{parent.rank}) is inconsistent " +
+                 "with the rank of this name (#{rank})",
+        link_text: 'Edit parent',
+        link_to: [:name_link_parent_url, self]
+      }
+    end
+
+    @qc_warnings
+  end
+
+  def identical_base_name
+    if candidatus?
+      @identical_base_name ||= Name.where(name: base_name).first
+    else
+      @identical_base_name ||= Name.where(name: "Candidatus #{name}").first
+    end
+  end
+
+  def correct_suffix?
+    case rank
+    when 'phylum'
+      name =~ /ota$/
+    when 'class'
+      name =~ /ia$/
+    when 'order'
+      name =~ /ales$/
+    when 'family'
+      name =~ /aceae$/
+    else
+      true # If domain, genus, species, subspecies, or undefined rank
+    end
+  end
+
+  def top_rank?
+    rank.to_s == self.class.ranks.first
+  end
+
+  def consistent_parent_rank?
+    return true if !rank? || parent.nil? || !parent.rank?
+    
+    self.class.ranks.index(rank) == self.class.ranks.index(parent.rank) + 1
+  end
+
+
+  # --- NOMENCLATURE ---
   def candidatus?
     name.match? /^Candidatus /
+  end
+
+  def base_name
+    name.gsub(/^Candidatus /, '')
   end
 
   def abbr_name(name = nil)
@@ -246,11 +371,13 @@ class Name < ApplicationRecord
 
   def inferred_rank
     @inferred_rank ||=
-      if rank
+      if rank?
         rank
       elsif %w[Archaea Bacteria Eukarya].include?(name)
         'domain'
-      elsif name.sub(/^Candidatus /, '') =~ / /
+      elsif base_name =~ / .+ /
+        'subspecies'
+      elsif base_name =~ / /
         'species'
       elsif name =~ /aceae$/
         'family'
@@ -319,7 +446,7 @@ class Name < ApplicationRecord
 
   def possible_type_materials
     self.class.type_material_hash.select do |_, v|
-      v[:sp] == (inferred_rank == 'species')
+      v[:sp] == (%w[species subspecies].include?(inferred_rank))
     end
   end
 
@@ -342,6 +469,7 @@ class Name < ApplicationRecord
   end
 
   def can_claim?(user)
+    return false if user.nil?
     return false unless user.contributor? && created_by.nil?
     status <= 10
   end
