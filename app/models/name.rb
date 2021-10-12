@@ -24,7 +24,12 @@ class Name < ApplicationRecord
       message: 'Only letters, dashes, dots, and apostrophe are allowed'
     }
 
+  # ============ --- CLASS --- ============
+
   class << self
+
+    # ============ --- CLASS > ETYMOLOGY --- ============
+
     def etymology_particles
       %i[p1 p2 p3 p4 p5 xx]
     end
@@ -83,7 +88,7 @@ class Name < ApplicationRecord
       }
     end
 
-    # --- STATUS ---
+    # ============ --- CLASS > STATUS --- ============
 
     def public_status
       status_hash.select { |_, v| v[:public] }.keys
@@ -103,7 +108,7 @@ class Name < ApplicationRecord
     end
   end
 
-  # --- QUALITY CHECKS ---
+  # ============ --- QUALITY CHECKS --- ============
   def qc_warnings
     return @qc_warnings unless @qc_warnings.nil?
 
@@ -222,7 +227,7 @@ class Name < ApplicationRecord
   end
 
 
-  # --- NOMENCLATURE ---
+  # ============ --- NOMENCLATURE --- ============
   def candidatus?
     name.match? /^Candidatus /
   end
@@ -269,6 +274,8 @@ class Name < ApplicationRecord
     y.html_safe
   end
 
+  # ============ --- STATUS --- ============
+
   def status_hash
     self.class.status_hash[status]
   end
@@ -292,6 +299,8 @@ class Name < ApplicationRecord
   def public?
     status_hash[:public]
   end
+
+  # ============ --- ETYMOLOGY --- ============
 
   def last_epithet
     name.gsub(/.* /, '')
@@ -342,6 +351,8 @@ class Name < ApplicationRecord
     y.empty? ? nil : html ? y.html_safe : y
   end
 
+  # ============ --- OUTLINKS --- ============
+
   def ncbi_search_url
     q = "%22#{name}%22"
     unless corrigendum_from.nil? || corrigendum_from.empty?
@@ -349,6 +360,24 @@ class Name < ApplicationRecord
     end
     "https://www.ncbi.nlm.nih.gov/nuccore/?term=#{q}".gsub(' ', '%20')
   end
+
+  def links?
+    ncbi_taxonomy?
+  end
+
+  def ncbi_taxonomy_url
+    return unless ncbi_taxonomy?
+
+    'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=%i' % ncbi_taxonomy
+  end
+
+  def ncbi_genomes_url
+    return unless ncbi_taxonomy?
+
+    'https://www.ncbi.nlm.nih.gov/datasets/genomes/?txid=%i' % ncbi_taxonomy
+  end
+
+  # ============ --- USERS --- ============
 
   def proposed_by?(publication)
     publication == proposed_by
@@ -365,6 +394,32 @@ class Name < ApplicationRecord
   def emended_by?(publication)
     emended_by.include? publication
   end
+
+  def user?(user)
+    created_by == user
+  end
+
+  def can_see?(user)
+    return true if self.public?
+
+    (!user.nil?) && (user.curator? || user?(user))
+  end
+
+  def can_edit?(user)
+    return false if user.nil?
+    return false if status >= 15
+    return true if user.curator?
+    return true if status == 5 && user?(user)
+    false
+  end
+
+  def can_claim?(user)
+    return false if user.nil?
+    return false unless user.contributor? && created_by.nil?
+    status <= 10
+  end
+
+  # ============ --- TAXONOMY --- ============
 
   def children
     @children ||= Name.where(parent: self)
@@ -395,22 +450,6 @@ class Name < ApplicationRecord
       else
         'genus'
       end
-  end
-
-  def links?
-    ncbi_taxonomy?
-  end
-
-  def ncbi_taxonomy_url
-    return unless ncbi_taxonomy?
-
-    'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=%i' % ncbi_taxonomy
-  end
-
-  def ncbi_genomes_url
-    return unless ncbi_taxonomy?
-
-    'https://www.ncbi.nlm.nih.gov/datasets/genomes/?txid=%i' % ncbi_taxonomy
   end
 
   def type?
@@ -449,29 +488,5 @@ class Name < ApplicationRecord
     self.class.type_material_hash.select do |_, v|
       v[:sp] == (%w[species subspecies].include?(inferred_rank))
     end
-  end
-
-  def user?(user)
-    created_by == user
-  end
-
-  def can_see?(user)
-    return true if self.public?
-
-    (!user.nil?) && (user.curator? || user?(user))
-  end
-
-  def can_edit?(user)
-    return false if user.nil?
-    return false if status >= 15
-    return true if user.curator?
-    return true if status == 5 && user?(user)
-    false
-  end
-
-  def can_claim?(user)
-    return false if user.nil?
-    return false unless user.contributor? && created_by.nil?
-    status <= 10
   end
 end
