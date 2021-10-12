@@ -17,7 +17,7 @@ namespace :names do
       spp? species gen genus genera fam family families
       cla class classes ord orders? phylum phyla instead of preferred provided
       list uncovers rhetoricae predominate[ds]? detection have genomes?
-      like related associated infected
+      like related associated infected lacks? pathosystems?
     ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
