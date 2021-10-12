@@ -40,4 +40,22 @@
       <% end %>
     <% end %>
   </dd>
+
+  <% if @name.type? || @name.can_edit?(current_user) %>
+    <dt><%= fa_icon('clipboard-check') %> Nomenclatural type</dt>
+    <dd>
+      <% if @name.type? %>
+        <%= link_to_name_type(@name) %>
+      <% end %>
+      <% if @name.can_edit?(current_user) %>
+        <%= link_to(
+              edit_name_type_url(@name),
+              class: 'badge badge-pill badge-info',
+              title: 'edit parent'
+            ) do %>
+          <%= fa_icon 'edit' %> Edit
+        <% end %>
+      <% end %>
+    </dd>
+  <% end %>
 </dl>

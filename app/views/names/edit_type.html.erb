@@ -2,14 +2,25 @@
 <hr/>
 
 <%= simple_form_for(@name) do |f| %>
-  <%=
-    f.input(
-      :type_material,
-      label: 'Material',
-      collection: @name.possible_type_materials.map { |k, v| [v[:name], k] }
-    )
-  %>
-  <%= f.input(:type_accession, label: 'Accession') %>
+  <% if @name.possible_type_materials.size == 1 %>
+    <%=
+      f.input(
+        :type_material,
+        as: :hidden,
+        input_html: { value: @name.possible_type_materials.keys.first }
+      )
+    %>
+    <%= f.input(:type_accession, as: :string, label: 'Type name') %>
+  <% else %>
+    <%=
+      f.input(
+        :type_material,
+        label: 'Material',
+        collection: @name.possible_type_materials.map { |k, v| [v[:name], k] }
+      )
+    %>
+    <%= f.input(:type_accession, as: :string, label: 'Accession') %>
+  <% end %>
 
   <br/>
   <%= f.button :submit, 'Submit' %>
