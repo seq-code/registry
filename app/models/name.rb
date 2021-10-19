@@ -212,7 +212,7 @@ class Name < ApplicationRecord
         message: 'The taxon has not been assigned a higher classification',
         link_text: 'Link parent',
         link_to: [:name_link_parent_url, self],
-        recommendations: [7]
+        recommendations: %w[7]
       }
     end
 
@@ -232,7 +232,7 @@ class Name < ApplicationRecord
         message: 'Species must be binary names',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        rules: [8, 10]
+        rules: %w[8 10]
       }
     end
 
@@ -243,7 +243,7 @@ class Name < ApplicationRecord
                  'the abbreviation "subsp.", and the subspecies epithet',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        rules: ['13a']
+        rules: %w[13a]
       }
     end
 
@@ -253,7 +253,7 @@ class Name < ApplicationRecord
         message: 'Names above the rank of species must be single words',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        rules: [8]
+        rules: %w[8]
       }
     end
 
@@ -422,7 +422,7 @@ class Name < ApplicationRecord
   def consistent_subspecies_name?
     return true if !rank? || rank != 'subspecies' || parent.nil? || !parent.rank?
 
-    base_name.sub(/ subsp\..*/, '') == parent.base_name
+    base_name.sub(/\A(\S+\s+\S+)\s.*/, '\\1') == parent.base_name
   end
 
   def consistent_grammatical_number_and_gender?
