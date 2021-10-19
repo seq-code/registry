@@ -38,8 +38,16 @@ class Name < ApplicationRecord
       %i[lang grammar particle description]
     end
 
+    def domains
+      %w[Archaea Bacteria Eukarya]
+    end
+
     def ranks
       %w[domain phylum class order family genus species subspecies]
+    end
+
+    def rank_regexp
+      { phylum: /ota$/, class: /ia$/, order: /ales$/, family: /aceae$/ }
     end
 
     def status_hash
@@ -120,7 +128,9 @@ class Name < ApplicationRecord
         type: :missing_rank,
         message: 'The taxon has not been assigned a rank',
         link_text: 'Define rank',
-        link_to: [:edit_name_rank_url, self]
+        link_to: [:edit_name_rank_url, self],
+        recommendations: %w[7],
+        rules: %w[26.4]
       }
     end
 
@@ -152,13 +162,24 @@ class Name < ApplicationRecord
       }
     end
 
+    unless base_name =~ /\A[A-Z][a-z ]+\z/
+      $qc_warnings << {
+        type: :inconsistent_format,
+        message: 'Names should only include Latin characters. ' +
+                 'The first epithet must be capitalized, and other ' +
+                 'epithets (if any) should be given in lower case',
+        rules: %w[8 11 45]
+      }
+    end
+
     unless correct_suffix?
       @qc_warnings << {
         type: :incorrect_suffix,
         message: 'The ending of the name is incompatible with the rank of ' +
                  rank,
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self]
+        link_to: [:edit_name_url, self],
+        rules: %w[15]
       }
     end
 
@@ -167,7 +188,19 @@ class Name < ApplicationRecord
         type: :missing_type,
         message: 'The name is missing a type definition',
         link_text: 'Edit type',
-        link_to: [:edit_name_type_url, self]
+        link_to: [:edit_name_type_url, self],
+        rules: %w[17 26.3]
+      }
+    end
+
+    unless consistent_type_rank?
+      @qc_warnings << {
+        type: :inconsistent_type_rank,
+        message: "The nomenclatural type of a #{rank} must " +
+                 "be a designated #{expected_type_rank}",
+        link_text: 'Edit type',
+        link_to: [:edit_name_type_url, self],
+        rules: %w[16]
       }
     end
 
@@ -176,7 +209,8 @@ class Name < ApplicationRecord
         type: :missing_parent,
         message: 'The taxon has not been assigned a higher classification',
         link_text: 'Link parent',
-        link_to: [:name_link_parent_url, self]
+        link_to: [:name_link_parent_url, self],
+        recommendations: [7]
       }
     end
 
@@ -188,6 +222,147 @@ class Name < ApplicationRecord
         link_text: 'Edit parent',
         link_to: [:name_link_parent_url, self]
       }
+    end
+
+    if rank? && rank == 'species' && base_name !~ / /
+      @qc_warnings << {
+        type: :unary_species_name,
+        message: 'Species must be binary names',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        rules: [8, 10]
+      }
+    end
+
+    if rank? && rank == 'subspecies' && base_name !~ /\A[A-Z][a-z]* [a-z]+ subsp\. [a-z]+/
+      @qc_warnings << {
+        type: :malformed_subspecies_name,
+        message: 'Subspecies names should include the species name, ' +
+                 'the abbreviation "subsp.", and the subspecies epithet',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        rules: ['13a']
+      }
+    end
+
+    if rank? && !%w[species subspecies].include?(rank) && base_name =~ / /
+      @qc_warnings << {
+        type: :binary_name_above_species,
+        message: 'Names above the rank of species must be single words',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        rules: [8]
+      }
+    end
+
+    if rank? && rank == 'genus' && Name.rank_regexp.any? { |i| name =~ i }
+      @qc_warnings << {
+        type: :reserved_suffix,
+        message: 'Avoid reserved suffixes for genus names',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        recommendations: [10]
+      }
+    end
+
+    if last_epithet.size > 20
+      @qc_warnings << {
+        type: :long_name,
+        message: 'Consider reducing the length of the name',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        recommendation: ['9.1']
+      }
+    end
+
+    unless consistent_species_name?
+      @qc_warnings << {
+        type: :inconsistent_species_name,
+        message: 'The first epithet of species names must correspond to the ' +
+                 'parent genus',
+        link_text: 'Edit parent',
+        link_to: [:name_link_parent_url, self],
+        rules: %w[8]
+      }
+    end
+
+    unless consistent_subspecies_name?
+      @qc_warnings << {
+        type: :inconsistent_subspecies_name,
+        message: 'The first two epithets of subspecies names must correspond to the ' +
+                 'parent species',
+        link_text: 'Edit parent',
+        link_to: [:name_link_parent_url, self],
+        rules: %w[13a]
+      }
+    end
+
+    unless consistent_grammar_for_species_or_subspecies?
+      @qc_warnings << {
+        type: :"inconsistent_grammar_for_#{rank}_name",
+        message: "A #{rank} name must be an adjective or a noun",
+        link_text: 'Edit etymology',
+        link_to: [:edit_name_etymology_url, self],
+        rules: rank == 'species' ? %w[12] : %w[13b]
+      }
+    end
+
+    unless consistent_name_for_subspecies_with_type?
+      @qc_warnings << {
+        type: :inconsistent_name_for_subspecies_with_type,
+        message: 'A subspecies including the type of the species must have the same epithet',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        rules: %w[13c]
+      }
+    end
+
+    unless etymology?
+      @qc_warnings << {
+        type: :missing_etymology,
+        message: 'The etymology of the name has not been provided',
+        link_text: 'Edit etymology',
+        link_to: [:edit_name_etymology_url, self]
+      }
+    end
+
+    unless consistent_grammatical_number_and_gender?
+      case rank
+      when 'genus'
+        @qc_warnings << {
+          type: :inconsistent_grammatical_number_or_gender,
+          message: 'A genus must be given in the singular number',
+          link_text: 'Edit etymology',
+          link_to: [:edit_name_etymology_url, self],
+          rules: [10]
+        }
+      when 'species', 'subspecies'
+        @qc_warnings << {
+          type: :inconsitent_grammatical_number_or_gender,
+          message: 'A specific epithet formed by an adjective ' +
+                   'should agree in number and gender with the parent name',
+          link_text: 'Edit etymology',
+          link_to: [:edit_name_etymology_url, self],
+          recommendations: rank == 'species' ? %w[12.2] : %w[13b]
+          # TODO Revise Rule 13b here, it should probably be a recommendation
+        }
+      when 'family', 'order'
+        @qc_warnings << {
+          type: :inconsitent_grammatical_number_or_gender,
+          message: "A #{rank} name must be feminine and plural",
+          link_text: 'Edit etymology',
+          link_to: [:edit_name_etymology_url, self],
+          recommendations: %w[14]
+        }
+      when 'class', 'phylum'
+        @qc_warnings << {
+          type: :inconsitent_grammatical_number_or_gender,
+          message: "A #{rank} name must be neuter and plural",
+          link_text: 'Edit etymology',
+          link_to: [:edit_name_etymology_url, self],
+          recommendations: %w[14]
+        }
+      end
     end
 
     @qc_warnings
@@ -202,18 +377,10 @@ class Name < ApplicationRecord
   end
 
   def correct_suffix?
-    case rank
-    when 'phylum'
-      name =~ /ota$/
-    when 'class'
-      name =~ /ia$/
-    when 'order'
-      name =~ /ales$/
-    when 'family'
-      name =~ /aceae$/
-    else
-      true # If domain, genus, species, subspecies, or undefined rank
-    end
+    regexp = self.class.rank_regexp[rank.to_s.to_sym]
+    return true if regexp.nil? # domain, genus, species, subspecies, undefined
+
+    name =~ regexp
   end
 
   def top_rank?
@@ -226,6 +393,74 @@ class Name < ApplicationRecord
     self.class.ranks.index(rank) == self.class.ranks.index(parent.rank) + 1
   end
 
+  def consistent_type_rank?
+    return true if !rank? || %w[species subspecies].include?(rank) || !type?
+
+    type_name.rank == expected_type_rank
+  end
+
+  def consistent_species_name?
+    return true if !rank? || rank != 'species' || parent.nil? || !parent.rank?
+
+    base_name.sub(/ .*/) == parent.base_name
+  end
+
+  def consistent_subspecies_name?
+    return true if !rank? || rank != 'subspecies' || parent.nil? || !parent.rank?
+
+    base_name.sub(/ subsp\..*/) == parent.base_name
+  end
+
+  def consistent_grammatical_number_and_gender?
+    return true if !rank? || !etymology(:xx, :grammar)
+
+    case rank
+    when 'genus'
+      etymology(:xx, :grammar) !~ /(^| )pl(\.|ural)( |$)/
+    when 'species', 'subspecies'
+      par_g = parent&.etymology(:xx, :grammar)
+      par_g ||= '' # Assume singular
+      g = etymology(:xx, :grammar)
+      par_plural = !!(par_g =~ /(^| )pl(\.|ural)( |$)/)
+      plural = !!(g =~ /(^| )pl(\.|ural)( |$)/)
+      return false unless par_plural == plural
+      gen = [/(^| )masc(\.|uline)( |$)/, /(^| )fem(\.|inine)( |$)/, /(^| )neut(\.|er)( |$)/]
+      gen.all? { |rx| !!(par_g =~ rx) == !!(g =~ rx) }
+    when 'family', 'order'
+      g = etymology(:xx, :grammar)
+      return false unless g =~ /(^| )fem(\.|inine)( |$)/
+      return false unless g =~ /(^| )pl(\.|ural)( |$)/
+      true
+    when 'class', 'phylum'
+      g = etymology(:xx, :grammar)
+      return false unless g =~ /(^| )neut(\.|er)( |$)/
+      return false unless g =~ /(^| )pl(\.|ural)( |$)/
+      true
+    else
+      true
+    end
+  end
+
+  def consistent_grammar_for_species_or_subspecies?
+    return true if !rank? || !%w[species subspecies].include?(rank) || !etymology(:xx, :grammar)
+
+    case etymology(:xx, :grammar)
+    when /(^| )adj(\.|ective)( |$)/
+      true # Rule 12.1 for species, 13b for subspecies
+    when /(^| )(n(\.|oun)|s(\.|ubst(\.|antive)))( |$)/
+      true # Rule 12.2 / 12.3 for species, 13b for subspecies
+    else
+      false
+    end
+  end
+
+  def consistent_name_for_subspecies_with_type?
+    return true if !rank? || rank != 'subspecies' || !type? || !parent&.type?
+    return true if type_text != parent.type_text
+    return true if last_epithet == parent.last_epithet
+
+    false
+  end
 
   # ============ --- NOMENCLATURE --- ============
   def candidatus?
@@ -321,7 +556,7 @@ class Name < ApplicationRecord
   def etymology?
     return true if etymology_text?
 
-    Name.etymology_particles.any? do |i|
+    (Name.etymology_particles - [:xx]).any? do |i|
       Name.etymology_fields.any? { |j| etymology(i, j) }
     end
   end
@@ -429,23 +664,23 @@ class Name < ApplicationRecord
     @inferred_rank ||=
       if rank?
         rank
-      elsif %w[Archaea Bacteria Eukarya].include?(name)
+      elsif Name.domains.include?(name)
         'domain'
       elsif base_name =~ / .+ /
         'subspecies'
       elsif base_name =~ / /
         'species'
-      elsif name =~ /aceae$/
+      elsif name =~ Name.rank_regexp[:family]
         'family'
-      elsif name =~ /ales$/
+      elsif name =~ Name.rank_regexp[:order]
         'order'
-      elsif name =~ /ia$/
+      elsif name =~ Name.rank_regexp[:class]
         if children.first&.inferred_rank&.== 'species'
           'genus'
         else
           'class'
         end
-      elsif name =~ /ota$/
+      elsif name =~ Name.rank_regexp[:phylum]
         'phylum'
       else
         'genus'
@@ -470,8 +705,14 @@ class Name < ApplicationRecord
 
   def type_name
     if type_is_name?
-      @type_name ||= Name.where(id: type_accession).first
+      @type_name ||= self.class.where(id: type_accession).first
     end
+  end
+
+  def expected_type_rank
+    return nil if !rank? || %w[species subspecies domain].include?(rank)
+    return 'species' if rank == 'genus'
+    'genus'
   end
 
   def type_material_name

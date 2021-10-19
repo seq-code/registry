@@ -10,7 +10,12 @@
         input_html: { value: @name.possible_type_materials.keys.first }
       )
     %>
-    <%= f.input(:type_accession, as: :string, label: 'Type name') %>
+    <%=
+      f.input(
+        :type_accession, as: :string, label: 'Type name',
+        input_html: { value: @name.type_name&.name }
+      )
+    %>
   <% else %>
     <%=
       f.input(
