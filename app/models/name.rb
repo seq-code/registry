@@ -317,12 +317,24 @@ class Name < ApplicationRecord
       }
     end
 
-    unless etymology?
+    if etymology?
+      if etymology(:p1, :grammar) && !etymology(:xx, :grammar)
+        @qc_warnings << {
+          type: :missing_full_epithet_etymology,
+          message: 'The etymology of one or more particles is provided, but' +
+                   'the etymology of the full name or epithet is missing',
+          link_text: 'Edit etymology',
+          link_to: [:edit_name_etymology_url, self],
+          rules: %w[26.5]
+        }
+      end
+    else
       @qc_warnings << {
         type: :missing_etymology,
         message: 'The etymology of the name has not been provided',
         link_text: 'Edit etymology',
-        link_to: [:edit_name_etymology_url, self]
+        link_to: [:edit_name_etymology_url, self],
+        rules: %w[26.5]
       }
     end
 
