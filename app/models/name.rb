@@ -321,7 +321,7 @@ class Name < ApplicationRecord
       if etymology(:p1, :grammar) && !etymology(:xx, :grammar)
         @qc_warnings << {
           type: :missing_full_epithet_etymology,
-          message: 'The etymology of one or more particles is provided, but' +
+          message: 'The etymology of one or more particles is provided, but ' +
                    'the etymology of the full name or epithet is missing',
           link_text: 'Edit etymology',
           link_to: [:edit_name_etymology_url, self],
