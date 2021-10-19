@@ -13,6 +13,8 @@ class Name < ApplicationRecord
   belongs_to :validated_by, optional: true,
     class_name: 'User', foreign_key: 'validated_by'
 
+  before_save(:standardize_languages)
+
   has_rich_text :description
   has_rich_text :notes
   has_rich_text :etymology_text
@@ -568,8 +570,8 @@ class Name < ApplicationRecord
   def etymology?
     return true if etymology_text?
 
-    (Name.etymology_particles - [:xx]).any? do |i|
-      Name.etymology_fields.any? { |j| etymology(i, j) }
+    (self.class.etymology_particles - [:xx]).any? do |i|
+      self.class.etymology_fields.any? { |j| etymology(i, j) }
     end
   end
 
@@ -740,6 +742,23 @@ class Name < ApplicationRecord
   def possible_type_materials
     self.class.type_material_hash.select do |_, v|
       v[:sp] == (%w[species subspecies].include?(inferred_rank))
+    end
+  end
+
+  private
+
+  def standardize_languages
+    self.class.etymology_particles.each do |i|
+      l = etymology(i, :lang)
+      p = "etymology_#{i}_lang="
+      case l.to_s.downcase
+      when 'latin'
+        self.send(p, 'L.')
+      when 'new latin', /neo[ -]?latin/
+        self.send(p, 'N.L.')
+      when 'greek'
+        self.send(p, 'Gr.')
+      end
     end
   end
 end
