@@ -414,7 +414,7 @@ class Name < ApplicationRecord
   def consistent_species_name?
     return true if !rank? || rank != 'species' || parent.nil? || !parent.rank?
 
-    base_name.sub(/ .*/) == parent.base_name
+    base_name.sub(/ .*/, '') == parent.base_name
   end
 
   def consistent_subspecies_name?
