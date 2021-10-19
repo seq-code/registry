@@ -422,7 +422,7 @@ class Name < ApplicationRecord
   def consistent_subspecies_name?
     return true if !rank? || rank != 'subspecies' || parent.nil? || !parent.rank?
 
-    base_name.sub(/ subsp\..*/) == parent.base_name
+    base_name.sub(/ subsp\..*/, '') == parent.base_name
   end
 
   def consistent_grammatical_number_and_gender?
