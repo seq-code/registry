@@ -25,7 +25,9 @@ module Name::QualityChecks
         message: 'Base name already exists with different qualifiers',
         link_text: identical_base_name.abbr_name,
         link_to: [:name_url, identical_base_name],
-        link_public: true
+        link_public: true,
+        rules: %w[9],
+        recommendations: %w[9.2]
       }
     end
 
@@ -35,8 +37,8 @@ module Name::QualityChecks
         message: 'The name has no registered description',
         link_text: 'Edit description',
         link_to: [:edit_name_url, self],
-        rules: %w[9],
-        recommendations: %w[9.2]
+        recommendations: %w[26]
+        # TODO This should be a rule, under revision
       }
     end
 
@@ -163,7 +165,7 @@ module Name::QualityChecks
         message: 'Consider reducing the length of the name',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        recommendation: %w[9.1]
+        recommendations: %w[9.1]
       }
     end
 
@@ -173,7 +175,7 @@ module Name::QualityChecks
         message: 'Consider revising the name to make it easier to pronounce',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        recommendation: %w[9.1]
+        recommendations: %w[9.1]
       }
     end
 
