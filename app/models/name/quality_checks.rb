@@ -80,7 +80,7 @@ module Name::QualityChecks
         message: 'The name is missing a type definition',
         link_text: 'Edit type',
         link_to: [:edit_name_type_url, self],
-        rules: %w[17 26.3]
+        rules: %w[16 17 26.3] + (%w[subspecies species].include?(rank) ? %w[18a] : [])
       }
     end
 
@@ -148,13 +148,13 @@ module Name::QualityChecks
         }
       end
 
-      if rank == 'genus' && Name.rank_regexp.any? { |i| name =~ i }
+      if rank == 'genus' && self.class.rank_regexp.any? { |i| name =~ i }
         @qc_warnings << {
           type: :reserved_suffix,
           message: 'Avoid reserved suffixes for genus names',
           link_text: 'Edit spelling',
           link_to: [:edit_name_url, self],
-          recommendations: [10]
+          recommendations: %w[10]
         }
       end
     end
