@@ -158,14 +158,20 @@ class NamesController < ApplicationController
   def update
     params[:name][:syllabication_reviewed] = true if name_params[:syllabication]
     if name_params[:type_material]&.==('name') 
+      acc = name_params[:type_accession]
       type_name =
-        if name_params[:type_accession] =~ /\A[0-9]+\z/
-          Name.where(id: name_params[:type_accession]).first
+        if acc.empty?
+          nil
+        elsif acc =~ /\A[0-9]+\z/
+          Name.where(id: acc).first
         else
-          Name.where(name: name_params[:type_accession]).first
+          Name.where(name: acc).first
         end
       params[:name][:type_accession] = type_name&.id
-      flash[:alert] = 'Type name does not exist' if type_name.nil?
+
+      if !acc.empty? && type_name.nil?
+        flash[:alert] = 'Type name does not exist'
+      end
     end
 
     respond_to do |format|
