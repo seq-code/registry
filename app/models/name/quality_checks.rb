@@ -34,16 +34,21 @@ module Name::QualityChecks
         type: :missing_description,
         message: 'The name has no registered description',
         link_text: 'Edit description',
-        link_to: [:edit_name_url, self]
+        link_to: [:edit_name_url, self],
+        rules: %w[9],
+        recommendations: %w[9.2]
       }
     end
 
     if proposed_by.nil?
       @qc_warnings << {
         type: :missing_proposal,
-        message: 'The publication proposing this name has not been identified',
+        message: 'The publication proposing this name has not been ' +
+                 'identified (this can be safely ignored before validation)',
         link_text: 'Register publication',
-        link_to: [:new_publication_url, { link_name: id }]
+        link_to: [:new_publication_url, { link_name: id }],
+        rules: %w[24a],
+        can_approve: true
       }
     end
 
@@ -92,7 +97,7 @@ module Name::QualityChecks
     unless !rank? || top_rank? || !parent.nil?
       @qc_warnings << {
         type: :missing_parent,
-        message: 'The taxon has not been assigned a higher classification',
+        message: 'The taxon has not been assigned to a higher classification',
         link_text: 'Link parent',
         link_to: [:name_link_parent_url, self],
         recommendations: %w[7]
@@ -105,7 +110,8 @@ module Name::QualityChecks
         message: "The parent rank (#{parent.rank}) is inconsistent " +
                  "with the rank of this name (#{rank})",
         link_text: 'Edit parent',
-        link_to: [:name_link_parent_url, self]
+        link_to: [:name_link_parent_url, self],
+        rules: %w[7a 7b]
       }
     end
 
@@ -158,7 +164,7 @@ module Name::QualityChecks
         message: 'Consider reducing the length of the name',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        recommendation: ['9.1']
+        recommendation: %w[9.1]
       }
     end
 
@@ -168,7 +174,7 @@ module Name::QualityChecks
         message: 'Consider revising the name to make it easier to pronounce',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        recommendation: ['9.1']
+        recommendation: %w[9.1]
       }
     end
 
@@ -243,7 +249,7 @@ module Name::QualityChecks
           message: 'A genus must be given in the singular number',
           link_text: 'Edit etymology',
           link_to: [:edit_name_etymology_url, self],
-          rules: [10]
+          rules: %w[10]
         }
       when 'species', 'subspecies'
         @qc_warnings << {
