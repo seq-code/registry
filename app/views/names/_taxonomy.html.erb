@@ -53,8 +53,27 @@
   <% unless @name.children.empty? %>
     <dt><%= fa_icon('sort-amount-down-alt') %> Children<dt>
     <dd><ul class='pl-3'>
+      <%
+        set_type = @name.can_edit?(current_user) && @name.rank? &&
+                   %w[genus family].include?(@name.rank)
+      %>
       <% @name.children.each do |child| %>
-        <li><%= link_to(child.name_html, child) %></li>
+        <li>
+          <%= link_to(child.name_html, child) %>
+          <% if set_type && @name.type_accession != child.id %>
+            <%= link_to(
+                  name_url(
+                    @name,
+                    name: { type_material: :name, type_accession: child.id }
+                  ),
+                  method: :patch,
+                  class: 'badge badge-pill badge-info',
+                  data: { confirm: 'Are you sure?' }
+                ) do %>
+              <%= fa_icon 'clipboard-check' %> Set as type
+            <% end %>
+          <% end %>
+        </li>
       <% end %>
     </ul></dd>
   <% end %>
