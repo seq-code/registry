@@ -60,7 +60,7 @@
       <% @name.children.each do |child| %>
         <li>
           <%= link_to(child.name_html, child) %>
-          <% if set_type && @name.type_accession != child.id %>
+          <% if set_type && @name.type_accession.to_i != child.id %>
             <%= link_to(
                   name_url(
                     @name,
