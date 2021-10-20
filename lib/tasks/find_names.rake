@@ -15,9 +15,10 @@ namespace :names do
       belonging reveals community communities on which in clades? lineages?
       associated taxon taxa revised be the from infecting genes? particles?
       spp? species gen genus genera fam family families
-      cla class classes ord orders? phylum phyla instead of preferred provided
-      list uncovers rhetoricae predominate[ds]? detection have genomes?
-      like related associated infected lacks? pathosystems?
+      cla class classes classis ord ordo orders? phylum phyla
+      instead of preferred provided list uncovers rhetoricae predominate[ds]?
+      detection have genomes? like related associated infected lacks?
+      pathosystems? into
     ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
