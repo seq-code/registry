@@ -152,10 +152,20 @@ module Name::QualityChecks
       end
     end
 
-    if last_epithet.size > 20
+    if long_word?
       @qc_warnings << {
         type: :long_name,
         message: 'Consider reducing the length of the name',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        recommendation: ['9.1']
+      }
+    end
+
+    if hard_to_pronounce?
+      @qc_warnings << {
+        type: :hard_to_pronounce,
+        message: 'Consider revising the name to make it easier to pronounce',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
         recommendation: ['9.1']
@@ -311,7 +321,7 @@ module Name::QualityChecks
 
     case rank
     when 'genus'
-      plural?
+      !plural?
     when 'species', 'subspecies'
       return true unless parent&.grammar # If it cannot be checked
       return true unless adjective? # Only adjectives are checked

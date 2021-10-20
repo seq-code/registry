@@ -186,6 +186,28 @@ class Name < ApplicationRecord
     name.gsub(/.* /, '')
   end
 
+  ##
+  # Is the last word of the name too long? Defined as 25 characters or longer
+  def long_word?
+    last_epithet.size >= 25
+  end
+
+  ##
+  # Is the last word likely hard to pronounce? Defined as words with any of:
+  # - 4 or more vowels in a row, where ii, ou, and Latin diphthongs (except ui)
+  #   count as a single vowel
+  # - 4 or more consonants in a row, where the following count as a single
+  #   consonant: sch, ch, ph, th, zh, sh, gh, ts, tz, and any consonant twice
+  def hard_to_pronounce?
+    word = last_epithet.downcase
+    word.gsub!(/(ou|ii|ae|au|ei|eu|oe)/, '_')
+    word.gsub!(/(sch|[cptzsg]h|[ct]r|t[sz])/, '@')
+    word.gsub!(/([^aeiouy_])\1/, '@')
+    return true if word =~ /[aeiou_]{4}/ || word =~ /[aeiou_]{3}y($|[^aeiou_])/
+    return true if word =~ /[^aeiouy_]{4}/
+    false
+  end
+
   # ============ --- STATUS --- ============
 
   def status_hash
