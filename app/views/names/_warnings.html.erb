@@ -5,7 +5,7 @@
     <% @name.qc_warnings.each do |warn| %>
       <dt>
         <%
-          blocking = !@warn[:rules].nil? && !@warn[:can_approve]
+          blocking = warn[:rules] && !warn[:can_approve]
           icon_class = blocking ? 'text-danger' : 'text-warning'
         %>
         <%= fa_icon('exclamation-triangle', class: icon_class) %>
