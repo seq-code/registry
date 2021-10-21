@@ -416,7 +416,8 @@ class Name < ApplicationRecord
 
     # Check if the last particle should be the full epithet
     lc = last_component
-    return if grammar || language || last_epithet != etymology(lc, :particle)
+    return if grammar || language
+    return unless last_epithet.downcase == etymology(lc, :particle).downcase
 
     self.class.etymology_fields.each do |i|
       self.send("etymology_xx_#{i}=", etymology(lc, i)) unless i == :particle
