@@ -59,6 +59,8 @@ module Name::QualityChecks
         message: 'Names should only include Latin characters. ' +
                  'The first epithet must be capitalized, and other ' +
                  'epithets (if any) should be given in lower case',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
         rules: %w[8 11 45]
       }
     end
