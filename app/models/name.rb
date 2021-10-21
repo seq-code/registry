@@ -63,8 +63,12 @@ class Name < ApplicationRecord
       %w[domain phylum class order family genus species subspecies]
     end
 
-    def rank_regexp
-      { phylum: /ota$/, class: /ia$/, order: /ales$/, family: /aceae$/ }
+    def rank_suffixes
+      { 'phylum' => 'ota', 'class' => 'ia', 'order' => 'ales', 'family' => 'aceae' }
+    end
+
+    def rank_regexps
+      Hash[rank_suffixes.map { |k, v| [k, /#{v}$/] }]
     end
 
     def status_hash
@@ -322,17 +326,17 @@ class Name < ApplicationRecord
         'subspecies'
       elsif base_name =~ / /
         'species'
-      elsif name =~ Name.rank_regexp[:family]
+      elsif name =~ Name.rank_regexps[:family]
         'family'
-      elsif name =~ Name.rank_regexp[:order]
+      elsif name =~ Name.rank_regexps[:order]
         'order'
-      elsif name =~ Name.rank_regexp[:class]
+      elsif name =~ Name.rank_regexps[:class]
         if children.first&.inferred_rank&.== 'species'
           'genus'
         else
           'class'
         end
-      elsif name =~ Name.rank_regexp[:phylum]
+      elsif name =~ Name.rank_regexps[:phylum]
         'phylum'
       else
         'genus'

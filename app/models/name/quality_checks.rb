@@ -54,7 +54,7 @@ module Name::QualityChecks
     end
 
     unless base_name =~ /\A[A-Z][a-z ]+\z/
-      $qc_warnings << {
+      @qc_warnings << {
         type: :inconsistent_format,
         message: 'Names should only include Latin characters. ' +
                  'The first epithet must be capitalized, and other ' +
@@ -84,6 +84,17 @@ module Name::QualityChecks
           %w[subspecies species].include?(rank) ? %w[18a] :
           %w[genus].include?(rank) ? %w[21a] : []
         )
+      }
+    end
+
+    if type_is_name? && !type_name.validated?
+      @qc_warnings << {
+        type: :non_valid_name_as_type,
+        message: 'Only valid names can be used as nomenclatural type',
+        link_text: 'Edit type',
+        link_to: [:edit_name_type_url, self],
+        rules: %w[20],
+        can_approve: true
       }
     end
 
@@ -151,7 +162,7 @@ module Name::QualityChecks
         }
       end
 
-      if rank == 'genus' && self.class.rank_regexp.any? { |i| name =~ i }
+      if rank == 'genus' && self.class.rank_regexps.any? { |i| name =~ i }
         @qc_warnings << {
           type: :reserved_suffix,
           message: 'Avoid reserved suffixes for genus names',
@@ -160,6 +171,29 @@ module Name::QualityChecks
           recommendations: %w[10]
         }
       end
+    end
+
+    unless consistent_with_type_genus?
+      @qc_warnings << {
+        type: :inconsistent_with_type_genus,
+        message: "The name should be formed by adding the suffix " +
+                 "#{self.class.rank_suffixes[rank]} to the stem of the " +
+                 "type genus",
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        rules: %w[15]
+      }
+    end
+
+    unless consistent_etymology_with_type_genus?
+      @qc_warnings << {
+        type: :inconsistent_with_type_genus,
+        message: "The etymology should be formed by the stem of the type " +
+                 "genus and the suffix #{self.class.rank_suffixes[rank]}",
+        link_text: 'Autofill etymology',
+        link_to: [:autofill_etymology_url, self, method: :post],
+        rules: %w[15]
+      }
     end
 
     if long_word?
@@ -245,11 +279,22 @@ module Name::QualityChecks
       }
     end
 
+    unless consistent_genus_gender?
+      @qc_warnings << {
+        type: :inconsistent_grammatical_gender,
+        message: 'A genus name formed by two or more Latin words should take ' +
+                 'gender of the last component of the word',
+        link_text: 'Edit etymology',
+        link_to: [:edit_name_etymology_url, self],
+        rules: %w[10]
+      }
+    end
+
     unless consistent_grammatical_number_and_gender?
       case rank
       when 'genus'
         @qc_warnings << {
-          type: :inconsistent_grammatical_number_or_gender,
+          type: :inconsistent_grammatical_number,
           message: 'A genus must be given in the singular number',
           link_text: 'Edit etymology',
           link_to: [:edit_name_etymology_url, self],
@@ -296,7 +341,7 @@ module Name::QualityChecks
   end
 
   def correct_suffix?
-    regexp = self.class.rank_regexp[rank.to_s.to_sym]
+    regexp = self.class.rank_regexps[rank.to_s.to_sym]
     return true if regexp.nil? # domain, genus, species, subspecies, undefined
 
     name =~ regexp
@@ -324,6 +369,21 @@ module Name::QualityChecks
     return true if !rank? || rank != 'subspecies' || parent.nil? || !parent.rank?
 
     base_name.sub(/\A(\S+\s+\S+)\s.*/, '\\1') == parent.base_name
+  end
+
+  def consistent_genus_gender?
+    return true unless rank? && grammar && rank == 'genus'
+
+    # Rules 49.1 and 49.3
+    return true if %w[:p1, nil].include?(last_component)
+
+    # Rule 49.1
+    return true if self.class.etymology_particles.all { |i| latin?(i) }
+
+    # Rule 49.2
+    %i[feminine? masculine? neuter?].all do |i|
+      self.send(i) == self.send(i, last_component)
+    end
   end
 
   def consistent_grammatical_number_and_gender?
@@ -369,5 +429,21 @@ module Name::QualityChecks
     return true if last_epithet == parent.last_epithet
 
     false
+  end
+
+  def consistent_with_type_genus?
+    return true unless rank? && type_is_name?
+    suffix = self.class.rank_suffixes[rank]
+    return true unless suffix
+
+    root = base_name.sub(/#{suffix}$/, '')
+    !!(type_name.base_name =~ /^#{root}/)
+  end
+
+  def consistent_etymology_with_type_genus?
+    return true unless rank? && type_is_name? && type_name.rank == 'genus'
+
+    first_particle = etymology(:p1, :particle)
+    first_particle ? type_name.base_name == first_particle : true
   end
 end

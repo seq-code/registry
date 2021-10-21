@@ -60,45 +60,85 @@ module Name::Etymology
     parts.find { |i| self.class.etymology_fields.any? { |j| etymology(i, j) } }
   end
 
-  def grammar
-    etymology(:xx, :grammar)
+  def grammar(component = :xx)
+    etymology(component, :grammar)
   end
 
-  def grammar_has?(regex)
-    return nil unless grammar
+  def grammar_has?(regex, component = :xx)
+    return nil unless grammar(component)
 
-    !!(grammar =~ /(^| )#{regex}( |$)/)
+    !!(grammar(component) =~ /(^| )#{regex}( |$)/)
   end
 
-  def adjective?
-    grammar_has? /adj(\.|ective)/
+  def adjective?(component = :xx)
+    grammar_has?(/adj(\.|ective)/, component)
   end
 
-  def noun?
-    grammar_has? /(n(\.|oun)|s(\.|ubst(\.|antive)))/
+  def noun?(component = :xx)
+    grammar_has?(/(n(\.|oun)|s(\.|ubst(\.|antive)))/, component)
   end
 
-  def feminine?
-    grammar_has? /fem(\.|inine)/
+  def feminine?(component = :xx)
+    grammar_has?(/fem(\.|inine)/, component)
   end
 
-  def masculine?
-    grammar_has? /masc(\.|uline)/
+  def masculine?(component = :xx)
+    grammar_has?(/masc(\.|uline)/, component)
   end
 
-  def neuter?
-    grammar_has? /neut(\.|er)/
+  def neuter?(component = :xx)
+    grammar_has?(/neut(\.|er)/, component)
   end
 
-  def plural?
-    grammar_has? /pl(\.|ural)/
+  def plural?(component = :xx)
+    grammar_has?(/pl(\.|ural)/, component)
   end
 
-  def language
-    etymology(:xx, :lang)
+  def language(component = :xx)
+    etymology(component, :lang)
   end
 
-  def latin?
-    language ? %w[L. N.L.].include?(language) : nil
+  def latin?(component = :xx)
+    language(component) ? %w[L. N.L.].include?(language(component)) : nil
+  end
+
+  ##
+  # Remove all the individual etymology fields from the current instance
+  # *without* saving the changes to the database
+  def clean_etymology
+    self.class.etymology_particles.any? do |i|
+      self.class.etymology_fields.any? do |j|
+        self.send("etymology_#{i}_#{j}=", nil) unless i == :xx && j == :particle
+      end
+    end
+  end
+
+  ##
+  # Can the etymology be automatically filled on the basis of the type genus?
+  def can_autofill_etymology?
+    rank? && type_is_name? && type_name.rank == 'genus'
+  end
+
+  ##
+  # Attempt automatically fill the etymology on the basis of the type genus. It
+  # affects the current instance but does not save changes to the database!
+  def autofill_etymology
+    return unless can_autofill_etymology?
+
+    clean_etymology
+    self.etymology_p1_lang = type_name.language
+    self.etymology_p1_grammar = type_name.grammar
+    self.etymology_p1_particle = type_name.base_name
+    self.etymology_p1_description =
+      "referring to the type #{type_name.rank} #{type_name.base_name}"
+    self.etymology_p2_lang = 'L.'
+    gen = %w[family order].include?(rank) ? 'fem.' : 'neut.'
+    self.etymology_p2_grammar = "#{gen} pl. suff."
+    self.etymology_p2_particle = "-" + self.class.rank_suffixes[rank].to_s
+    self.etymology_p2_description =
+      "ending to denote #{rank[0] =~ /[aeiou]/ ? 'an' : 'a'} #{rank}"
+    self.etymology_xx_lang = 'N.L.'
+    self.etymology_xx_grammar = "#{gen} pl. n."
+    self.etymology_xx_description = "the #{type_name.base_name} #{rank}"
   end
 end

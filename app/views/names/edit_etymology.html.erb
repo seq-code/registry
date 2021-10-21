@@ -2,6 +2,15 @@
 <h3>&raquo; Etymology of the epithet <u><b><%= @name.last_epithet %></b></u></h3>
 <hr/>
 
+<% if @name.can_autofill_etymology? %>
+  <p class="lead">
+  <%= link_to(autofill_etymology_url(@name)) do %>
+    <%= fa_icon('magic') %> &nbsp;
+    Automatically fill the etymology on the basis of the nomenclatural type
+  <% end %>
+  </p>
+<% end %>
+
 <%= simple_form_for(@name) do |f| %>
   <%= f.input(:syllabication, required: false, autofocus: true) %>
 

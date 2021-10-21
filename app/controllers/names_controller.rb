@@ -4,7 +4,8 @@ class NamesController < ApplicationController
     only: %i[
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
-      link_parent link_parent_commit submit return validate claim
+      autofill_etymology link_parent link_parent_commit
+      submit return validate claim
     ]
   )
   before_action(
@@ -12,7 +13,8 @@ class NamesController < ApplicationController
     only: %i[
       edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
-      link_parent link_parent_commit submit
+      autofill_etymology link_parent link_parent_commit
+      submit
     ]
   )
   before_action(
@@ -133,6 +135,12 @@ class NamesController < ApplicationController
       flash[:alert] = 'You must define the rank before the type material'
       redirect_to(@name)
     end
+  end
+
+  # GET /names/1/autofill_etymology
+  def autofill_etymology
+    @name.autofill_etymology
+    render(:edit_etymology)
   end
 
   # POST /names
