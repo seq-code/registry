@@ -64,7 +64,7 @@ class Name < ApplicationRecord
     end
 
     def rank_suffixes
-      { 'phylum' => 'ota', 'class' => 'ia', 'order' => 'ales', 'family' => 'aceae' }
+      { phylum: 'ota', class: 'ia', order: 'ales', family: 'aceae' }
     end
 
     def rank_regexps
@@ -182,6 +182,10 @@ class Name < ApplicationRecord
     y += " corrig." if corrigendum_by
     y += " #{proposed_by.short_citation}" if proposed_by
     y.html_safe
+  end
+
+  def rank_suffix
+    self.class.rank_suffixes[inferred_rank.to_s.to_sym]
   end
 
   ##

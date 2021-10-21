@@ -164,7 +164,7 @@ module Name::QualityChecks
         }
       end
 
-      if rank == 'genus' && self.class.rank_regexps.any? { |i| name =~ i }
+      if rank == 'genus' && self.class.rank_regexps.any? { |_, i| name =~ i }
         @qc_warnings << {
           type: :reserved_suffix,
           message: 'Avoid reserved suffixes for genus names',
@@ -179,8 +179,7 @@ module Name::QualityChecks
       @qc_warnings << {
         type: :inconsistent_with_type_genus,
         message: "The name should be formed by adding the suffix " +
-                 "#{self.class.rank_suffixes[rank]} to the stem of the " +
-                 "type genus",
+                 "-#{rank_suffix} to the stem of the type genus",
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
         rules: %w[15]
@@ -191,7 +190,7 @@ module Name::QualityChecks
       @qc_warnings << {
         type: :inconsistent_with_type_genus,
         message: "The etymology should be formed by the stem of the type " +
-                 "genus and the suffix #{self.class.rank_suffixes[rank]}",
+                 "genus and the suffix -#{rank_suffix}",
         link_text: 'Autofill etymology',
         link_to: [:autofill_etymology_url, self, method: :post],
         rules: %w[15]
@@ -435,10 +434,9 @@ module Name::QualityChecks
 
   def consistent_with_type_genus?
     return true unless rank? && type_is_name?
-    suffix = self.class.rank_suffixes[rank]
-    return true unless suffix
+    return true unless rank_suffix
 
-    root = base_name.sub(/#{suffix}$/, '')
+    root = base_name.sub(/#{rank_suffix}$/, '')
     !!(type_name.base_name =~ /^#{root}/)
   end
 

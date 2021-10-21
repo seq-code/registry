@@ -134,7 +134,7 @@ module Name::Etymology
     self.etymology_p2_lang = 'L.'
     gen = %w[family order].include?(rank) ? 'fem.' : 'neut.'
     self.etymology_p2_grammar = "#{gen} pl. suff."
-    self.etymology_p2_particle = "-" + self.class.rank_suffixes[rank].to_s
+    self.etymology_p2_particle = "-#{rank_suffix}"
     self.etymology_p2_description =
       "ending to denote #{rank[0] =~ /[aeiou]/ ? 'an' : 'a'} #{rank}"
     self.etymology_xx_lang = 'N.L.'
