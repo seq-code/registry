@@ -23,7 +23,7 @@ class Name < ApplicationRecord
     class_name: 'User', foreign_key: 'validated_by'
   )
 
-  before_save(:standardize_languages)
+  before_save(:standardize_grammar)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -385,8 +385,11 @@ class Name < ApplicationRecord
 
   private
 
-  def standardize_languages
+  def standardize_grammar
+    return unless etymology?
+
     self.class.etymology_particles.each do |i|
+      # Standardize language
       l = etymology(i, :lang)
       p = "etymology_#{i}_lang="
       case l.to_s.downcase
@@ -397,6 +400,19 @@ class Name < ApplicationRecord
       when 'greek'
         self.send(p, 'Gr.')
       end
+
+      # Ensure grammar indicators are separated by spaces
+      g = etymology(i, :grammar)
+      self.send("etymology_#{i}_grammar=", g.gsub(/\.(\S)/, '. \1')) if g
+    end
+
+    # Check if the last particle should be the full epithet
+    lc = last_component
+    return if grammar || language || last_epithet != etymology(lc, :particle)
+
+    self.class.etymology_fields.each do |i|
+      self.send("etymology_xx_#{i}=", etymology(lc, i)) unless i == :particle
+      self.send("etymology_#{lc}_#{i}=", nil)
     end
   end
 end

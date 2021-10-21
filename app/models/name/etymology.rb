@@ -55,6 +55,11 @@ module Name::Etymology
     y.empty? ? nil : html ? y.html_safe : y
   end
 
+  def last_component
+    parts = (self.class.etymology_particles - [:xx]).reverse
+    parts.find { |i| self.class.etymology_fields.any? { |j| etymology(i, j) } }
+  end
+
   def grammar
     etymology(:xx, :grammar)
   end
@@ -90,6 +95,10 @@ module Name::Etymology
   end
 
   def language
-    etymology(:xx, :language)
+    etymology(:xx, :lang)
+  end
+
+  def latin?
+    language ? %w[L. N.L.].include?(language) : nil
   end
 end

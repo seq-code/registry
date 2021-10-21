@@ -80,7 +80,10 @@ module Name::QualityChecks
         message: 'The name is missing a type definition',
         link_text: 'Edit type',
         link_to: [:edit_name_type_url, self],
-        rules: %w[16 17 26.3] + (%w[subspecies species].include?(rank) ? %w[18a] : [])
+        rules: %w[16 17 26.3] + (
+          %w[subspecies species].include?(rank) ? %w[18a] :
+          %w[genus].include?(rank) ? %w[21a] : []
+        )
       }
     end
 
