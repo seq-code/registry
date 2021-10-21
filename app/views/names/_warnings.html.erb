@@ -4,13 +4,17 @@
     <hr/>
     <% @name.qc_warnings.each do |warn| %>
       <dt>
-        <%= fa_icon('exclamation-triangle', class: 'text-danger') %>
+        <%
+          blocking = !@warn[:rules].nil? && !warn[:can_approve]
+          icon_class = blocking ? 'text-danger' : 'text-warning'
+        %>
+        <%= fa_icon('exclamation-triangle', class: icon_class) %>
         <%= warn[:type].to_s.gsub(/_/, ' ').capitalize %>
       </dt>
       <dd class="pt-2">
         <%= warn[:message] %>
         <% if warn[:link_public] || @name.can_edit?(current_user) %>
-          <%= link_to(send(*warn[:link_to]), class: 'text-danger') do %>
+          <%= link_to(send(*warn[:link_to]), class: icon_class) do %>
             [<%= warn[:link_text] %>]
           <% end %>
         <% end %>
