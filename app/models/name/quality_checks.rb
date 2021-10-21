@@ -380,10 +380,10 @@ module Name::QualityChecks
     return true if %w[:p1, nil].include?(last_component)
 
     # Rule 49.1
-    return true if self.class.etymology_particles.all { |i| latin?(i) }
+    return true if self.class.etymology_particles.all? { |i| latin?(i) }
 
     # Rule 49.2
-    %i[feminine? masculine? neuter?].all do |i|
+    %i[feminine? masculine? neuter?].all? do |i|
       self.send(i) == self.send(i, last_component)
     end
   end
