@@ -54,7 +54,14 @@ class ApplicationController < ActionController::Base
     when /\A\d+\z/
       redirect_to(name_url(Name.where(id: params[:path]).first, par))
     when /\A[A-Z ]+\z/i
-      redirect_to(name_url(Name.where(name: params[:path]).first, par))
+      redirect_to(
+        name_url(
+          Name.where(
+            name: [params[:path], "Candidatus #{params[:path]}"]
+          ).first,
+          par
+        )
+      )
     else
       redirect_to(root_url)
     end
