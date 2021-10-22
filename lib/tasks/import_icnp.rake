@@ -9,7 +9,7 @@ namespace :icnp do
 
     def save_taxonomy(str)
       node = nil
-      str.split(';').each_with_index do |i, k|
+      str.to_s.split(';').each_with_index do |i, k|
         status = 20
         if k == 1 && i !~ /ota$/
           i = "#{i} (phylum)"
