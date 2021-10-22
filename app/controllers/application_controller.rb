@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
     @names =
       Name.where(status: Name.public_status)
           .where('name LIKE "Candidatus %"')
+          .or(Name.where(status: 15))
           .order(created_at: :desc)
   end
 

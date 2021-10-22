@@ -1,4 +1,4 @@
-<% unless @name.qc_warnings.empty? %>
+<% unless @name.validated? || @name.qc_warnings.empty? %>
   <dl class="main-section name-details border-danger" style="border-left: 1em solid;">
     <h2>Failed Quality Checks</h2>
     <hr/>

@@ -24,6 +24,7 @@ class Name < ApplicationRecord
   )
 
   before_save(:standardize_grammar)
+  before_save(:prevent_self_parent)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -150,6 +151,8 @@ class Name < ApplicationRecord
     name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
+    elsif validated? && name =~ /(.+) subsp\. (.+)/
+      "<i>#{$1}</i> subsp. <i>#{$2}</i>".html_safe
     elsif validated? || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe
     else
@@ -161,6 +164,8 @@ class Name < ApplicationRecord
     name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
+    elsif validated? && name =~ /(.+) subsp\. (.+)/
+      "<i>#{$1}</i> subsp. <i>#{$2}</i>".html_safe
     elsif validated? || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe
     else
@@ -423,5 +428,9 @@ class Name < ApplicationRecord
       self.send("etymology_xx_#{i}=", etymology(lc, i)) unless i == :particle
       self.send("etymology_#{lc}_#{i}=", nil)
     end
+  end
+
+  def prevent_self_parent
+    parent = nil if parent_id == id
   end
 end
