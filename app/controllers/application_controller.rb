@@ -46,6 +46,20 @@ class ApplicationController < ActionController::Base
     redirect_back(fallback_location: root_url)
   end
 
+  # GET /link/Patescibacteria
+  # GET /link/Patescibacteria.json
+  def short_link
+    par = { format: params[:format] }
+    case params[:path]
+    when /\A\d+\z/
+      redirect_to(name_url(Name.where(id: params[:path]).first, par))
+    when /\A[A-Z ]+\z/i
+      redirect_to(name_url(Name.where(name: params[:path]).first, par))
+    else
+      redirect_to(root_url)
+    end
+  end
+
   protected
 
     def authenticate_admin!

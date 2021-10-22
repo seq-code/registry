@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'users/registrations' }
+  get 'link/:path(.:format)' => 'application#short_link'
   get 'set/list' => 'application#set_list', as: :set_list
   get 'sysusers(.:format)' => 'users#index', as: :users
   get 'sysusers/:username(.:format)' => 'users#show', as: :user
