@@ -22,10 +22,22 @@ module Name::QualityChecks
     unless identical_base_name.nil?
       @qc_warnings << {
         type: :identical_base_name,
-        message: 'Base name already exists with different qualifiers',
+        message: 'Name already exists with different qualifiers',
         link_text: identical_base_name.abbr_name,
         link_to: [:name_url, identical_base_name],
         link_public: true,
+        rules: %w[9],
+        recommendations: %w[9.2]
+      }
+    end
+
+    unless external_homonyms.empty?
+      @qc_warnings << {
+        type: :identical_external_name,
+        message:
+          "Name is already in use: #{external_homonyms.to_sentence}".html_safe,
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
         rules: %w[9],
         recommendations: %w[9.2]
       }

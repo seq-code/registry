@@ -25,6 +25,7 @@ class Name < ApplicationRecord
 
   before_save(:standardize_grammar)
   before_save(:prevent_self_parent)
+  before_save(:monitor_name_changes)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -390,9 +391,7 @@ class Name < ApplicationRecord
   end
 
   def type_text
-    if type?
-      @type_text ||= "#{type_material_name}: #{type_accession}"
-    end
+    @type_text ||= "#{type_material_name}: #{type_accession}" if type?
   end
 
   def possible_type_materials
@@ -400,6 +399,37 @@ class Name < ApplicationRecord
       v[:sp] == (%w[species subspecies].include?(inferred_rank))
     end
   end
+
+  # ============ --- OTHER TAXONOMIES --- ============
+
+  def itis_search
+    require 'uri'
+    require 'net/http'
+
+    itis_base = 'https://www.itis.gov/ITISWebService/jsonservice'
+    uri = URI("#{itis_base}/searchByScientificNameExact?srchKey=#{base_name}")
+    res = Net::HTTP.get_response(uri)
+    update(itis_json: res.body, itis_at: Time.now) if res.is_a?(Net::HTTPSuccess)
+  rescue
+    nil
+  end
+
+  def itis_hash
+    @itis_hash ||= nil
+    return @itis_hash unless @itis_hash.nil?
+
+    itis_search if !itis_json || itis_at < 2.months.ago
+    @itis_hash = JSON.parse(itis_json, symbolize_names: true) if itis_json
+  end
+
+  def external_homonyms
+    return [] unless itis_hash
+
+    names = itis_hash[:scientificNames].compact || []
+    names.map { |i| "<i>#{i[:combinedName]}</i> #{i[:author]} (<i>#{i[:kingdom]}</i>)" }
+  end
+
+  # ============ --- INTERNAL CHECKS --- ============
 
   private
 
@@ -437,5 +467,12 @@ class Name < ApplicationRecord
 
   def prevent_self_parent
     parent = nil if parent_id == id
+  end
+
+  def monitor_name_changes
+    if name_changed?
+      self.itis_json = nil
+      self.itis_at = nil
+    end
   end
 end
