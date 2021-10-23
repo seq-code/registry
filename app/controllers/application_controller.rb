@@ -51,17 +51,14 @@ class ApplicationController < ActionController::Base
   # GET /link/Patescibacteria.json
   def short_link
     par = { format: params[:format] }
+    params[:path].sub!(/\A\/+/, '')
+    params[:path].sub!(/\/+\z/, '')
     case params[:path]
-    when /\A\d+\z/
-      redirect_to(name_url(Name.where(id: params[:path]).first, par))
-    when /\A[A-Z ]+\z/i
+    when /\A(i:)?(\d+)\z/
+      redirect_to(name_url(Name.where(id: $2).first, par))
+    when /\A(n:)?([A-Z ]+)\z/i
       redirect_to(
-        name_url(
-          Name.where(
-            name: [params[:path], "Candidatus #{params[:path]}"]
-          ).first,
-          par
-        )
+        name_url(Name.where(name: [$2, "Candidatus #{$2}"]).first, par)
       )
     else
       redirect_to(root_url)
