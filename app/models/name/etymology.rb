@@ -154,8 +154,8 @@ module Name::Etymology
       self.etymology_xx_description = "the #{type_name.base_name} #{rank}"
     else
       # Based on another (sub)species with the same epithet
-      self.class.etymology_particles.any? do |i|
-        self.class.etymology_fields.any? do |j|
+      self.class.etymology_particles.each do |i|
+        self.class.etymology_fields.each do |j|
           next if i == :xx && j == :particle
 
           acc = "etymology_#{i}_#{j}"
