@@ -20,7 +20,7 @@
         <% end %>
         <% if warn[:rules] || warn[:recommendations] %>
           <div class="text-muted">
-            <b>Contravenes SeqCode</b>:
+            <b>§ Contravenes SeqCode</b>:
             <% if warn[:rules] %>
               <%= warn[:rules].size == 1 ? 'Rule' : 'Rules' %>
               <%= warn[:rules].to_sentence %>
