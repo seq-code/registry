@@ -321,6 +321,11 @@ class Name < ApplicationRecord
     rank.to_s == self.class.ranks.first
   end
 
+  def expected_parent_rank
+    idx = self.class.ranks.index(rank.to_s)
+    self.class.ranks[idx - 1] if idx && idx > 0
+  end
+
   def children
     @children ||= Name.where(parent: self)
   end

@@ -257,7 +257,8 @@ class NamesController < ApplicationController
   # POST /names/1/link_parent
   def link_parent_commit
     parent = Name.find_by(name: params[:name][:parent])
-    if parent.nil?
+    link_nil = params[:name][:parent].nil? || params[:name][:parent].empty?
+    if parent.nil? && !link_nil
       parent = Name.new(name: params[:name][:parent])
       parent.status = 5
       parent.created_by = current_user
@@ -267,8 +268,9 @@ class NamesController < ApplicationController
       end
     end
 
-    if !parent.nil? && @name.update(parent: parent)
-      flash[:notice] = 'Parent linked to the name'
+    if (!parent.nil? || link_nil) && @name.update(parent: parent)
+      flash[:notice] =
+        link_nil ? 'Parent unlinked from the name' : 'Parent linked to the name'
       redirect_to @name
     else
       render :link_parent
