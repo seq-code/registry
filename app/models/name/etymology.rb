@@ -123,7 +123,8 @@ module Name::Etymology
   ##
   # Can the etymology be automatically filled on the basis of the type genus?
   def can_autofill_etymology?
-    rank? && type_is_name? && (type_name.rank == 'genus' || importable_etymology)
+    return true if rank? && type_is_name? && type_name.rank == 'genus'
+    !importable_etymology.nil?
   end
 
   ##
