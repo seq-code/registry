@@ -162,7 +162,7 @@ module Name::Etymology
           self.send("#{acc}=", importable_etymology.send(acc))
         end
       end
-      syllabication ||= importable_etymology.syllabication
+      self.syllabication ||= importable_etymology.syllabication
     end
   end
 end
