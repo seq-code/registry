@@ -114,6 +114,8 @@ module Name::Etymology
   end
 
   def importable_etymology
+    return unless %w[species subspecies].include?(rank)
+
     @importable_etymology ||=
       Name.where('name LIKE ?', "% #{last_epithet}")
           .where.not(etymology_xx_grammar: [nil, ''])
@@ -123,8 +125,8 @@ module Name::Etymology
   ##
   # Can the etymology be automatically filled on the basis of the type genus?
   def can_autofill_etymology?
-    return true if rank? && type_is_name? && type_name.rank == 'genus'
-    !importable_etymology.nil?
+    return false unless rank?
+    (type_is_name? && type_name.rank == 'genus') || !importable_etymology.nil?
   end
 
   ##
@@ -134,7 +136,7 @@ module Name::Etymology
     return unless can_autofill_etymology?
 
     clean_etymology
-    if type_name.rank == 'genus'
+    if type_is_name? && type_name.rank == 'genus'
       # Based on type genus
       self.etymology_p1_lang = type_name.language
       self.etymology_p1_grammar = type_name.grammar
