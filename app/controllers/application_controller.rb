@@ -51,6 +51,7 @@ class ApplicationController < ActionController::Base
   # GET /link/Patescibacteria.json
   def short_link
     par = { format: params[:format] }
+    params[:path] ||= ''
     params[:path].sub!(/\A\/+/, '')
     params[:path].sub!(/\/+\z/, '')
     case params[:path]
