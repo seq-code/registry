@@ -113,10 +113,17 @@ module Name::Etymology
     end
   end
 
+  def importable_etymology
+    @importable_etymology ||=
+      Name.where('name LIKE ?', "% #{last_epithet}")
+          .where.not(etymology_xx_grammar: [nil, ''])
+          .last
+  end
+
   ##
   # Can the etymology be automatically filled on the basis of the type genus?
   def can_autofill_etymology?
-    rank? && type_is_name? && type_name.rank == 'genus'
+    rank? && type_is_name? && (type_name.rank == 'genus' || importable_etymology)
   end
 
   ##
@@ -126,19 +133,32 @@ module Name::Etymology
     return unless can_autofill_etymology?
 
     clean_etymology
-    self.etymology_p1_lang = type_name.language
-    self.etymology_p1_grammar = type_name.grammar
-    self.etymology_p1_particle = type_name.base_name
-    self.etymology_p1_description =
-      "referring to the type #{type_name.rank} #{type_name.base_name}"
-    self.etymology_p2_lang = 'L.'
-    gen = %w[family order].include?(rank) ? 'fem.' : 'neut.'
-    self.etymology_p2_grammar = "#{gen} pl. suff."
-    self.etymology_p2_particle = "-#{rank_suffix}"
-    self.etymology_p2_description =
-      "ending to denote #{rank[0] =~ /[aeiou]/ ? 'an' : 'a'} #{rank}"
-    self.etymology_xx_lang = 'N.L.'
-    self.etymology_xx_grammar = "#{gen} pl. n."
-    self.etymology_xx_description = "the #{type_name.base_name} #{rank}"
+    if type_name.rank == 'genus'
+      # Based on type genus
+      self.etymology_p1_lang = type_name.language
+      self.etymology_p1_grammar = type_name.grammar
+      self.etymology_p1_particle = type_name.base_name
+      self.etymology_p1_description =
+        "referring to the type #{type_name.rank} #{type_name.base_name}"
+      self.etymology_p2_lang = 'L.'
+      gen = %w[family order].include?(rank) ? 'fem.' : 'neut.'
+      self.etymology_p2_grammar = "#{gen} pl. suff."
+      self.etymology_p2_particle = "-#{rank_suffix}"
+      self.etymology_p2_description =
+        "ending to denote #{rank[0] =~ /[aeiou]/ ? 'an' : 'a'} #{rank}"
+      self.etymology_xx_lang = 'N.L.'
+      self.etymology_xx_grammar = "#{gen} pl. n."
+      self.etymology_xx_description = "the #{type_name.base_name} #{rank}"
+    else
+      # Based on another (sub)species with the same epithet
+      self.class.etymology_particles.any? do |i|
+        self.class.etymology_fields.any? do |j|
+          next if i == :xx && j == :particle
+
+          acc = "etymology_#{i}_#{j}"
+          self.send("#{acc}=", importable_etymology.send(acc))
+        end
+      end
+    end
   end
 end
