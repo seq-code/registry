@@ -30,7 +30,7 @@
               <%= warn[:recommendations].size == 1 ? 'Recommendation' : 'Recommendations' %>
               <%= warn[:recommendations].to_sentence %>
             <% end %>
-            <% if warn[:can_approve] && @name.status < 15 %>
+            <% if warn[:can_approve] && !@name.validated? %>
               but can be safely ignored before validation
             <% end %>
           </div>

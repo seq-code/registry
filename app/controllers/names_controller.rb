@@ -5,7 +5,7 @@ class NamesController < ApplicationController
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
-      submit return validate claim
+      submit return validate approve claim
     ]
   )
   before_action(
@@ -23,7 +23,9 @@ class NamesController < ApplicationController
   )
   before_action(
     :authenticate_curator!,
-    only: %i[check_ranks unknown_proposal submitted drafts return validate]
+    only: %i[
+      check_ranks unknown_proposal submitted drafts return validate approve
+    ]
   )
 
   # GET /autocomplete_names.json?q=Abc
@@ -165,7 +167,7 @@ class NamesController < ApplicationController
   # PATCH/PUT /names/1.json
   def update
     params[:name][:syllabication_reviewed] = true if name_params[:syllabication]
-    if name_params[:type_material]&.==('name') 
+    if name_params[:type_material]&.==('name')
       acc = name_params[:type_accession]
       type_name =
         if acc.empty?
@@ -280,7 +282,7 @@ class NamesController < ApplicationController
   # POST /names/1/submit
   def submit
     par = { status: 10, submitted_at: Time.now, submitted_by: current_user }
-    if @name.status >= 10
+    if @name.after_submission?
       flash[:alert]  = 'Name status is incompatible with submission'
     elsif @name.update(par)
       flash[:notice] = 'Name submitted, awaiting expert review'
@@ -293,7 +295,7 @@ class NamesController < ApplicationController
   # POST /names/1/return
   def return
     par = { status: 5 }
-    if @name.status < 10
+    if !@name.after_submission?
       flash[:alert]  = 'Name status is incompatible with return'
     elsif @name.update(par)
       flash[:notice] = 'Name returned to author'
@@ -309,10 +311,23 @@ class NamesController < ApplicationController
     par = {
       status: new_status, validated_by: current_user, validated_at: Time.now
     }
-    if @name.status > 10
+    if @name.validated?
       flash[:alert] = 'Name status is incompatible with validation'
     elsif @name.update(par)
       flash[:notice] = 'Name successfully validated'
+    else
+      flash[:alert] = 'An unexpected error occurred'
+    end
+    redirect_to(@name)
+  end
+
+  # POST /names/1/approve
+  def approve
+    par = { status: 12, approved_by: current_user, approved_at: Time.now }
+    if @name.after_approval?
+      flash[:alert] = 'Name status is incompatible with approval'
+    elsif @name.update(par)
+      flash[:notice] = 'Name successfully approved'
     else
       flash[:alert] = 'An unexpected error occurred'
     end

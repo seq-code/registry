@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   post 'names/:id/submit' => 'names#submit', as: :submit_name
   post 'names/:id/return' => 'names#return', as: :return_name
   post 'names/:id/validate' => 'names#validate', as: :validate_name
+  post 'names/:id/approve' => 'names#approve', as: :approve_name
   post 'names/:id/claim' => 'names#claim', as: :claim_name
   resources :publications
   resources :subjects

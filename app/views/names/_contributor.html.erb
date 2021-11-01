@@ -19,7 +19,7 @@
             ) do %>
           <%= fa_icon 'edit' %> Edit outside links
         <% end %>
-        <% if @name.status < 10 %>
+        <% unless @name.after_submission? %>
           <%= link_to(
                 submit_name_url(@name),
                 method: :post, class: 'btn btn-primary btn-sm',

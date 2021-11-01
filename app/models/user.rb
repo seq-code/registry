@@ -1,7 +1,15 @@
 class User < ApplicationRecord
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :confirmable, :lockable, :trackable
+  devise(
+    :database_authenticatable, :registerable,
+    :recoverable, :rememberable, :validatable,
+    :confirmable, :lockable, :trackable
+  )
+
+  has_many(:created_names, class_name: 'Name', foreign_key: 'created_by')
+  has_many(:submitted_names, class_name: 'Name', foreign_key: 'submitted_by')
+  has_many(:approved_names, class_name: 'Name', foreign_key: 'approved_by')
+  has_many(:validated_names, class_name: 'Name', foreign_key: 'validated_by')
+
   validates(
     :username,
     uniqueness: true,

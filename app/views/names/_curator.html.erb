@@ -2,14 +2,25 @@
   <dl class="main-section name-details">
     <h2>Curator Actions</h2>
     <dd class="pt-2">
-      <% if @name.status <= 10 %>
-        <%= link_to(
-              validate_name_url(@name),
-              method: :post,
-              class: 'btn btn-primary btn-sm',
-              data: { confirm: 'Are you sure? This action cannot be undone' }
-            ) do %>
-          <%= fa_icon('certificate') %> Validate under SeqCode
+      <% unless @name.validated? %>
+        <% if @name.after_approval? %>
+          <%= link_to(
+                validate_name_url(@name),
+                method: :post,
+                class: 'btn btn-primary btn-sm',
+                data: { confirm: 'Are you sure? This action cannot be undone' }
+              ) do %>
+            <%= fa_icon('certificate') %> Validate under SeqCode
+          <% end %>
+        <% else %>
+          <%= link_to(
+                approve_name_url(@name),
+                method: :post,
+                class: 'btn btn-primary btn-sm',
+                data: { confirm: 'Are you sure? This action cannot be undone' }
+              ) do %>
+            <%= fa_icon('check-square') %> Approve name
+          <% end %>
         <% end %>
         <%= link_to(
               validate_name_url(@name, code: :icnp),
@@ -20,7 +31,7 @@
           <%= fa_icon('stamp') %> Report valid under ICNP
         <% end %>
       <% end %>
-      <% if @name.status == 10 %>
+      <% if @name.after_submission? && !@name.validated? %>
         <%= link_to(
               return_name_url(@name),
               method: :post,

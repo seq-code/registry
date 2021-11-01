@@ -19,6 +19,10 @@ class Name < ApplicationRecord
     class_name: 'User', foreign_key: 'submitted_by'
   )
   belongs_to(
+    :approved_by, optional: true,
+    class_name: 'User', foreign_key: 'approved_by'
+  )
+  belongs_to(
     :validated_by, optional: true,
     class_name: 'User', foreign_key: 'validated_by'
   )
@@ -98,6 +102,15 @@ class Name < ApplicationRecord
             This name has been submitted for review by the author or other
             registered user and cannot be modified until expert review takes
             place
+          TXT
+        },
+        12 => {
+          symbol: :approval, name: 'Approved',
+          public: false, valid: false,
+          help: <<~TXT
+            This name has been approved by expert curators or thoroughly
+            checked by automated controls but still lacks one or more conditions
+            to be valid, typically effective publication
           TXT
         },
         15 => {
@@ -246,6 +259,14 @@ class Name < ApplicationRecord
 
   def public?
     status_hash[:public]
+  end
+
+  def after_submission?
+    status >= 10
+  end
+
+  def after_approval?
+    status >= 12
   end
 
   # ============ --- OUTLINKS --- ============
