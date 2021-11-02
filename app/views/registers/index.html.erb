@@ -1,0 +1,31 @@
+<h1>
+  Register Lists 
+</h1>
+<div class="container p-0">
+  <div class="row">
+    <div class="col-sm-9">
+      <b>Status</b>
+      <% all_status = %w[validated] %>
+      <% all_status += %w[user] if current_contributor? %>
+      <% all_status += %w[draft submitted] if current_curator? %>
+      <% all_status.map do |status| %>
+        <span class="text-muted">·</span>
+        <%=
+          status == @status ?
+            status : link_to(status, registers_path(status: status))
+        %>
+      <% end %>
+    </div>
+    <div class="col-sm-3 text-right">
+      <%= list_type_selector %>
+    </div>
+  </div>
+</div>
+<hr/>
+
+<%= adaptable_list(set: @registers) do |list| %>
+  <% @registers.each do |register| %>
+    <%= render(partial: register, locals: { list: list }) %>
+  <% end %>
+<% end %>
+

@@ -342,7 +342,10 @@ module Name::QualityChecks
       end
     end
 
-    @qc_warnings
+    @qc_warnings.map do |warning|
+      warning[:fail] = warning[:rules] && !warning[:can_approve] ? :error : :warn
+      warning
+    end
   end
 
   def identical_base_name

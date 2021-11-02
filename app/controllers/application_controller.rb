@@ -57,10 +57,13 @@ class ApplicationController < ActionController::Base
     case params[:path]
     when /\A(i:)?(\d+)\z/
       redirect_to(name_url(Name.where(id: $2).first, par))
-    when /\A(n:)?([A-Z ]+)\z/i
+    when /\A(n:)?([a-z_ ]+)\z/i
+      name = $2.gsub('_', ' ')
       redirect_to(
-        name_url(Name.where(name: [$2, "Candidatus #{$2}"]).first, par)
+        name_url(Name.where(name: [name, "Candidatus #{name}"]).first, par)
       )
+    when /\A(r:.+)\z/i
+      redirect_to(register_url(Register.where(accession: $1).first, par))
     else
       redirect_to(root_url)
     end

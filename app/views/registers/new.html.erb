@@ -1,0 +1,37 @@
+<br/>
+<h1>New Register</h1>
+<% if @name %>
+  <p class='lead'>
+    Add name to register for submission:
+    <%= link_to(@name) do %>
+      <%= @name.name_html %>
+    <% end %>
+  </p>
+<% end %>
+
+<%= simple_form_for(@register) do |f| %>
+  <div class="form-actions">
+    <%= hidden_field_tag(:name, @name&.id) %>
+    <% unless @registers.empty? %>
+      <%= label_tag(:existing_register) %>
+      <%=
+        select_tag(
+          :existing_register,
+          options_for_select(
+            @registers.map do |r|
+              [
+                "#{r.accession} (created #{time_ago_in_words(r.created_at)} ago)",
+                r.accession
+              ]
+            end + [['Create a new register', nil]]
+          ),
+          class: "form-control"
+        )
+      %>
+      <br/>
+    <% end %>
+    <%= f.button(:submit, 'Register name') %>
+  </div>
+<% end %>
+<br/><br/>
+

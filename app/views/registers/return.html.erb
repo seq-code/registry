@@ -1,0 +1,16 @@
+<br/>
+<h1>
+  Return Register List: <%= link_to(@register.acc_url, @register) %>
+</h1>
+<hr/>
+
+<%= simple_form_for(
+      @register, url: post_return_register_url(@register), method: :post
+    ) do |f| %>
+  <%= f.input :notes, as: :rich_text_area %>
+  <br/>
+  <%= f.button :submit, 'Return to submitter' %>
+  <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
+<% end %>
+<br/><br/>
+

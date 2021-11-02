@@ -1,0 +1,31 @@
+<dl class="main-section name-details">
+  <dt><%= fa_icon(:barcode) %> Accession</dt>
+  <dd><%= @register.acc_url %></dd>
+
+  <dt><%= fa_icon(:user) %> Created by</dt>
+  <dd>
+    <%= link_to(@register.user.username, @register.user) %>
+    <u class="hover-help" title="<%= @register.created_at %>"
+       ><%= time_ago_in_words(@register.created_at) %> ago</u>
+  </dd>
+
+  <dt><%= fa_icon('clipboard-check') %> Status</dt>
+  <dd>
+    <%= @register.status_name.capitalize %>:
+    <% if @register.validated? %>
+      Valid, all names in this register list have been effectively published and
+      validated
+    <% elsif @register.submitted? %>
+      This register list is currently being evaluated by expert curators
+      or awaiting effective publication
+    <% else %>
+      This is a draft register list, currently in preparation
+    <% end %>
+  </dd>
+
+  <% if @register.notes? %>
+    <dt><%= fa_icon 'sticky-note' %> Notes</dt>
+    <dd><%= @register.notes %></dd>
+  <% end %>
+</dl>
+

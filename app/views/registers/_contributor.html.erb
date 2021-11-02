@@ -1,0 +1,24 @@
+<% if @register.can_edit?(current_user) %>
+  <dl class="main-section name-details">
+    <h1>Contributor Actions</h1>
+    <hr/>
+    <dd>
+      <% unless @register.submitted? %>
+        <%= link_to(
+              submit_register_url(@register), method: :post,
+              class: 'btn btn-primary btn-sm',
+              data: { confirm: 'Are you sure? This will submit to reviewers' }
+            ) do %>
+          <%= fa_icon('paper-plane') %> Submit register list
+        <% end %>
+      <% end %>
+      <%= link_to(
+            @register, method: :delete,
+            class: 'btn btn-danger btn-sm',
+            data: { confirm: 'Are you sure? This action cannot be undone' }
+          ) do %>
+        <%= fa_icon('trash-alt') %> Eliminate register list
+      <% end %>
+    </dd>
+  </dl>
+<% end %>

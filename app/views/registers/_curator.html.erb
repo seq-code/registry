@@ -1,0 +1,21 @@
+<% if current_curator? && @register.submitted? && !@register.validated? %>
+  <dl class="main-section name-details">
+    <h1>Curator Actions</h1>
+    <hr/>
+    <dd>
+      <%= link_to(
+            approve_register_url(@register), method: :post,
+            class: 'btn btn-primary btn-sm',
+            data: { confirm: 'Are you sure? The submitter will be notified' }
+          ) do %>
+        <%= fa_icon('check-square') %> Approve all names in the list
+      <% end %>
+      <%= link_to(
+            return_register_url(@register),
+            class: 'btn btn-primary btn-sm'
+          ) do %>
+        <%= fa_icon('undo-alt') %> Return all names to submitter
+      <% end %>
+    </dd>
+  </dl>
+<% end %>

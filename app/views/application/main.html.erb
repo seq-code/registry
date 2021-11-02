@@ -45,8 +45,9 @@
         </div>
         <div class="col-md-9 mb-2 text-left">
           <%= link_to('My names', user_names_path, class: 'btn btn-info') %>
-          <%= link_to('Register a name', new_name_path, class: 'btn btn-info') %>
-          <%= link_to('Register names in batch', new_name_batch_path, class: 'btn btn-info') %>
+          <%= link_to('My register lists', registers_path(status: :user), class: 'btn btn-info') %>
+          <%= link_to('Create a name', new_name_path, class: 'btn btn-info') %>
+          <%= link_to('Create names in batch', new_name_batch_path, class: 'btn btn-info') %>
         </div>
       </div>
     <% end %>

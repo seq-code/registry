@@ -74,5 +74,13 @@
     <%= fa_icon('question-circle',
                 title: @name.status_help, class: 'hover-help') %>
   </dd>
+
+  <% if @name.register&.can_view?(current_user) %>
+    <dt><%= fa_icon('clipboard-list') %> Register List</dt>
+    <dd>
+      <%= link_to(@name.register.acc_url, @name.register) %>
+      (<%= @name.register.status_name %>)
+    </dd>
+  <% end %>
 </dl>
 

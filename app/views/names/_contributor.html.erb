@@ -19,11 +19,10 @@
             ) do %>
           <%= fa_icon 'edit' %> Edit outside links
         <% end %>
-        <% unless @name.after_submission? %>
+        <% unless @name.after_submission? || @name.register %>
           <%= link_to(
-                submit_name_url(@name),
-                method: :post, class: 'btn btn-primary btn-sm',
-                data: { confirm: 'Are you sure? This action can only be reversed by a curator' }
+                new_register_url(name: @name),
+                class: 'btn btn-primary btn-sm'
               ) do %>
             <%= fa_icon('paper-plane') %> Propose name
           <% end %>

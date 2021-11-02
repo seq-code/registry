@@ -5,7 +5,7 @@ class NamesController < ApplicationController
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
-      submit return validate approve claim
+      return validate approve claim
     ]
   )
   before_action(
@@ -14,7 +14,6 @@ class NamesController < ApplicationController
       edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
-      submit
     ]
   )
   before_action(
@@ -167,6 +166,8 @@ class NamesController < ApplicationController
   # PATCH/PUT /names/1.json
   def update
     params[:name][:syllabication_reviewed] = true if name_params[:syllabication]
+    params[:name][:register] = nil if name_params[:register]&.==('')
+
     if name_params[:type_material]&.==('name')
       acc = name_params[:type_accession]
       type_name =
@@ -279,19 +280,6 @@ class NamesController < ApplicationController
     end
   end
 
-  # POST /names/1/submit
-  def submit
-    par = { status: 10, submitted_at: Time.now, submitted_by: current_user }
-    if @name.after_submission?
-      flash[:alert]  = 'Name status is incompatible with submission'
-    elsif @name.update(par)
-      flash[:notice] = 'Name submitted, awaiting expert review'
-    else
-      flash[:alert]  = 'An unexpected error occurred'
-    end
-    redirect_to(@name)
-  end
-
   # POST /names/1/return
   def return
     par = { status: 5 }
@@ -377,7 +365,8 @@ class NamesController < ApplicationController
       params.require(:name)
         .permit(
           :name, :rank, :description, :notes, :syllabication, :ncbi_taxonomy,
-          :type_material, :type_accession, :etymology_text, *etymology_pars
+          :type_material, :type_accession, :etymology_text, :register,
+           *etymology_pars
         )
     end
 end

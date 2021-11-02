@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_01_224559) do
+ActiveRecord::Schema.define(version: 2021_11_02_203303) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -101,7 +101,9 @@ ActiveRecord::Schema.define(version: 2021_11_01_224559) do
     t.datetime "itis_at"
     t.integer "approved_by"
     t.datetime "approved_at"
+    t.integer "register_id"
     t.index ["name"], name: "index_names_on_name", unique: true
+    t.index ["register_id"], name: "index_names_on_register_id"
   end
 
   create_table "publication_authors", force: :cascade do |t|
@@ -153,6 +155,23 @@ ActiveRecord::Schema.define(version: 2021_11_01_224559) do
     t.index ["journal"], name: "index_publications_on_journal"
   end
 
+  create_table "registers", force: :cascade do |t|
+    t.string "accession"
+    t.integer "user_id", null: false
+    t.integer "validated_by"
+    t.boolean "submitted", default: false
+    t.boolean "validated", default: false
+    t.integer "publication_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "notes"
+    t.index ["accession"], name: "index_registers_on_accession", unique: true
+    t.index ["publication_id"], name: "index_registers_on_publication_id"
+    t.index ["submitted"], name: "index_registers_on_submitted"
+    t.index ["user_id"], name: "index_registers_on_user_id"
+    t.index ["validated"], name: "index_registers_on_validated"
+  end
+
   create_table "subjects", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -195,4 +214,7 @@ ActiveRecord::Schema.define(version: 2021_11_01_224559) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "names", "registers"
+  add_foreign_key "registers", "publications"
+  add_foreign_key "registers", "users"
 end

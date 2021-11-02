@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many(:submitted_names, class_name: 'Name', foreign_key: 'submitted_by')
   has_many(:approved_names, class_name: 'Name', foreign_key: 'approved_by')
   has_many(:validated_names, class_name: 'Name', foreign_key: 'validated_by')
+  has_many(:registers)
 
   validates(
     :username,
