@@ -501,7 +501,7 @@ class Name < ApplicationRecord
   def irmng_homonyms
     return [] unless irmng_hash && !irmng_hash.empty?
 
-    irmng_hash.first.map do |i|
+    (irmng_hash.first || []).map do |i|
       "<a href=\"#{i[:url]}\" target=_blank>" \
         "<i>#{i[:scientificname]}</i> #{i[:authority]} (<i>#{i[:kingdom]}</i>)" \
         "</a>"
@@ -522,7 +522,7 @@ class Name < ApplicationRecord
   def col_homonyms
     return [] unless col_hash && col_hash[:type] == 'exact'
 
-    col_hash[:alternatives].map do |i|
+    (col_hash[:alternatives] || []).map do |i|
       "#{i[:labelHtml]} " \
         "(<a href=\"https://www.catalogueoflife.org/\" target=_blank>COL</a>)"
     end
