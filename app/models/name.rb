@@ -349,6 +349,18 @@ class Name < ApplicationRecord
     self.class.ranks[idx - 1] if idx && idx > 0
   end
 
+  def lineage
+    @lineage ||= nil
+    return @lineage unless @lineage.nil?
+
+    @lineage ||= [self]
+    while par = @lineage.first.parent
+      @lineage.unshift(par)
+    end
+    @lineage.pop
+    @lineage
+  end
+
   def children
     @children ||= Name.where(parent: self)
   end

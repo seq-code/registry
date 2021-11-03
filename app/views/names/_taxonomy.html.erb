@@ -35,9 +35,12 @@
   <% end %>
 
   <% if @name.parent || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon 'sort-amount-up-alt' %> Parent</dt>
+    <dt><%= fa_icon('sort-amount-up-alt') %> Classification</dt>
     <dd>
-      <%= link_to(@name.parent.name_html, @name.parent) if @name.parent %>
+      <% @name.lineage.each do |name| %>
+        <%= link_to(name.name_html, name) %> &raquo;
+      <% end %>
+      <%= @name.name_html %>
       <% if @name.can_edit?(current_user) %>
         <%= link_to(
               name_link_parent_url(@name),
