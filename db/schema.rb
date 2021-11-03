@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_02_203303) do
+ActiveRecord::Schema.define(version: 2021_11_03_011522) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -102,6 +102,10 @@ ActiveRecord::Schema.define(version: 2021_11_02_203303) do
     t.integer "approved_by"
     t.datetime "approved_at"
     t.integer "register_id"
+    t.text "irmng_json"
+    t.datetime "irmng_at"
+    t.text "col_json"
+    t.datetime "col_at"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"
   end
