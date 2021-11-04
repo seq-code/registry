@@ -35,7 +35,7 @@ namespace :names do
         next if name == 'Candidatus'
         $stderr.puts "  - #{name}"
         unless pub.names.pluck(:name).include? name
-          n = Name.find_by(name: name)
+          n = Name.find_by_variants(name)
           n ||= Name.new(name: name).tap{ |i| i.save }
           PublicationName.new(publication: pub, name: n).save
         end

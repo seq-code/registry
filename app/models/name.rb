@@ -52,6 +52,16 @@ class Name < ApplicationRecord
 
   class << self
 
+    # ============ --- CLASS > QUERYING --- ============
+
+    def find_by_variants(name)
+      name = name.gsub(/^Candidatus /, '')
+      vars = [name, "Candidatus #{name}"]
+      Name.where(name: vars)
+          .or(Name.where(corrigendum_from: vars))
+          .first
+    end
+
     # ============ --- CLASS > ETYMOLOGY --- ============
 
     def etymology_particles

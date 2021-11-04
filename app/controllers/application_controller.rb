@@ -59,9 +59,7 @@ class ApplicationController < ActionController::Base
       redirect_to(name_url(Name.where(id: $2).first, par))
     when /\A(n:)?([a-z_ ]+)\z/i
       name = $2.gsub('_', ' ')
-      redirect_to(
-        name_url(Name.where(name: [name, "Candidatus #{name}"]).first, par)
-      )
+      redirect_to(Name.find_by_variants(name), par))
     when /\A(r:.+)\z/i
       redirect_to(register_url(Register.where(accession: $1).first, par))
     else
