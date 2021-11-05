@@ -56,7 +56,7 @@ module Name::QualityChecks
 
     if proposed_by.nil?
       @qc_warnings << {
-        type: :missing_proposal,
+        type: :missing_effective_publication,
         message: 'The publication proposing this name has not been identified',
         link_text: 'Register publication',
         link_to: [:new_publication_url, { link_name: id }],
