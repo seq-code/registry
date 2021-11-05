@@ -5,7 +5,7 @@ class NamesController < ApplicationController
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
-      return validate approve claim
+      return validate approve claim new_correspondence
     ]
   )
   before_action(
@@ -13,7 +13,7 @@ class NamesController < ApplicationController
     only: %i[
       edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
-      autofill_etymology link_parent link_parent_commit
+      autofill_etymology link_parent link_parent_commit new_correspondence
     ]
   )
   before_action(
@@ -332,6 +332,23 @@ class NamesController < ApplicationController
       flash[:notice] = 'Name successfully claimed'
     else
       flash[:alert]  = 'An unexpected error occurred'
+    end
+    redirect_to @name
+  end
+
+  # POST /names/1/new_correspondence
+  def new_correspondence
+    @name_correspondence = NameCorrespondence.new(
+      params.require(:name_correspondence).permit(:message)
+    )
+    unless @name_correspondence.message.empty?
+      @name_correspondence.user = current_user
+      @name_correspondence.name = @name
+      if @name_correspondence.save
+        flash[:notice] = 'Correspondence recorded'
+      else
+        flash[:alert] = 'An unexpected error occurred with the correspondence'
+      end
     end
     redirect_to @name
   end

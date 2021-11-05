@@ -1,6 +1,8 @@
 class Name < ApplicationRecord
   has_many(:publication_names, dependent: :destroy)
   has_many(:publications, through: :publication_names)
+  has_many(:name_correspondences)
+  alias :correspondences :name_correspondences
   belongs_to(
     :proposed_by, optional: true,
     class_name: 'Publication', foreign_key: 'proposed_by'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_03_011522) do
+ActiveRecord::Schema.define(version: 2021_11_05_104545) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -49,6 +49,16 @@ ActiveRecord::Schema.define(version: 2021_11_03_011522) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["given", "family"], name: "index_authors_on_given_and_family", unique: true
+  end
+
+  create_table "name_correspondences", force: :cascade do |t|
+    t.integer "name_id", null: false
+    t.integer "user_id", null: false
+    t.text "message"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name_id"], name: "index_name_correspondences_on_name_id"
+    t.index ["user_id"], name: "index_name_correspondences_on_user_id"
   end
 
   create_table "names", force: :cascade do |t|
@@ -218,6 +228,8 @@ ActiveRecord::Schema.define(version: 2021_11_03_011522) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "name_correspondences", "names"
+  add_foreign_key "name_correspondences", "users"
   add_foreign_key "names", "registers"
   add_foreign_key "registers", "publications"
   add_foreign_key "registers", "users"
