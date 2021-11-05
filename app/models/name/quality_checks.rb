@@ -391,10 +391,10 @@ module Name::QualityChecks
     return true unless rank? && grammar && rank == 'genus'
 
     # Rules 49.1 and 49.3
-    return true if %w[:p1, nil].include?(last_component)
+    return true if [:p1, nil].include?(last_component)
 
-    # Rule 49.1
-    return true if self.class.etymology_particles.all? { |i| latin?(i) }
+    # Rule 49.1 and 49.3
+    return true unless self.class.etymology_particles.map { |i| latin?(i) }.compact.all?
 
     # Rule 49.2
     %i[feminine? masculine? neuter?].all? do |i|
