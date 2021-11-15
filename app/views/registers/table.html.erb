@@ -10,22 +10,26 @@
 <table class="table-pdf mb-5">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Rank</th>
-      <th>Syllabication</th>
+      <th>Proposed Taxon</th>
       <th>Etymology</th>
       <th>Description</th>
-      <th>Parent</th>
+      <th>Parent Taxon</th>
       <th>Type</th>
     <tr>
   </thead>
   <tbody>
     <% @register.names_by_rank.each do |name| %>
       <tr>
-        <td><%= name.name_html(nil, true) %></td>
-        <td><%= name.rank %></td>
-        <td><%= name.syllabication %></td>
-        <td><%= name.full_etymology(true) %></td>
+        <td>
+          <%= name.inferred_rank.capitalize %>
+          <%= name.name_html(nil, true) %>
+        </td>
+        <td>
+          <% if name.syllabication? %>
+            [<%= name.syllabication %>]
+          <% end %>
+          <%= name.full_etymology(true) %>
+        </td>
         <td><%= name.description %></td>
         <td>
           <% if !name.parent %>
