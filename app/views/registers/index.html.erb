@@ -7,7 +7,7 @@
       <b>Status</b>
       <% all_status = %w[validated] %>
       <% all_status += %w[user] if current_contributor? %>
-      <% all_status += %w[draft submitted] if current_curator? %>
+      <% all_status += %w[draft submitted notified] if current_curator? %>
       <% all_status.map do |status| %>
         <span class="text-muted">·</span>
         <%=

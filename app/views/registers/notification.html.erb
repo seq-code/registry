@@ -1,0 +1,80 @@
+<h1>
+  Notification of Effective Publication
+</h1>
+<hr/>
+
+<% unless @register.user.full_name? &&  @register.user.affiliation? %>
+  <div class="alert alert-danger">
+    <% if @register.user == current_user %>
+      Please indicate your full name and affiliation before the validation of
+      this list to ensure appropriate credit:
+      <%= link_to('Edit user profile', edit_user_registration_path) %>
+    <% else %>
+      Please request the submitter (<%= @register.user.username %>) to
+      complete their profile information (full name and affiliation) before
+      validation to ensure appropriate credit
+    <% end %>
+  </div>
+<% end %>
+
+<p class="lead">
+  Use this form to notify the SeqCode about the effective publication of the
+  <%= 'name'.pluralize(@register.names.size) %> in this list in order to
+  validate them. Remember that only peer-reviewed published manuscripts can
+  serve as effective publication.
+</p>
+
+<%= simple_form_for(
+      @register, url: notify_register_url(@register), method: :post,
+      html: { multipart: true }
+    ) do |f| %>
+  <br/>
+  <h2>Register List</h2>
+  <%= f.input(:title, required: true) %>
+  <%= f.input(:abstract, as: :rich_text_area, label: 'Abstract (optional)') %>
+
+  <br/>
+  <h2>Effective Publication</h2>
+  <%= f.input(
+        :doi, as: :fake, label: 'DOI',
+        hint: 'Digital Object Identifier (DOI) of the effective publication. ' \
+              'The authors of this list will be the same as those from the ' \
+              'effective publication',
+        required: true
+      ) %>
+  <% unless @publications.empty? %>
+    <ul>
+      <% @publications.each do |publication| %>
+        <li>
+          <%= link_to(publication.short_citation, publication) %>:
+          <%= publication.doi %>
+          <%= content_tag(
+                'span', role: 'button', cursor: 'pointer',
+                class: 'badge badge-pill badge-primary',
+                onclick: "$('#doi').val('#{publication.doi}'); false"
+              ) do %>
+            <%= fa_icon('check-circle') %> Select
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+  <br/>
+
+  <%= f.input(
+        :publication_pdf, label: 'Publication PDF', required: true,
+        hint: 'Published manuscript in PDF'
+      ) %>
+
+  <%= f.input(
+        :supplementary_pdf, label: 'Supplementary Material in PDF (optional)',
+        hint: 'Please include all relevant supplementary material as a ' \
+              'single PDF file'
+      ) %>
+
+  <br/>
+  <%= f.button(:submit, 'Submit list for validation') %>
+  <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+

@@ -40,4 +40,16 @@ class User < ApplicationRecord
   def to_param
     username
   end
+
+  def full_name
+    family.to_s + ( given ? ", #{given}" : '' )
+  end
+
+  def full_name?
+    family? && given?
+  end
+
+  def display_name
+    full_name? ? full_name : "SeqCode user #{username}"
+  end
 end

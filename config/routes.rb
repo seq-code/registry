@@ -52,6 +52,11 @@ Rails.application.routes.draw do
   get  'registers/:accession/return' => 'registers#return', as: :return_register
   post 'registers/:accession/return' => 'registers#return_commit', as: :post_return_register
   post 'registers/:accession/approve' => 'registers#approve', as: :approve_register
+  get  'registers/:accession/notify' => 'registers#notification', as: :notification_register
+  post 'registers/:accession/notify' => 'registers#notify', as: :notify_register
+  get  'registers/:accession/table(.:format)' => 'registers#table', as: :download_register_table
+  get  'registers/:accession/list(.:format)' => 'registers#list', as: :download_register_list
+  post 'registers/:accession/validate' => 'registers#validate', as: :validate_register
   resources :publications
   resources :subjects
 

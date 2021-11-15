@@ -1,31 +1,92 @@
-<dl class="main-section name-details">
-  <dt><%= fa_icon(:barcode) %> Accession</dt>
-  <dd><%= @register.acc_url %></dd>
+<div class="container main-section name-details">
+  <div class="row">
+    <dl class="col-md-7">
+      <dt><%= fa_icon(:barcode) %> Accession</dt>
+      <dd><%= @register.acc_url %></dd>
 
-  <dt><%= fa_icon(:user) %> Created by</dt>
-  <dd>
-    <%= link_to(@register.user.username, @register.user) %>
-    <u class="hover-help" title="<%= @register.created_at %>"
-       ><%= time_ago_in_words(@register.created_at) %> ago</u>
-  </dd>
+      <dt><%= fa_icon(:user) %> Created by</dt>
+      <dd>
+        <%= link_to(@register.user.username, @register.user) %>
+        <u class="hover-help" title="<%= @register.created_at %>"
+           ><%= time_ago_in_words(@register.created_at) %> ago</u>
+      </dd>
 
-  <dt><%= fa_icon('clipboard-check') %> Status</dt>
-  <dd>
-    <%= @register.status_name.capitalize %>:
-    <% if @register.validated? %>
-      Valid, all names in this register list have been effectively published and
-      validated
-    <% elsif @register.submitted? %>
-      This register list is currently being evaluated by expert curators
-      or awaiting effective publication
-    <% else %>
-      This is a draft register list, currently in preparation
-    <% end %>
-  </dd>
+      <dt><%= fa_icon('clipboard-check') %> Status</dt>
+      <dd>
+        <%= @register.status_name.capitalize %>:
+        <% if @register.validated? %>
+          Valid, all names in this register list have been effectively published
+          and validated
+        <% elsif @register.notified? %>
+          The SeqCode has been notified of effective publication and the request
+          is currently being evaluated by expert curators
+        <% elsif @register.submitted? %>
+          This register list is currently being evaluated by expert curators
+          or awaiting effective publication
+        <% else %>
+          This is a draft register list, currently in preparation
+        <% end %>
+      </dd>
 
-  <% if @register.notes? %>
-    <dt><%= fa_icon 'sticky-note' %> Notes</dt>
-    <dd><%= @register.notes %></dd>
-  <% end %>
-</dl>
+      <% if @register.notes? %>
+        <dt><%= fa_icon 'sticky-note' %> Notes</dt>
+        <dd><%= @register.notes %></dd>
+      <% end %>
+    </dl>
+    <div class="col-md-5 border-left border-secondary">
+      <h2>Downloads</h2>
+      <p>
+        <b><%= fa_icon('table') %>&nbsp; Table &raquo;</b>
+        <%= link_to(
+              download_register_table_url(@register, format: :pdf),
+              class: 'btn btn-sm btn-info'
+            ) do %>
+          <%= fa_icon('file-pdf') %> PDF
+        <% end %>
+        <%= link_to(
+              download_register_table_url(@register),
+              class: 'btn btn-sm btn-info'
+            ) do %>
+          <%= fa_icon('file-code') %> HTML
+        <% end %>
+      </p>
+      <p>
+        <b><%= fa_icon('list-ul') %>&nbsp; List &raquo;</b>
+        <%= link_to(
+              download_register_list_url(@register, format: :pdf),
+              class: 'btn btn-sm btn-info'
+            ) do %>
+          <%= fa_icon('file-pdf') %> PDF
+        <% end %>
+        <%= link_to(
+              download_register_list_url(@register),
+              class: 'btn btn-sm btn-info'
+            ) do %>
+          <%= fa_icon('file-code') %> HTML
+        <% end %>
+      </p>
+      <% if @register.can_view_publication?(current_user) %>
+        <div class="mb-2">
+          <b><%= fa_icon('file-signature') %>&nbsp;
+          Effective publication &raquo;</b></div>
+        <% %i[publication_pdf supplementary_pdf].each do |attach| %>
+          <% as = @register.send(attach) %>
+          <% if as.attached? %>
+            <%= link_to(
+                  rails_blob_path(as, disposition: 'attachment'),
+                  class: 'btn btn-info btn-sm'
+                ) do %>
+              <%= fa_icon('file-pdf') %>
+              <%= attach.to_s.sub(/_.*/, '') %>
+              <% if as.representable? %>
+                <br/>
+                <%= image_tag(as.representation(resize_to_limit: [100, 100])) %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
 

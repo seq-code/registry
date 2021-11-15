@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <%= wicked_pdf_stylesheet_link_tag('pdf') %>
+    <%= wicked_pdf_javascript_include_tag('number_pages') %>
+    <script>
+      function alter_pdf() {
+        var a = document.getElementsByTagName("A");
+        for(var j=0; j < a.length; ++j) {
+          a[j].html = "";
+        }
+      }
+    </script>
+  </head>
+  <body onload="alter_pdf()">
+    <div id="header">
+      <div><b>SeqCode Registry</b></div>
+      <% if @register ||= nil %>
+        <div style="text-align: right; position: fixed; top: 0; right: 0;">
+          <b>
+            Register List
+            <%= link_to(@register.acc_url(true), @register.acc_url(true)) %>
+            [<%= @register.priority_date&.year || @register.status_name %>]
+          </b>
+        </div>
+      <% end %>
+    </div>
+    <div id="content">
+      <%= yield %>
+    </div>
+  </body>
+</html>

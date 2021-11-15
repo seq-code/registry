@@ -98,8 +98,7 @@ class NamesController < ApplicationController
   # GET /names/1.json
   def show
     @publication_names =
-      @name.publication_names.left_joins(:publication)
-           .order(journal_date: :desc)
+      @name.publication_names_ordered
            .paginate(page: params[:page], per_page: 10)
     @oldest_publication = @name.publications.last
     @crumbs = [['Names', names_path], @name.abbr_name]
@@ -295,16 +294,19 @@ class NamesController < ApplicationController
 
   # POST /names/1/validate
   def validate
-    new_status = params[:code] == 'icnp' ? 20 : 15
-    par = {
-      status: new_status, validated_by: current_user, validated_at: Time.now
-    }
-    if @name.validated?
-      flash[:alert] = 'Name status is incompatible with validation'
-    elsif @name.update(par)
-      flash[:notice] = 'Name successfully validated'
+    if params[:code] == 'icnp'
+      par = {
+        status: 20, validated_by: current_user, validated_at: Time.now
+      }
+      if @name.validated?
+        flash[:alert] = 'Name status is incompatible with validation'
+      elsif @name.update(par)
+        flash[:notice] = 'Name successfully validated'
+      else
+        flash[:alert] = 'An unexpected error occurred'
+      end
     else
-      flash[:alert] = 'An unexpected error occurred'
+      flash[:alert] = 'Invalid procedure for nomenclatural code ' + params[:code]
     end
     redirect_to(@name)
   end
@@ -324,7 +326,7 @@ class NamesController < ApplicationController
 
   # POST /names/1/claim
   def claim
-    par = { created_by: current_user }
+    par = { created_by: current_user, created_at: Time.now }
     par[:status] = 5 if @name.status == 0
     if !@name.can_claim?(current_user)
       flash[:alert]  = 'You cannot claim this name'

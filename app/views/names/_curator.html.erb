@@ -3,16 +3,7 @@
     <h2>Curator Actions</h2>
     <dd class="pt-2">
       <% unless @name.validated? %>
-        <% if @name.after_approval? %>
-          <%= link_to(
-                validate_name_url(@name),
-                method: :post,
-                class: 'btn btn-primary btn-sm',
-                data: { confirm: 'Are you sure? This action cannot be undone' }
-              ) do %>
-            <%= fa_icon('certificate') %> Validate under SeqCode
-          <% end %>
-        <% else %>
+        <% unless @name.after_approval? %>
           <%= link_to(
                 approve_name_url(@name),
                 method: :post,
@@ -21,6 +12,8 @@
               ) do %>
             <%= fa_icon('check-square') %> Approve name
           <% end %>
+          &raquo; Recommend this name as a candidate for validation
+          <hr/>
         <% end %>
         <%= link_to(
               validate_name_url(@name, code: :icnp),
@@ -30,6 +23,9 @@
             ) do %>
           <%= fa_icon('stamp') %> Report valid under ICNP
         <% end %>
+        &raquo; Indicate that this name has already been validly published under
+        the ICNP
+        <hr/>
       <% end %>
       <% if @name.after_submission? && !@name.validated? %>
         <%= link_to(
@@ -42,6 +38,8 @@
             ) do %>
           <%= fa_icon('undo-alt') %> Return to submitter
         <% end %>
+        &raquo; Send this name back to the author for additional revisions
+        <hr/>
       <% end %>
     </dd>
   </dl>

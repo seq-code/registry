@@ -14,15 +14,15 @@ class Publication < ApplicationRecord
     inverse_of: :proposed_by, dependent: :destroy
 
   def self.by_doi(doi, force_update = false)
-    if doi.nil? or doi.empty?
-      return Publication.new.tap{ |i| i.errors.add(:doi, 'cannot be empty') }
+    if doi.nil? || doi.empty?
+      return Publication.new.tap { |i| i.errors.add(:doi, 'cannot be empty') }
     end
     p = Publication.find_by(doi: doi)
     return p if p && !force_update
     begin
       works = Serrano.works(ids: doi)
     rescue Serrano::NotFound
-      return Publication.new.tap{ |i| i.errors.add(:doi, 'not in CrossRef') }
+      return Publication.new.tap { |i| i.errors.add(:doi, 'not in CrossRef') }
     end
     work = works[0].fetch('message', {})
     by_serrano_work(work) if work['DOI']
@@ -95,5 +95,9 @@ class Publication < ApplicationRecord
 
   def emended_names
     publication_names.where(emends: true).map(&:name)
+  end
+
+  def prepub?
+    !journal? || pub_type == 'posted-content'
   end
 end

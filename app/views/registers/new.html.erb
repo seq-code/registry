@@ -20,7 +20,9 @@
           options_for_select(
             @registers.map do |r|
               [
-                "#{r.accession} (created #{time_ago_in_words(r.created_at)} ago)",
+                "#{r.accession} " \
+                  "(created #{time_ago_in_words(r.created_at)} ago, " \
+                  "#{pluralize(r.names.size, 'name')})",
                 r.accession
               ]
             end + [['Create a new register', nil]]

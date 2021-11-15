@@ -17,7 +17,7 @@
   <% end %>
 </dd>
 
-<% if current_contributor? or not publication.names.empty? %>
+<% if current_contributor? || !publication.names.empty? %>
   <dt>Names</dt>
   <dd>
     <% publication.publication_names.each do |publication_name| %>

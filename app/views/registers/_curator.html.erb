@@ -1,20 +1,38 @@
-<% if current_curator? && @register.submitted? && !@register.validated? %>
+<% if current_curator? && !@register.draft? && !@register.validated? %>
   <dl class="main-section name-details">
-    <h1>Curator Actions</h1>
-    <hr/>
+    <h2>Curator Actions</h2>
     <dd>
-      <%= link_to(
-            approve_register_url(@register), method: :post,
-            class: 'btn btn-primary btn-sm',
-            data: { confirm: 'Are you sure? The submitter will be notified' }
-          ) do %>
-        <%= fa_icon('check-square') %> Approve all names in the list
+      <% unless @register.all_approved? %>
+        <%= link_to(
+              approve_register_url(@register), method: :post,
+              class: 'btn btn-primary btn-sm',
+              data: { confirm: 'Are you sure? The submitter will be notified' }
+            ) do %>
+          <%= fa_icon('check-square') %> Approve all names in the list
+        <% end %>
+        &raquo; Mark all names in the list as approved in batch
+        <hr/>
       <% end %>
       <%= link_to(
             return_register_url(@register),
             class: 'btn btn-primary btn-sm'
           ) do %>
         <%= fa_icon('undo-alt') %> Return all names to submitter
+      <% end %>
+      &raquo; Return all names in this list to the status of draft and
+      notify submitter
+      <hr/>
+      <% if @register.notified? %>
+        <%= link_to(
+              validate_register_url(@register), method: :post,
+              class: 'btn btn-primary btn-sm',
+              data: { confirm: 'Are you sure? This cannot be undone' }
+            ) do %>
+          <%= fa_icon('certificate') %> Validate list
+        <% end %>
+        &raquo; Validate all names under SeqCode and record the current list as
+        permanent record of validation
+        <hr/>
       <% end %>
     </dd>
   </dl>

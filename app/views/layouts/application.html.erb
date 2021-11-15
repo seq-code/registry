@@ -6,13 +6,25 @@
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application' %>
+    <%= javascript_pack_tag    'application' %>
   </head>
 
   <body>
-    <%= render partial: 'layouts/header' %>
-    <%= render partial: 'layouts/flash' %>
-        <br/>
+    <% if !(@without_layout ||= false) %>
+      <%= render partial: 'layouts/header' %>
+      <%= render partial: 'layouts/flash' %>
+      <br/>
+    <% elsif @register ||= nil %>
+      <div id="container">
+        <div class="row mx-5 px-5 py-2 border-bottom font-weight-bold">
+          <div class="col-6">SeqCode Registry</div>
+          <div class="col-6 text-right">
+            Register List <%= link_to(@register.acc_url(true), @register.acc_url(true)) %>
+            [<%= @register.priority_date&.year || @register.status_name %>]
+          </div>
+        </div>
+      </div>
+    <% end %>
     <div class="container">
       <div class="row">
 	<% if devise_controller? %>
@@ -28,6 +40,8 @@
         <% end %>
       </div>
     </div>
-    <%= render partial: 'layouts/footer' %>
+    <% unless @without_layout ||= false %>
+      <%= render partial: 'layouts/footer' %>
+    <% end %>
   </body>
 </html>

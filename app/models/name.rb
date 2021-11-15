@@ -49,6 +49,7 @@ class Name < ApplicationRecord
 
   include Name::QualityChecks
   include Name::Etymology
+  attr_accessor :only_display
 
   # ============ --- CLASS --- ============
 
@@ -174,27 +175,33 @@ class Name < ApplicationRecord
     name.gsub(/^Candidatus /, '')
   end
 
-  def abbr_name(name = nil)
+  def abbr_name(name = nil, assume_valid = false)
     name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Ca.</i> ').html_safe
-    elsif validated? && name =~ /(.+) subsp\. (.+)/
+    elsif (assume_valid || validated?) && name =~ /(.+) subsp\. (.+)/
       "<i>#{$1}</i> subsp. <i>#{$2}</i>".html_safe
-    elsif validated? || inferred_rank == 'domain'
-      "<i>#{name}</i>".html_safe
+    elsif (assume_valid || validated?) || inferred_rank == 'domain'
+      "<i>#{name}</i>".html_safe +
+        if rank == 'species' && parent&.type_accession&.==(id.to_s)
+          " <sup>T#{'s' if status != 20}</sup>".html_safe
+        end
     else
       "&#8220;#{name}&#8221;".html_safe
     end
   end
 
-  def name_html(name = nil)
+  def name_html(name = nil, assume_valid = false)
     name ||= self.name
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
-    elsif validated? && name =~ /(.+) subsp\. (.+)/
+    elsif (assume_valid || validated?) && name =~ /(.+) subsp\. (.+)/
       "<i>#{$1}</i> subsp. <i>#{$2}</i>".html_safe
-    elsif validated? || inferred_rank == 'domain'
-      "<i>#{name}</i>".html_safe
+    elsif (assume_valid || validated?) || inferred_rank == 'domain'
+      "<i>#{name}</i>".html_safe +
+        if rank == 'species' && parent&.type_accession&.==(id.to_s)
+          "<sup>T#{'s' if status != 20}</sup>".html_safe
+        end
     else
       "&#8220;#{name}&#8221;".html_safe
     end
@@ -248,6 +255,10 @@ class Name < ApplicationRecord
     false
   end
 
+  def publication_names_ordered
+    publication_names.left_joins(:publication).order(journal_date: :desc)
+  end
+
   # ============ --- STATUS --- ============
 
   def status_hash
@@ -280,6 +291,12 @@ class Name < ApplicationRecord
 
   def after_approval?
     status >= 12
+  end
+
+  Name.status_hash.each do |k, v|
+    define_method("#{v[:symbol]}?") do
+      status == k
+    end
   end
 
   # ============ --- OUTLINKS --- ============
@@ -337,6 +354,7 @@ class Name < ApplicationRecord
   end
 
   def can_edit?(user)
+    return false if only_display
     return false if user.nil?
     return false if status >= 15
     return true if user.curator?
@@ -563,6 +581,17 @@ class Name < ApplicationRecord
     return col_homonyms unless col_homonyms.empty?
 
     []
+  end
+
+  # ============ --- REGISTER LISTS --- ============
+
+  def add_to_register(register, user)
+    self.register = register
+    unless created_by
+      self.created_by = user
+      self.created_at = Time.now
+    end
+    save
   end
 
   # ============ --- INTERNAL CHECKS --- ============

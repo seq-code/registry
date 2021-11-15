@@ -16,7 +16,9 @@
             method: :post
           ) do |f| %>
         <%= f.input(:message, as: :rich_text_area, label: false) %>
-        <%= f.button(:submit, 'Send message (private but permanent record)') %>
+        <%= f.button(:submit, 'Send message') %>
+        &raquo; The messages will be in the permanent record,
+        visible only to submitter and curators
       <% end %>
     </dd>
   </dl>

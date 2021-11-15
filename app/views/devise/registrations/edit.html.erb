@@ -12,6 +12,10 @@
 
     <%= f.input :username,
                 input_html: { autocomplete: "username" } %>
+    <%= f.input :family, label: 'Family name',
+                input_html: { autocomplete: "lastname" } %>
+    <%= f.input :given, label: 'Given name',
+                input_html: { autocomplete: "firstname" } %>
     <%= f.input :affiliation,
                 input_html: { autocomplete: "affiliation" } %>
     <%= f.input :password,

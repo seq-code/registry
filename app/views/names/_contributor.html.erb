@@ -10,15 +10,21 @@
             ) do %>
           <%= fa_icon('minus-circle') %> Remove name
         <% end %>
+        &raquo; Eliminate this name and all metadata from the Registry
+        <hr/>
         <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
           <%= fa_icon('edit') %> Edit spelling
         <% end %>
+        &raquo; Change this name's spelling and description
+        <hr/>
         <%= link_to(
               edit_name_links_url(@name),
               class: 'btn btn-info btn-sm'
             ) do %>
           <%= fa_icon 'edit' %> Edit outside links
         <% end %>
+        &raquo; Report links to external databases (other than type)
+        <hr/>
         <% unless @name.after_submission? || @name.register %>
           <%= link_to(
                 new_register_url(name: @name),
@@ -26,7 +32,8 @@
               ) do %>
             <%= fa_icon('paper-plane') %> Propose name
           <% end %>
-      <% end %>
+          &raquo; Link this name to a Register List for validation
+          <hr/>
       <% end %>
       <% if @name.can_claim?(current_user) %>
         <%= link_to(
@@ -36,7 +43,10 @@
             ) do %>
           <%= fa_icon('flag') %> Claim name
         <% end %>
+        &raquo; Claim ownership of this name to activate submission options
+        <hr/>
       <% end %>
+    <% end %>
     </dd>
   </dl>
 <% end %>

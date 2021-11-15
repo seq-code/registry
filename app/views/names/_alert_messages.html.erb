@@ -1,0 +1,22 @@
+<% if @name.auto? %>
+  <div class="alert alert-warning">
+    This name was automatically created through literature mining,
+    and currently has no standing or validity
+  </div>
+<% elsif !@name.public? %>
+  <div class="alert alert-warning">
+    This name is undergoing the process of validation, currently in the
+    state of <%= @name.status_name %>. The entry and all of it's metadata
+    is currently not public, only visible to the submitter and the system
+    curators.
+    <hr/>
+    This name has no standing or validity but it is reserved for up to a
+    year, so no homonyms can be proposed until
+    <%= (@name.created_at + 1.year).strftime('%b %-d / %Y') %>
+  </div>
+  <% if @name.created_at < 1.year.ago %>
+    <div class="alert alert-danger">
+      This name was registered over a year ago and it's no longer reserved
+    </div>
+  <% end %>
+<% end %>

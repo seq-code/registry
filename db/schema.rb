@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_05_104545) do
+ActiveRecord::Schema.define(version: 2021_11_14_230402) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -37,10 +37,17 @@ ActiveRecord::Schema.define(version: 2021_11_05_104545) do
     t.string "filename", null: false
     t.string "content_type"
     t.text "metadata"
-    t.bigint "byte_size", null: false
+    t.integer "byte_size", null: false
     t.string "checksum", null: false
     t.datetime "created_at", null: false
+    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "authors", force: :cascade do |t|
@@ -54,7 +61,6 @@ ActiveRecord::Schema.define(version: 2021_11_05_104545) do
   create_table "name_correspondences", force: :cascade do |t|
     t.integer "name_id", null: false
     t.integer "user_id", null: false
-    t.text "message"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name_id"], name: "index_name_correspondences_on_name_id"
@@ -91,18 +97,15 @@ ActiveRecord::Schema.define(version: 2021_11_05_104545) do
     t.string "etymology_p5_grammar"
     t.string "etymology_p5_particle"
     t.string "etymology_p5_description"
-    t.text "description"
     t.integer "parent_id"
     t.integer "corrigendum_by"
     t.string "corrigendum_from"
-    t.text "notes"
     t.string "rank"
     t.integer "ncbi_taxonomy"
     t.integer "status", default: 0
     t.integer "created_by"
     t.integer "validated_by"
     t.datetime "validated_at"
-    t.text "etymology_text"
     t.string "type_material"
     t.text "type_accession"
     t.integer "submitted_by"
@@ -178,7 +181,10 @@ ActiveRecord::Schema.define(version: 2021_11_05_104545) do
     t.integer "publication_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.text "notes"
+    t.string "title"
+    t.boolean "notified", default: false
+    t.datetime "notified_at"
+    t.datetime "validated_at"
     t.index ["accession"], name: "index_registers_on_accession", unique: true
     t.index ["publication_id"], name: "index_registers_on_publication_id"
     t.index ["submitted"], name: "index_registers_on_submitted"
@@ -220,6 +226,8 @@ ActiveRecord::Schema.define(version: 2021_11_05_104545) do
     t.text "contributor_statement"
     t.boolean "curator", default: false
     t.text "curator_statement"
+    t.string "family"
+    t.string "given"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -228,6 +236,7 @@ ActiveRecord::Schema.define(version: 2021_11_05_104545) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "name_correspondences", "names"
   add_foreign_key "name_correspondences", "users"
   add_foreign_key "names", "registers"

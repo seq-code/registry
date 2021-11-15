@@ -35,17 +35,18 @@ namespace :icnp do
     usage(t) unless args[:tsv]
     File.open(args[:tsv], 'r') do |fh|
       fh.each do |ln|
-        next if $. == 1
-
         row = ln.chomp.split(/\t/).map { |i| i.sub(/^ */, '').sub(/ *$/, '') }
-        puts "~ #{$.}: #{row[0]}"
-        node = save_taxonomy(row[1])
-        node = save_taxonomy(row[2]) if row[2]
-        leaf = save_taxonomy(row[0])
+        puts "~ #{$.}: #{row[1]}"
+        node = save_taxonomy(row[3])
+        leaf = save_taxonomy(row[1])
+        type = !!(row[2] =~ /^type/)
         if leaf.rank == 'subspecies'
           sp = save_taxonomy(leaf.name.sub(/ subsp?\. .*/, ''))
           sp.update(parent: node)
+          node.update(type_material: 'name', type_accession: sp.id) if type
           node = sp
+        elsif leaf.rank == 'species'
+          node.update(type_material: 'name', type_accession: leaf.id) if type
         end
         leaf.update(parent: node)
       end

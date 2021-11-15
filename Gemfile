@@ -20,6 +20,9 @@ gem 'uglifier', '>= 1.3.0'
 # gem 'therubyracer', platforms: :ruby
 gem 'webpacker'
 gem 'rexml'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+gem 'pdf-reader'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'

@@ -1,0 +1,56 @@
+<% @without_layout = true %>
+
+<div class="text-center my-5">
+  <h1><%= @register.propose_title %></h1>
+</div>
+
+<p>
+  <b>Table 1:</b> Complete list of names proposed in the current register list.
+</p>
+<table class="table-pdf mb-5">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Rank</th>
+      <th>Syllabication</th>
+      <th>Etymology</th>
+      <th>Description</th>
+      <th>Parent</th>
+      <th>Type</th>
+    <tr>
+  </thead>
+  <tbody>
+    <% @register.names_by_rank.each do |name| %>
+      <tr>
+        <td><%= name.name_html(nil, true) %></td>
+        <td><%= name.rank %></td>
+        <td><%= name.syllabication %></td>
+        <td><%= name.full_etymology(true) %></td>
+        <td><%= name.description %></td>
+        <td>
+          <% if !name.parent %>
+            <u>Unknown</u>
+          <% elsif @register.names.include? name %>
+            <%= name.parent.name_html(nil, true) %>
+          <% else %>
+            <%= name.parent.name_html %>
+          <% end %>
+        </td>
+        <td>
+          <% if name.type_is_name? %>
+            <% if @register.names.include? name.type_name %>
+              <%= name.type_name.name_html(nil, true) %>
+            <% else %>
+              <%= name.type_name.name_html %>
+            <% end %>
+          <% elsif name.type? %>
+            <%= name.type_text %> <sup>Ts</sup>
+          <% else %>
+            <u>Unknown</u>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+

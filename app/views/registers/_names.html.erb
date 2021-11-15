@@ -1,4 +1,4 @@
-<h2>
+<h2 class="mt-3">
   Names
   <small class='text-muted'>(<%= @names.count %>)</small>
 </h2>
@@ -15,6 +15,7 @@
         <th>Quality Checks</th>
       <% end %>
       <% if @register.can_edit?(current_user) %>
+        <th>Messages</th>
         <th>Actions</th>
       <% end %>
     </tr>
@@ -37,13 +38,14 @@
           <% end %>
         </td>
         <% unless @register.validated? %>
+          <% qc = name.qc_warnings.select { |i| !i[:can_approve] } %>
           <td>
-            <% if name.qc_warnings.empty? %>
+            <% if qc.empty? %>
               <div class="text-success">Pass</div>
             <% else %>
               <%
-                err = name.qc_warnings.select { |i| i[:fail] == :error }.count
-                wrn = name.qc_warnings.count - err
+                err = qc.select { |i| i[:fail] == :error }.count
+                wrn = qc.count - err
               %>
               <% unless err.zero? %>
                 <div class="text-danger"><%= pluralize(err, 'error') %></div>
@@ -55,6 +57,7 @@
           </td>
         <% end %>
         <% if @register.can_edit?(current_user) %>
+          <td><%= name.correspondences.count %></td>
           <td>
             <%= link_to(
                   name_url(name, name: { register: nil }, return_to: url_for(@register)), method: :patch,

@@ -1,0 +1,95 @@
+<% @without_layout = true %>
+
+<div class="text-center my-5 border-bottom">
+  <h1><%= @register.propose_title %></h1>
+  <% if @register.publication %>
+    <h5 class="mx-5">
+      <%= @register.publication.authors.map(&:full_name).to_sentence(
+            words_connector: '; ', two_words_connector: ' & ',
+            last_word_connector: ' & '
+          ) %>
+    </h5>
+  <% end %>
+</div>
+
+<% if @register.abstract? %>
+  <div class="pdf-abstract m-4 px-2">
+    <h2>Abstract</h2>
+    <p><%= @register.abstract %></p>
+  </div>
+<% end %>
+
+<div id="pdf-list">
+  <% @register.names_by_rank.each do |name| %>
+    <div class="pdf-list-entry main-section name-details my-3 rounded">
+      <h2>
+        <%= name.inferred_rank.capitalize %>
+        <%= name.name_html(nil, true) %>
+      </h2>
+      <%
+        @name = name
+        @name.only_display = true
+      %>
+      <dl>
+        <dt>Etymology</dt>
+        <dd>
+          <% if name.syllabication? %>
+            [<%= name.syllabication %>]
+          <% end %>
+          <%= name.full_etymology(true) %>
+        </dd>
+        <dt>Nomenclatural type</dt>
+        <dd>
+          <% if name.type_is_name? %>
+            <%= name.type_name.rank.capitalize %>
+            <% if @register.names.include? name.type_name %>
+              <%= name.type_name.name_html(nil, true) %>
+            <% else %>
+              <%= name.type_name.name_html %>
+            <% end %>
+          <% elsif name.type? %>
+            <%= name.type_text %> <sup>Ts</sup>
+          <% else %>
+            <u>Unknown</u>
+          <% end %>
+        </dd>
+        <% if name.description? %>
+          <dt>Description</dt>
+          <dd>
+            <%= name.description %>
+          </dd>
+        <% end %>
+        <dt>Classification</dt>
+        <dd>
+          <% if name.parent %>
+            <% name.lineage.each do |par| %>
+              <% if @register.names.include? par %>
+                <%= link_to(par.name_html(nil, true), par) %> &raquo;
+              <% else %>
+                <%= link_to(par.name_html, par) %> &raquo;
+              <% end %>
+            <% end %>
+            <%= name.name_html(nil, true) %>
+          <% else %>
+            <u>Unknown</u>
+          <% end %>
+        </dd>
+      </dl>
+    </div>
+  <% end %>
+</div>
+
+<%= render(partial: 'certification') %>
+
+<script>
+  function remove_links() {
+    var a = document.getElementById("pdf-list").getElementsByTagName("a");
+    for(var j = 0; j < a.length; ++j) {
+      a[j].href = "";
+      a[j].outerHTML = a[j].outerHTML.replace(/<(\/?)a/g, "<$1span")
+    }
+    return a.length;
+  }
+  while(remove_links() > 0) { }
+</script>
+

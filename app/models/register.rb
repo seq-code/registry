@@ -3,11 +3,16 @@ class Register < ApplicationRecord
   belongs_to(:publication, optional: true)
   has_one_attached(:publication_pdf)
   has_one_attached(:supplementary_pdf)
-  has_one_attached(:record_pdf)
-  has_many(:names)
+  has_one_attached(:certificate_pdf)
+  has_many(:names, -> { order('updated_at') })
   has_rich_text(:notes)
+  has_rich_text(:abstract)
 
   before_create(:assign_accession)
+
+  validates(:publication_id, presence: true, if: :validated?)
+  validates(:publication_pdf, presence: true, if: :validated?)
+  validates(:title, presence: true, if: :validated?)
 
   def to_param
     accession
@@ -18,8 +23,24 @@ class Register < ApplicationRecord
       require 'securerandom'
       require 'digest'
 
-      o = "r:" + SecureRandom.urlsafe_base64(5).downcase
+      o = 'r:' + SecureRandom.urlsafe_base64(5).downcase
       o + Digest::SHA1.hexdigest(o)[-1]
+    end
+
+    def nom_nov(name)
+      o = name.name + ' '
+      o +=
+        case name.inferred_rank
+        when 'subspecies';  'subsp.'
+        when 'species';     'sp.'
+        when 'genus';       'gen.'
+        when 'family';      'fam.'
+        when 'order';       'ord.'
+        when 'class';       'classis'
+        when 'phylum';      'phy.'
+        else;               'nom.'
+        end
+      o + ' nov.'
     end
   end
 
@@ -28,11 +49,28 @@ class Register < ApplicationRecord
   end
 
   def status_name
-    validated? ? 'validated' : submitted? ? 'submitted' : 'draft'
+    validated? ? 'validated' : notified? ? 'notified' :
+                               submitted? ? 'submitted' : 'draft'
+  end
+
+  def draft?
+    status_name == 'draft'
+  end
+
+  def names_by_rank
+    names.sort do |a, b|
+      Name.ranks.index(a.rank) <=> Name.ranks.index(b.rank)
+    end
   end
 
   def names_to_review
     @names_to_review ||= names.where(status: 10)
+  end
+
+  def priority_date
+    return nil unless validated?
+
+    notified_at || validated_at
   end
 
   def can_edit?(user)
@@ -44,10 +82,132 @@ class Register < ApplicationRecord
   end
 
   def can_view?(user)
-    return true if submitted? || validated?
+    return true if submitted? || validated? || notified?
     return false unless user
 
     user.curator? || user.id == user_id
+  end
+
+  def can_view_publication?(user)
+    return false unless user && publication_pdf.attached?
+
+    user.curator? || user.id == user_id
+  end
+
+  def propose_title
+    return title if title?
+
+    case names.size
+    when 0
+      "Empty register List #{acc_url}"
+    when 1
+      self.class.nom_nov(names.first)
+    when 2
+      "#{self.class.nom_nov(names.first)} and " \
+        "#{self.class.nom_nov(names.second)}"
+    else
+      "Register list proposing #{names.size} new names" \
+        " including #{self.class.nom_nov(names.first)}"
+    end
+  end
+
+  ##
+  # Automated checks to prepare for validation, adding relevant notes
+  # to the list
+  def automated_validation
+    # Trivial cases (not-yet-notified or already validated)
+    return false unless notified?
+    return true if validated?
+
+    # Minimum requirements
+    success = true
+    unless publication && publication_pdf.attached?
+      add_note('Missing publication or PDF files')
+      success = false
+    end
+
+    # Check that all names have been approved
+    unless names.all?(&:after_approval?)
+      add_note('Some names have not been approved yet')
+      success = false
+    end
+
+    # Check if the list has a PDF that includes the accession
+    has_acc = false
+    bnames = Hash[names.map { |n| [n.base_name, false] }]
+    [publication_pdf, supplementary_pdf].each do |as|
+      break if has_acc && bnames.values.all?
+      next unless as.attached?
+
+      as.open do |file|
+        render = PDF::Reader.new(file.path)
+        render.pages.each do |page|
+          has_acc = true if page.text.index(accession)
+          bnames.each_key { |bn| bnames[bn] = true if page.text.index(bn) }
+          break if has_acc && bnames.values.all?
+        end
+      end
+    end
+
+    if has_acc
+      add_note('The effective publication includes the SeqCode accession')
+    else
+      add_note('The effective publication does not include the accession')
+    end
+
+    if bnames.values.all?
+      add_note('The effective publication mentions all names in the list')
+    elsif bnames.values.any?
+      if bnames.values.count(&:!) > 5
+        add_note(
+          "The effective publication mentions" \
+            " #{bnames.values.count(&:itself)} out of" \
+            " #{bnames.count} names in the list"
+        )
+      else
+        add_note(
+          "The effective publication mentions some names in the list," \
+            " but not: #{bname.select { |_, v| !v }.keys.join(', ')}"
+        )
+      end
+    else
+      add_note(
+        'The effective publication does not mention any names in the list'
+      )
+    end
+
+    save
+  end
+
+  def add_note(note, title = 'Bot message')
+    self.notes.body = <<~TXT
+      #{notes.body}
+      <b>#{title}:</b> #{note}
+      <br/>
+    TXT
+  end
+
+  def validate!(user)
+    ActiveRecord::Base.transaction do
+      par = { validated_by: user, validated_at: Time.now }
+      names.each { |name| name.update!(par.merge(status: 15)) }
+      update!(par.merge(notes: nil, validated: true))
+    end
+
+    HeavyMethodJob.perform_later(:post_validation, @register)
+    true
+  end
+
+  ##
+  # Production tasks to be executed once a list is validated
+  def post_validation
+    # TODO Produce and attach the certificate in PDF
+    # TODO Distribute the certificate to mirrors
+    # TODO Notify submitter
+  end
+
+  def all_approved?
+    names.all?(&:after_approval?)
   end
 
   private

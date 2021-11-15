@@ -1,0 +1,23 @@
+<% if @register.validated? %>
+  <div class="pdf-certificate border-top m-5 p-3">
+    <h2 class="text-center my-3">
+      Register List Certificate of Validation
+    </h2>
+      <p>
+        On behalf of <i>The International Committee on the Systematics of
+        Prokaryotes Described from Sequence Data</i> (SeqCode Committee), we
+        hereby certify that the Register List <b><%= @register.acc_url %></b>
+        submitted by <b><%= @register.user.display_name %></b> and including
+        <%= pluralize(@register.names.count, 'name') %> has been successfully
+        validated.
+    </p>
+    <p>
+      <b>
+        <%= fa_icon('certificate') %>
+        Date of Priority:
+      </b>
+      <%= @register.priority_date.strftime('%F %I:%M %Z') %>
+    </p>
+  </div>
+<% end %>
+
