@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   @@search_obj = {
     publications: [Publication, %w[title doi journal abstract]],
     authors: [Author, %w[given family]],
-    names: [Name, %w[name description corrigendum_from]],
+    names: [Name, %w[name corrigendum_from]],
+    # TODO Include description (rich-text) as field of names
     subjects: [Subject, %w[name]]
   }
 
