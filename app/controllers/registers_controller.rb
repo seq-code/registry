@@ -166,10 +166,7 @@ class RegistersController < ApplicationController
   # GET /registers/r:abc/notify
   def notification
     @register.title ||= @register.propose_title
-    @publications =
-      Publication.where(id: @register.names.pluck(:proposed_by))
-                 .where('journal IS NOT NULL')
-                 .where.not(pub_type: 'posted-content')
+    @publications = @register.proposing_publications
   end
 
   # POST /registers/r:abc/notify

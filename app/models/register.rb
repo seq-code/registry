@@ -94,6 +94,13 @@ class Register < ApplicationRecord
     user.curator? || user.id == user_id
   end
 
+  def proposing_publications
+    @proposing_publications ||=
+      Publication.where(id: names.pluck(:proposed_by))
+                 .where('journal IS NOT NULL')
+                 .where.not(pub_type: 'posted-content')
+  end
+
   def propose_title
     return title if title?
 
