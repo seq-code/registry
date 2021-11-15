@@ -18,7 +18,7 @@
         select_tag(
           :existing_register,
           options_for_select(
-            @registers.map do |r|
+            @registers.reverse.map do |r|
               [
                 "#{r.accession} " \
                   "(created #{time_ago_in_words(r.created_at)} ago, " \
