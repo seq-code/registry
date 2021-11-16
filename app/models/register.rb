@@ -174,7 +174,7 @@ class Register < ApplicationRecord
       else
         add_note(
           "The effective publication mentions some names in the list," \
-            " but not: #{bname.select { |_, v| !v }.keys.join(', ')}"
+            " but not: #{bnames.select { |_, v| !v }.keys.join(', ')}"
         )
       end
     else
