@@ -142,6 +142,7 @@ class Register < ApplicationRecord
     # Check if the list has a PDF that includes the accession
     has_acc = false
     bnames = Hash[names.map { |n| [n.base_name, false] }]
+    cnames = Hash[names.map { |n| [n.base_name, n.corrigendum_from] }]
     [publication_pdf, supplementary_pdf].each do |as|
       break if has_acc && bnames.values.all?
       next unless as.attached?
@@ -149,8 +150,13 @@ class Register < ApplicationRecord
       as.open do |file|
         render = PDF::Reader.new(file.path)
         render.pages.each do |page|
-          has_acc = true if page.text.index(accession)
-          bnames.each_key { |bn| bnames[bn] = true if page.text.index(bn) }
+          txt = page.text
+          has_acc = true if txt.index(accession)
+          bnames.each_key do |bn|
+            if txt.index(bn) || (cnames[bn] && txt.index(cnames[bn]))
+              bnames[bn] = true
+            end
+          end
           break if has_acc && bnames.values.all?
         end
       end
