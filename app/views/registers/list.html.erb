@@ -45,7 +45,7 @@
               <%= name.type_name.name_html %>
             <% end %>
           <% elsif name.type? %>
-            <%= name.type_text %> <sup>Ts</sup>
+            <%= link_to(name.type_text, name.type_link) %> <sup>Ts</sup>
           <% else %>
             <u>Unknown</u>
           <% end %>
@@ -71,7 +71,7 @@
             <u>Unknown</u>
           <% end %>
         </dd>
-        <dt>Registry Link</dt>
+        <dt>Registry URL</dt>
         <dd><%= link_to(name.seqcode_url, name.seqcode_url) %></dd>
       </dl>
     </div>
