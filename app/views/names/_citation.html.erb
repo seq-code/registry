@@ -1,19 +1,21 @@
 <dl class='main-section name-details'>
   <h2>Citation</h2>
 
-  <dt><%= fa_icon 'signature' %> Formal styling</dt>
+  <dt><%= fa_icon('signature') %> Formal styling</dt>
   <dd><%= @name.formal_html %></dd>
 
   <% if @name.proposed_by %>
-    <dt><%= fa_icon 'star' %> Proposed by</dt>
+    <dt><%= fa_icon('star') %> Proposed by</dt>
     <dd>
-      <%= link_to @name.proposed_by.short_citation, @name.proposed_by %>
+      <%= link_to(@name.proposed_by.short_citation, @name.proposed_by) %>
       <% if @name.can_edit?(current_user) %>
-        <%= link_to name_proposed_by_url(@name, publication_id: nil),
+        <%= link_to(
+              name_proposed_by_url(@name, publication_id: nil),
               class: 'badge badge-pill badge-info',
               method: :post, title: 'Did not propose this name',
-              data: { confirm: 'Are you sure?' } do %>
-          <%= fa_icon 'unlink' %> Unlink
+              data: { confirm: 'Are you sure?' }
+            ) do %>
+          <%= fa_icon('unlink') %> Unlink
         <% end %>
       <% end %>
     </dd>
