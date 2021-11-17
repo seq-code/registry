@@ -25,7 +25,7 @@
               <%= warn[:rules].to_sentence %>
               <%=
                 warn[:recommendations] && warn[:rule_notes] ?
-                  ',' : warn[:recommendations] || warn[:rule_notes] 'and'
+                  ',' : warn[:recommendations] || warn[:rule_notes] ? 'and' : ''
               %>
             <% end %>
             <% if warn[:rule_notes] %>

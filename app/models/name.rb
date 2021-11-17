@@ -237,7 +237,9 @@ class Name < ApplicationRecord
     if priority_date && priority_date.year != proposed_by&.journal_date&.year
       y += " [valid #{priority_date.year}]"
     end
-    y += " <i>emend.</i> #{proposed_by.short_citation}" if emended_by
+    if emended_by.any?
+      y += " <i>emend.</i> #{emended_by.map(&:short_citation).join('; ')}"
+    end
     y.html_safe
   end
 
