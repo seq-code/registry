@@ -64,9 +64,9 @@
           <% if name.parent %>
             <% name.lineage.each do |par| %>
               <% if @register.names.include? par %>
-                <%= link_to(par.name_html(nil, true), par) %> &raquo;
+                <%= par.name_html(nil, true) %> &raquo;
               <% else %>
-                <%= link_to(par.name_html, par) %> &raquo;
+                <%= par.name_html %> &raquo;
               <% end %>
             <% end %>
             <%= name.name_html(nil, true) %>
@@ -74,22 +74,12 @@
             <u>Unknown</u>
           <% end %>
         </dd>
+        <dt>Registry Link</dt>
+        <dd><%= link_to(name.seqcode_url, name.seqcode_url) %></dd>
       </dl>
     </div>
   <% end %>
 </div>
 
 <%= render(partial: 'certification') %>
-
-<script>
-  function remove_links() {
-    var a = document.getElementById("pdf-list").getElementsByTagName("a");
-    for(var j = 0; j < a.length; ++j) {
-      a[j].href = "";
-      a[j].outerHTML = a[j].outerHTML.replace(/<(\/?)a/g, "<$1span")
-    }
-    return a.length;
-  }
-  while(remove_links() > 0) { }
-</script>
 

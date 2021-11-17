@@ -14,9 +14,6 @@ body {
     padding: 1em;
     display: inline-block;
   }
-  a {
-    color: rgb(23, 162, 184);
-  }
 }
 
 .table-pdf {
@@ -27,6 +24,10 @@ body {
     margin: 0;
     padding: 0.5em;
   }
+}
+
+a {
+  color: rgb(23, 162, 184);
 }
 
 dt {

@@ -15,6 +15,7 @@
       <th>Description</th>
       <th>Parent Taxon</th>
       <th>Type</th>
+      <th>Registry Link</th>
     <tr>
   </thead>
   <tbody>
@@ -52,6 +53,9 @@
           <% else %>
             <u>Unknown</u>
           <% end %>
+        </td>
+        <td>
+          <%= link_to(name.seqcode_url(false), name.seqcode_url) %>
         </td>
       </tr>
     <% end %>
