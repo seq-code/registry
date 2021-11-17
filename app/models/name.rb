@@ -57,12 +57,26 @@ class Name < ApplicationRecord
 
     # ============ --- CLASS > QUERYING --- ============
 
-    def find_by_variants(name)
+    def find_variants(name)
       name = name.gsub(/^Candidatus /, '')
       vars = [name, "Candidatus #{name}"]
       Name.where(name: vars)
           .or(Name.where(corrigendum_from: vars))
-          .first
+    end
+
+    def find_by_variants(name)
+      variants = find_variants
+      return variants.first if variants.count <= 1
+
+      if name =~ /^Candidatus /
+        ca = variants.find(&:candidatus?)
+        return ca if ca
+      else
+        non_ca = variants.find { |variant| !variant.candidatus? }
+        return non_ca if non_ca
+      end
+
+      variants.first
     end
 
     # ============ --- CLASS > ETYMOLOGY --- ============
@@ -218,8 +232,12 @@ class Name < ApplicationRecord
   def formal_html
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
-    y += " corrig." if corrigendum_by
+    y += " <i>corrig.</i>" if corrigendum_by
     y += " #{proposed_by.short_citation}" if proposed_by
+    if priority_date && priority_date.year != proposed_by&.journal_date&.year
+      y += " [valid #{priority_date.year}]"
+    end
+    y += " <i>emend.</i> #{proposed_by.short_citation}" if emended_by
     y.html_safe
   end
 
@@ -323,6 +341,10 @@ class Name < ApplicationRecord
     return unless ncbi_taxonomy?
 
     'https://www.ncbi.nlm.nih.gov/datasets/genomes/?txid=%i' % ncbi_taxonomy
+  end
+
+  def seqcode_url(protocol = true)
+    "#{'https://' if protocol}seqco.de/i:#{id}"
   end
 
   # ============ --- USERS --- ============
@@ -592,6 +614,14 @@ class Name < ApplicationRecord
       self.created_at = Time.now
     end
     save
+  end
+
+  def notified?
+    register&.notified?
+  end
+
+  def priority_date
+    register&.priority_date
   end
 
   # ============ --- INTERNAL CHECKS --- ============

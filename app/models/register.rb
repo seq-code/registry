@@ -165,7 +165,10 @@ class Register < ApplicationRecord
     if has_acc
       add_note('The effective publication includes the SeqCode accession')
     else
-      add_note('The effective publication does not include the accession')
+      add_note(
+        'The effective publication does not include the accession ' \
+        '(SeqCode, Rule 26, Note 2)'
+      )
     end
 
     if bnames.values.all?

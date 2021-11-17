@@ -26,7 +26,7 @@ module Name::QualityChecks
         link_text: identical_base_name.abbr_name,
         link_to: [:name_url, identical_base_name],
         link_public: true,
-        rules: %w[9],
+        rules: %w[9b],
         recommendations: %w[9.2]
       }
     end
@@ -38,7 +38,7 @@ module Name::QualityChecks
           "Name is already in use: #{external_homonyms.to_sentence}".html_safe,
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        rules: %w[9],
+        rules: %w[9b],
         recommendations: %w[9.2]
       }
     end
@@ -48,9 +48,7 @@ module Name::QualityChecks
         type: :missing_description,
         message: 'The name has no registered description',
         link_text: 'Edit description',
-        link_to: [:edit_name_url, self],
-        recommendations: %w[26]
-        # TODO This should be a rule, under revision
+        link_to: [:edit_name_url, self]
       }
     end
 
@@ -63,17 +61,33 @@ module Name::QualityChecks
         rules: %w[24a],
         can_approve: true
       }
+    elsif proposed_by.prepub?
+      @qc_warnings << {
+        type: :invalid_effective_publication,
+        message: 'The publication proposing this name is a preprint or some ' \
+                 'other type of publication not accepted',
+        link_text: 'Register another publication',
+        link_to: [:new_publication_url, { link_name: id }],
+        rules: %w[24c]
+      }
     end
 
-    unless base_name =~ /\A[A-Z][a-z ]+\z/
+    unless base_name =~ /\A[A-Z][a-z ]+( subsp\. )?[a-z ]+\z/
       @qc_warnings << {
         type: :inconsistent_format,
         message: 'Names should only include Latin characters. ' +
-                 'The first epithet must be capitalized, and other ' +
+                 'The first word must be capitalized, and other ' +
                  'epithets (if any) should be given in lower case',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
-        rules: %w[8 11 45]
+        rules: %w[8 45] + (
+          case inferred_rank
+          when 'genus'; %w[10]
+          when 'species'; %w[11]
+          when 'subspecies'; %w[13a 13b]
+          else %w[14]
+          end
+        )
       }
     end
 
@@ -88,15 +102,27 @@ module Name::QualityChecks
       }
     end
 
-    unless type?
+    if type?
+      if %w[species subspecies].include?(inferred_rank) &&
+           !%w[nuccore assembly].include?(type_material)
+        @qc_warnings << {
+          type: :unrecognized_type_material,
+          message: 'A sequence used as type material must be available ' +
+                   'in the INSDC databases',
+          link_text: 'Edit type',
+          link_to: [:edit_name_type_url, self],
+          rules: %w[18a]
+        }
+      end
+    else
       @qc_warnings << {
         type: :missing_type,
         message: 'The name is missing a type definition',
         link_text: 'Edit type',
         link_to: [:edit_name_type_url, self],
         rules: %w[16 17 26.3] + (
-          %w[subspecies species].include?(rank) ? %w[18a] :
-          %w[genus].include?(rank) ? %w[21a] : []
+          %w[subspecies species].include?(inferred_rank) ? %w[18a] :
+          %w[genus].include?(inferred_rank) ? %w[21a] : []
         )
       }
     end
@@ -104,7 +130,7 @@ module Name::QualityChecks
     if type_is_name? && !type_name.validated?
       @qc_warnings << {
         type: :non_valid_name_as_type,
-        message: 'Only valid names can be used as nomenclatural type',
+        message: 'Only a valid name can be used as nomenclatural type',
         link_text: 'Edit type',
         link_to: [:edit_name_type_url, self],
         rules: %w[20],
@@ -115,11 +141,11 @@ module Name::QualityChecks
     unless consistent_type_rank?
       @qc_warnings << {
         type: :inconsistent_type_rank,
-        message: "The nomenclatural type of a #{rank} must " +
+        message: "The nomenclatural type of a #{inferred_rank} must " +
                  "be a designated #{expected_type_rank}",
         link_text: 'Edit type',
         link_to: [:edit_name_type_url, self],
-        rules: %w[16]
+        rules: %w[16] + (inferred_rank == 'genus' ? %w[21a] : [])
       }
     end
 
@@ -137,7 +163,7 @@ module Name::QualityChecks
       @qc_warnings << {
         type: :inconsistent_parent_rank,
         message: "The parent rank (#{parent.rank}) is inconsistent " +
-                 "with the rank of this name (#{rank})",
+                 "with the rank of this name (#{inferred_rank})",
         link_text: 'Edit parent',
         link_to: [:name_link_parent_url, self],
         rules: %w[7a 7b]
@@ -151,11 +177,11 @@ module Name::QualityChecks
           message: 'Species must be binary names',
           link_text: 'Edit spelling',
           link_to: [:edit_name_url, self],
-          rules: %w[8 10]
+          rules: %w[8 11]
         }
       end
 
-      if rank == 'subspecies' && base_name !~ /\A[A-Z][a-z]* [a-z]+ subsp\. [a-z]+/
+      if rank == 'subspecies' && base_name !~ /\A[A-Z][a-z]* [a-z]+ subsp\. [a-z]+\z/
         @qc_warnings << {
           type: :malformed_subspecies_name,
           message: 'Subspecies names should include the species name, ' +
@@ -172,18 +198,30 @@ module Name::QualityChecks
           message: 'Names above the rank of species must be single words',
           link_text: 'Edit spelling',
           link_to: [:edit_name_url, self],
-          rules: %w[8]
+          rules: %w[8 10]
         }
       end
 
-      if rank == 'genus' && self.class.rank_regexps.any? { |_, i| name =~ i }
-        @qc_warnings << {
-          type: :reserved_suffix,
-          message: 'Avoid reserved suffixes for genus names',
-          link_text: 'Edit spelling',
-          link_to: [:edit_name_url, self],
-          recommendations: %w[10]
-        }
+      if rank == 'genus'
+        if self.class.rank_regexps.any? { |_, i| name =~ i }
+          @qc_warnings << {
+            type: :reserved_suffix,
+            message: 'Avoid reserved suffixes for genus names',
+            link_text: 'Edit spelling',
+            link_to: [:edit_name_url, self],
+            recommendations: %w[10]
+          }
+        end
+
+        if etymology? && !latin?
+          @qc_warnings << {
+            type: :inconsistent_language_for_genus,
+            message: 'A genus name must be treated as Latin (L. or N.L.)',
+            link_text: 'Edit etymology',
+            link_to: [:edit_name_etymology_url, self],
+            rules: %w[10]
+          }
+        end
       end
     end
 
@@ -221,7 +259,7 @@ module Name::QualityChecks
 
     if hard_to_pronounce?
       @qc_warnings << {
-        type: :hard_to_pronounce,
+        type: :difficult_to_pronounce,
         message: 'Consider revising the name to make it easier to pronounce',
         link_text: 'Edit spelling',
         link_to: [:edit_name_url, self],
@@ -232,11 +270,11 @@ module Name::QualityChecks
     unless consistent_species_name?
       @qc_warnings << {
         type: :inconsistent_species_name,
-        message: 'The first epithet of species names must correspond to the ' +
+        message: 'The first word of species names must correspond to the ' +
                  'parent genus',
         link_text: 'Edit parent',
         link_to: [:name_link_parent_url, self],
-        rules: %w[8]
+        rules: %w[8 11]
       }
     end
 
@@ -254,10 +292,10 @@ module Name::QualityChecks
     unless consistent_grammar_for_species_or_subspecies?
       @qc_warnings << {
         type: :"inconsistent_grammar_for_#{rank}_name",
-        message: "A #{rank} name must be an adjective or a noun",
+        message: "A #{inferred_rank} name must be an adjective or a noun",
         link_text: 'Edit etymology',
         link_to: [:edit_name_etymology_url, self],
-        rules: rank == 'species' ? %w[12] : %w[13b]
+        rules: (rank == 'subspecies' ? %w[13b] : []) + %w[12]
       }
     end
 
@@ -293,48 +331,61 @@ module Name::QualityChecks
     end
 
     unless consistent_genus_gender?
-      @qc_warnings << {
-        type: :inconsistent_grammatical_gender,
-        message: 'A genus name formed by two or more Latin words should take ' +
-                 'gender of the last component of the word',
-        link_text: 'Edit etymology',
-        link_to: [:edit_name_etymology_url, self],
-        rules: %w[10]
-      }
+      if feminine? || masculine? || neuter?
+        @qc_warnings << {
+          type: :missing_grammatical_gender,
+          message: 'Authors must give the gender of any proposed genus name',
+          link_text: 'Edit etymology',
+          link_to: [:edit_name_etymology_url, self],
+          rules: %w[49.1 49.3]
+        }
+      else
+        @qc_warnings << {
+          type: :inconsistent_grammatical_gender,
+          message: 'A genus name formed by two or more Latin words should take ' +
+                   'gender of the last component of the word',
+          link_text: 'Edit etymology',
+          link_to: [:edit_name_etymology_url, self],
+          rules: %w[49.2]
+        }
+      end
     end
 
     unless consistent_grammatical_number_and_gender?
-      case rank
+      case inferred_rank
       when 'genus'
         @qc_warnings << {
           type: :inconsistent_grammatical_number,
-          message: 'A genus must be given in the singular number',
+          message: 'A genus must be a noun or and adjective used as a noun, ' +
+                   'given in the singular number',
           link_text: 'Edit etymology',
           link_to: [:edit_name_etymology_url, self],
           rules: %w[10]
         }
       when 'species', 'subspecies'
         @qc_warnings << {
-          type: :inconsitent_grammatical_number_or_gender,
+          type: :inconsistent_grammatical_number_or_gender,
           message: 'A specific epithet formed by an adjective ' +
-                   'should agree in number and gender with the parent name',
+                   'should agree in number and gender with the parent name' +
+                   (inferred_rank == 'subspecies' ? ' (see Rule 13b)' : ''),
           link_text: 'Edit etymology',
           link_to: [:edit_name_etymology_url, self],
-          recommendations: rank == 'species' ? %w[12.2] : %w[13b]
-          # TODO Revise Rule 13b here, it should probably be a recommendation
+          recommendations: %w[12.2]
         }
       when 'family', 'order'
         @qc_warnings << {
-          type: :inconsitent_grammatical_number_or_gender,
-          message: "A #{rank} name must be feminine and plural",
+          type: :inconsistent_grammatical_number_or_gender,
+          message: "A name in the rank of #{inferred_rank} must be " +
+                   "feminine and plural",
           link_text: 'Edit etymology',
           link_to: [:edit_name_etymology_url, self],
           recommendations: %w[14]
         }
       when 'class', 'phylum'
         @qc_warnings << {
-          type: :inconsitent_grammatical_number_or_gender,
-          message: "A #{rank} name must be neuter and plural",
+          type: :inconsistent_grammatical_number_or_gender,
+          message: "A name in the rank of #{inferred_rank} must be " +
+                   "neuter and plural",
           link_text: 'Edit etymology',
           link_to: [:edit_name_etymology_url, self],
           recommendations: %w[14]
@@ -342,8 +393,21 @@ module Name::QualityChecks
       end
     end
 
+    if corrigendum_from &&
+         corrigendum_from.sub(/^Candidatus /, '')[0] != base_name[0]
+      @qc_warnings << {
+        type: :corrigendum_affecting_initials,
+        message: 'A corrigendum should be issued with reserve when affecting ' \
+                 'the first letter of a name',
+        link_text: 'Edit spelling',
+        link_to: [:edit_name_url, self],
+        rule_notes: %w[47]
+      }
+    end
+
     @qc_warnings.map do |warning|
-      warning[:fail] = warning[:rules] && !warning[:can_approve] ? :error : :warn
+      is_error = warning[:rules] && (!warning[:can_approve] || notified?)
+      warning[:fail] = is_error ? :error : :warn
       warning
     end
   end
@@ -390,6 +454,9 @@ module Name::QualityChecks
   def consistent_genus_gender?
     return true unless rank? && grammar && rank == 'genus'
 
+    # Rule 49.1
+    return false unless feminine? || masculine? || neuter?
+
     # Rules 49.1 and 49.3
     return true if [:p1, nil].include?(last_component)
 
@@ -407,7 +474,8 @@ module Name::QualityChecks
 
     case rank
     when 'genus'
-      !plural?
+      return false if plural?
+      adjective? || noun?
     when 'species', 'subspecies'
       return true unless parent&.grammar # If it cannot be checked
       return true unless adjective? # Only adjectives are checked
