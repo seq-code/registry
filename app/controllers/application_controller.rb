@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
     case params[:path]
     when /\A(i:)?(\d+)\z/
       redirect_to(name_url(Name.where(id: $2).first, par))
-    when /\A(n:)?([a-z_ ]+)\z/i
+    when /\A(n:)?([a-z_\. ]+)\z/i
       name = $2.gsub('_', ' ')
       redirect_to(name_url(Name.find_by_variants(name), par))
     when /\A(r:.+)\z/i
