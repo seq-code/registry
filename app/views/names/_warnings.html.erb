@@ -17,12 +17,20 @@
             [<%= warn[:link_text] %>]
           <% end %>
         <% end %>
-        <% if warn[:rules] || warn[:recommendations] %>
+        <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
           <div class="text-muted">
             <b>§ Contravenes SeqCode</b>:
             <% if warn[:rules] %>
               <%= warn[:rules].size == 1 ? 'Rule' : 'Rules' %>
               <%= warn[:rules].to_sentence %>
+              <%=
+                warn[:recommendations] && warn[:rule_notes] ?
+                  ',' : warn[:recommendations] || warn[:rule_notes] 'and'
+              %>
+            <% end %>
+            <% if warn[:rule_notes] %>
+              <%= warn[:rule_notes].size == 1 ? 'Note to Rule' : 'Notes to Rules' %>
+              <%= warn[:rule_note].to_sentence %>
               <%= 'and' if warn[:recommendations] %>
             <% end %>
             <% if warn[:recommendations] %>
