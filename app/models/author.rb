@@ -1,6 +1,6 @@
 class Author < ApplicationRecord
-  has_many :publication_authors, dependent: :destroy
-  has_many :publications, through: :publication_authors
+  has_many(:publication_authors, dependent: :destroy)
+  has_many(:publications, through: :publication_authors)
 
   class << self
     def find_or_create(given, family)
@@ -11,6 +11,10 @@ class Author < ApplicationRecord
   end
 
   def full_name
-    family + ( given ? ", #{given}" : '' )
+    family.to_s + ( given ? ", #{given}" : '' )
+  end
+
+  def abbreviated_name
+    family.to_s + ( given ? " " + given.gsub(/([^\s])[^\s]+ ?/, '\1') : '' )
   end
 end
