@@ -1,18 +1,19 @@
+Arthrobacter livingstonensis
+Bacillus songklensis
+Bartonella coopersplainsensis
+Brevibacterium mcbrellneri
+Chryseobacterium angstadtii
+Corynebacterium sundsvallense
+Halosimplex carlsbadense
 Hansschlegelia
-livingstonensis
-songklensis
-coopersplainsensis
-mcbrellneri
-angstadtii
-sundsvallense
-carlsbadense
-zhihuaiae
-terpstrae
-ushuaiensis
-qiuiae
-goldsteinii
-kaengkrachanensis
-chungwhensis
-chungwhensis
-livingstonensis
-cangkringensis
+Hansschlegelia zhihuaiae
+Leptospira terpstrae
+Marinomonas ushuaiensis
+Micromonospora qiuiae
+Myxococcus llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogochensis
+Parabacteroides goldsteinii
+Planotetraspora kaengkrachanensis
+Pontibacillus chungwhensis
+Salinimonas chungwhensis
+Shewanella livingstonensis
+Streptomyces cangkringensis
