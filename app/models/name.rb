@@ -65,7 +65,7 @@ class Name < ApplicationRecord
     end
 
     def find_by_variants(name)
-      variants = find_variants
+      variants = find_variants(name)
       return variants.first if variants.count <= 1
 
       if name =~ /^Candidatus /
