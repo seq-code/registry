@@ -18,7 +18,7 @@ namespace :names do
       cla class classes classis ord ordo orders? phylum phyla
       instead of preferred provided list uncovers rhetoricae predominate[ds]?
       detection have genomes? like related associated infected lacks?
-      pathosystems? into
+      pathosystems? into shares
     ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
