@@ -14,6 +14,11 @@ class AuthorsController < ApplicationController
         Author
           .left_joins(:publications).group(:id)
           .order('COUNT(publications.id) DESC')
+      when 'names'
+        Author
+          .left_joins(:names).group(:id)
+          .select('"authors".*, COUNT(DISTINCT names.id) AS name_count')
+          .order(name_count: :desc)
       else
         @sort = 'alphabetically'
         Author.order(name: :asc)

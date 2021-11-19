@@ -1,6 +1,8 @@
 class Author < ApplicationRecord
   has_many(:publication_authors, dependent: :destroy)
   has_many(:publications, through: :publication_authors)
+  has_many(:publication_names, through: :publications)
+  has_many(:names, -> { group(:name_id) }, through: :publication_names)
 
   class << self
     def find_or_create(given, family)
