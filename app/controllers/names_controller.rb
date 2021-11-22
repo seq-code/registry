@@ -29,7 +29,7 @@ class NamesController < ApplicationController
 
   # GET /autocomplete_names.json?q=Abc
   def autocomplete
-    @names = Name.where('lower(name) LIKE ?', "%#{params[:q].downcase}%")
+    @names = Name.where('LOWER(name) LIKE ?', "%#{params[:q].downcase}%")
   end
 
   # GET /names
@@ -258,24 +258,33 @@ class NamesController < ApplicationController
 
   # POST /names/1/link_parent
   def link_parent_commit
-    parent = Name.find_by(name: params[:name][:parent])
-    link_nil = params[:name][:parent].nil? || params[:name][:parent].empty?
-    if parent.nil? && !link_nil
-      parent = Name.new(name: params[:name][:parent])
-      parent.status = 5
-      parent.created_by = current_user
-      unless parent.save
-        flash[:alert] = 'Parent name could not be registered'
-        parent = nil
+    par = params.require(:name).permit(
+      :parent, :incertae_sedis, :incertae_sedis_text
+    )
+
+    ok = true
+    if par[:parent].present?
+      if parent = Name.find_by(name: par[:parent])
+        par[:parent] = parent
+      else
+        par[:parent] = Name.new(
+          name: par[:parent], status: 5, created_by: current_user
+        )
+        unless par[:parent].save
+          flash[:alert] = 'Parent name could not be registered'
+          @name.errors.add(:parent, par[:parent].errors.values.join(', '))
+          ok = false
+        end
       end
+    else
+      par[:parent] = nil
     end
 
-    if (!parent.nil? || link_nil) && @name.update(parent: parent)
-      flash[:notice] =
-        link_nil ? 'Parent unlinked from the name' : 'Parent linked to the name'
-      redirect_to @name
+    if ok && @name.update(par)
+      flash[:notice] = 'Parent successfully updated'
+      redirect_to(@name)
     else
-      render :link_parent
+      render(:link_parent)
     end
   end
 

@@ -37,6 +37,7 @@ class Name < ApplicationRecord
   has_rich_text(:description)
   has_rich_text(:notes)
   has_rich_text(:etymology_text)
+  has_rich_text(:incertae_sedis_text)
 
   validates(:name, presence: true, uniqueness: true)
   validates(
@@ -44,6 +45,13 @@ class Name < ApplicationRecord
     format: {
       with: /\A[A-Z\.'-]*\z/i,
       message: 'Only letters, dashes, dots, and apostrophe are allowed'
+    }
+  )
+  validates(:incertae_sedis_text, presence: true, if: :incertae_sedis?)
+  validates(
+    :incertae_sedis, absence: {
+      if: :parent,
+      message: 'cannot be declared if the parent taxon is set'
     }
   )
 
@@ -413,6 +421,12 @@ class Name < ApplicationRecord
     end
     @lineage.pop
     @lineage
+  end
+
+  def incertae_sedis_html
+    return '' unless incertae_sedis?
+
+    incertae_sedis.gsub(/(incertae sedis)/i, '<i>\\1</i>').html_safe
   end
 
   def children

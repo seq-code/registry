@@ -149,7 +149,7 @@ module Name::QualityChecks
       }
     end
 
-    unless !rank? || top_rank? || !parent.nil?
+    unless !rank? || top_rank? || incertae_sedis? || !parent.nil?
       @qc_warnings << {
         type: :missing_parent,
         message: 'The taxon has not been assigned to a higher classification',

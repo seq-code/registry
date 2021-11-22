@@ -5,22 +5,23 @@
   <% if @name.possible_type_materials.size == 1 %>
     <%=
       f.input(
-        :type_material,
-        as: :hidden,
+        :type_material, as: :hidden,
         input_html: { value: @name.possible_type_materials.keys.first }
       )
     %>
     <%=
       f.input(
-        :type_accession, as: :string, label: 'Type name',
-        input_html: { value: @name.type_name&.name }
+        :type_accession, as: :string, label: 'Type name', autofocus: true,
+        input_html: {
+          data: { behavior: 'autocomplete', autocomplete: 'name' },
+          value: @name.type_name&.name
+        }
       )
     %>
   <% else %>
     <%=
       f.input(
-        :type_material,
-        label: 'Material',
+        :type_material, label: 'Material',
         collection: @name.possible_type_materials.map { |k, v| [v[:name], k] }
       )
     %>

@@ -39,6 +39,7 @@ class UsersController < ApplicationController
     if current_user.update(contributor_statement: statement)
       flash[:notice] = 'Application received, we will evaluate it as soon as possible'
       redirect_to dashboard_path
+      # TODO Notify all admins
     else
       flash[:alert] = 'Application failed'
       render 'contributor_request'
@@ -51,6 +52,7 @@ class UsersController < ApplicationController
     if current_user.update(curator_statement: statement)
       flash[:notice] = 'Application received, we will evaluate it as soon as possible'
       redirect_to dashboard_path
+      # TODO Notify all admins
     else
       flash[:alert] = 'Application failed'
       render 'curator_request'

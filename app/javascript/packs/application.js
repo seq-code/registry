@@ -19,3 +19,8 @@ console.log('Hello World from Webpacker')
 
 require("trix")
 require("@rails/actiontext")
+
+require("jquery")
+require("easy-autocomplete")
+import "packs/names"
+

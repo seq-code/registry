@@ -38,7 +38,10 @@
         </td>
         <td><%= name.description %></td>
         <td>
-          <% if !name.parent %>
+          <% if name.incertae_sedis? %>
+            <b><%= name.incertae_sedis_html %>:</b>
+            <%= name.incertae_sedis_text %>
+          <% elsif !name.parent %>
             <u>Unknown</u>
           <% elsif @register.names.include? name %>
             <%= name.parent.name_html(nil, true) %>

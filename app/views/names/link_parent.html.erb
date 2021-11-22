@@ -1,10 +1,55 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
-<%= simple_form_for(@name, url: name_link_parent_commit_path(@name), html: { method: :post }) do |f| %>
-  <%= f.input :parent, required: true, autofocus: true,
-        input_html: { value: @name.parent&.name } %>
-  <%= f.button :submit, 'Submit' %>
-<% end %>
+<%= simple_form_for(
+      @name, url: name_link_parent_commit_path(@name),
+      html: { method: :post }
+    ) do |f| %>
 
+  <h3>Parent taxon</h3>
+  <p class="lead">
+    Indicate the name of the parent taxon in the rank of
+    <%= @name.expected_parent_rank %>
+  </p>
+  <%=
+    f.input(
+      :parent, autofocus: true,
+      input_html: {
+        value: @name.parent&.name,
+        data: { behavior: 'autocomplete', autocomplete: 'name' }
+      }
+    )
+  %>
+  <br/>
+
+  <div class="border-left pl-3">
+  <h3>Or declare <i>incertae sedis</i></h3>
+  <p class="lead">
+    Alternatively, you can indicate that the classification of this taxon is
+    uncertain and why
+  </p>
+  <%=
+    f.input(
+      :incertae_sedis,
+      collection: [
+        'Incertae sedis',
+        'Incertae sedis (Bacteria)',
+        'Incertae sedis (Archaea)'
+      ]
+    )
+  %>
+  <%=
+    f.input(
+      :incertae_sedis_text,
+      label: 'Description of the classification problems',
+      as: :rich_text_area
+    )
+  %>
+  </div>
+  <br/>
+
+  <%= f.button(:submit, 'Submit') %>
+  <%= link_to('Cancel', @name, role: 'button', class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
 

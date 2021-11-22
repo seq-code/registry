@@ -67,6 +67,9 @@
               <% end %>
             <% end %>
             <%= name.name_html(nil, true) %>
+          <% elsif name.incertae_sedis? %>
+            <b><%= name.incertae_sedis_html %>:</b>
+            <%= name.incertae_sedis_text %>
           <% else %>
             <u>Unknown</u>
           <% end %>

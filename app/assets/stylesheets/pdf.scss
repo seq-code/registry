@@ -18,9 +18,9 @@ body {
 
 .table-pdf {
   width: 100%;
+  border-collapse: collapse;
   th, td {
     border: 1px solid black;
-    border-collapse: collapse;
     margin: 0;
     padding: 0.5em;
   }
