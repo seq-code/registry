@@ -63,9 +63,8 @@ sup {
 
 // List
 .pdf-abstract {
-  //background: rgb(238, 239, 240);
   padding: 0.2em 1em 0.5em 1em;
-  //border-radius: 5px;
+  page-break-inside: avoid;
 }
 .pdf-list-entry {
   h2 {
