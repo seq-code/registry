@@ -287,6 +287,14 @@ class Name < ApplicationRecord
     publication_names.left_joins(:publication).order(journal_date: :desc)
   end
 
+  def citations
+    return @citations unless (@citations ||= nil).nil?
+
+    @citations ||= [
+      proposed_by, corrigendum_by, emended_by.to_a
+    ].flatten.compact
+  end
+
   # ============ --- STATUS --- ============
 
   def status_hash

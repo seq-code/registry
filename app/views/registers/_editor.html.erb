@@ -1,0 +1,16 @@
+<% if current_editor? && @register.validated? && !@register.published? %>
+  <dl class="main-section name-details">
+    <h2>Editor Actions</h2>
+    <dd>
+      <%= link_to(
+            publish_register_url(@register), method: :post,
+            class: 'btn btn-primary btn-sm',
+            data: { confirm: 'Are you sure? Publication is final' }
+          ) do %>
+        <%= fa_icon('satellite-dish') %> Publish list
+      <% end %>
+      &raquo; Register and transfer documents as displayed above
+    </dd>
+  </dl>
+<% end %>
+

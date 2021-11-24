@@ -35,6 +35,10 @@ module ApplicationHelper
     current_user.try :admin?
   end
 
+  def current_editor?
+    current_user.try :editor?
+  end
+
   def adaptable_list(opts = {}, &blk)
     opts[:type] ||= list_preference.to_sym
     list = AdaptableList.new(opts)

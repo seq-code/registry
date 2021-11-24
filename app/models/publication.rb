@@ -100,4 +100,8 @@ class Publication < ApplicationRecord
   def prepub?
     !journal? || pub_type == 'posted-content'
   end
+
+  def link
+    "https://doi.org/#{doi}"
+  end
 end

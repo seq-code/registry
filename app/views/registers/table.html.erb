@@ -24,7 +24,7 @@
     <tr>
   </thead>
   <tbody>
-    <% @register.names_by_rank.each do |name| %>
+    <% @register.sorted_names.each do |name| %>
       <tr>
         <td>
           <%= name.inferred_rank.capitalize %>

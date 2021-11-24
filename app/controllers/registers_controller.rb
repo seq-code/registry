@@ -4,7 +4,7 @@ class RegistersController < ApplicationController
     only: %i[
       show table list edit update destroy
       submit return return_commit approve notification notify
-      validate
+      validate publish
     ]
   )
   before_action(
@@ -12,6 +12,9 @@ class RegistersController < ApplicationController
   )
   before_action(
     :authenticate_curator!, only: %i[return return_commit approve validate]
+  )
+  before_action(
+    :authenticate_editor!, only: %i[publish]
   )
   before_action(
     :authenticate_can_view!, only: %i[show table list]
@@ -228,6 +231,11 @@ class RegistersController < ApplicationController
       flash['alert'] = 'An unexpected error occurred while validating the list'
     end
     redirect_to(@register)
+  end
+
+  # POST /registers/r:abc/publish
+  def publish
+    # TODO See Register#post_validation
   end
 
   # GET /registers/r:abc/table

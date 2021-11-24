@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_22_180640) do
+ActiveRecord::Schema.define(version: 2021_11_24_190153) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -186,6 +186,10 @@ ActiveRecord::Schema.define(version: 2021_11_22_180640) do
     t.boolean "notified", default: false
     t.datetime "notified_at"
     t.datetime "validated_at"
+    t.boolean "published"
+    t.datetime "published_at"
+    t.string "published_doi"
+    t.integer "published_by"
     t.index ["accession"], name: "index_registers_on_accession", unique: true
     t.index ["publication_id"], name: "index_registers_on_publication_id"
     t.index ["submitted"], name: "index_registers_on_submitted"
@@ -229,6 +233,7 @@ ActiveRecord::Schema.define(version: 2021_11_22_180640) do
     t.text "curator_statement"
     t.string "family"
     t.string "given"
+    t.boolean "editor", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

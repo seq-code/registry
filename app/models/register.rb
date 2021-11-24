@@ -1,6 +1,10 @@
 class Register < ApplicationRecord
   belongs_to(:user)
   belongs_to(:publication, optional: true)
+  belongs_to(
+    :published_by, optional: true,
+    class_name: 'User', foreign_key: 'published_by'
+  )
   has_one_attached(:publication_pdf)
   has_one_attached(:supplementary_pdf)
   has_one_attached(:certificate_pdf)
@@ -63,6 +67,8 @@ class Register < ApplicationRecord
     end
   end
 
+  alias :sorted_names :names_by_rank
+
   def names_to_review
     @names_to_review ||= names.where(status: 10)
   end
@@ -116,6 +122,15 @@ class Register < ApplicationRecord
       "Register list proposing #{names.size} new names" \
         " including #{self.class.nom_nov(names.first)}"
     end
+  end
+
+  def propose_doi
+    "10.25651/seqcode.#{accession}"
+  end
+
+  def citations
+    @citations ||=
+      ([publication] + sorted_names.map(&:citations).flatten).compact.uniq
   end
 
   ##

@@ -34,6 +34,7 @@ class User < ApplicationRecord
     o << 'Contributor' if contributor?
     o << 'Curator' if curator?
     o << 'Admin' if admin?
+    o << 'Editor' if editor?
     o
   end
 

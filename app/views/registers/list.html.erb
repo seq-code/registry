@@ -17,7 +17,7 @@
 <% end %>
 
 <div id="pdf-list">
-  <% @register.names_by_rank.each do |name| %>
+  <% @register.sorted_names.each do |name| %>
     <div class="pdf-list-entry main-section name-details my-3 rounded">
       <h2>
         <%= name.inferred_rank.capitalize %>
@@ -74,12 +74,49 @@
             <u>Unknown</u>
           <% end %>
         </dd>
+        <% if name.citations.any? %>
+          <dt>References</dt>
+          <dd>
+            <% if name.proposed_by %>
+              Proposed: <%= name.proposed_by.short_citation %>
+              <br/>
+            <% end %>
+            <% if name.corrigendum_by %>
+              <i>Corrigendum</i>: <%= name.corrigendum_by.short_citation %>
+              <% unless name.corrigendum_from.blank? %>
+                (from &#8220;<% name.corrigendum_from %>&#8221;)
+              <% end %>
+              <br/>
+            <% end %>
+            <% if name.emended_by.any? %>
+               <i>Emendavit</i>:
+               <%= name.emended_by.map(&:short_citation).to_sentence %>
+               <br/>
+            <% end %>
+          </dd>
+        <% end %>
         <dt>Registry URL</dt>
         <dd><%= link_to(name.seqcode_url, name.seqcode_url) %></dd>
       </dl>
     </div>
   <% end %>
 </div>
+
+<% if @register.citations.any? %>
+  <div class="pdf-abstract m-4 px-2">
+    <h2>References</h2>
+    <ol>
+      <% @register.citations.each do |publication| %>
+        <li>
+          <%= publication.citation %>.
+          <%= link_to(
+                "DOI:#{publication.doi}", publication.link, target: '_blank'
+              ) %>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+<% end %>
 
 <%= render(partial: 'certification') %>
 

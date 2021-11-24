@@ -1,5 +1,5 @@
 <% if @register.validated? %>
-  <div class="pdf-certificate border-top m-5 p-3">
+  <div class="pdf-certificate border-top my-5 mx-1 p-5">
     <h2 class="text-center my-3">
       Register List Certificate of Validation
     </h2>
@@ -11,13 +11,20 @@
         <%= pluralize(@register.names.count, 'new name') %> has been
         successfully validated.
     </p>
-    <p>
-      <b>
-        <%= fa_icon('certificate') %>
-        Date of Priority:
-      </b>
-      <%= @register.priority_date.strftime('%F %I:%M %Z') %>
-    </p>
+    <div class="row my-5">
+      <div class="col-6 text-center">
+        <b>
+          Date of Priority:
+        </b>
+        <%= @register.priority_date.strftime('%F %I:%M %Z') %>
+      </div>
+      <div class="col-6 text-center">
+        <b>
+          DOI:
+        </b>
+        <%= @register.propose_doi %>
+      </div>
+    </div>
   </div>
 <% end %>
 

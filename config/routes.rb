@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   get  'registers/:accession/table(.:format)' => 'registers#table', as: :download_register_table
   get  'registers/:accession/list(.:format)' => 'registers#list', as: :download_register_list
   post 'registers/:accession/validate' => 'registers#validate', as: :validate_register
+  post 'registers/:accession/publish' => 'registers#publish', as: :publish_register
   resources :publications
   resources :subjects
 

@@ -46,3 +46,8 @@ $theme-colors: (
   }
 }
 
+.turbolinks-progress-bar {
+  background-color: var(--info);
+  height: 3px;
+}
+
