@@ -84,7 +84,7 @@
             <% if name.corrigendum_by %>
               <i>Corrigendum</i>: <%= name.corrigendum_by.short_citation %>
               <% unless name.corrigendum_from.blank? %>
-                (from &#8220;<% name.corrigendum_from %>&#8221;)
+                (from &#8220;<%= name.corrigendum_from %>&#8221;)
               <% end %>
               <br/>
             <% end %>
