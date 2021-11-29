@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   post 'names/:id/validate' => 'names#validate', as: :validate_name
   post 'names/:id/approve' => 'names#approve', as: :approve_name
   post 'names/:id/claim' => 'names#claim', as: :claim_name
+  post 'names/:id/unclaim' => 'names#unclaim', as: :unclaim_name
   post 'names/:id/new_correspondence' => 'names#new_correspondence', as: :new_name_correspondence
   post 'registers/:accession/submit' => 'registers#submit', as: :submit_register
   get  'registers/:accession/return' => 'registers#return', as: :return_register

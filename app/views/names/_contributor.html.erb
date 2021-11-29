@@ -45,6 +45,16 @@
         <% end %>
         &raquo; Claim ownership of this name to activate submission options
         <hr/>
+      <% elsif @name.user?(current_user) && @name.status == 5 %>
+        <%= link_to(
+              unclaim_name_url(@name),
+              method: :post, class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('user-slash') %> Unclaim name
+        <% end %>
+        &raquo; Give up ownership of this name and make it public
+        <hr/>
+      <% end %>
       <% end %>
     <% end %>
     </dd>

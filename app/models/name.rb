@@ -403,9 +403,9 @@ class Name < ApplicationRecord
   end
 
   def can_claim?(user)
-    return false if user.nil?
-    return false unless user.contributor? && created_by.nil?
-    status <= 10
+    return false unless user&.contributor?
+    return true if status == 0
+    !after_approval? && created_by.nil?
   end
 
   # ============ --- TAXONOMY --- ============

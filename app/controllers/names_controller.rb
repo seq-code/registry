@@ -5,7 +5,7 @@ class NamesController < ApplicationController
       show edit update destroy proposed_by corrigendum_by corrigendum emended_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
-      return validate approve claim new_correspondence
+      return validate approve claim unclaim new_correspondence
     ]
   )
   before_action(
@@ -16,10 +16,8 @@ class NamesController < ApplicationController
       autofill_etymology link_parent link_parent_commit new_correspondence
     ]
   )
-  before_action(
-    :authenticate_contributor!,
-    only: %i[new create batch claim]
-  )
+  before_action(:authenticate_created!, only: %i[unclaim])
+  before_action(:authenticate_contributor!, only: %i[new create batch claim])
   before_action(
     :authenticate_curator!,
     only: %i[
@@ -344,7 +342,20 @@ class NamesController < ApplicationController
     else
       flash[:alert]  = 'An unexpected error occurred'
     end
-    redirect_to @name
+    redirect_to(@name)
+  end
+
+  # POST /names/1/unclaim
+  def unclaim
+    par = { status: 0 }
+    if !@name.user?(current_user) || @name.status != 5
+      flash[:alert]  = 'You cannot unclaim this name'
+    elsif @name.update(par)
+      flash[:notice] = 'Name successfully returned to the public pool'
+    else
+      flash[:alert]  = 'An unexpected error occurred'
+    end
+    redirect_to(@name)
   end
 
   # POST /names/1/new_correspondence
@@ -366,12 +377,19 @@ class NamesController < ApplicationController
 
   private
 
-    # Use callbacks to share common setup or constraints between actions.
+    # Use callbacks to share common setup or constraints between actions
     def set_name
       @name = Name.find(params[:id])
 
       unless @name.can_see?(current_user)
         flash[:alert] = 'User cannot access name'
+        redirect_to(root_path)
+      end
+    end
+
+    def authenticate_created!
+      unless @name.user?(current_user)
+        flash[:alert] = 'User is not the owner of the name'
         redirect_to(root_path)
       end
     end
