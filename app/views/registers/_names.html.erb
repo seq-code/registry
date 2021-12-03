@@ -27,8 +27,7 @@
         <td><%= name.rank %></td>
         <td>
           <%= name.status_name %>
-          <%= fa_icon('question-circle',
-                      title: name.status_help, class: 'hover-help') %>
+          <%= help_message(name.status_name) { name.status_help } %>
         </td>
         <td>
           <% if name.type? %>

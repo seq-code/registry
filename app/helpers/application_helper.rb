@@ -104,6 +104,52 @@ module ApplicationHelper
     o << content_tag(value.tag) { yield(value) }
     o.compact.inject(:+)
   end
+
+  def modal(title)
+    @modals ||= []
+    id = "modal-#{@modals.size}"
+    @modals <<
+      content_tag(
+        :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog'
+      ) do
+        content_tag(:div, class: 'modal-dialog', role: 'document') do
+          content_tag(:div, class: 'modal-content') do
+            content_tag(:div, class: 'modal-header') do
+              content_tag(:h5, title, class: 'modal-title') +
+                content_tag(
+                  :button, type: 'button', class: 'close',
+                  data: { dismiss: 'modal' },
+                  aria: { label: 'Close' }
+                ) do
+                  content_tag(
+                    :span, '&times;'.html_safe, aria: { hidden: true }
+                  )
+                end
+            end + content_tag(:div, class: 'modal-body') { yield } 
+          end
+        end
+      end
+    return id
+  end
+
+  def modal_button(id, opts = {})
+    opts[:type] ||= 'button'
+    opts[:class] ||= 'btn btn-primary'
+    opts[:data] ||= {}
+    opts[:data][:toggle] = 'modal'
+    opts[:data][:target] = "##{id}"
+    content_tag(:span, opts) { yield }
+  end
+
+  def help_message(title = '', opts = {})
+    id = modal(title) { yield }
+    opts[:class] ||= ''
+    modal_button(id, opts) { fa_icon('question-circle', class: 'hover-help') }
+  end
+
+  def yield_modals
+    (@modals ||= []).inject(:+)
+  end
 end
 
 class AdaptableList

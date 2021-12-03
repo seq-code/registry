@@ -1,4 +1,6 @@
 
+@import "application";
+
 .bg-dark-ce {
   background-color: #322348 !important;
 }
@@ -46,11 +48,13 @@ trix-editor {
 }
 
 .hover-help {
-  cursor: help;
   text-decoration: underline;
   &.fa, &.fas, &.far, &.fal, &.fad, &.fab {
-    color: var(--info);
+    color: theme-color(info);
     text-decoration: none;
+    &:hover {
+      color: theme-color-level(info, 3);
+    }
   }
 }
 
