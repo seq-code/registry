@@ -4,21 +4,39 @@
     <dd>
       <% unless @register.notified? || @register.validated? %>
         <% unless @register.submitted? %>
-          <%= link_to(
-                submit_register_url(@register), method: :post,
-                class: 'btn btn-primary btn-sm',
-                data: { confirm: 'Are you sure? This will submit to reviewers' }
-              ) do %>
-            <%= fa_icon('paper-plane') %> Submit register list for evaluation
+          <% if Date.today < Date.new(2022, 1, 1) %>
+            <% id = modal('Advance Preview') do %>
+              This function will become available on 01/January/2022.
+            <% end %>
+            <%= modal_button(id, class: 'btn btn-primary btn-sm') do %>
+              <%= fa_icon('paper-plane') %> Submit register list for evaluation
+            <% end %>
+          <% else %>
+            <%= link_to(
+                  submit_register_url(@register), method: :post,
+                  class: 'btn btn-primary btn-sm',
+                  data: { confirm: 'Are you sure? This will submit to reviewers' }
+                ) do %>
+              <%= fa_icon('paper-plane') %> Submit register list for evaluation
+            <% end %>
           <% end %>
           &raquo; Evaluate the names in this list <b>before</b> publication
           <hr/>
         <% end %>
-        <%= link_to(
-              notification_register_url(@register),
-              class: 'btn btn-primary btn-sm'
-            ) do %>
-          <%= fa_icon('file-upload') %> Notify about effective publication
+        <% if Date.today < Date.new(2022, 1, 1) %>
+          <% id = modal('Advance Preview') do %>
+            This function will become available on 01/January/2022.
+          <% end %>
+          <%= modal_button(id, class: 'btn btn-primary btn-sm') do %>
+            <%= fa_icon('file-upload') %> Notify about effective publication
+          <% end %>
+        <% else %>
+          <%= link_to(
+                notification_register_url(@register),
+                class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('file-upload') %> Notify about effective publication
+          <% end %>
         <% end %>
         &raquo; Notify the SeqCode about names <b>already</b> published
         <hr/>
