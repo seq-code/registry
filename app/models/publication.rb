@@ -43,12 +43,12 @@ class Publication < ApplicationRecord
     def by_serrano_work(work)
       journal_loc = "#{work['volume']}"
       journal_loc += " (#{work['issue']})" if work['issue']
-      jounal_date = work['published'] || work['created']
+      date_hash = work['published'] || work['created']
       params = {
         title: (work['title'] || []).join('. '),
         journal: (work['container-title'] || []).join('. '),
         journal_loc: journal_loc,
-        journal_date: Date.new(*journal_date['date-parts'].first),
+        journal_date: Date.new(*date_hash['date-parts'].first),
         doi: work['DOI'],
         url: work['URL'],
         pub_type: work['type'],
