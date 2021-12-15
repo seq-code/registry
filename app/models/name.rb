@@ -57,6 +57,7 @@ class Name < ApplicationRecord
 
   include Name::QualityChecks
   include Name::Etymology
+  include Name::Citations
   attr_accessor :only_display
 
   # ============ --- CLASS --- ============

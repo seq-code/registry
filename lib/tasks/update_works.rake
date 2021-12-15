@@ -14,35 +14,14 @@ namespace :works do
     end
 
     include ApplicationHelper
-    
-    offset = 0
-    loop do
-      # Query CrossRef
-      works = Serrano.works(
-        query: 'candidatus',
-        sort: 'deposited', order: 'asc', offset: offset,
-        filter: {
-          'from_pub_date' => (Date.today - 3.months).to_s,
-          'until_pub_date' => (Date.today).to_s
-        }
-      )
-      unless works['status'] == 'ok'
-        raise "#{works['message-type']}: #{
-          works['message'].map{ |i| i['message'] }.join('; ') }"
-      end
-      # Parse results
-      works['message']['items'].each do |work|
-        $stderr.puts "o #{work['DOI']}"
-        p = Publication.by_serrano_work(work)
-        p.new_record? and
-          raise "Cannot save doi:#{work['DOI']}:\n#{p.errors.join("\n")}"
-      end
-      # Continue
-      offset += 20
-      break if offset > works['message']['total-results']
-    end
 
-
+    Publication.query_crossref(
+      query: 'candidatus',
+      sort: 'deposited', order: 'asc',
+      filter: {
+        'from_pub_date' => (Date.today - 3.months).to_s,
+        'until_pub_date' => (Date.today).to_s
+      }
+    ) { |pub| $stderr.puts "o #{pub.doi}" }
   end
-
 end
