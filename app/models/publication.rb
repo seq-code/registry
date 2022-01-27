@@ -43,12 +43,13 @@ class Publication < ApplicationRecord
     def by_serrano_work(work)
       journal_loc = "#{work['volume']}"
       journal_loc += " (#{work['issue']})" if work['issue']
-      date_hash = work['published'] || work['created']
+      date_h = work['published-print'] || work['published'] ||
+               work['published-online'] || work['created']
       params = {
         title: (work['title'] || []).join('. '),
         journal: (work['container-title'] || []).join('. '),
         journal_loc: journal_loc,
-        journal_date: Date.new(*date_hash['date-parts'].first),
+        journal_date: Date.new(*date_h['date-parts'].first),
         doi: work['DOI'],
         url: work['URL'],
         pub_type: work['type'],
@@ -147,5 +148,9 @@ class Publication < ApplicationRecord
 
   def link
     "https://doi.org/#{doi}"
+  end
+
+  def include_term?(term)
+    title.to_s.include?(term) || abstract.to_s.include?(term)
   end
 end

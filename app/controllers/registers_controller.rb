@@ -202,7 +202,7 @@ class RegistersController < ApplicationController
           unless name.publications.include? publication
             name.publications << publication
           end
-          name.proposed_by = publication
+          name.proposed_by ||= publication
           name.save!
         end
         @register.update!(par)

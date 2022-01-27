@@ -511,6 +511,10 @@ class Name < ApplicationRecord
     end
   end
 
+  def genus
+    lineage.find { |par| par.rank == 'genus' }
+  end
+
   # ============ --- OTHER TAXONOMIES --- ============
 
   def external_request(uri)
