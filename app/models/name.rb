@@ -241,13 +241,13 @@ class Name < ApplicationRecord
   def formal_html
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
-    y += " <i>corrig.</i>" if corrigendum_by
+    y += " <i>corrig.</i>".html_safe if corrigendum_by
     y += " #{proposed_by.short_citation}" if proposed_by
     if priority_date && priority_date.year != proposed_by&.journal_date&.year
       y += " [valid #{priority_date.year}]"
     end
     if emended_by.any?
-      y += " <i>emend.</i> #{emended_by.map(&:short_citation).join('; ')}"
+      y += " <i>emend.</i> #{emended_by.map(&:short_citation).join('; ')}".html_safe
     end
     y.html_safe
   end
