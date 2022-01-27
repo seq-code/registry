@@ -2,11 +2,9 @@
 
 <div class="text-center my-5">
   <h1><%= @register.propose_title %></h1>
-  <% if @register.publication %>
-    <h5 class="mx-5">
-      <%= @register.publication.authors.map(&:abbreviated_name).to_sentence %>
-    </h5>
-  <% end %>
+  <h5 class="mx-5">
+    Submitted by <%= @register.user.display_name %>
+  </h5>
 </div>
 
 <p>

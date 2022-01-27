@@ -210,7 +210,7 @@ class Register < ApplicationRecord
     save
   end
 
-  def add_note(note, title = 'Bot message')
+  def add_note(note, title = 'Auto-check')
     self.notes.body = <<~TXT
       #{notes.body}
       <b>#{title}:</b> #{note}
