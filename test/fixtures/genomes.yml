@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  database: MyString
+  accession: MyString
+  type: 
+  gc_content: 1.5
+  completeness: 1.5
+  contamination: 1.5
+  seq_depth: 1.5
+  most_complete_16s: 1.5
+  number_of_16s: 1
+  most_complete_23s: 1.5
+  number_of_23s: 1
+  number_of_trnas: 1
+  updated_by: 1
+  auto_check: false
+
+two:
+  database: MyString
+  accession: MyString
+  type: 
+  gc_content: 1.5
+  completeness: 1.5
+  contamination: 1.5
+  seq_depth: 1.5
+  most_complete_16s: 1.5
+  number_of_16s: 1
+  most_complete_23s: 1.5
+  number_of_23s: 1
+  number_of_trnas: 1
+  updated_by: 1
+  auto_check: false

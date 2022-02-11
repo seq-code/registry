@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :genomes
   root to: 'application#main'
 
   resources(:registers, param: :accession)

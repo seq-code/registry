@@ -1,0 +1,53 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Genomes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Database</th>
+      <th>Accession</th>
+      <th>Type</th>
+      <th>Gc content</th>
+      <th>Completeness</th>
+      <th>Contamination</th>
+      <th>Seq depth</th>
+      <th>Most complete 16s</th>
+      <th>Number of 16s</th>
+      <th>Most complete 23s</th>
+      <th>Number of 23s</th>
+      <th>Number of trnas</th>
+      <th>Updated by</th>
+      <th>Auto check</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @genomes.each do |genome| %>
+      <tr>
+        <td><%= genome.database %></td>
+        <td><%= genome.accession %></td>
+        <td><%= genome.type %></td>
+        <td><%= genome.gc_content %></td>
+        <td><%= genome.completeness %></td>
+        <td><%= genome.contamination %></td>
+        <td><%= genome.seq_depth %></td>
+        <td><%= genome.most_complete_16s %></td>
+        <td><%= genome.number_of_16s %></td>
+        <td><%= genome.most_complete_23s %></td>
+        <td><%= genome.number_of_23s %></td>
+        <td><%= genome.number_of_trnas %></td>
+        <td><%= genome.updated_by %></td>
+        <td><%= genome.auto_check %></td>
+        <td><%= link_to 'Show', genome %></td>
+        <td><%= link_to 'Edit', edit_genome_path(genome) %></td>
+        <td><%= link_to 'Destroy', genome, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Genome', new_genome_path %>

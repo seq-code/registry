@@ -1,0 +1,2 @@
+class Genome < ApplicationRecord
+end

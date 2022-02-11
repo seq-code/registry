@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_24_190153) do
+ActiveRecord::Schema.define(version: 2022_01_31_194359) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -56,6 +56,28 @@ ActiveRecord::Schema.define(version: 2021_11_24_190153) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["given", "family"], name: "index_authors_on_given_and_family", unique: true
+  end
+
+  create_table "genomes", force: :cascade do |t|
+    t.string "database", null: false
+    t.string "accession", null: false
+    t.string "type", null: false
+    t.float "gc_content"
+    t.float "completeness"
+    t.float "contamination"
+    t.float "seq_depth"
+    t.float "most_complete_16s"
+    t.integer "number_of_16s"
+    t.float "most_complete_23s"
+    t.integer "number_of_23s"
+    t.integer "number_of_trnas"
+    t.integer "updated_by"
+    t.boolean "auto_check", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
+    t.index ["type"], name: "index_genomes_on_type"
+    t.index ["updated_by"], name: "index_genomes_on_updated_by"
   end
 
   create_table "name_correspondences", force: :cascade do |t|

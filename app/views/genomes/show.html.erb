@@ -1,0 +1,74 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Database:</strong>
+  <%= @genome.database %>
+</p>
+
+<p>
+  <strong>Accession:</strong>
+  <%= @genome.accession %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @genome.type %>
+</p>
+
+<p>
+  <strong>Gc content:</strong>
+  <%= @genome.gc_content %>
+</p>
+
+<p>
+  <strong>Completeness:</strong>
+  <%= @genome.completeness %>
+</p>
+
+<p>
+  <strong>Contamination:</strong>
+  <%= @genome.contamination %>
+</p>
+
+<p>
+  <strong>Seq depth:</strong>
+  <%= @genome.seq_depth %>
+</p>
+
+<p>
+  <strong>Most complete 16s:</strong>
+  <%= @genome.most_complete_16s %>
+</p>
+
+<p>
+  <strong>Number of 16s:</strong>
+  <%= @genome.number_of_16s %>
+</p>
+
+<p>
+  <strong>Most complete 23s:</strong>
+  <%= @genome.most_complete_23s %>
+</p>
+
+<p>
+  <strong>Number of 23s:</strong>
+  <%= @genome.number_of_23s %>
+</p>
+
+<p>
+  <strong>Number of trnas:</strong>
+  <%= @genome.number_of_trnas %>
+</p>
+
+<p>
+  <strong>Updated by:</strong>
+  <%= @genome.updated_by %>
+</p>
+
+<p>
+  <strong>Auto check:</strong>
+  <%= @genome.auto_check %>
+</p>
+
+<%= link_to 'Edit', edit_genome_path(@genome) %> |
+<%= link_to 'Back', genomes_path %>
