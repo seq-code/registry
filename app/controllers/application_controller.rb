@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include PageHelper
+
   protect_from_forgery(with: :exception)
   
   @@search_obj = {
