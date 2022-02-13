@@ -23,6 +23,7 @@ gem 'rexml'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'pdf-reader'
+gem 'redcarpet', '~> 3.5'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'

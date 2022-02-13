@@ -1,0 +1,3 @@
+[submodule "seqcode"]
+	path = seqcode
+	url = https://github.com/seq-code/seqcode.git
