@@ -55,8 +55,8 @@ class ApplicationController < ActionController::Base
   def short_link
     par = { format: params[:format] }
     params[:path] ||= ''
-    params[:path].sub!(/\A\/+/, '')
-    params[:path].sub!(/\/+\z/, '')
+    params[:path].sub!(%r[\A/+], '')
+    params[:path].sub!(%r[(?<!/)/+\z], '')
     case params[:path]
     when /\Ap:(.+)\z/
       redirect_to(page_url($1))
