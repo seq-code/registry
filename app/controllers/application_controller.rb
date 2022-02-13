@@ -56,6 +56,8 @@ class ApplicationController < ActionController::Base
     params[:path].sub!(/\A\/+/, '')
     params[:path].sub!(/\/+\z/, '')
     case params[:path]
+    when /\Ap:(.+)\z/
+      redirect_to(page_url($1))
     when /\A(i:)?(\d+)\z/
       redirect_to(name_url(Name.where(id: $2).first, par))
     when /\A(n:)?([a-z_\. ]+)\z/i

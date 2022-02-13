@@ -3,6 +3,17 @@ module ApplicationHelper
     cookies[:list] || 'cards'
   end
 
+  def download_link(file, name = nil)
+    path = "#{root_url}/files/#{file}"
+    local_path = File.join(Rails.public_path, 'files', file)
+    name ||= File.basename(file).gsub(/\..*/, '').gsub(/_/, ' ').gsub(/-/, ', ')
+    text = name + ' (' + File.extname(file).delete('.').upcase + ', ' +
+           number_to_human_size(File.size(local_path)) + ')'
+    link_to(path) do
+      fa_icon(:download, class: 'mr-2') + content_tag(:span, text)
+    end
+  end
+
   def pager(object)
     will_paginate(
       object,

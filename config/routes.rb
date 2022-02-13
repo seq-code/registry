@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
-  resources :genomes
-  root to: 'application#main'
+  get  'page/publications', as: :page_publications
+  get  'page/seqcode',      as: :page_seqcode
+
+  resources(:genomes)
+  root(to: 'application#main')
 
   resources(:registers, param: :accession)
-  devise_for :users, controllers: { registrations: 'users/registrations' }
+  devise_for(:users, controllers: { registrations: 'users/registrations' })
   get  'link' => 'application#short_link'
   get  'link/:path(.:format)' => 'application#short_link'
   get  'set/list' => 'application#set_list', as: :set_list
