@@ -16,10 +16,11 @@ class UsersController < ApplicationController
   end
 
   def show
+    @names = Name.where(created_by: @user)
   end
 
   def dashboard
-    redirect_to root_url unless user_signed_in?
+    redirect_to(root_url) unless user_signed_in?
 
     if current_user.admin?
       @contributor_applications = User.contributor_applications

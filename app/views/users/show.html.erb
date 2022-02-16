@@ -1,17 +1,49 @@
 <h1>User details</h1>
 <hr/>
 
-<%= adaptable_list(set: [@user].paginate, type: :cards) do |list| %>
-  <%= render(partial: @user, locals: { list: list }) %>
-<% end %>
+<div class="row">
+  <div class="col-lg-4">
+    <%= adaptable_list(type: :single_card) do |list| %>
+      <%= render(partial: @user, locals: { list: list }) %>
+    <% end %>
+  </div>
+  <div class="col-lg-8">
+    <h2>Statistics</h2>
+    <ul>
+      <li>
+        <%= link_to(
+              pluralize(@names.count, 'Registered name'),
+              user_names_url(user: @user)
+            ) %>
+       </li>
+       <li>
+         <% if @user.last_sign_in_at? %>
+           Last signed in <%= time_ago_in_words(@user.last_sign_in_at) %> ago
+         <% else %>
+           Never signed in
+         <% end %>
+       </li>
+       <li>
+         <b>Status:</b>
+         <% if !@user.confirmed? %>
+           Unconfirmed email
+         <% elsif @user.locked_at? %>
+           Locked
+         <% else %>
+           Active
+         <% end %>
+       </li>
+    </ul>
 
-<% if @user.contributor_statement? %>
-  <h2>Contributor statement</h2>
-  <p><%= @user.contributor_statement %></p>
-<% end %>
+    <% if @user.contributor_statement? %>
+      <h2>Contributor statement</h2>
+      <p><%= @user.contributor_statement %></p>
+    <% end %>
 
-<% if @user.curator_statement? %>
-  <h2>Curator statement</h2>
-  <p><%= @user.curator_statement %></p>
-<% end %>
+    <% if @user.curator_statement? %>
+      <h2>Curator statement</h2>
+      <p><%= @user.curator_statement %></p>
+    <% end %>
+  </div>
+</div>
 

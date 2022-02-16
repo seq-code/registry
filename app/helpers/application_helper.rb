@@ -53,6 +53,11 @@ module ApplicationHelper
   def adaptable_list(opts = {}, &blk)
     opts[:type] ||= list_preference.to_sym
     list = AdaptableList.new(opts)
+    if list.type == :single_card
+      list.type = :cards
+      return blk[list]
+    end
+
     o = []
     o << pager(list.set) if list.set
     o << content_tag(list.tag, list.css) do
@@ -164,7 +169,7 @@ module ApplicationHelper
 end
 
 class AdaptableList
-  attr :type, :set, :value_names
+  attr_accessor :type, :set, :value_names
 
   def initialize(opts)
     @type = opts[:type]

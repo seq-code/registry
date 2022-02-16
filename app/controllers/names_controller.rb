@@ -37,6 +37,14 @@ class NamesController < ApplicationController
     @drafts    ||= false
     @sort      ||= params[:sort] || 'date'
     @status    ||= params[:status] || 'public'
+    @title     ||=
+      if @submitted
+        'Review Submitted'
+      elsif @drafts
+        'Review Drafts'
+      else
+        "#{@status.gsub(/^\S/, &:upcase)} Names"
+      end
 
     opts[:status] ||=
       case @status
@@ -72,7 +80,12 @@ class NamesController < ApplicationController
 
   # GET /user-names
   def user_names
-    index(where: { created_by: current_user }, status: Name.status_hash.keys)
+    user = current_user
+    if params[:user] && current_user.admin?
+      user = User.find_by(username: params[:user])
+    end
+    @title = "Names by #{user.username}"
+    index(where: { created_by: user }, status: Name.status_hash.keys)
     render(:index)
   end
 
