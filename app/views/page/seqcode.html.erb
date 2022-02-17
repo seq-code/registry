@@ -1,6 +1,15 @@
 
-<div id="seqcode-down" style="margin-bottom: 50%;">
+<div id="seqcode-down">
   <%= @markdown.render(@seqcode).html_safe %>
+</div>
+
+<div class="card mt-5" style="margin-bottom: 50%;">
+  <div class="card-body text-center bg-light" id="version">
+    <p>
+      <b>SeqCode Version:</b> <%= @tag %><br/>
+      <b>Last Update:</b> <%= @last_modified.strftime('%d %B, %Y') %>
+    </p>
+  </div>
 </div>
 
 <script>

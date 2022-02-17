@@ -5,7 +5,11 @@ class PageController < ApplicationController
   def seqcode
     render = SeqCodeDown.new(with_toc_data: true)
     @markdown = Redcarpet::Markdown.new(render, autolink: true, tables: true)
-    @seqcode = File.read(Rails.root.join('seqcode', 'README.md'))
+    seqcode_path = Rails.root.join('seqcode')
+    @seqcode = File.read(seqcode_path.join('README.md'))
+    @tag = `cd "#{seqcode_path}" && git describe --tags --abbrev=0`.chomp
+    @last_modified =
+      Date.parse(`cd "#{seqcode_path}" && git log -1 --format=%cd`.chomp)
   end
 end
 
