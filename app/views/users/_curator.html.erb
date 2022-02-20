@@ -1,48 +1,53 @@
-<h1>Curator Dashboard</h1>
-<hr/>
-<ul class="nav flex-column">
-  <li class="nav-item mt-3"><h4>Review Register Lists</h4></li>
-  <li class="nav-item">
-    <%= link_to(registers_path(status: :notified)) do %>
-      <%= fa_icon('check-circle') %>
-      Notifications of effective publication (awaiting review)
-    <% end %>
-  </li>
-  <li class="nav-item">
-    <%= link_to(registers_path(status: :submitted)) do %>
-      <%= fa_icon('check-circle') %> Submitted lists (awaiting review)
-    <% end %>
-  </li>
-  <li class="nav-item">
-    <%= link_to(registers_path(status: :draft)) do %>
-      <%= fa_icon('pencil-ruler') %> Draft lists
-    <% end %>
-  </li>
-  <li class="nav-item mt-3"><h4>Review Names</h4></li>
-  <li class="nav-item">
-    <%= link_to(submitted_names_path) do %>
-      <%= fa_icon('check-circle') %>
-      Submitted names (awaiting review)
-    <% end %>
-  </li>
-  <li class="nav-item">
-    <%= link_to(draft_names_path) do %>
-      <%= fa_icon('pencil-ruler') %>
-      Draft names
-    <% end %>
-  </li>
+<div class="card">
+  <div class="card-header">
+    <h1>Curator Dashboard</h1>
+  </div>
+  <div class="card-body">
+    <ul class="nav flex-column">
+      <li class="nav-item mt-3"><h4>Review Register Lists</h4></li>
+      <li class="nav-item">
+        <%= link_to(registers_path(status: :notified)) do %>
+          <%= fa_icon('check-circle') %>
+          Notifications of effective publication (awaiting review)
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to(registers_path(status: :submitted)) do %>
+          <%= fa_icon('check-circle') %> Submitted lists (awaiting review)
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to(registers_path(status: :draft)) do %>
+          <%= fa_icon('pencil-ruler') %> Draft lists
+        <% end %>
+      </li>
+      <li class="nav-item mt-3"><h4>Review Names</h4></li>
+      <li class="nav-item">
+        <%= link_to(submitted_names_path) do %>
+          <%= fa_icon('check-circle') %>
+          Submitted names (awaiting review)
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to(draft_names_path) do %>
+          <%= fa_icon('pencil-ruler') %>
+          Draft names
+        <% end %>
+      </li>
 
-  <li class="nav-item mt-3"><h4>Other Tasks</h4></li>
-  <li class="nav-item">
-    <%= link_to(check_ranks_path) do %>
-      <%= fa_icon('check-circle') %>
-      Names with unconfirmed ranks
-    <% end %>
-  </li>
-  <li class="nav-item">
-    <%= link_to(unknown_proposal_path) do %>
-      <%= fa_icon('check-circle') %>
-      Names with unknown proposal
-    <% end %>
-  </li>
-</ul>
+      <li class="nav-item mt-3"><h4>Other Tasks</h4></li>
+      <li class="nav-item">
+        <%= link_to(check_ranks_path) do %>
+          <%= fa_icon('check-circle') %>
+          Names with unconfirmed ranks
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to(unknown_proposal_path) do %>
+          <%= fa_icon('check-circle') %>
+          Names with unknown proposal
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>

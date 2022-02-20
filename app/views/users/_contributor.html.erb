@@ -1,28 +1,33 @@
-<h1>Contributor Dashboard</h1>
-<hr/>
-<ul class="nav flex-column">
-  <li class="nav-item">
-    <%= link_to(user_names_path) do %>
-      <%= fa_icon('list-alt') %>
-      My names
-    <% end %>
-  </li>
-  <li class="nav-item">
-    <%= link_to(new_name_path) do %>
-      <%= fa_icon('plus-circle') %>
-      Register a name
-    <% end %>
-  </li>
-  <li class="nav-item">
-    <%= link_to(new_name_batch_path) do %>
-      <%= fa_icon('plus-circle') %>
-      Register names in batch
-    <% end %>
-  </li>
-  <li class="nav-item">
-    <%= link_to(new_publication_path) do %>
-      <%= fa_icon('plus-circle') %>
-      Register publication
-    <% end %>
-  </li>
-</ul>
+<div class="card">
+  <div class="card-header">
+    <h1>Contributor Dashboard</h1>
+  </div>
+  <div class="card-body">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <%= link_to(user_names_path) do %>
+          <%= fa_icon('list-alt') %>
+          My names
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to(new_name_path) do %>
+          <%= fa_icon('plus-circle') %>
+          Register a name
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to(new_name_batch_path) do %>
+          <%= fa_icon('plus-circle') %>
+          Register names in batch
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to(new_publication_path) do %>
+          <%= fa_icon('plus-circle') %>
+          Register publication
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>

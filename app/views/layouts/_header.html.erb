@@ -1,29 +1,29 @@
 <nav class='navbar navbar-dark bg-vdark-ce'>
-  <%= link_to 'SeqCode Registry', root_url, class: 'navbar-brand' %>
+  <%= link_to('SeqCode Registry', root_url, class: 'navbar-brand') %>
   <div class='navbar-text'>
     <span class='mx-3'>cognitis nomina</span>
     <%= render partial: 'shared/user_links' %>
   </div>
 </nav>
 <% if @crumbs %>
-  <nav class='navbar small sticky-top navbar-expand navbar-dark bg-dark-ce justify-content-between'>
-    <div class='navbar-nav'>
+  <nav class="navbar small sticky-top navbar-expand navbar-dark bg-dark-ce justify-content-between">
+    <div class="navbar-nav">
       <div class="collapse navbar-collapse">
-        <%= link_to root_url, class: 'nav-item nav-link', title: 'Home' do %>
-          <%= fa_icon 'university' %>
+        <%= link_to(root_url, class: 'nav-item nav-link', title: 'Home') do %>
+          <%= fa_icon('university') %>
         <% end %>
         <% @crumbs.each do |i| %>
-          <% if i.is_a? Array %>
-            <%= link_to i[0], i[1], class: 'nav-item nav-link' %>
+          <% if i.is_a?(Array) %>
+            <%= link_to(i[0], i[1], class: 'nav-item nav-link') %>
           <% else %>
-            <%= content_tag :span, i, class: 'nav-item nav-link active' %>
+            <%= content_tag(:span, i, class: 'nav-item nav-link active') %>
           <% end %>
         <% end %>
       </div>
     </div>
     <div>
-      <%= link_to search_path, class: '' do %>
-        <%= fa_icon 'search' %>
+      <%= link_to(search_path, class: '') do %>
+        <%= fa_icon('search') %>
       <% end %>
     </div>
   </nav>

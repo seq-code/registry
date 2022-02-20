@@ -43,7 +43,7 @@ class User < ApplicationRecord
   end
 
   def full_name
-    family.to_s + ( given ? ", #{given}" : '' )
+    family.to_s + (given ? ", #{given}" : '')
   end
 
   def full_name?
@@ -52,5 +52,16 @@ class User < ApplicationRecord
 
   def display_name
     full_name? ? full_name : "SeqCode user #{username}"
+  end
+
+  def academic_email?
+    uni_dom = Rails.root.join('lib', 'uni-domains.txt')
+    File.open(uni_dom, 'r') do |fh|
+      fh.each do |ln|
+        return true if email.downcase =~ /[@\.]#{Regexp.quote(ln.chomp)}\z/
+      end
+    end
+
+    false
   end
 end

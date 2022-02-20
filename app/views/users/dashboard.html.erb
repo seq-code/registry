@@ -1,37 +1,28 @@
-<div class='container'>
-  <div class='row'>
-    <div class='col-md-6'>
-      <div class='bg-light rounded-lg border my-3 p-5'>
-        <%= render(partial: 'about') %>
-      </div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 my-3">
+      <%= render(partial: 'about') %>
     </div>
-    <div class="col-md-6" id="dashboard-actions">
-      <div class="my-md-3 p-5">
-        <%= render(partial: 'actions') %>
-      </div>
+    <div class="col-md-6 my-3" id="dashboard-actions">
+      <%= render(partial: 'actions') %>
     </div>
     <% if current_admin? %>
-      <div class="col-12">
-        <div class="my-3 p-5">
-          <%= render(partial: 'admin') %>
-        </div>
+      <div class="col-12 my-3">
+        <%= render(partial: 'admin') %>
       </div>
     <% end %>
     <% if current_curator? %>
-      <div class="col-12">
-        <div class="my-3 p-5">
-          <%= render(partial: 'curator') %>
-        </div>
+      <div class="col-12 my-3">
+        <%= render(partial: 'curator') %>
       </div>
     <% end %>
     <% if current_contributor? %>
-      <div class="col-12">
-        <div class="my-3 p-5">
-          <%= render(partial: 'contributor') %>
-        </div>
+      <div class="col-12 my-3">
+        <%= render(partial: 'contributor') %>
       </div>
     <% end %>
   </div>
 </div>
-<br/><br/>
+<br/>
+<%= render(partial: 'shared/cc') %>
 

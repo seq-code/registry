@@ -1,34 +1,42 @@
 <h2>Sign up</h2>
 
+<div class="alert alert-info">
+  If you are part of an academic institution, using your institutional email
+  will automatically register you as a contributor. If you use a different
+  email address you can still contribute, but your application will first
+  be reviewed by one of our administrators.
+</div>
+
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :email,
+    <%= f.input(:email,
                 required: true,
                 autofocus: true,
-                input_html: { autocomplete: "email" } %>
-    <%= f.input :username,
+                input_html: { autocomplete: 'email' }) %>
+    <%= f.input(:username,
                 required: true,
-                input_html: { autocomplete: "username" } %>
-    <%= f.input :family, label: 'Family name',
-                input_html: { autocomplete: "lastname" } %>
-    <%= f.input :given, label: 'Given name',
-                input_html: { autocomplete: "firstname" } %>
-    <%= f.input :affiliation,
-                input_html: { autocomplete: "affiliation" } %>
-    <%= f.input :password,
+                input_html: { autocomplete: 'username' }) %>
+    <%= f.input(:family, label: 'Family name(s)',
+                input_html: { autocomplete: 'lastname' }) %>
+    <%= f.input(:given, label: 'Given name(s)',
+                input_html: { autocomplete: 'firstname' }) %>
+    <%= f.input(:affiliation,
+                hint: 'Institution to which you belong',
+                input_html: { autocomplete: 'affiliation' }) %>
+    <%= f.input(:password,
                 required: true,
                 hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
+                input_html: { autocomplete: 'new-password' }) %>
+    <%= f.input(:password_confirmation,
                 required: true,
-                input_html: { autocomplete: "new-password" } %>
+                input_html: { autocomplete: 'new-password' }) %>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
+    <%= f.button(:submit, 'Sign up') %>
   </div>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<%= render('devise/shared/links') %>

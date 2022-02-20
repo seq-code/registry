@@ -8,63 +8,21 @@
   </p>
   <hr/>
   <p>
-    We have identified
-    <%= link_to pluralize(@names.count, 'name'),
-          names_path %> in
-    <%= link_to pluralize(@publications.count, 'publication'),
-          publications_path %> from
-    <%= link_to pluralize(@authors.count, 'author'),
-          authors_path %>.
+    We have identified or registered
+    <%= link_to(pluralize(@names.count, 'name'), names_path) %> from
+    <%= link_to(
+          pluralize(@publications.count, 'publication'),
+          publications_path
+        )
+    %> by
+    <%= link_to(pluralize(@authors.count, 'author'), authors_path) %>.
   </p>
   <div class='m-5'>
-    <%= render partial: 'shared/search_bar' %>
+    <%= render(partial: 'shared/search_bar') %>
   </div>
 </div>
 
-<% if user_signed_in? %>
-  <div class="text-center bg-light rounded-lg border my-5 mx-3 p-5 ">
-    <div class="row">
-      <div class="col-md-3 mb-2 text-right">
-        <h3>User</h3>
-      </div>
-      <div class="col-md-9 mb-2 text-left">
-        <%= link_to(dashboard_path, class: 'btn btn-secondary') do %>
-          <%= fa_icon('tachometer-alt') %> User Dashboard
-        <% end %>
-        <%= link_to(destroy_user_session_path,
-                    method: :delete, class: 'btn btn-secondary') do %>
-          <%= fa_icon('sign-out-alt') %> Logout
-        <% end %>
-      </div>
-    </div>
-
-    <% if current_contributor? %>
-      <div class="row">
-        <div class="col-md-3 mb-2 text-right">
-          <h3>Contributor</h3>
-        </div>
-        <div class="col-md-9 mb-2 text-left">
-          <%= link_to('My names', user_names_path, class: 'btn btn-info') %>
-          <%= link_to('My register lists', registers_path(status: :user), class: 'btn btn-info') %>
-          <%= link_to('Create a name', new_name_path, class: 'btn btn-info') %>
-          <%= link_to('Create names in batch', new_name_batch_path, class: 'btn btn-info') %>
-        </div>
-      </div>
-    <% end %>
-
-    <% if current_curator? %>
-      <div class="row">
-        <div class="col-md-3 mb-2 text-right">
-          <h3>Curator</h3>
-        </div>
-        <div class="col-md-9 mb-2 text-left">
-          <%= link_to('Review submitted', submitted_names_path, class: 'btn btn-primary') %>
-          <%= link_to('Unknown proposals', unknown_proposal_path, class: 'btn btn-primary') %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-<% end %>
+<%= render(partial: 'user_actions') %>
 
 <div class="container">
   <div class="row">
@@ -73,7 +31,7 @@
       <hr/>
     </div>
     <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5">
+      <div class="text-center bg-light rounded-lg border p-5 h-100">
         <h2>Names</h2>
         <% @names.first(5).each do |name| %>
           <hr/><%= link_to(name.abbr_name, name) %>
@@ -82,7 +40,7 @@
       </div>
     </div>
     <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5">
+      <div class="text-center bg-light rounded-lg border p-5 h-100">
         <h2>Publications</h2>
         <% @publications.first(5).each do |publication| %>
           <hr/><%= link_to(publication.short_citation, publication) %>
@@ -91,7 +49,7 @@
       </div>
     </div>
     <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5">
+      <div class="text-center bg-light rounded-lg border p-5 h-100">
         <h2>Authors</h2>
         <% @authors.first(5).each do |author| %>
           <hr/><%= link_to(author.full_name, author) %>
@@ -101,3 +59,6 @@
     </div>
   </div>
 </div>
+
+<br/>
+<%= render(partial: 'shared/cc') %>

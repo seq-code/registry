@@ -1,9 +1,15 @@
-<h1>About</h1>
-<hr/>
-<p>
-  <b>Username:</b> <%= current_user.username %><br/>
-  <b>Full name:</b> <%= current_user.full_name %><br/>
-  <b>Affiliation:</b> <%= current_user.affiliation %><br/>
-  <b>Registered:</b> <%= current_user.created_at.strftime('%B %e, %Y') %><br/>
-  <b>Roles:</b> <%= current_user.roles.to_sentence %><br/>
-</p>
+<div class="card">
+  <div class="card-header">
+    <h1>About</h1>
+  </div>
+  <div class="card-body">
+    <p>
+      <b>Username:</b> <%= current_user.username %><br/>
+      <b>Full name:</b> <%= current_user.full_name %><br/>
+      <b>Affiliation:</b> <%= current_user.affiliation %><br/>
+      <b>Registered:</b> <%= current_user.created_at.strftime('%B %e, %Y') %>
+      <br/>
+      <b>Roles:</b> <%= current_user.roles.to_sentence %><br/>
+    </p>
+  </div>
+</div>

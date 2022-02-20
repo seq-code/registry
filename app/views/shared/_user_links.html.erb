@@ -1,3 +1,9 @@
+<%= link_to(page_seqcode_path, title: 'The SeqCode') do %>
+  <%= fa_icon('book') %><% end %>&nbsp;
+<%= link_to(page_publications_path, title: 'SeqCode Publications') do %>
+  <%= fa_icon('newspaper') %><% end %>&nbsp;
+•&nbsp;
+
 <% if user_signed_in? %>
   <%= link_to(dashboard_path, title: 'Dashboard') do %>
     <%= fa_icon('tachometer-alt') %><% end %>&nbsp;

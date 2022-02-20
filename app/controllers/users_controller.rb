@@ -29,6 +29,14 @@ class UsersController < ApplicationController
   end
 
   def contributor_request
+    if current_user.academic_email?
+      if current_user.update(contributor: true)
+        flash[:notice] = 'Status automatically granted from academic email'
+      else
+        flash[:danger] = 'An unexpected error occurred, please try again later'
+      end
+      redirect_to(dashboard_path)
+    end
   end
 
   def curator_request
@@ -38,8 +46,9 @@ class UsersController < ApplicationController
     statement = params[:user][:contributor_statement] or nil
     statement = nil if statement.try(:empty?)
     if current_user.update(contributor_statement: statement)
-      flash[:notice] = 'Application received, we will evaluate it as soon as possible'
-      redirect_to dashboard_path
+      flash[:notice] =
+        'Application received, we will evaluate it as soon as possible'
+      redirect_to(dashboard_path)
       # TODO Notify all admins
     else
       flash[:alert] = 'Application failed'
@@ -51,7 +60,8 @@ class UsersController < ApplicationController
     statement = params[:user][:curator_statement] or nil
     statement = nil if statement.try(:empty?)
     if current_user.update(curator_statement: statement)
-      flash[:notice] = 'Application received, we will evaluate it as soon as possible'
+      flash[:notice] =
+        'Application received, we will evaluate it as soon as possible'
       redirect_to dashboard_path
       # TODO Notify all admins
     else

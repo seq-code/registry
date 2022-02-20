@@ -1,18 +1,19 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
-<%= render partial: 'alert_messages' %>
-<%= render partial: 'warnings' %>
-<%= render partial: 'citation' %>
-<%= render partial: 'nomenclature' %>
-<%= render partial: 'taxonomy' %>
-<%= render partial: 'metadata' %>
-<%= render partial: 'correspondence' %>
-<%= render partial: 'contributor' %>
-<%= render partial: 'curator' %>
+<%= render(partial: 'alert_messages') %>
+<%= render(partial: 'warnings') %>
+<%= render(partial: 'citation') %>
+<%= render(partial: 'nomenclature') %>
+<%= render(partial: 'taxonomy') %>
+<%= render(partial: 'metadata') %>
+<%= render(partial: 'correspondence') %>
+<%= render(partial: 'contributor') %>
+<%= render(partial: 'curator') %>
 
 <hr/>
 <br/><br/>
-<%= render partial: 'publications' %>
-<br/><br/>
+<%= render(partial: 'publications') %>
 
+<br/>
+<%= render(partial: 'shared/cc') %>
