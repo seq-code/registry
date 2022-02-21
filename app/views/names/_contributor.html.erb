@@ -34,6 +34,7 @@
           <% end %>
           &raquo; Link this name to a Register List for validation
           <hr/>
+        <% end %>
       <% end %>
       <% if @name.can_claim?(current_user) %>
         <%= link_to(
@@ -55,7 +56,6 @@
         &raquo; Give up ownership of this name and make it public
         <hr/>
       <% end %>
-    <% end %>
     </dd>
   </dl>
 <% end %>
