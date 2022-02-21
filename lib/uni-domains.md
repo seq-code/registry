@@ -8,5 +8,6 @@ cat ../university-domains-list/world_universities_and_domains.json \
   | grep '"' \
   | perl -pe 's/.*"(.+)".*/$1/' \
   > lib/uni-domains.txt
+cat lib/extra-domains.txt >> lib/uni-domains.txt
 ```
 
