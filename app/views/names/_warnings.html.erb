@@ -1,4 +1,4 @@
-<% unless @name.validated? || @name.qc_warnings.empty? %>
+<% if !@name.validated? && !@name.qc_warnings.empty? %>
   <dl class="main-section name-details border-danger" style="border-left: 1em solid;">
     <h2>Failed Quality Checks</h2>
     <% @name.qc_warnings.each do |warn| %>
@@ -45,5 +45,12 @@
       </dd>
     <% end %>
     </dd>
+  </dl>
+<% elsif !@name.validated? %>
+  <dl class="main-section name-details border-success py-3" style="border-left: 1em solid;">
+    <h4 class="text-success">
+      <%= fa_icon('check-circle') %>&nbsp;
+      All automated quality checks passed
+    </h4>
   </dl>
 <% end %>
