@@ -3,6 +3,16 @@
     <h2>Curator Actions</h2>
     <dd class="pt-2">
       <% unless @name.validated? %>
+        <% if @name.status == 5 && @name.created_by %>
+          <%= link_to(
+                unclaim_name_url(@name),
+                method: :post, class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('user-slash') %> Unclaim name
+          <% end %>
+          &raquo; Remove ownership of this name and make it public
+          <hr/>
+        <% end %>
         <% unless @name.after_approval? %>
           <%= link_to(
                 approve_name_url(@name),
