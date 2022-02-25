@@ -2,6 +2,9 @@ class Name < ApplicationRecord
   has_many(:publication_names, dependent: :destroy)
   has_many(:publications, through: :publication_names)
   has_many(:name_correspondences)
+  has_many(
+    :children, class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
+  )
   alias :correspondences :name_correspondences
   belongs_to(
     :proposed_by, optional: true,
@@ -436,10 +439,6 @@ class Name < ApplicationRecord
     return '' unless incertae_sedis?
 
     incertae_sedis.gsub(/(incertae sedis)/i, '<i>\\1</i>').html_safe
-  end
-
-  def children
-    @children ||= Name.where(parent: self)
   end
 
   def inferred_rank
