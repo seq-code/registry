@@ -1,6 +1,49 @@
 <h1>Editing Genome</h1>
 
-<%= render 'form', genome: @genome %>
+<div class="p-3 mx-1 mb-3 bg-light border-info row" style="border-left: 0.5em solid;">
+  <% if @name.present? %>
+    <div class="col-md-4">
+      <h4>Name</h4>
+      <%= link_to(@name) { %><%= @name.name_html %><% } %>
+    </div>
+  <% end %>
+  <div class="col-md-4">
+    <h4>Database</h4>
+    <%= Name.type_material_hash[@genome.database.to_sym][:name] %>
+  </div>
+  <div class="col-md-4">
+    <h4>Accession</h4>
+    <%= @genome.accession %>
+  </div>
+</div>
 
-<%= link_to 'Show', @genome %> |
-<%= link_to 'Back', genomes_path %>
+<%= simple_form_for(
+      @genome,
+      url: genome_url(@genome, name: params[:name]), method: :patch
+    ) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <h2 class="mt-5">Genome information</h2>
+    <p class="lead">
+      General information about the sequenced genome
+    </p>
+    <%= f.input(:kind, collection: Genome.kinds_opt, label: 'Type of genome') %>
+    <%= f.input(:seq_depth, label: 'Sequencing depth (X)') %>
+    <h2 class="mt-5">Source material</h2>
+    <p class="lead">
+      Database entry describing the source material from which the genome was
+      derived
+    </p>
+    <%= f.input(:source_database, collection: Genome.source_databases_opt, label: 'Database') %>
+    <%= f.input(:source_accession, label: 'Accession') %>
+  </div>
+
+  <div class="form-actions mt-5">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+<br/><br/>
+<%= render(partial: 'shared/cc') %>
+

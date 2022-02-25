@@ -477,6 +477,10 @@ class Name < ApplicationRecord
     type? && type_material == 'name'
   end
 
+  def type_is_genome?
+    type? && %w[assembly nuccore].include?(type_material)
+  end
+
   def type_link
     @type_link ||=
       case type_material
@@ -488,6 +492,12 @@ class Name < ApplicationRecord
   def type_name
     if type_is_name?
       @type_name ||= self.class.where(id: type_accession).first
+    end
+  end
+
+  def type_genome
+    if type_is_genome?
+      @type_genome ||= Genome.find_or_create(type_material, type_accession)
     end
   end
 

@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_31_194359) do
+ActiveRecord::Schema.define(version: 2022_02_25_162916) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
     t.string "record_type", null: false
-    t.bigint "record_id", null: false
+    t.integer "record_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 2022_01_31_194359) do
   create_table "genomes", force: :cascade do |t|
     t.string "database", null: false
     t.string "accession", null: false
-    t.string "type", null: false
     t.float "gc_content"
     t.float "completeness"
     t.float "contamination"
@@ -75,8 +74,10 @@ ActiveRecord::Schema.define(version: 2022_01_31_194359) do
     t.boolean "auto_check", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "kind"
+    t.string "source_database"
+    t.string "source_accession"
     t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
-    t.index ["type"], name: "index_genomes_on_type"
     t.index ["updated_by"], name: "index_genomes_on_updated_by"
   end
 

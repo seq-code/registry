@@ -1,0 +1,53 @@
+<% if @name.type_is_genome? %>
+  <% @genome = @name.type_genome %>
+  <dl class='main-section name-details'>
+    <h2>Genomics</h2>
+    
+    <% if @name.type_genome.multiple_names? %>
+      <div class="alert alert-danger">
+        This genome has been associated as type material for multiple names:
+        <ul>
+          <% @genome.names.each do |name| %>
+            <li><%= link_to(name) { %><%= name.name_html %><% } %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <% if @genome.kind.present? %>
+      <dt><%= fa_icon('microscope') %> Type</dt>
+      <dd><%= @genome.kind_name %></dd>
+    <% end %>
+
+    <% if @genome.seq_depth.present? %>
+      <dt><%= fa_icon('align-center') %> Sequencing depth</dt>
+      <dd><%= @genome.seq_depth %> X</dd>
+    <% end %>
+
+    <% if @genome.source? %>
+      <dt><%= fa_icon('flask') %> Source</dt>
+      <dd>
+        <%= link_to(@genome.source_link, target: '_blank') do %>
+          <%= @genome.source_text %> <%= fa_icon('external-link-alt') %>
+        <% end %>
+      </dd>
+    <% end %>
+
+    <dt><%= fa_icon('robot') %> Automated checks</dt>
+    <dd><%=
+      @genome.auto_check ? 'Complete' :
+        @genome.kind? ? 'Scheduled' : 'Missing information'
+    %></dd>
+
+    <% if @name.can_edit?(current_user) %>
+      <dd class="mt-4">
+        <%= link_to(
+              edit_genome_url(@name.type_genome, name: @name.id),
+              class: 'btn btn-info'
+            ) do %>
+          <%= fa_icon('edit') %> Edit genome data
+        <% end %>
+      </dd>
+    <% end %>
+  </dl>
+<% end %>

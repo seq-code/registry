@@ -138,6 +138,35 @@ module Name::QualityChecks
       }
     end
 
+    if type_is_genome?
+      unless type_genome.kind.present?
+        @qc_warnings << {
+          type: :missing_genome_kind,
+          message: 'The kind of genome used as type has not been specified',
+          link_text: 'Edit genome',
+          link_to: [:edit_genome_url, type_genome, name: id]
+        }
+      end
+
+      unless type_genome.source?
+        @qc_warnings << {
+          type: :missing_genome_source,
+          message: 'The source of the type genome has not been specified',
+          link_text: 'Edit genome',
+          link_to: [:edit_genome_url, type_genome, name: id]
+        }
+      end
+
+      unless type_genome.seq_depth?
+        @qc_warnings << {
+          type: :missing_genome_sequencing_depth,
+          message: 'The sequencing depth of the type genome has not been specified',
+          link_text: 'Edit genome',
+          link_to: [:edit_genome_url, type_genome, name: id]
+        }
+      end
+    end
+
     unless consistent_type_rank?
       @qc_warnings << {
         type: :inconsistent_type_rank,

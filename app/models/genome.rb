@@ -1,2 +1,83 @@
 class Genome < ApplicationRecord
+  validates(:database, presence: true)
+  validates(:accession, presence: true)
+  validates(:kind, inclusion: { in: %w[isolate enrichment mag sag] }, if: :kind?)
+  validates(:seq_depth, numericality: { greater_than: 0.0 }, if: :seq_depth?)
+  validates(:source_accession, presence: true, if: :source?)
+  validates(:source_database, presence: true, if: :source?)
+
+  class << self
+    def find_or_create(database, accession)
+      return unless database.present? && accession.present?
+
+      par = { database: database, accession: accession }
+      o = where(par).first
+      unless o.present?
+        o = Genome.new(par)
+        o.save!
+      end
+      o
+    end
+
+    def kinds
+      {
+        isolate: { name: 'Isolate Genome', miga: 'genome' },
+        enrichment: { name: 'Enrichment Genome', miga: 'popgenome' },
+        mag: { name: 'Metagenome-Assembled Genome (MAG)', miga: 'popgenome' },
+        sag: { name: 'Single-Cell Amplified Genome (SAG)', miga: 'scgenome' }
+      }
+    end
+
+    def kinds_opt
+      kinds.map { |k, v| [v[:name], k] }
+    end
+
+    def source_databases
+      {
+        sra: { name: 'INSDC Sequence Read Archive (SRA)' },
+        biosample: { name: 'INSDC BioSample' }
+      }
+    end
+
+    def source_databases_opt
+      source_databases.map { |k, v| [v[:name], k] }
+    end
+  end
+
+  def names
+    @names ||= Name.where(type_material: database, type_accession: accession)
+  end
+
+  def multiple_names?
+    names.count > 1
+  end
+
+  def kind_hash
+    self.class.kinds[kind.to_sym]
+  end
+
+  def kind_name
+    kind_hash[:name]
+  end
+
+  def source?
+    source_accession? || source_database?
+  end
+
+  def source_text
+    source? ? "#{source_database}: #{source_accession}" : ''
+  end
+
+  def source_link
+    case source_database
+    when 'sra'
+      "https://www.ncbi.nlm.nih.gov/biosample/#{source_accession}"
+    when 'biosample'
+      "https://www.ncbi.nlm.nih.gov/sra/#{source_accession}"
+    end
+  end
+
+  def updated_by_user
+    User.find(updated_by) if updated_by?
+  end
 end

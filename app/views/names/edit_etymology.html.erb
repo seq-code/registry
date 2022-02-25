@@ -1,12 +1,12 @@
 <h1><%= @name.name_html %></h1>
-<h3>&raquo; Etymology of the epithet <u><b><%= @name.last_epithet %></b></u></h3>
+<h3>&raquo; Etymology of the morpheme <u><b><%= @name.last_epithet %></b></u></h3>
 <hr/>
 
 <% if @name.can_autofill_etymology? %>
   <p class="lead">
   <%= link_to(autofill_etymology_url(@name)) do %>
     <%= fa_icon('magic') %> &nbsp;
-    Automatically fill the etymology on the basis of the nomenclatural type
+    Automatically fill the etymology
   <% end %>
   </p>
 <% end %>

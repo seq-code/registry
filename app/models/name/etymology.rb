@@ -114,10 +114,11 @@ module Name::Etymology
   end
 
   def importable_etymology
-    return unless %w[species subspecies].include?(rank)
+    return nil unless %w[species subspecies].include?(rank)
 
     @importable_etymology ||=
       Name.where('name LIKE ?', "% #{last_epithet}")
+          .where.not(id: id)
           .where.not(etymology_xx_grammar: [nil, ''])
           .last
   end
