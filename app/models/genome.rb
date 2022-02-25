@@ -21,10 +21,10 @@ class Genome < ApplicationRecord
 
     def kinds
       {
-        isolate: { name: 'Isolate Genome', miga: 'genome' },
-        enrichment: { name: 'Enrichment Genome', miga: 'popgenome' },
         mag: { name: 'Metagenome-Assembled Genome (MAG)', miga: 'popgenome' },
-        sag: { name: 'Single-Cell Amplified Genome (SAG)', miga: 'scgenome' }
+        sag: { name: 'Single-Cell Amplified Genome (SAG)', miga: 'scgenome' },
+        enrichment: { name: 'Enrichment Genome', miga: 'popgenome' },
+        isolate: { name: 'Isolate Genome', miga: 'genome' }
       }
     end
 
