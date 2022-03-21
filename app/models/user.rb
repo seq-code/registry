@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many(:validated_names, class_name: 'Name', foreign_key: 'validated_by')
   has_many(:registers)
   has_many(:name_correspondences)
+  has_many(:tutorials)
 
   validates(
     :username,

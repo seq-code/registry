@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_25_162916) do
+ActiveRecord::Schema.define(version: 2022_03_11_114945) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -143,8 +143,10 @@ ActiveRecord::Schema.define(version: 2022_02_25_162916) do
     t.text "col_json"
     t.datetime "col_at"
     t.string "incertae_sedis"
+    t.integer "tutorial_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"
+    t.index ["tutorial_id"], name: "index_names_on_tutorial_id"
   end
 
   create_table "publication_authors", force: :cascade do |t|
@@ -227,6 +229,16 @@ ActiveRecord::Schema.define(version: 2022_02_25_162916) do
     t.index ["name"], name: "index_subjects_on_name", unique: true
   end
 
+  create_table "tutorials", force: :cascade do |t|
+    t.string "pipeline"
+    t.integer "user_id", null: false
+    t.boolean "ongoing"
+    t.integer "step"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_tutorials_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -269,6 +281,8 @@ ActiveRecord::Schema.define(version: 2022_02_25_162916) do
   add_foreign_key "name_correspondences", "names"
   add_foreign_key "name_correspondences", "users"
   add_foreign_key "names", "registers"
+  add_foreign_key "names", "tutorials"
   add_foreign_key "registers", "publications"
   add_foreign_key "registers", "users"
+  add_foreign_key "tutorials", "users"
 end

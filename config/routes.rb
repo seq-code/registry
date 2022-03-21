@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :tutorials
+  # Static pages
   get  'page/publications', as: :page_publications
   get  'page/seqcode',      as: :page_seqcode
 

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Pipeline:</strong>
+  <%= @tutorial.pipeline %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @tutorial.user_id %>
+</p>
+
+<p>
+  <strong>Ongoing:</strong>
+  <%= @tutorial.ongoing %>
+</p>
+
+<p>
+  <strong>Step:</strong>
+  <%= @tutorial.step %>
+</p>
+
+<%= link_to 'Edit', edit_tutorial_path(@tutorial) %> |
+<%= link_to 'Back', tutorials_path %>

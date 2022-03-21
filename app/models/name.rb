@@ -32,6 +32,7 @@ class Name < ApplicationRecord
     class_name: 'User', foreign_key: 'validated_by'
   )
   belongs_to(:register, optional: true)
+  belongs_to(:tutorial, optional: true)
 
   before_save(:standardize_grammar)
   before_save(:prevent_self_parent)
