@@ -22,7 +22,10 @@
             <b>§ Contravenes SeqCode</b>:
             <% unless warn[:rules].blank? %>
               <%= warn[:rules].size == 1 ? 'Rule' : 'Rules' %>
-              <%= warn[:rules].to_sentence %>
+              <%=
+                warn[:rules]
+                  .map { |i| link_to_rule(i) }.to_sentence.html_safe
+              %>
               <%=
                 warn[:recommendations] && warn[:rule_notes] ?
                   ',' : warn[:recommendations] || warn[:rule_notes] ? 'and' : ''
@@ -30,12 +33,18 @@
             <% end %>
             <% unless warn[:rule_notes].blank? %>
               <%= warn[:rule_notes].size == 1 ? 'Note to Rule' : 'Notes to Rules' %>
-              <%= warn[:rule_notes].to_sentence %>
+              <%=
+                warn[:rule_notes]
+                  .map { |i| link_to_rule(i) }.to_sentence.html_safe
+              %>
               <%= 'and' if warn[:recommendations] %>
             <% end %>
             <% unless warn[:recommendations].blank? %>
               <%= warn[:recommendations].size == 1 ? 'Recommendation' : 'Recommendations' %>
-              <%= warn[:recommendations].to_sentence %>
+              <%=
+                warn[:recommendations]
+                  .map { |i| link_to_recommendation(i) }.to_sentence.html_safe
+              %>
             <% end %>
             <% unless warn[:can_approve].blank? || @name.validated? %>
               but can be safely ignored before validation

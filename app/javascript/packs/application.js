@@ -21,6 +21,7 @@ require("trix")
 require("@rails/actiontext")
 
 require("jquery")
+require("jquery-ui")
 require("easy-autocomplete")
 import "packs/names"
 

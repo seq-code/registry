@@ -27,8 +27,9 @@
     %>
     <%= f.input(:type_accession, as: :string, label: 'Accession') %>
   <% end %>
-
   <br/>
+
+  <%= hidden_field_tag(:return_to, tutorial_path(@tutorial)) if @tutorial %>
   <%= f.button :submit, 'Submit' %>
   <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
   <br/><br/>

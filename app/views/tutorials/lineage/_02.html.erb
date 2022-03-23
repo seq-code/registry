@@ -1,0 +1,24 @@
+
+<p class="lead">
+  Carefully describe the information for the indicated taxon
+</p>
+
+<div class="card card-body mb-3">
+  <b><%= @name.inferred_rank.capitalize %></b>
+  <%= link_to_name(@name) %>
+</div>
+
+<% stop = false %>
+<div class="card card-body mb-3">
+  <% if @name.description? %>
+    <b>Description</b>
+    <%= @name.description %>
+  <% else %>
+    <%= link_to(
+          'Fill description', edit_name_url(@name, tutorial: @tutorial),
+          class: 'btn btn-primary') %>
+    <% stop = true %>
+  <% end %>
+</div>
+
+

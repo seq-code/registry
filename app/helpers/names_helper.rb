@@ -15,4 +15,8 @@ module NamesHelper
       name.type_text
     end
   end
+
+  def link_to_name(name)
+    link_to(name.name_html, name)
+  end
 end

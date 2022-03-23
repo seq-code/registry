@@ -1,0 +1,53 @@
+
+<p class="lead">
+  Carefully review that the names in the lineage are correct
+</p>
+
+<div class="card card-body mb-3">
+  <b><%= @tutorial.lowest_classified_taxon_obj.inferred_rank %></b>
+  <%= link_to_name(@tutorial.lowest_classified_taxon_obj) %>
+</div>
+
+<% above = true %>
+<% name = @tutorial.lowest_new_name %>
+<% ranks = []  %>
+<% Name.ranks.each do |rank| %>
+  <%
+    if rank == 'species'
+      break
+    elsif rank == @tutorial.lowest_classified_taxon_obj.inferred_rank
+      above = false
+      next
+    elsif above
+      next
+    end
+  %>
+
+  <div class="card card-body mb-3">
+    <% if parent_name = name.lineage_find(rank) %>
+      <% parent_name.name.gsub!(/^Candidatus /, '') %>
+      <b><%= rank.capitalize %></b>
+      <%  %>
+      <%= link_to_name(parent_name) %>
+      <%= f.input(
+            :"#{rank}_name", as: :hidden,
+            input_html: { value: parent_name.name }) %>
+    <% else %>
+      <%=
+        f.input(
+          :"#{rank}_name", hint: "Proposed new #{rank} name",
+          input_html: { value: name.propose_lineage_name(rank) }
+        )
+      %>
+    <% end %>
+  </div>
+  <% ranks << rank %>
+<% end %>
+
+<%= f.input(:ranks, as: :hidden, input_html: { value: ranks }) %>
+
+<div class="card card-body mb-3">
+  <b>Species</b>
+  <%= link_to_name(name) %>
+  <%= f.input(:species_name, as: :hidden, input_html: { value: name.name }) %>
+</div>

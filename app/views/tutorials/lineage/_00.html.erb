@@ -1,0 +1,22 @@
+
+<p class="lead">
+  Indicate the name of the species and the lowest existing parent taxon
+</p>
+
+<%=
+  f.input(
+    :species_name, hint: 'Name of the novel species',
+    input_html: { value: @tutorial.names.first&.name }
+  )
+%>
+<%=
+  f.input(
+    :lowest_classified_taxon,
+    hint: 'Most specific classification available for this taxon',
+    input_html: {
+      data: { behavior: 'autocomplete', autocomplete: 'name' },
+      value: @tutorial.lowest_classified_taxon_obj&.name
+    }
+  )
+%>
+

@@ -31,7 +31,7 @@ Rails.application.routes.draw do
   get  'search' => 'application#search', as: :search
   get  'names/batch' => 'names#batch', as: :new_name_batch
 
-  resources :names
+  resources(:names)
   resources :authors
   resources :publication_names
   get  'doi/:doi' => 'publications#show', as: :doi, doi: /.+/

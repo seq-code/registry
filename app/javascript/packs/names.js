@@ -1,5 +1,7 @@
 var k = null;
-$(document).ready(function() {
+//$(document).ready(function() {
+//document.addEventListener("turbolinks:load", function() {
+$(document).on("turbolinks:load", function() {
   $input = $('*[data-behavior="autocomplete"][data-autocomplete="name"]')
   var options = {
     url: function(phrase) {
@@ -9,4 +11,3 @@ $(document).ready(function() {
   };
   $input.easyAutocomplete(options);
 });
-

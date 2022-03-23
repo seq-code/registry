@@ -1,0 +1,21 @@
+<%= simple_form_for(@tutorial) do |f| %>
+  <%=
+    render(
+      partial: "tutorials/#{@tutorial.pipeline}/#{'%02i' % @tutorial.step}",
+      locals: { f: f }
+    )
+  %>
+  <div class="actions">
+    <% if @tutorial.step > 0 %>
+      <%=
+        link_to(
+          'Back',
+          tutorial_url(@tutorial, step_back: true),
+          method: :patch, class: 'btn btn-secondary'
+        )
+      %>
+    <% end %>
+    <%= f.submit('Continue', class: 'btn btn-primary') %>
+  </div>
+<% end %>
+

@@ -5,45 +5,38 @@
   <h3>Tutorial history</h3>
   <div class="list-group m-3">
     <% @tutorials.each do |tutorial| %>
-      <%= link_to(tutorial, class: 'list-group-item list-group-item-action') do %>
-        <h5><%= @tutorial.title %></h5>
+      <div class="list-group-item list-group-item-action">
+        <h5><%= tutorial.title %></h5>
         <b>Status:</b>
-        <%= @tutorial.ongoing ? 'Active' : 'Complete' %><br/>
+        <%= tutorial.ongoing ? 'Active' : 'Complete' %><br/>
         <b>Names:</b>
-        <ul>
-          <% tutorial.names.each do |name| %>
-            <li><%= link_to(name.name_html, name) %></li>
-          <% end %>
-        </ul>
-      <% end %>
+        <% if tutorial.names.any? %>
+          <ul>
+            <% tutorial.names.each do |name| %>
+              <li><%= link_to(name.name_html, name) %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          None yet
+        <% end %>
+        <% if tutorial.ongoing %>
+          <%= link_to('Continue', tutorial, class: 'btn btn-primary') %>
+        <% end %>
+      </div>
     <% end %>
   </div>
 <% end %>
 
 <h3>Select the option that best describes the name(s) you want to register:</h3>
 <div class="list-group m-3">
-  <%= link_to(new_tutorial_url(pipeline: :lineage), class: 'list-group-item list-group-item-action') do %>
-    <h5>New species and parent taxa</h5>
-    If you want to register a novel species from a novel genus.
-  <% end %>
-  <%= link_to(new_tutorial_url(pipeline: :species), class: 'list-group-item list-group-item-action') do %>
-    <h5>New species from a previously described genus</h5>
-    If you want to register a new species from a genus that is already validly
-    published under the SeqCode or under the ICNP rules, or currently under
-    revision in the SeqCode Registry.
-  <% end %>
-  <%= link_to(new_tutorial_url(pipeline: :subspecies), class: 'list-group-item list-group-item-action') do %>
-    <h5>New subspecies from a previously described species</h5>
-    If you want to register a new subspecies from a species that is already
-    validly published under the SeqCode or under the ICNP rules, or currently
-    under revision in the SeqCode Registry.
-  <% end %>
-  <%= link_to(new_tutorial_url(pipeline: :parent), class: 'list-group-item list-group-item-action') do %>
-    <h5>New taxon above the rank of species</h5>
-    If you want to register the name of a genus, family, order, class, or
-    phylum, for which the type species (or genus) is already validly published
-    under the SeqCode or under the ICNP rules, or currently under revision in
-    the SeqCode Registry.
+  <% Tutorial.tutorials_hash.each do |k, v| %>
+    <%= link_to(
+          tutorials_url(pipeline: k), method: :post,
+          class: 'list-group-item list-group-item-action'
+        ) do %>
+      <h5><%= v[:prompt] %></h5>
+      <%= v[:description] %>
+    <% end %>
   <% end %>
 </div>
 

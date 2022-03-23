@@ -1,4 +1,5 @@
 class NamesController < ApplicationController
+  before_action(:set_tutorial)
   before_action(
     :set_name,
     only: %i[
@@ -27,7 +28,10 @@ class NamesController < ApplicationController
 
   # GET /autocomplete_names.json?q=Abc
   def autocomplete
-    @names = Name.where('LOWER(name) LIKE ?', "%#{params[:q].downcase}%")
+    name = params[:q].downcase
+    @names =
+      Name.where('LOWER(name) LIKE ?', "#{name}%")
+          .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
   end
 
   # GET /names
@@ -197,11 +201,11 @@ class NamesController < ApplicationController
 
     respond_to do |format|
       if @name.update(name_params)
-        format.html { redirect_to params[:return_to] || @name, notice: 'Name was successfully updated' }
-        format.json { render :show, status: :ok, location: @name }
+        format.html { redirect_to(params[:return_to] || @name, notice: 'Name was successfully updated') }
+        format.json { render(:show, status: :ok, location: @name) }
       else
         format.html { render(name_params[:name] ? :edit : :edit_etymology) }
-        format.json { render json: @name.errors, status: :unprocessable_entity }
+        format.json { render(json: @name.errors, status: :unprocessable_entity) }
       end
     end
   end
@@ -398,6 +402,11 @@ class NamesController < ApplicationController
         flash[:alert] = 'User cannot access name'
         redirect_to(root_path)
       end
+    end
+
+    def set_tutorial
+      return if params[:tutorial].blank?
+      @tutorial = Tutorial.find(params[:tutorial])
     end
 
     def authenticate_created!
