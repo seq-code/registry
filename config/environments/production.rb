@@ -70,11 +70,11 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'http://disc-genomics.uibk.ac.at' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              'smtp.gmail.com',
+    address:              'smtp-relay.gmail.com',
     port:                 587,
     domain:               'seqco.de',
     user_name:            'no-reply@seqco.de',
-    password:             'ebuluaekjtdclkzd',
+    password:             '*********',
     authentication:       'plain',
     enable_starttls_auto: true
   }
