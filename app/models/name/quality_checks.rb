@@ -13,7 +13,7 @@ module Name::QualityChecks
         type: :missing_rank,
         message: 'The taxon has not been assigned a rank',
         link_text: 'Define rank',
-        link_to: [:edit_name_rank_url, self],
+        link_to: [:edit_rank, self],
         recommendations: %w[7],
         rules: %w[26.4]
       }
@@ -37,7 +37,7 @@ module Name::QualityChecks
         message:
           "Name is already in use: #{external_homonyms.to_sentence}".html_safe,
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         rules: %w[9b],
         recommendations: %w[9.2]
       }
@@ -48,7 +48,7 @@ module Name::QualityChecks
         type: :missing_description,
         message: 'The name has no registered description',
         link_text: 'Edit description',
-        link_to: [:edit_name_url, self]
+        link_to: [:edit, self]
       }
     end
 
@@ -57,7 +57,7 @@ module Name::QualityChecks
         type: :missing_effective_publication,
         message: 'The publication proposing this name has not been identified',
         link_text: 'Register publication',
-        link_to: [:new_publication_url, { link_name: id }],
+        link_to: [:new_publication, { link_name: id }],
         rules: %w[24a],
         can_approve: true
       }
@@ -79,7 +79,7 @@ module Name::QualityChecks
                  'The first word must be capitalized, and other ' +
                  'epithets (if any) should be given in lower case',
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         rules: %w[8 45] + (
           case inferred_rank
           when 'genus'; %w[10]
@@ -97,7 +97,7 @@ module Name::QualityChecks
         message: 'The ending of the name is incompatible with the rank of ' +
                  rank,
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         rules: %w[15]
       }
     end
@@ -110,7 +110,7 @@ module Name::QualityChecks
           message: 'A sequence used as type material must be available ' +
                    'in the INSDC databases',
           link_text: 'Edit type',
-          link_to: [:edit_name_type_url, self],
+          link_to: [:edit_type, self],
           rules: %w[18a]
         }
       end
@@ -119,7 +119,7 @@ module Name::QualityChecks
         type: :missing_type,
         message: 'The name is missing a type definition',
         link_text: 'Edit type',
-        link_to: [:edit_name_type_url, self],
+        link_to: [:edit_type, self],
         rules: %w[16 17 26.3] + (
           %w[subspecies species].include?(inferred_rank) ? %w[18a] :
           %w[genus].include?(inferred_rank) ? %w[21a] : []
@@ -132,7 +132,7 @@ module Name::QualityChecks
         type: :non_valid_name_as_type,
         message: 'Only a valid name can be used as nomenclatural type',
         link_text: 'Edit type',
-        link_to: [:edit_name_type_url, self],
+        link_to: [:edit_type, self],
         rules: %w[20],
         can_approve: true
       }
@@ -173,7 +173,7 @@ module Name::QualityChecks
         message: "The nomenclatural type of a #{inferred_rank} must " +
                  "be a designated #{expected_type_rank}",
         link_text: 'Edit type',
-        link_to: [:edit_name_type_url, self],
+        link_to: [:edit_type, self],
         rules: %w[16] + (inferred_rank == 'genus' ? %w[21a] : [])
       }
     end
@@ -205,7 +205,7 @@ module Name::QualityChecks
           type: :unary_species_name,
           message: 'Species must be binary names',
           link_text: 'Edit spelling',
-          link_to: [:edit_name_url, self],
+          link_to: [:edit, self],
           rules: %w[8 11]
         }
       end
@@ -216,7 +216,7 @@ module Name::QualityChecks
           message: 'Subspecies names should include the species name, ' +
                    'the abbreviation "subsp.", and the subspecies epithet',
           link_text: 'Edit spelling',
-          link_to: [:edit_name_url, self],
+          link_to: [:edit, self],
           rules: %w[13a]
         }
       end
@@ -226,7 +226,7 @@ module Name::QualityChecks
           type: :binary_name_above_species,
           message: 'Names above the rank of species must be single words',
           link_text: 'Edit spelling',
-          link_to: [:edit_name_url, self],
+          link_to: [:edit, self],
           rules: %w[8 10]
         }
       end
@@ -237,7 +237,7 @@ module Name::QualityChecks
             type: :reserved_suffix,
             message: 'Avoid reserved suffixes for genus names',
             link_text: 'Edit spelling',
-            link_to: [:edit_name_url, self],
+            link_to: [:edit, self],
             recommendations: %w[10]
           }
         end
@@ -247,7 +247,7 @@ module Name::QualityChecks
             type: :inconsistent_language_for_genus,
             message: 'A genus name must be treated as Latin (L. or N.L.)',
             link_text: 'Edit etymology',
-            link_to: [:edit_name_etymology_url, self],
+            link_to: [:edit_etymology, self],
             rules: %w[10]
           }
         end
@@ -260,7 +260,7 @@ module Name::QualityChecks
         message: "The name should be formed by adding the suffix " +
                  "-#{rank_suffix} to the stem of the type genus",
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         rules: %w[15]
       }
     end
@@ -281,7 +281,7 @@ module Name::QualityChecks
         type: :long_name,
         message: 'Consider reducing the length of the name',
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         recommendations: %w[9.1]
       }
     end
@@ -291,7 +291,7 @@ module Name::QualityChecks
         type: :difficult_to_pronounce,
         message: 'Consider revising the name to make it easier to pronounce',
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         recommendations: %w[9.1]
       }
     end
@@ -323,7 +323,7 @@ module Name::QualityChecks
         type: :"inconsistent_grammar_for_#{rank}_name",
         message: "A #{inferred_rank} name must be an adjective or a noun",
         link_text: 'Edit etymology',
-        link_to: [:edit_name_etymology_url, self],
+        link_to: [:edit_etymology, self],
         rules: (rank == 'subspecies' ? %w[13b] : []) + %w[12]
       }
     end
@@ -333,7 +333,7 @@ module Name::QualityChecks
         type: :inconsistent_name_for_subspecies_with_type,
         message: 'A subspecies including the type of the species must have the same epithet',
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         rules: %w[13c]
       }
     end
@@ -345,7 +345,7 @@ module Name::QualityChecks
           message: 'The etymology of one or more particles is provided, but ' +
                    'the etymology of the full name or epithet is missing',
           link_text: 'Edit etymology',
-          link_to: [:edit_name_etymology_url, self],
+          link_to: [:edit_etymology, self],
           rules: %w[26.5]
         }
       end
@@ -354,7 +354,7 @@ module Name::QualityChecks
         type: :missing_etymology,
         message: 'The etymology of the name has not been provided',
         link_text: 'Edit etymology',
-        link_to: [:edit_name_etymology_url, self],
+        link_to: [:edit_etymology, self],
         rules: %w[26.5]
       }
     end
@@ -365,7 +365,7 @@ module Name::QualityChecks
           type: :missing_grammatical_gender,
           message: 'Authors must give the gender of any proposed genus name',
           link_text: 'Edit etymology',
-          link_to: [:edit_name_etymology_url, self],
+          link_to: [:edit_etymology, self],
           rules: %w[49.1 49.3]
         }
       else
@@ -374,7 +374,7 @@ module Name::QualityChecks
           message: 'A genus name formed by two or more Latin words should take ' +
                    'gender of the last component of the word',
           link_text: 'Edit etymology',
-          link_to: [:edit_name_etymology_url, self],
+          link_to: [:edit_etymology, self],
           rules: %w[49.2]
         }
       end
@@ -388,7 +388,7 @@ module Name::QualityChecks
           message: 'A genus must be a noun or and adjective used as a noun, ' +
                    'given in the singular number',
           link_text: 'Edit etymology',
-          link_to: [:edit_name_etymology_url, self],
+          link_to: [:edit_etymology, self],
           rules: %w[10]
         }
       when 'species', 'subspecies'
@@ -398,7 +398,7 @@ module Name::QualityChecks
                    'should agree in number and gender with the parent name' +
                    (inferred_rank == 'subspecies' ? ' (see Rule 13b)' : ''),
           link_text: 'Edit etymology',
-          link_to: [:edit_name_etymology_url, self],
+          link_to: [:edit_etymology, self],
           recommendations: %w[12.2]
         }
       when 'family', 'order'
@@ -407,7 +407,7 @@ module Name::QualityChecks
           message: "A name in the rank of #{inferred_rank} must be " +
                    "feminine and plural",
           link_text: 'Edit etymology',
-          link_to: [:edit_name_etymology_url, self],
+          link_to: [:edit_etymology, self],
           recommendations: %w[14]
         }
       when 'class', 'phylum'
@@ -416,7 +416,7 @@ module Name::QualityChecks
           message: "A name in the rank of #{inferred_rank} must be " +
                    "neuter and plural",
           link_text: 'Edit etymology',
-          link_to: [:edit_name_etymology_url, self],
+          link_to: [:edit_etymology, self],
           recommendations: %w[14]
         }
       end
@@ -429,7 +429,7 @@ module Name::QualityChecks
         message: 'A corrigendum should be issued with reserve when affecting ' \
                  'the first letter of a name',
         link_text: 'Edit spelling',
-        link_to: [:edit_name_url, self],
+        link_to: [:edit, self],
         rule_notes: %w[47]
       }
     end

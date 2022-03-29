@@ -12,13 +12,13 @@
         <% end %>
         &raquo; Eliminate this name and all metadata from the Registry
         <hr/>
-        <%= link_to edit_name_url(@name), class: 'btn btn-sm btn-info' do %>
+        <%= link_to(edit_name_url(@name), class: 'btn btn-sm btn-info') do %>
           <%= fa_icon('edit') %> Edit spelling
         <% end %>
         &raquo; Change this name's spelling and description
         <hr/>
         <%= link_to(
-              edit_name_links_url(@name),
+              edit_links_name_url(@name),
               class: 'btn btn-info btn-sm'
             ) do %>
           <%= fa_icon 'edit' %> Edit outside links

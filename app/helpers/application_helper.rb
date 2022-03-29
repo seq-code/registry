@@ -166,6 +166,10 @@ module ApplicationHelper
   def yield_modals
     (@modals ||= []).inject(:+)
   end
+
+  def slack_url
+    'https://join.slack.com/t/seqcode-public/shared_invite/zt-15q7ss8g1-IJCOfdc7dMrvgEoAia7VzA'
+  end
 end
 
 class AdaptableList

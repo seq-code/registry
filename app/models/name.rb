@@ -544,7 +544,7 @@ class Name < ApplicationRecord
       base_name.gsub(/ .*/, '')
     else
       base = "#{propose_lineage_name(:genus)}"
-      case base
+      case base # Genus name
       when /aeum$/
         # - Methanonatronarchaeum -- Methanonatroarchae-aceae
         base.gsub!(/um$/, '')
@@ -568,7 +568,7 @@ class Name < ApplicationRecord
         # - Aeromonas -- Aeromona-d-aceae
         # - Alteromonas -- Alteromona-d-aceae
         # - Blastochloris -- Blastochlori-d-aceae
-        # BAD:
+        # Counterexamples:
         # - Catalinimonas -- Catali-mona-d-aceae (irregularly formed)
         base.gsub!(/s$/, 'd')
       when /myces$/
@@ -578,7 +578,7 @@ class Name < ApplicationRecord
         # - Brevinema -- Brevinema-t-aceae
         # - Deferrisoma -- Deferrisoma-t-aceae
         # - Tropheryma -- Tropheryma-t-aceae
-        # BAD:
+        # Counterexamples:
         # - Spirosoma -- Spirosoma-ceae (irregularly formed)
         base.gsub!(/ma$/, 'mat')
       when /[eai]s$/
@@ -588,7 +588,7 @@ class Name < ApplicationRecord
         base.gsub!(/[eai]s$/, '')
       when /plasma$/
         # - Acholeplasma -- Acholeplasma-t-aceae
-        # BAD:
+        # Counterexamples:
         # - Ferroplasma -- Ferroplasm-aceae (irregularly formed)
         base.gsub!(/plasma$/, 'plasmat')
       when /ue$/
@@ -614,13 +614,13 @@ class Name < ApplicationRecord
         # - Erysipelothrix -- Erysipelotri-ch-aceae
         # - Caldithrix -- Calditri-ch-aceae
         # - Thiothrix -- Thiotri-ch-aceae
-        # BAD:
+        # Counterexamples:
         # - Thermosporothrix -- Thermosporothri-ch-aceae
         base.gsub!(/thrix$/, 'trich')
       when /x$/
         # - Adiutrix -- Adiutri-c-aceae
         # - Alcanivorax -- Alcanivora-c-aceae
-        # BAD:
+        # Counterexamples:
         # - Balneatrix -- Balneatri-ch-aceae (irregularly formed)
         # - Thiotrix -- Thiotri-ch-aceae (illegitimate?)
         # - Halobacteriovorax -- Halobacteriovor-aceae (irregularly formed)
@@ -632,7 +632,7 @@ class Name < ApplicationRecord
       end
       # Other cases:
       # *bacter sometimes form *bacter-i-aceae and sometimes *bacter-aceae
-      # names.
+      # names, we're using the latter.
 
       base + Name.rank_suffixes[rank.to_sym]
     end

@@ -1,5 +1,5 @@
 
-<p class="lead">
+<p class="lead mt-2 mx-1">
   Indicate the name of the species and the lowest existing parent taxon
 </p>
 
@@ -9,10 +9,12 @@
     input_html: { value: @tutorial.names.first&.name }
   )
 %>
+
 <%=
   f.input(
     :lowest_classified_taxon,
-    hint: 'Most specific classification available for this taxon',
+    hint: 'Most specific classification available for this taxon ' \
+          '(all intermediate ranks will be created)',
     input_html: {
       data: { behavior: 'autocomplete', autocomplete: 'name' },
       value: @tutorial.lowest_classified_taxon_obj&.name

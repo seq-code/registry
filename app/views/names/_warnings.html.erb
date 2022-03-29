@@ -13,7 +13,7 @@
       <dd class="pt-2">
         <%= warn[:message] %>
         <% if warn[:link_public] || @name.can_edit?(current_user) %>
-          <%= link_to(send(*warn[:link_to]), class: 'text-danger') do %>
+          <%= link_to(warn[:link_to], class: 'text-danger') do %>
             [<%= warn[:link_text] %>]
           <% end %>
         <% end %>

@@ -27,7 +27,7 @@
       <%
         components = {
           p1: '1st particle', p2: '2nd particle', p3: '3rd particle',
-          p4: '4th particle', p5: '5th particle', xx: 'Full epithet'
+          p4: '4th particle', p5: '5th particle', xx: 'Full morpheme'
         }
         fields = { lang: 5, grammar: 15, particle: 15, description: 30 }
       %>
@@ -62,7 +62,7 @@
 
   <%= hidden_field_tag(:return_to, tutorial_path(@tutorial)) if @tutorial %>
   <%= f.button :submit, 'Submit' %>
-  <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
+  <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
   <br/><br/>
 <% end %>
 

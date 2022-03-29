@@ -2,10 +2,7 @@
   The SeqCode Registry is currently in <b>beta testing</b> phase, and
   changes to the layout are being actively introduced. If you have any
   questions or suggestions,
-  <%= link_to(
-        'contact us',
-        'https://join.slack.com/t/uga-wul6515/shared_invite/zt-13gwa1ehe-eBi_5V07BHRxmMQGUj72~w'
-      ) %>.
+  <%= link_to('contact us', slack_url) %>.
 </div>
 
 <div class="text-center bg-light rounded-lg border my-5 mx-3 p-5">
@@ -21,7 +18,7 @@
     <ul class="row nav nav-pills" role="tablist" id="lead-tab">
       <%
         tabs = {
-          register: ['pen-fancy', 'Register New Names or Publications', false],
+          register: ['pen-fancy', 'Register New Names or New Types', false],
           search: [
             'search',
             'Search and Explore Registered Names and Publications',
@@ -62,7 +59,7 @@
         <!--
         <%= link_to(tutorials_url) do %>
           <%= fa_icon('shoe-prints') %>
-          Follow our step-by-step registration of a novel lineage
+          Follow our step-by-step registration of novel names
         <% end %> or <br/>
         -->
         We are developing a step-by-step registration system, but you can

@@ -1,11 +1,11 @@
-<h1>Register New Lineage Names</h1>
+<h1>Register New Names</h1>
 <hr/>
 
 <% unless @tutorials.empty? %>
-  <h3>Tutorial history</h3>
+  <h3>Registration history</h3>
   <div class="list-group m-3">
     <% @tutorials.each do |tutorial| %>
-      <div class="list-group-item list-group-item-action">
+      <div class="list-group-item list-group-item-action pb-3">
         <h5><%= tutorial.title %></h5>
         <b>Status:</b>
         <%= tutorial.ongoing ? 'Active' : 'Complete' %><br/>
@@ -18,9 +18,12 @@
           </ul>
         <% else %>
           None yet
+          <br/>
         <% end %>
         <% if tutorial.ongoing %>
-          <%= link_to('Continue', tutorial, class: 'btn btn-primary') %>
+          <%= link_to(tutorial, class: 'btn btn-primary ml-4') do %>
+            &raquo; Continue
+          <% end %>
         <% end %>
       </div>
     <% end %>

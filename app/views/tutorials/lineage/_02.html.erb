@@ -1,24 +1,20 @@
 
-<p class="lead">
-  Carefully describe the information for the indicated taxon
-</p>
-
-<div class="card card-body mb-3">
-  <b><%= @name.inferred_rank.capitalize %></b>
-  <%= link_to_name(@name) %>
+<div class="card my-3">
+  <div class="card-body">
+    <h4><%= @name.inferred_rank.capitalize %></h4>
+    <%= @name.name_html %>
+    <%= link_to(@name, class: 'ml-2') do %>
+      [<%= fa_icon('vial') %> Edit in expert mode]
+    <% end %>
+    <%= f.input(:id, as: :hidden) %>
+    <hr/>
+    <%= f.submit('Continue registration', class: 'btn btn-primary') %>
+  </div>
 </div>
 
-<% stop = false %>
-<div class="card card-body mb-3">
-  <% if @name.description? %>
-    <b>Description</b>
-    <%= @name.description %>
-  <% else %>
-    <%= link_to(
-          'Fill description', edit_name_url(@name, tutorial: @tutorial),
-          class: 'btn btn-primary') %>
-    <% stop = true %>
-  <% end %>
-</div>
+<% @name.only_display = true %>
+<%= render(partial: 'names/taxonomy') %>
+<%= render(partial: 'names/nomenclature') %>
+<% @name.only_display = nil %>
 
 

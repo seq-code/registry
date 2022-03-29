@@ -84,6 +84,14 @@ class Tutorial < ApplicationRecord
     end
   end
 
+  def current_name
+    @current_name ||= Name.find(value(:current_name_id))
+  end
+  
+  def next_action
+    @next_action ||= self
+  end
+
   def data_hash
     @data_hash ||= JSON.parse(data || '{}')
   end
@@ -96,7 +104,7 @@ class Tutorial < ApplicationRecord
     base = name.gsub(/^Candidatus /, '')
     n = Name.find_by_variants(base)
     if n
-      unless n.can_edit?(user) || n.can_claim?(u)
+      unless n.can_edit?(user) || n.can_claim?(user)
         errors.add(
           field,
           'already exists, but you do not have editing or claiming privileges'
@@ -192,6 +200,14 @@ class Tutorial < ApplicationRecord
         current_name_id: lineage_ids.last
       ).to_json
       save
+    end
+
+    def lineage_step_03(params, user)
+      if !current_name.description?
+        @next_action = [:edit, current_name, tutorial: self]
+      elsif !current_name.etymology?
+        @next_action = [:edit_etymology, current_name, tutorial: self]
+      end
     end
 
     def require_params(params, keys)

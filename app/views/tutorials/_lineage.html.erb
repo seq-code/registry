@@ -1,4 +1,5 @@
 <%= simple_form_for(@tutorial) do |f| %>
+  <%= render(partial: 'bar', locals: { f: f }) %>
   <%=
     render(
       partial: "tutorials/#{@tutorial.pipeline}/#{'%02i' % @tutorial.step}",
