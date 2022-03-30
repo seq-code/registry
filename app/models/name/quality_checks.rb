@@ -24,7 +24,7 @@ module Name::QualityChecks
         type: :identical_base_name,
         message: 'Name already exists with different qualifiers',
         link_text: identical_base_name.abbr_name,
-        link_to: [:name_url, identical_base_name],
+        link_to: identical_base_name,
         link_public: true,
         rules: %w[9b],
         recommendations: %w[9.2]
