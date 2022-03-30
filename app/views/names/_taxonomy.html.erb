@@ -49,7 +49,7 @@
       <% end %>
       <% if @name.can_edit?(current_user) %>
         <%= link_to(
-              name_link_parent_url(@name),
+              link_parent_name_path(@name),
               class: 'badge badge-pill badge-info',
               title: 'edit parent'
             ) do %>

@@ -2,7 +2,7 @@
 <hr/>
 
 <%= simple_form_for(
-      @name, url: name_link_parent_commit_path(@name),
+      @name, url: link_parent_commit_name_path(@name),
       html: { method: :post }
     ) do |f| %>
 
@@ -52,4 +52,3 @@
   <%= link_to('Cancel', @name, role: 'button', class: 'btn btn-secondary') %>
   <br/><br/>
 <% end %>
-

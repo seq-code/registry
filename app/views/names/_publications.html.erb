@@ -34,7 +34,7 @@
         <td>
           <% if @name.can_edit?(current_user) %>
             <% unless publication_name.proposes? %>
-              <%= link_to name_proposed_by_url(@name, publication_id: publication),
+              <%= link_to proposed_by_name_url(@name, publication_id: publication),
                     class: 'badge badge-pill badge-info',
                     method: :post, title: 'Proposed this name',
                     data: { confirm: 'Are you sure?' } do %>
@@ -44,7 +44,7 @@
 
             <% unless publication_name.corrigendum? %>
               <%= link_to(
-                    name_corrigendum_by_url(@name, publication_id: publication),
+                    corrigendum_by_name_url(@name, publication_id: publication),
                     class: 'badge badge-pill badge-info',
                     title: 'Corrigendum'
                   ) do %>
@@ -54,7 +54,7 @@
 
             <% unless publication_name.emends? %>
               <%= link_to(
-                    name_emended_by_url(@name, publication),
+                    emended_by_name_url(@name, publication),
                     class: 'badge badge-pill badge-info',
                     method: :post, title: 'Emended this name',
                     data: { confirm: 'Are you sure?' }
