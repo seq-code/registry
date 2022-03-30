@@ -183,7 +183,7 @@ module Name::QualityChecks
         type: :missing_parent,
         message: 'The taxon has not been assigned to a higher classification',
         link_text: 'Link parent',
-        link_to: [:name_link_parent_url, self],
+        link_to: [:link_parent, self],
         recommendations: %w[7]
       }
     end
@@ -194,7 +194,7 @@ module Name::QualityChecks
         message: "The parent rank (#{parent.rank}) is inconsistent " +
                  "with the rank of this name (#{inferred_rank})",
         link_text: 'Edit parent',
-        link_to: [:name_link_parent_url, self],
+        link_to: [:link_parent, self],
         rules: %w[7a 7b]
       }
     end
@@ -302,7 +302,7 @@ module Name::QualityChecks
         message: 'The first word of species names must correspond to the ' +
                  'parent genus',
         link_text: 'Edit parent',
-        link_to: [:name_link_parent_url, self],
+        link_to: [:link_parent, self],
         rules: %w[8 11]
       }
     end
@@ -313,7 +313,7 @@ module Name::QualityChecks
         message: 'The first two epithets of subspecies names must correspond to the ' +
                  'parent species',
         link_text: 'Edit parent',
-        link_to: [:name_link_parent_url, self],
+        link_to: [:link_parent, self],
         rules: %w[13a]
       }
     end
