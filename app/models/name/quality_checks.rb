@@ -67,7 +67,7 @@ module Name::QualityChecks
         message: 'The publication proposing this name is a preprint or some ' \
                  'other type of publication not accepted',
         link_text: 'Register another publication',
-        link_to: [:new_publication_url, { link_name: id }],
+        link_to: [:new_publication_path, { link_name: id }],
         rules: %w[24c]
       }
     end
@@ -144,7 +144,7 @@ module Name::QualityChecks
           type: :missing_genome_kind,
           message: 'The kind of genome used as type has not been specified',
           link_text: 'Edit genome',
-          link_to: [:edit_genome_url, type_genome, name: id]
+          link_to: [:edit_genome, type_genome, name: id]
         }
       end
 
@@ -153,7 +153,7 @@ module Name::QualityChecks
           type: :missing_genome_source,
           message: 'The source of the type genome has not been specified',
           link_text: 'Edit genome',
-          link_to: [:edit_genome_url, type_genome, name: id]
+          link_to: [:edit_genome, type_genome, name: id]
         }
       end
 
@@ -162,7 +162,7 @@ module Name::QualityChecks
           type: :missing_genome_sequencing_depth,
           message: 'The sequencing depth of the type genome has not been specified',
           link_text: 'Edit genome',
-          link_to: [:edit_genome_url, type_genome, name: id]
+          link_to: [:edit_genome, type_genome, name: id]
         }
       end
     end
@@ -271,7 +271,7 @@ module Name::QualityChecks
         message: "The etymology should be formed by the stem of the type " +
                  "genus and the suffix -#{rank_suffix}",
         link_text: 'Autofill etymology',
-        link_to: [:autofill_etymology_url, self, method: :post],
+        link_to: [:autofill_etymology_path, self, method: :post],
         rules: %w[15]
       }
     end
