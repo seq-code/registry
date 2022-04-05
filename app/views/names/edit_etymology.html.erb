@@ -1,5 +1,5 @@
 <h1><%= @name.name_html %></h1>
-<h3>&raquo; Etymology of the morpheme <u><b><%= @name.last_epithet %></b></u></h3>
+<h3>&raquo; Etymology of the word <u><b><%= @name.last_epithet %></b></u></h3>
 <hr/>
 
 <% if @name.can_autofill_etymology? %>
@@ -15,19 +15,19 @@
   <%= f.input(:syllabication, label: 'Syllabification', required: false, autofocus: true) %>
 
   <br/>
-  <table class='table table-hover table-responsive-lg'>
+  <table class="table table-hover table-responsive-lg">
     <thead>
       <th>Component</th>
       <th>Language</th>
       <th>Grammar</th>
       <th>Particle</th>
-      <th>Description</th>
+      <th>Description or translation</th>
     </thead>
     <tbody>
       <%
         components = {
-          p1: '1st particle', p2: '2nd particle', p3: '3rd particle',
-          p4: '4th particle', p5: '5th particle', xx: 'Full morpheme'
+          p1: '1st morpheme', p2: '2nd morpheme', p3: '3rd morpheme',
+          p4: '4th morpheme', p5: '5th morpheme', xx: 'Full word'
         }
         fields = { lang: 5, grammar: 15, particle: 15, description: 30 }
       %>

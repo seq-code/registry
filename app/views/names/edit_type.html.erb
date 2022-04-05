@@ -1,4 +1,4 @@
-<h1><%= @name.name_html %></h1>
+<h1>Type of <%= @name.name_html %></h1>
 <hr/>
 
 <%= simple_form_for(@name) do |f| %>
@@ -21,11 +21,11 @@
   <% else %>
     <%=
       f.input(
-        :type_material, label: 'Material',
+        :type_material, label: 'Type material database',
         collection: @name.possible_type_materials.map { |k, v| [v[:name], k] }
       )
     %>
-    <%= f.input(:type_accession, as: :string, label: 'Accession') %>
+    <%= f.input(:type_accession, as: :string, label: 'Sequence accession') %>
   <% end %>
   <br/>
 

@@ -212,11 +212,14 @@ class Tutorial < ApplicationRecord
     end
 
     def lineage_step_03(params, user)
-      if !current_name.description?
-        @next_action = [:edit, current_name, tutorial: self]
-      elsif !current_name.etymology?
-        @next_action = [:edit_etymology, current_name, tutorial: self]
-      end
+      @next_action = 
+        if !current_name.description?
+          [:edit, current_name, tutorial: self]
+        elsif !current_name.etymology?
+          [:edit_etymology, current_name, tutorial: self]
+        elsif !current_name.type?
+          [:edit_type, current_name, tutorial: self]
+        end
     end
 
     def require_params(params, keys)

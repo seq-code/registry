@@ -9,17 +9,17 @@
         <h5><%= tutorial.title %></h5>
         <b>Status:</b>
         <%= tutorial.ongoing ? 'Active' : 'Complete' %><br/>
-        <b>Names:</b>
         <% if tutorial.names.any? %>
-          <ul>
-            <% tutorial.names.each do |name| %>
-              <li><%= link_to(name.name_html, name) %></li>
-            <% end %>
-          </ul>
+          <b>Name:</b>
+          <% if tutorial.current_name %>
+            <%= link_to_name(tutorial.current_name) %>
+          <% else %>
+            <%= link_to_name(tutorial.names.first) %>
+          <% end %>
         <% else %>
-          None yet
-          <br/><br/>
+          <i>No names yet</i>
         <% end %>
+        <br/><br/>
         <% if tutorial.ongoing %>
           <%= link_to(tutorial, class: 'btn btn-primary ml-4') do %>
             &raquo; Continue
