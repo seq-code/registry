@@ -144,7 +144,7 @@ module Name::QualityChecks
           type: :missing_genome_kind,
           message: 'The kind of genome used as type has not been specified',
           link_text: 'Edit genome',
-          link_to: [:edit_genome, type_genome, name: id]
+          link_to: [:edit, type_genome, name: id]
         }
       end
 
@@ -153,7 +153,7 @@ module Name::QualityChecks
           type: :missing_genome_source,
           message: 'The source of the type genome has not been specified',
           link_text: 'Edit genome',
-          link_to: [:edit_genome, type_genome, name: id]
+          link_to: [:edit, type_genome, name: id]
         }
       end
 
@@ -162,7 +162,7 @@ module Name::QualityChecks
           type: :missing_genome_sequencing_depth,
           message: 'The sequencing depth of the type genome has not been specified',
           link_text: 'Edit genome',
-          link_to: [:edit_genome, type_genome, name: id]
+          link_to: [:edit, type_genome, name: id]
         }
       end
     end
