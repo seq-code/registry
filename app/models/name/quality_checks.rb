@@ -271,7 +271,7 @@ module Name::QualityChecks
         message: "The etymology should be formed by the stem of the type " +
                  "genus and the suffix -#{rank_suffix}",
         link_text: 'Autofill etymology',
-        link_to: [:autofill_etymology_path, self, method: :post],
+        link_to: [:autofill_etymology, self, method: :post],
         rules: %w[15]
       }
     end

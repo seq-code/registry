@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   post 'names/:id/corrigendum' => 'names#corrigendum', as: :corrigendum_name
   post 'names/:id/emended_by/:publication_id' => 'names#emended_by', as: :emended_by_name
   get  'names/:id/edit_etymology' => 'names#edit_etymology', as: :edit_etymology_name
-  get  'names/:id/autofill_etymology' => 'names#autofill_etymology', as: :autofill_etymology
+  get  'names/:id/autofill_etymology' => 'names#autofill_etymology', as: :autofill_etymology_name
   get  'names/:id/edit_notes' => 'names#edit_notes', as: :edit_notes_name
   get  'names/:id/edit_rank' => 'names#edit_rank', as: :edit_rank_name
   get  'names/:id/edit_links' => 'names#edit_links', as: :edit_links_name
