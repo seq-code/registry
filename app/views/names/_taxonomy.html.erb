@@ -1,8 +1,8 @@
-<dl class='main-section name-details'>
+<dl name="taxonomy" class="main-section name-details">
   <h2>Taxonomy</h2>
 
   <% if @name.description? || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon 'file-alt' %> Description</dt>
+    <dt><%= fa_icon('file-alt') %> Description</dt>
     <dd>
       <%= @name.description %>
       <% if @name.can_edit?(current_user) %>
@@ -11,14 +11,14 @@
               class: 'badge badge-pill badge-info',
               title: 'edit description'
             ) do %>
-          <%= fa_icon 'edit' %> Edit
+          <%= fa_icon('edit') %> Edit
         <% end %>
       <% end %>
     </dd>
   <% end %>
 
   <% if @name.notes? || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon 'sticky-note' %> Notes</dt>
+    <dt><%= fa_icon('sticky-note') %> Notes</dt>
     <dd>
       <%= @name.notes %>
       <% if @name.can_edit?(current_user) %>

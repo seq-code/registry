@@ -1,8 +1,8 @@
-<dl class='main-section name-details'>
+<dl name="metadata" class="main-section name-details">
   <h2>Metadata</h2>
 
   <% if @name.links? %>
-    <dt><%= fa_icon 'link' %> Outside links</dt>
+    <dt><%= fa_icon('link') %> Outside links</dt>
     <dd>
       <ul>
         <% if @name.ncbi_taxonomy? %>
@@ -17,13 +17,13 @@
     </dd>
   <% end %>
 
-  <dt><%= fa_icon :dna %> Search sequences</dt>
+  <dt><%= fa_icon(:dna) %> Search sequences</dt>
   <dd>
     <ul>
       <li>
         <%= link_to(@name.ncbi_search_url, target: '_blank') do %>
           NCBI Nucleotide
-          <%= fa_icon 'external-link-alt' %>
+          <%= fa_icon('external-link-alt') %>
         <% end %>
       </li>
       <% if @name.ncbi_taxonomy? %>

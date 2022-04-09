@@ -1,89 +1,90 @@
-<h2>
-  Publications
-  <small class='text-muted'>(<%= @publication_names.count %>)</small>
-</h2>
-<%= pager @publication_names %>
-<table class='table table-hover'>
-  <thead>
-    <tr>
-      <th>Citation</th>
-      <th>Title</th>
-      <th></th>
-      <% if @name.can_edit?(current_user) %>
-        <th>Actions</th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% @publication_names.each do |publication_name| %>
-      <% publication = publication_name.publication %>
+<div name="publications" class="main-section name-details">
+  <h2>
+    Publications
+    <small class='text-muted'>(<%= @publication_names.count %>)</small>
+  </h2>
+  <%= pager @publication_names %>
+  <table class='table table-hover'>
+    <thead>
       <tr>
-        <td><%= link_to publication.citation, publication %></td>
-        <td><%= publication.title %></td>
-        <td>
-          <% if @name.proposed_by? publication %>
-            <div class="badge"><%= fa_icon 'star' %> Proposed this name</div>
-          <% end %>
-          <% if @name.corrigendum_by? publication %>
-            <div class="badge"><%= fa_icon 'pen-fancy' %> Corrigendum</div>
-          <% end %>
-          <% if @name.emended_by? publication %>
-            <div class="badge"><%= fa_icon 'asterisk' %> Emended this name</div>
-          <% end %>
-        </td>
-        <td>
-          <% if @name.can_edit?(current_user) %>
-            <% unless publication_name.proposes? %>
-              <%= link_to proposed_by_name_url(@name, publication_id: publication),
-                    class: 'badge badge-pill badge-info',
-                    method: :post, title: 'Proposed this name',
-                    data: { confirm: 'Are you sure?' } do %>
-                <%= fa_icon 'star' %>
-              <% end %>
+        <th>Citation</th>
+        <th>Title</th>
+        <th></th>
+        <% if @name.can_edit?(current_user) %>
+          <th>Actions</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @publication_names.each do |publication_name| %>
+        <% publication = publication_name.publication %>
+        <tr>
+          <td><%= link_to(publication.citation, publication) %></td>
+          <td><%= publication.title %></td>
+          <td>
+            <% if @name.proposed_by? publication %>
+              <div class="badge"><%= fa_icon('star') %> Proposed this name</div>
             <% end %>
-
-            <% unless publication_name.corrigendum? %>
-              <%= link_to(
-                    corrigendum_by_name_url(@name, publication_id: publication),
-                    class: 'badge badge-pill badge-info',
-                    title: 'Corrigendum'
-                  ) do %>
-                <%= fa_icon 'pen-fancy' %>
-              <% end %>
+            <% if @name.corrigendum_by? publication %>
+              <div class="badge"><%= fa_icon('pen-fancy') %> Corrigendum</div>
             <% end %>
+            <% if @name.emended_by? publication %>
+              <div class="badge"><%= fa_icon('asterisk') %> Emended this name</div>
+            <% end %>
+          </td>
+          <td>
+            <% if @name.can_edit?(current_user) %>
+              <% unless publication_name.proposes? %>
+                <%= link_to proposed_by_name_url(@name, publication_id: publication),
+                      class: 'badge badge-pill badge-info',
+                      method: :post, title: 'Proposed this name',
+                      data: { confirm: 'Are you sure?' } do %>
+                  <%= fa_icon('star') %>
+                <% end %>
+              <% end %>
 
-            <% unless publication_name.emends? %>
+              <% unless publication_name.corrigendum? %>
+                <%= link_to(
+                      corrigendum_by_name_url(@name, publication_id: publication),
+                      class: 'badge badge-pill badge-info',
+                      title: 'Corrigendum'
+                    ) do %>
+                  <%= fa_icon('pen-fancy') %>
+                <% end %>
+              <% end %>
+
+              <% unless publication_name.emends? %>
+                <%= link_to(
+                      emended_by_name_url(@name, publication),
+                      class: 'badge badge-pill badge-info',
+                      method: :post, title: 'Emended this name',
+                      data: { confirm: 'Are you sure?' }
+                    ) do %>
+                  <%= fa_icon('asterisk') %>
+                <% end %>
+              <% end %>
+
               <%= link_to(
-                    emended_by_name_url(@name, publication),
-                    class: 'badge badge-pill badge-info',
-                    method: :post, title: 'Emended this name',
+                    publication_name, class: 'badge badge-pill badge-info',
+                    method: :delete, title: 'Unlink this publication',
                     data: { confirm: 'Are you sure?' }
                   ) do %>
-                <%= fa_icon 'asterisk' %>
+                <%= fa_icon('trash-alt') %>
               <% end %>
             <% end %>
-
-            <%= link_to(
-                  publication_name, class: 'badge badge-pill badge-info',
-                  method: :delete, title: 'Unlink this publication',
-                  data: { confirm: 'Are you sure?' }
-                ) do %>
-              <%= fa_icon 'trash-alt' %>
-            <% end %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-<%= pager @publication_names %>
-<br/>
-<% if @name.can_edit?(current_user) %>
-  <div class="text-right">
-    <%= link_to(new_publication_url(link_name: @name.id), class: 'btn btn-info') do %>
-      <%= fa_icon('plus-square') %>
-      Link additional publications
-    <% end %>
-  </div>
-<% end %>
-<br/><br/>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= pager @publication_names %>
+  <br/>
+  <% if @name.can_edit?(current_user) %>
+    <div class="text-right">
+      <%= link_to(new_publication_url(link_name: @name.id), class: 'btn btn-info') do %>
+        <%= fa_icon('plus-square') %>
+        Link additional publications
+      <% end %>
+    </div>
+  <% end %>
+</div>

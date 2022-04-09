@@ -1,5 +1,5 @@
 <% if @name.can_edit?(current_user) || @name.can_claim?(current_user) %>
-  <dl class="main-section name-details">
+  <dl name="contributor" class="main-section name-details">
     <h2>Contributor Actions</h2>
     <dd class="pt-2">
       <% if @name.can_edit?(current_user) %>
@@ -21,7 +21,7 @@
               edit_links_name_url(@name),
               class: 'btn btn-info btn-sm'
             ) do %>
-          <%= fa_icon 'edit' %> Edit outside links
+          <%= fa_icon('edit') %> Edit outside links
         <% end %>
         &raquo; Report links to external databases (other than type)
         <hr/>

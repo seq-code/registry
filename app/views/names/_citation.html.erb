@@ -1,4 +1,4 @@
-<dl class='main-section name-details'>
+<dl name="citation" class="main-section name-details">
   <h2>Citation</h2>
 
   <dt><%= fa_icon('signature') %> Formal styling</dt>
@@ -19,12 +19,17 @@
         <% end %>
       <% end %>
     </dd>
+  <% elsif !@publication_names.empty? %>
+    <dt><%= fa_icon('history') %> Oldest registered citation</dt>
+    <dd>
+      <%= link_to(@oldest_publication.short_citation, @oldest_publication) %>
+    </dd>
   <% end %>
 
   <% if @name.corrigendum_by %>
-    <dt><%= fa_icon 'pen-fancy' %> Corrigendum</dt>
+    <dt><%= fa_icon('pen-fancy') %> Corrigendum</dt>
     <dd>
-      <%= link_to @name.corrigendum_by.short_citation, @name.corrigendum_by %>
+      <%= link_to(@name.corrigendum_by.short_citation, @name.corrigendum_by) %>
       <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
         from &#8220;<%= @name.corrigendum_from %>&#8221;
       <% end %>
@@ -32,13 +37,13 @@
         <%= link_to corrigendum_by_name_url(@name, publication_id: @name.corrigendum_by),
               class: 'badge badge-pill badge-info',
               title: 'Edit original name' do %>
-          <%= fa_icon 'edit' %> Edit
+          <%= fa_icon('edit') %> Edit
         <% end %>
         <%= link_to corrigendum_by_name_url(@name, publication_id: nil),
               class: 'badge badge-pill badge-info',
               title: 'Did not correct this name',
               data: { confirm: 'Are you sure?' } do %>
-          <%= fa_icon 'unlink' %> Unlink
+          <%= fa_icon('unlink') %> Unlink
         <% end %>
       <% end %>
     </dd>
@@ -54,18 +59,11 @@
                 class: 'badge badge-pill badge-info',
                 method: :post, title: 'Did not emend this name',
                 data: { confirm: 'Are you sure?' } do %>
-            <%= fa_icon 'unlink' %> Unlink
+            <%= fa_icon('unlink') %> Unlink
           <% end %>
         <% end %>
         <br/>
       <% end %>
-    </dd>
-  <% end %>
-
-  <% unless @publication_names.empty? %>
-    <dt><%= fa_icon 'history' %> Oldest registered citation</dt>
-    <dd>
-      <%= link_to @oldest_publication.short_citation, @oldest_publication %>
     </dd>
   <% end %>
 
