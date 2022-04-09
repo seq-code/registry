@@ -1,7 +1,9 @@
 class Genome < ApplicationRecord
   validates(:database, presence: true)
   validates(:accession, presence: true)
-  validates(:kind, inclusion: { in: %w[isolate enrichment mag sag] }, if: :kind?)
+  validates(
+    :kind, inclusion: { in: %w[isolate enrichment mag sag] }, if: :kind?
+  )
   validates(:seq_depth, numericality: { greater_than: 0.0 }, if: :seq_depth?)
   validates(:source_accession, presence: true, if: :source?)
   validates(:source_database, presence: true, if: :source?)
@@ -45,7 +47,9 @@ class Genome < ApplicationRecord
   end
 
   def names
-    @names ||= Name.where(type_material: database, type_accession: accession)
+    @names ||=
+      Name.where(type_material: database, type_accession: accession)
+      .or(Name.where(genome_id: id))
   end
 
   def multiple_names?
@@ -75,6 +79,17 @@ class Genome < ApplicationRecord
     when 'biosample'
       "https://www.ncbi.nlm.nih.gov/sra/#{source_accession}"
     end
+  end
+
+  def link
+    case database
+    when 'assembly', 'nuccore'
+      "https://www.ncbi.nlm.nih.gov/#{database}/#{accession}"
+    end
+  end
+
+  def text
+    "#{Name.type_material_name(database)}: #{accession}"
   end
 
   def updated_by_user

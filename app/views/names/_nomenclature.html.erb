@@ -21,11 +21,11 @@
   </dd>
 
   <% if @name.syllabication? %>
-    <dt><%= fa_icon 'comment-dots' %> Syllabication</dt>
+    <dt><%= fa_icon('comment-dots') %> Syllabication</dt>
     <dd><%= @name.syllabication %></dd>
   <% end %>
 
-  <dt><%= fa_icon 'language' %> Etymology</dt>
+  <dt><%= fa_icon('language') %> Etymology</dt>
   <dd>
     <%= @name.full_etymology(true) %>
     <% if @name.can_edit?(current_user) %>

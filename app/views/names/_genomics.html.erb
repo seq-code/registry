@@ -1,8 +1,8 @@
-<% if @name.type_is_genome? %>
-  <% @genome = @name.type_genome %>
+<% if @name.genome? %>
+  <% @genome = @name.genome %>
   <dl name="genomics" class="main-section name-details">
     <h2>Genomics</h2>
-    
+
     <% if @name.type_genome.multiple_names? %>
       <div class="alert alert-danger">
         This genome has been associated as type material for multiple names:
@@ -13,6 +13,14 @@
         </ul>
       </div>
     <% end %>
+
+    <dt><%= fa_icon('dna') %> Accession</dt>
+    <dd>
+      <%= link_to(@genome.link, target: '_blank') do %>
+        <%= @genome.text %>
+        <%= fa_icon('external-link-alt', class: 'ml-1') %>
+      <% end %>
+    </dd>
 
     <% if @genome.kind.present? %>
       <dt><%= fa_icon('microscope') %> Type</dt>

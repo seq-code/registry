@@ -173,7 +173,7 @@ class Name < ApplicationRecord
       }
     end
 
-    # ============ --- CLASS > STATUS --- ============
+    # ============ --- CLASS > STATUS AND TYPE --- ============
 
     def public_status
       status_hash.select { |_, v| v[:public] }.keys
@@ -188,8 +188,13 @@ class Name < ApplicationRecord
         name: { name: 'Name', sp: false },
         nuccore: { name: 'INSDC Nucleotide', sp: true },
         assembly: { name: 'NCBI Assembly', sp: true },
+        strain: { name: 'Strain', sp: true },
         other: { name: 'Other', sp: true }
       }
+    end
+
+    def type_material_name(type)
+      type_material_hash[type.to_sym]&.[](:name)
     end
   end
 
@@ -487,9 +492,8 @@ class Name < ApplicationRecord
 
   def type_link
     @type_link ||=
-      case type_material
-      when 'assembly', 'nuccore'
-        "https://www.ncbi.nlm.nih.gov/#{type_material}/#{type_accession}"
+      if type_is_genome?
+        type_genome.link
       end
   end
 
@@ -512,7 +516,7 @@ class Name < ApplicationRecord
   end
 
   def type_material_name
-    self.class.type_material_hash[type_material.to_sym][:name] if type?
+    self.class.type_material_name(type_material) if type?
   end
 
   def type_text
@@ -755,6 +759,18 @@ class Name < ApplicationRecord
     return col_homonyms unless col_homonyms.empty?
 
     []
+  end
+
+  # ============ --- GENOMICS --- ============
+
+  def genome?
+    type_is_genome? || genome_id?
+  end
+
+  def genome
+    return unless genome?
+
+    @genome ||= type_genome || Genome.find(genome_id)
   end
 
   # ============ --- REGISTER LISTS --- ============

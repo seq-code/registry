@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_21_223040) do
+ActiveRecord::Schema.define(version: 2022_04_09_181352) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -144,6 +144,8 @@ ActiveRecord::Schema.define(version: 2022_03_21_223040) do
     t.datetime "col_at"
     t.string "incertae_sedis"
     t.integer "tutorial_id"
+    t.integer "genome_id"
+    t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"
     t.index ["tutorial_id"], name: "index_names_on_tutorial_id"
@@ -281,6 +283,7 @@ ActiveRecord::Schema.define(version: 2022_03_21_223040) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "name_correspondences", "names"
   add_foreign_key "name_correspondences", "users"
+  add_foreign_key "names", "genomes"
   add_foreign_key "names", "registers"
   add_foreign_key "names", "tutorials"
   add_foreign_key "registers", "publications"
