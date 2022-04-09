@@ -19,7 +19,7 @@ class TutorialsController < ApplicationController
     @tutorial = Tutorial.new(par)
 
     if @tutorial.save
-      flash[:notice] = 'Tutorial successfully initiated'
+      flash[:notice] = 'Guided registration successfully initiated'
       redirect_to(@tutorial)
     else
       redirect_to(tutorials_url)
@@ -43,7 +43,7 @@ class TutorialsController < ApplicationController
     @tutorial.destroy
 
     respond_to do |format|
-      format.html { redirect_to tutorials_url, notice: "Tutorial was successfully destroyed." }
+      format.html { redirect_to tutorials_url, notice: 'Guided registration was successfully destroyed' }
       format.json { head :no_content }
     end
   end
