@@ -137,6 +137,8 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.3-x86_64-darwin)
       racc (~> 1.4)
+    nokogiri (1.13.3-x86_64-linux)
+      racc (~> 1.4)
     orm_adapter (0.5.0)
     pdf-reader (2.9.2)
       Ascii85 (~> 1.0)
@@ -146,7 +148,7 @@ GEM
       ttfunk
     popper_js (1.16.0)
     public_suffix (4.0.6)
-    puma (4.3.11)
+    puma (4.3.12)
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3)
@@ -274,6 +276,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-19
+  x86_64-linux
 
 DEPENDENCIES
   bootstrap (~> 4.3)
