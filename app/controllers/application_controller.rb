@@ -61,15 +61,21 @@ class ApplicationController < ActionController::Base
     when /\Ap:(.+)\z/
       redirect_to(page_url($1))
     when /\A(i:)?(\d+)\z/
-      redirect_to(name_url(Name.where(id: $2).first, par))
+      name = Name.where(id: $2).first or not_found
+      redirect_to(name_url(name, par))
     when /\A(n:)?([a-z_\. ]+)\z/i
-      name = $2.gsub('_', ' ')
-      redirect_to(name_url(Name.find_by_variants(name), par))
+      name = Name.find_by_variants($2.gsub('_', ' ')) or not_found
+      redirect_to(name_url(name, par))
     when /\A(r:.+)\z/i
-      redirect_to(register_url(Register.where(accession: $1).first, par))
+      list = Register.where(accession: $1).first or not_found
+      redirect_to(register_url(list, par))
     else
       redirect_to(root_url)
     end
+  end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
   end
 
   protected
