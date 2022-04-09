@@ -58,19 +58,23 @@ class ApplicationController < ActionController::Base
     params[:path].sub!(%r[\A/+], '')
     params[:path].sub!(%r[(?<!/)/+\z], '')
     case params[:path]
+    when *%w[robots sw favicon apple-touch-icon apple-touch-icon-precomposed]
+      path = params[:path]
+      path = "#{path}.#{params[:format]}" if params[:format]
+      redirect_to(File.join(root_path, path))
     when /\Ap:(.+)\z/
-      redirect_to(page_url($1))
+      redirect_to(page_path($1))
     when /\A(i:)?(\d+)\z/
       name = Name.where(id: $2).first or not_found
-      redirect_to(name_url(name, par))
+      redirect_to(name_path(name, par))
     when /\A(n:)?([a-z_\. ]+)\z/i
       name = Name.find_by_variants($2.gsub('_', ' ')) or not_found
-      redirect_to(name_url(name, par))
+      redirect_to(name_path(name, par))
     when /\A(r:.+)\z/i
       list = Register.where(accession: $1).first or not_found
-      redirect_to(register_url(list, par))
+      redirect_to(register_path(list, par))
     else
-      redirect_to(root_url)
+      redirect_to(root_path)
     end
   end
 
