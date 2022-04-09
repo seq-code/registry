@@ -154,7 +154,8 @@ module ApplicationHelper
     opts[:data] ||= {}
     opts[:data][:toggle] = 'modal'
     opts[:data][:target] = "##{id}"
-    content_tag(:span, opts) { yield }
+    opts[:tag] ||= :span
+    content_tag(opts.delete(:tag), opts) { yield }
   end
 
   def help_message(title = '', opts = {})

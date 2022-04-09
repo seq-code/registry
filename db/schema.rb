@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_09_181352) do
+ActiveRecord::Schema.define(version: 2022_04_09_203621) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -145,6 +145,8 @@ ActiveRecord::Schema.define(version: 2022_04_09_181352) do
     t.string "incertae_sedis"
     t.integer "tutorial_id"
     t.integer "genome_id"
+    t.text "gbif_json"
+    t.datetime "gbif_at"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"

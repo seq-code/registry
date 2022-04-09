@@ -33,20 +33,23 @@
     </dd>
   <% end %>
 
+  <% if @name.parent %>
+    <dt><%= fa_icon('layer-group') %> Classification</dt>
+    <dd><%= name_lineage(@name) %></dd>
+  <% end %>
+
   <% if @name.parent || @name.incertae_sedis? || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon('sort-amount-up-alt') %> Classification</dt>
+    <dt><%= fa_icon('sort-amount-up-alt') %> Parent</dt>
     <dd>
       <% if @name.incertae_sedis? %>
         <div class="border-left px-3">
-        <b><%= @name.incertae_sedis_html %>:</b>
+          <b><%= @name.incertae_sedis_html %>:</b>
           <%= @name.incertae_sedis_text %>
         </div>
-      <% else %>
-        <% @name.lineage.each do |name| %>
-          <%= link_to(name.name_html, name) %> &raquo;
-        <% end %>
-        <%= @name.name_html %>
+      <% elsif @name.parent %>
+        <%= link_to_name(@name.parent) %>
       <% end %>
+
       <% if @name.can_edit?(current_user) %>
         <%= link_to(
               link_parent_name_path(@name),

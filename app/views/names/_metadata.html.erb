@@ -8,8 +8,30 @@
         <% if @name.ncbi_taxonomy? %>
           <li>
             <%= link_to(@name.ncbi_taxonomy_url, target: '_blank') do %>
-              NCBI Taxonomy
-              <%= fa_icon 'external-link-alt' %>
+              NCBI Taxonomy: <%= @name.ncbi_taxonomy %>
+              <%= fa_icon('external-link-alt') %>
+            <% end %>
+          </li>
+        <% end %>
+
+        <% gbif = @name.gbif_homonyms(false, true) %>
+        <% if gbif.present? %>
+          <% id = modal('GBIF Links') do %>
+            <ul>
+              <% gbif.each do |link| %>
+                <li>
+                  <%= link.html_safe %>
+                  <%= fa_icon('external-link-alt') %>
+                </li>
+              <% end %>
+            </ul>
+            <div class="text-muted border-top pt-2">
+              Retrieved <%= time_ago_in_words(@name.gbif_at) %> ago
+            </div>
+          <% end %>
+          <li>
+            <%= modal_button(id, type: '', class: '', tag: 'a', href: '#') do %>
+              Global Biodiversity Information Facility (GBIF)
             <% end %>
           </li>
         <% end %>
