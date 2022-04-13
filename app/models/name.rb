@@ -63,6 +63,7 @@ class Name < ApplicationRecord
   include Name::Etymology
   include Name::Citations
   include Name::ExternalResources
+  include Name::Inferences
 
   attr_accessor :only_display
 
@@ -258,7 +259,8 @@ class Name < ApplicationRecord
       y += " [valid #{priority_date.year}]"
     end
     if emended_by.any?
-      y += " <i>emend.</i> #{emended_by.map(&:short_citation).join('; ')}".html_safe
+      cit = emended_by.map(&:short_citation).join('; ')
+      y += " <i>emend.</i> #{cit}".html_safe
     end
     y.html_safe
   end
@@ -550,97 +552,7 @@ class Name < ApplicationRecord
       base_name.gsub(/ .*/, '')
     else
       base = "#{propose_lineage_name(:genus)}"
-      case base # Genus name
-      when /aeum$/
-        # - Methanonatronarchaeum -- Methanonatroarchae-aceae
-        base.gsub!(/um$/, '')
-      when /u[ms]$/
-        # - Acidaminococcus -- Acidaminococc-aceae
-        # - Acidilobus -- Acidilob-aceae
-        # - Acidimicrobium -- Acidimicrobi-aceae
-        base.gsub!(/u[ms]$/, '')
-      when /glans$/
-        # - Desulfatiglans -- Desulfatiglan-d-aceae
-        base.gsub!(/ns$/, 'nd')
-      when /tans$/
-        # - Jatrophihabitans -- Jatrophihabitantaceae
-        base.gsub!(/ns$/, 'nt')
-      when /[stl]is$/
-        # - Nocardiopsis -- Nocardiops-aceae
-        # - Methylocystis -- Methylocyst-aceae
-        # - Maricaulis -- Maricaulaceae
-        base.gsub!(/is$/, '')
-      when /[nr][ai]s$/
-        # - Aeromonas -- Aeromona-d-aceae
-        # - Alteromonas -- Alteromona-d-aceae
-        # - Blastochloris -- Blastochlori-d-aceae
-        # Counterexamples:
-        # - Catalinimonas -- Catali-mona-d-aceae (irregularly formed)
-        base.gsub!(/s$/, 'd')
-      when /myces$/
-        # - Actinomyces -- Actinomyce-t-aceae
-        base.gsub!(/myces$/, 'mycet')
-      when /[eoy]ma$/
-        # - Brevinema -- Brevinema-t-aceae
-        # - Deferrisoma -- Deferrisoma-t-aceae
-        # - Tropheryma -- Tropheryma-t-aceae
-        # Counterexamples:
-        # - Spirosoma -- Spirosoma-ceae (irregularly formed)
-        base.gsub!(/ma$/, 'mat')
-      when /[eai]s$/
-        # - Alcaligenes -- Alcaligen-aceae
-        # - Desulfallas -- Desulfall-aceae
-        # - Desulfocucumis -- Desulfocucum-aceae
-        base.gsub!(/[eai]s$/, '')
-      when /plasma$/
-        # - Acholeplasma -- Acholeplasma-t-aceae
-        # Counterexamples:
-        # - Ferroplasma -- Ferroplasm-aceae (irregularly formed)
-        base.gsub!(/plasma$/, 'plasmat')
-      when /ue$/
-        # - Kallotenue -- Kallotenu-aceae
-        base.gsub!(/e$/, '')
-      when /[ae]$/
-        # - Actinochlamydia -- Actinochlamydi-aceae
-        # - Actinopolymorpha -- Actinopolymorph-aceae
-        # - Aestuariivirga -- Aestuariivirg-aceae
-        # - Afifella -- Afifell-aceae
-        # - Aggregatilinea -- Aggregatiline-aceae
-        # - Aliterella -- Aliterell-aceae
-        # - Desulfomonile -- Desulfomonil-aceae
-        base.gsub!(/[ae]$/, '')
-      when /io$/
-        # - Vibrio -- Vibrio-n-aceae
-        # - Cellvibrio -- Cellvibrio-n-aceae
-        base.gsub!(/io$/, 'ion')
-      when /ex$/
-        # - Aquifex -- Aquif-ic-aceae
-        base.gsub!(/ex$/, 'ic')
-      when /thrix$/
-        # - Erysipelothrix -- Erysipelotri-ch-aceae
-        # - Caldithrix -- Calditri-ch-aceae
-        # - Thiothrix -- Thiotri-ch-aceae
-        # Counterexamples:
-        # - Thermosporothrix -- Thermosporothri-ch-aceae
-        base.gsub!(/thrix$/, 'trich')
-      when /x$/
-        # - Adiutrix -- Adiutri-c-aceae
-        # - Alcanivorax -- Alcanivora-c-aceae
-        # Counterexamples:
-        # - Balneatrix -- Balneatri-ch-aceae (irregularly formed)
-        # - Thiotrix -- Thiotri-ch-aceae (illegitimate?)
-        # - Halobacteriovorax -- Halobacteriovor-aceae (irregularly formed)
-        # - Proteinivorax -- Proteinivor-aceae (irregularly formed)
-        base.gsub!(/x$/, 'c')
-      when /non$/
-        # - Caryophanon -- Caryophan-aceae
-        base.gsub!(/on$/, '')
-      end
-      # Other cases:
-      # *bacter sometimes form *bacter-i-aceae and sometimes *bacter-aceae
-      # names, we're using the latter.
-
-      base + Name.rank_suffixes[rank.to_sym]
+      genus_root(base) + Name.rank_suffixes[rank.to_sym]
     end
   end
 
