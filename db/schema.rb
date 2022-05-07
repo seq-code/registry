@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_09_203621) do
+ActiveRecord::Schema.define(version: 2022_05_07_202035) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -77,6 +77,14 @@ ActiveRecord::Schema.define(version: 2022_04_09_203621) do
     t.string "kind"
     t.string "source_database"
     t.string "source_accession"
+    t.float "gc_content_auto"
+    t.float "completeness_auto"
+    t.float "contamination_auto"
+    t.float "most_complete_16s_auto"
+    t.integer "number_of_16s_auto"
+    t.float "most_complete_23s_auto"
+    t.integer "number_of_23s_auto"
+    t.integer "number_of_trnas_auto"
     t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
     t.index ["updated_by"], name: "index_genomes_on_updated_by"
   end

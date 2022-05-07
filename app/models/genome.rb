@@ -8,6 +8,8 @@ class Genome < ApplicationRecord
   validates(:source_accession, presence: true, if: :source?)
   validates(:source_database, presence: true, if: :source?)
 
+  has_rich_text(:submitter_comments)
+
   class << self
     def find_or_create(database, accession)
       return unless database.present? && accession.present?

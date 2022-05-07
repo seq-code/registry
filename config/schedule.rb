@@ -11,4 +11,7 @@ every 1.day do
   rake 'works:update names:find parents:infer'
 end
 
+# IF CHANGED, don't forget to run:
+# bundle exec whenever --update-crontab
+
 # Learn more: http://github.com/javan/whenever
