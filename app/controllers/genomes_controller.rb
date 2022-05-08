@@ -47,7 +47,11 @@ class GenomesController < ApplicationController
     def genome_params
       params
         .require(:genome)
-        .permit(:kind, :seq_depth, :source_database, :source_accession)
+        .permit(*%i[
+          kind seq_depth source_database source_accession gc_content
+          completeness contamination most_complete_16s number_of_16s
+          most_complete_23s number_of_23s number_of_trnas
+        ])
     end
 
     def authenticate_can_edit!
