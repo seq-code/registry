@@ -169,7 +169,8 @@ module ApplicationHelper
   end
 
   def slack_url
-    'https://join.slack.com/t/seqcode-public/shared_invite/zt-15q7ss8g1-IJCOfdc7dMrvgEoAia7VzA'
+    # Generated May 27 2022
+    'https://join.slack.com/t/seqcode-public/shared_invite/zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
   end
 end
 
