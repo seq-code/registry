@@ -14,9 +14,13 @@
   <%=
     f.input(
       :parent, autofocus: true,
+      label: @name.expected_parent_rank.capitalize,
       input_html: {
         value: @name.parent&.name,
-        data: { behavior: 'autocomplete', autocomplete: 'name' }
+        data: {
+          behavior: 'autocomplete', autocomplete: 'name',
+          rank: @name.expected_parent_rank
+        }
       }
     )
   %>

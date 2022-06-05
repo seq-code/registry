@@ -26,12 +26,15 @@ class NamesController < ApplicationController
     ]
   )
 
-  # GET /autocomplete_names.json?q=Abc
+  # GET /autocomplete_names.json?q=Maco
+  # GET /autocomplete_names.json?q=Allo&rank=genus
   def autocomplete
     name = params[:q].downcase
+    rank = params[:rank]&.downcase
     @names =
       Name.where('LOWER(name) LIKE ?', "#{name}%")
           .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
+    @names = @names.where(rank: rank) if rank
   end
 
   # GET /names
