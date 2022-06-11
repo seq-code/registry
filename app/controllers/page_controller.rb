@@ -11,6 +11,10 @@ class PageController < ApplicationController
     @last_modified =
       Date.parse(`cd "#{seqcode_path}" && git log -1 --format=%cd`.chomp)
   end
+
+  def initiative
+    redirect_to 'https://www.isme-microbes.org/seqcode-initiative'
+  end
 end
 
 class SeqCodeDown < Redcarpet::Render::HTML

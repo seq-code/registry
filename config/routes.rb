@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   # Static pages
   get  'page/publications', as: :page_publications
   get  'page/seqcode',      as: :page_seqcode
+  get  'page/initiative',   as: :page_initiative
 
   resources(:genomes)
   root(to: 'application#main')
