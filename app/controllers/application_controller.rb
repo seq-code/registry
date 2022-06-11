@@ -54,9 +54,11 @@ class ApplicationController < ActionController::Base
   # GET /link/Patescibacteria.json
   def short_link
     par = { format: params[:format] }
+    super_pages = %w[initiative seqcode]
     params[:path] ||= ''
     params[:path].sub!(%r[\A/+], '')
     params[:path].sub!(%r[(?<!/)/+\z], '')
+    params[:path] = "p:#{params[:path]}" if params[:path].in? super_pages
     case params[:path]
     when *%w[robots sw favicon apple-touch-icon apple-touch-icon-precomposed]
       path = params[:path]
