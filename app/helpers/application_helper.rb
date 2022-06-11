@@ -169,7 +169,7 @@ module ApplicationHelper
   end
 
   def slack_url
-    # Generated May 27 2022
+    # Generated June 11 2022 (expires June 24)
     'https://join.slack.com/t/seqcode-public/shared_invite/zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
   end
 end
