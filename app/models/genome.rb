@@ -97,4 +97,22 @@ class Genome < ApplicationRecord
   def updated_by_user
     User.find(updated_by) if updated_by?
   end
+
+  %i[
+    gc_content completeness contamination most_complete_16s number_of_16s
+    most_complete_23s number_of_23s number_of_trnas
+  ].each do |i|
+    define_method(:"#{i}_any") do
+      send(:"#{i}_auto") || send(i)
+    end
+  end
+
+  def complete?
+    required = %i[
+      kind? seq_depth source_database? source_accession?
+      completeness_any contamination_any most_complete_16s_any
+      number_of_16s_any number_of_trnas_any
+    ]
+    required.all? { |i| send(i) }
+  end
 end

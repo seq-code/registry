@@ -10,6 +10,7 @@ class TutorialsController < ApplicationController
 
   # GET /tutorials/1
   def show
+    flash[:notice] = @tutorial.notice if @tutorial.notice
   end
 
   # POST /tutorials

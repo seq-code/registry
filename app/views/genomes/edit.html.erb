@@ -62,6 +62,7 @@
   </div>
 
   <div class="form-actions mt-5">
+    <%= hidden_field_tag(:return_to, tutorial_path(@tutorial)) if @tutorial %>
     <%= f.button :submit %>
   </div>
 <% end %>

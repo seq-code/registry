@@ -101,6 +101,10 @@ class Tutorial < ApplicationRecord
     @next_action ||= self
   end
 
+  def notice
+    @notice ||= nil
+  end
+
   def data_hash
     @data_hash ||= JSON.parse(data || '{}')
   end
@@ -212,14 +216,41 @@ class Tutorial < ApplicationRecord
     end
 
     def lineage_step_03(params, user)
-      @next_action = 
-        if !current_name.description?
-          [:edit, current_name, tutorial: self]
-        elsif !current_name.etymology?
-          [:edit_etymology, current_name, tutorial: self]
-        elsif !current_name.type?
-          [:edit_type, current_name, tutorial: self]
+      if current_name.description?
+        update(step: step + 1)
+      else
+        @next_action = [:edit, current_name, tutorial: self]
+      end
+    end
+
+    def lineage_step_04(params, user)
+      if current_name.etymology?
+        update(step: step + 1)
+      else
+        @next_action = [:edit_etymology, current_name, tutorial: self]
+      end
+    end
+
+    def lineage_step_05(params, user)
+      if current_name.type?
+        update(step: step + 1)
+      else
+        @next_action = [:edit_type, current_name, tutorial: self]
+      end
+    end
+
+    def lineage_step_06(params, user)
+      if current_name.type_is_genome?
+        if !current_name.type_genome.complete?
+          @notice = 'Please complete the genomic information in the next step'
+          par = { name: current_name, tutorial: self }
+          @next_action = [:edit, current_name.type_genome, par]
+        else
+          update(step: step + 1)
         end
+      else
+        # TODO Deal with genus and above
+      end
     end
 
     def require_params(params, keys)

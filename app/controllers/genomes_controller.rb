@@ -1,6 +1,7 @@
 class GenomesController < ApplicationController
   before_action(:set_genome, only: %i[ show edit update ])
   before_action(:set_name, only: %i[ show edit update ])
+  before_action(:set_tutorial)
   before_action(:authenticate_can_edit!, only: %i[ edit update ])
 
   # GET /genomes or /genomes.json
@@ -22,7 +23,8 @@ class GenomesController < ApplicationController
       if @genome.update(genome_params.merge(updated_by: current_user.id))
         format.html do
           redirect_to(
-            @name || @genome, notice: 'Genome was successfully updated.'
+            params[:return_to] || @name || @genome,
+            notice: 'Genome was successfully updated.'
           )
         end
         format.json { render :show, status: :ok, location: @genome }
@@ -41,6 +43,11 @@ class GenomesController < ApplicationController
 
     def set_name
       @name = params[:name].present? ? Name.find(params[:name]) : @genome.names.first
+    end
+
+    def set_tutorial
+      return if params[:tutorial].blank?
+      @tutorial = Tutorial.find(params[:tutorial])
     end
 
     # Only allow a list of trusted parameters through.
