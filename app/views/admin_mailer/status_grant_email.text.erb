@@ -1,8 +1,18 @@
-Welcome to example.com,
-===============================================
+Dear <%= @user.given %>:
 
-You have successfully signed up to example.com,
-your username is: 
-To login to the site, just follow this link:
+<% if @user.contributor == true or @user.curator == true%>
+    Congraduations! Your application has been approved!
+    Now you have role: 
+    <%if @user.contributor == true %>
+        contributor 
+    <%end%>
+    <%if @user.curator == true %>
+        curator 
+    <%end%>
+<% else %>
+    Sorry, your application was denied.
+    Please contact us if you have any questions.
+<%end%>
 
-Thanks for joining and have a great day!
+Best,
+SeqCode Team

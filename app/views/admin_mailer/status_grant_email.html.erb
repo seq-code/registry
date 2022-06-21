@@ -6,12 +6,24 @@
   <body>
     <h1>Welcome to example.com</h1>
     <p>
-      You have successfully signed up to example.com,
-      your username is: <br>
+      Dear <%= @user.given %>: <br>
     </p>
-    <p>
-      To login to the site, just follow this link:
-    </p>
-    <p>Thanks for joining and have a great day!</p>
+    <% if @user.contributor == true or @user.curator == true%>
+      <p>Congraduations! Your application has been approved! </p>
+      <p>Now you have role: 
+        <%if @user.contributor == true %>
+          contributor
+        <%end%>
+        <%if @user.curator == true %>
+          , curator. 
+        <%end%>
+      </p>
+    <% else %>
+      <p>Sorry, your application was denied.</p>
+      <p>Please contact us if you have any questions.</p>
+    <%end%>
+    <p>Best</p>
+    <p>SeqCode Team</p>
+    
   </body>
 </html>
