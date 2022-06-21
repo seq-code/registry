@@ -26,6 +26,9 @@ gem 'pdf-reader'
 gem 'redcarpet', '~> 3.5'
 gem 'whenever', require: false
 
+#Fang add the net-stmp gem
+gem 'net-smtp'
+
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks

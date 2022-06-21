@@ -90,6 +90,11 @@ class UsersController < ApplicationController
 
     def status_application_action(params)
       if @user.update(params)
+        #logger = Rails.logger
+        #logger.info "user email is: " + @user.email
+        #logger.info "contributor status is: " + params[:contributor].to_s
+        #logger.info "curator status is: " + params[:curator].to_s
+        AdminMailer.with(user: @user, contributor: params[:contributor], curator: params[:curator]).status_grant_email.deliver_now
         flash[:notice] = 'Application successfully processed'
       else
         flash[:alert] = 'Error processing application, still pending'
