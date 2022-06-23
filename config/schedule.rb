@@ -7,7 +7,7 @@
 #   rake "some:great:rake:task"
 # end
 
-every 1.day do
+every 1.week do
   rake 'works:update names:find parents:infer'
 end
 
