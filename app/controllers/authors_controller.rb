@@ -21,7 +21,7 @@ class AuthorsController < ApplicationController
           .order(name_count: :desc)
       else
         @sort = 'alphabetically'
-        Author.order(:give, :family)
+        Author.order(:given, :family)
       end
     @authors = @authors.paginate(page: params[:page], per_page: 100)
     @crumbs = ['Authors']
