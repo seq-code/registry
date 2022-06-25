@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include PageHelper
 
   protect_from_forgery(with: :exception)
-  
+
   @@search_obj = {
     publications: [Publication, %w[title doi journal abstract]],
     authors: [Author, %w[given family]],
@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
     @authors = Author.all.order(created_at: :desc)
     @names =
       Name.where(status: Name.public_status)
-          .where('name LIKE "Candidatus %"')
+          .where('name LIKE ?', 'Candidatus %')
           .or(Name.where(status: 15))
           .order(created_at: :desc)
   end
