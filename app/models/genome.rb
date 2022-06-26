@@ -12,15 +12,9 @@ class Genome < ApplicationRecord
 
   class << self
     def find_or_create(database, accession)
-      return unless database.present? && accession.present?
-
-      par = { database: database, accession: accession }
-      o = where(par).first
-      unless o.present?
-        o = Genome.new(par)
-        o.save!
+      if database.present? && accession.present?
+        find_or_create_by(database: database, accession: accession)
       end
-      o
     end
 
     def kinds
