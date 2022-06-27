@@ -8,6 +8,9 @@
   <%= adaptable_value(entry, 'Last update') do %>
     <%= time_ago_in_words(register.updated_at).capitalize %> ago
   <% end %>
+  <%= adaptable_value(entry, 'User') do %>
+    <%= link_to(register.user.username, register.user) %>
+  <% end %>
   <%= adaptable_value(entry, 'Need review') do %>
     <div class="text-<%= register.names_to_review.count.zero? ? 'success' : 'danger' %>">
       <%= pluralize(register.names_to_review.count, 'name') %>
