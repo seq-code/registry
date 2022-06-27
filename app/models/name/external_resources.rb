@@ -1,5 +1,25 @@
 module Name::ExternalResources
   ##
+  # By default, external requests are deferred to a later time (async).
+  # If set to +true+, external requests are performed on demand
+  attr_accessor :make_external_requests
+
+  ##
+  # Is the currently loaded name queued for +NameExternalResourcesJob+?
+  def queued_for_external_resources
+    queued_external && queued_external > 1.day.ago
+  end
+
+  ##
+  # Queue name for +NameExternalResourcesJob+
+  def queue_for_external_resources
+    unless queued_for_external_resources
+      NameExternalResourcesJob.perform_later(self)
+      self.update(queued_external: DateTime.now)
+    end
+  end
+
+  ##
   # Generate a request to the external +uri+, and return the reponse body
   # if successful or +nil+ otherwise (fails silently)
   def external_request(uri)
@@ -15,11 +35,19 @@ module Name::ExternalResources
   ##
   # Execute a programmatic search of the current name in the external +service+
   def external_search(service)
+    unless make_external_requests
+      queue_for_external_resources
+      return
+    end
+
     uri = send("#{service}_search_uri")
     body = external_request(uri)
 
     if body.present?
-      update("#{service}_json" => body.force_encoding('UTF-8'), "#{service}_at" => Time.now)
+      update(
+        "#{service}_json" => body.force_encoding('UTF-8'),
+        "#{service}_at" => Time.now
+      )
     end
   end
 
