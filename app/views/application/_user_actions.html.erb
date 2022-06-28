@@ -52,10 +52,15 @@
           <h3>Curator</h3>
         </div>
         <div class="col-md-9 mb-2 text-left">
-          <%= link_to('Review submitted',
-                      submitted_names_path, class: 'btn btn-primary btn-sm') %>
-          <%= link_to('Unknown proposals',
-                      unknown_proposal_path, class: 'btn btn-primary btn-sm') %>
+          <%= link_to('Names awaiting review',
+                      submitted_names_path,
+                      class: 'btn btn-primary btn-sm') %>
+          <%= link_to('Lists awaiting review',
+                      registers_path(status: :submitted),
+                      class: 'btn btn-primary btn-sm') %>
+          <%= link_to('Notifications awaiting review',
+                      registers_path(status: :notified),
+                      class: 'btn btn-primary btn-sm') %>
         </div>
       </div>
     <% end %>
