@@ -6,6 +6,7 @@ class NameExternalResourcesJob < ApplicationJob
       name.make_external_requests = true
       Name.transaction do
         name.external_homonyms
+        name.gbif_homonyms
         name.update(queued_external: nil)
       end
     end
