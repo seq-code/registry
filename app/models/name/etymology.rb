@@ -134,6 +134,7 @@ module Name::Etymology
   # Attempt automatically fill the etymology on the basis of the type genus. It
   # affects the current instance but does not save changes to the database!
   def autofill_etymology
+    self.syllabication = guess_syllabication unless syllabication?
     return unless can_autofill_etymology?
 
     clean_etymology
@@ -163,7 +164,93 @@ module Name::Etymology
           self.send("#{acc}=", importable_etymology.send(acc))
         end
       end
-      self.syllabication ||= importable_etymology.syllabication
     end
+  end
+
+  ##
+  # Guess the syllabification of the last epithet (or any +word+ passed)
+  # mostly following the rules in https://marello.org/tools/syllabifier/
+  #
+  # Modifications:
+  # - The digraphs ae and oe are parsed as a single vowel
+  # - The following digraphs starting a syllable are considered a single
+  #   consonant: ps, pt, ts, and tz
+  # - The following digraphs are also consider single consonants:
+  #   zh, sh, gh, rh, ll, tt, ck
+  # - The rules above don't explicitly define a vowel. Appart from the
+  #   above digraphs, the letters a, e, i, o, and u are considered vowels,
+  #   as well as the letter y except at the beginning of a word
+  def guess_syllabication(word = last_epithet)
+    pos = 0
+    syllables = ['']
+    vowel = /[aeiouy]/i
+    # Wheelock's Latin provides this sound exception:
+    # Also counted as single consonants are qu and the aspirates
+    # ch, ph, th, which should never be separated in syllabification:
+    # architectus, ar-chi-tec-tus; loquacem, lo-qua-cem.
+    #
+    # LRR: I'm also adding the vowels ae and oe to this list
+    #
+    # LRR: In effect, the "exception 2" is covered by treating these
+    # digraphs as single consonants:
+    # A mute consonant (b, c, d, g, p, t) or f followed by a liquid
+    # consonant (l, r) go with the succeeding vowel: "la-crima", "pa-tris"
+    composed = /^(qu|[cptzsgr]h|ae|oe|ck|ll|tt|[bcdgptf][lr])$/i
+
+    while pos < word.length
+      prev_consonant =
+        if pos >= 2 && word[pos - 2] =~ composed
+          word[pos - 2] !~ vowel
+        else
+          word[pos - 1] !~ vowel
+        end
+      prev_consonant ||= pos == 1 && word[pos - 1] == 'y'
+      this_consonant = word[pos] !~ vowel
+      this_consonant ||= pos == 0 && word[pos] == 'y'
+      syllables[-1] += word[pos]
+      if word[pos, 2] =~ composed ||
+          (syllables[-1].length == 1 && word[pos, 2] =~ /^(p[st]|t[sz])$/i)
+        syllables[-1] += word[pos += 1]
+      end
+      next_consonant = word[pos + 1] !~ vowel
+      post_consonant =
+        if word[pos + 1, 2] =~ composed
+          word[pos + 3] !~ vowel
+        else
+          word[pos + 2] !~ vowel
+        end
+
+      if !this_consonant
+        # 1. After open vowels (those not followed by a consonant)
+        # (e.g., "pi-us" and "De-us")
+        syllables << '' unless next_consonant
+
+        # 2. After vowels followed by a single consonant
+        # (e.g., "vi-ta" and "ho-ra")
+        syllables << '' if next_consonant && !post_consonant
+
+        # LRR: The following is not 
+      else
+        # 3. After the first consonant when two or more consonants follow a
+        # vowel (e.g., "mis-sa", "minis-ter", and "san-ctus").
+        syllables << '' if next_consonant && !prev_consonant
+      end
+
+      pos += 1
+    end
+
+    syllables.delete_if(&:empty?)
+
+    # Propose emphasis
+    if syllables.size == 1
+      # No accent for monosyllabic words
+    elsif word =~ /(aceae|ia|icus|iae|icola)$/
+      syllables[-3] += "'"
+    else
+      syllables[-2] += "'"
+    end
+
+    # Join and return
+    syllables.join('.').gsub(/'./, "'")
   end
 end

@@ -2,7 +2,7 @@
 <h3>&raquo; Etymology of the word <u><b><%= @name.last_epithet %></b></u></h3>
 <hr/>
 
-<% if @name.can_autofill_etymology? %>
+<% if @name.can_autofill_etymology? || @name.syllabication.empty? %>
   <p class="lead">
   <%= link_to(autofill_etymology_name_path(@name)) do %>
     <%= fa_icon('magic') %> &nbsp;
@@ -62,8 +62,10 @@
   -->
   <br/>
 
-  <%= hidden_field_tag(:return_to, tutorial_path(@tutorial)) if @tutorial %>
-  <%= f.button :submit, 'Submit' %>
+  <% if @tutorial %>
+    <%= hidden_field_tag(:return_to, tutorial_path(@tutorial, next: true)) %>
+  <% end %>
+  <%= f.button(:submit, 'Submit') %>
   <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
   <br/><br/>
 <% end %>
