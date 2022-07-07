@@ -286,11 +286,12 @@ class Name < ApplicationRecord
   # - 4 or more vowels in a row, where ii, ou, and Latin diphthongs (except ui)
   #   count as a single vowel
   # - 4 or more consonants in a row, where the following count as a single
-  #   consonant: sch, ch, ph, th, zh, sh, gh, ts, tz, and any consonant twice
+  #   consonant: sch, ch, ph, th, zh, sh, gh, rh, ts, tz, and any consonant
+  #   twice
   def hard_to_pronounce?
     word = last_epithet.downcase
     word.gsub!(/(ou|ii|ae|au|ei|eu|oe)/, '_')
-    word.gsub!(/(sch|[cptzsg]h|[ct]r|t[sz])/, '@')
+    word.gsub!(/(sch|[cptzsgr]h|[ct]r|t[sz])/, '@')
     word.gsub!(/([^aeiouy_])\1/, '@')
     return true if word =~ /[aeiou_]{4}/ || word =~ /[aeiou_]{3}y($|[^aeiou_])/
     return true if word =~ /[^aeiouy_]{4}/

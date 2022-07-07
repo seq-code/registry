@@ -19,6 +19,9 @@ class GenomesController < ApplicationController
 
   # PATCH/PUT /genomes/1 or /genomes/1.json
   def update
+    $stderr.puts '-----------------'
+    $stderr.puts params
+    $stderr.puts '-----------------'
     respond_to do |format|
       if @genome.update(genome_params.merge(updated_by: current_user.id))
         format.html do
@@ -58,6 +61,7 @@ class GenomesController < ApplicationController
           kind seq_depth source_database source_accession gc_content
           completeness contamination most_complete_16s number_of_16s
           most_complete_23s number_of_23s number_of_trnas
+          submitter_comments
         ])
     end
 

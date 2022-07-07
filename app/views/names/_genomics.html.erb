@@ -41,6 +41,40 @@
       </dd>
     <% end %>
 
+    <% if @genome.rrnas_or_trnas? %>
+      <dt><%= fa_icon('splotch') %> Ribosomal and transfer RNA genes</dt>
+      <dd>
+        <ul>
+          <% if @genome.number_of_16s_any.present? %>
+            <li>
+              <%= pluralize(@genome.number_of_16s_any, '16S rRNA') %>
+              <%= @genome.most_complete_16s_any.present? ?
+                    "(up to #{@genome.most_complete_16s}%)" :
+                    'unknown length'  %>
+            </li>
+          <% end %>
+          <% if @genome.number_of_23s_any.present? %>
+            <li>
+              <%= pluralize(@genome.number_of_23s_any, '23S rRNA') %>
+              <%= @genome.most_complete_23s_any.present? ?
+                    "(up to #{@genome.most_complete_23s}%)" :
+                    'unknown length'  %>
+            </li>
+          <% end %>
+          <% if @genome.number_of_trnas_any.present? %>
+            <li>
+              <%= pluralize(@genome.number_of_trnas_any, 'tRNA') %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @genome.submitter_comments? %>
+      <dt><%= fa_icon('comment-alt') %> Submitter comments</dt>
+      <dd><%= @genome.submitter_comments %></dd>
+    <% end %>
+
     <dt><%= fa_icon('robot') %> Automated checks</dt>
     <dd><%=
       @genome.auto_check ? 'Complete' :

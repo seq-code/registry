@@ -64,6 +64,12 @@ class Genome < ApplicationRecord
     source_accession? || source_database?
   end
 
+  def rrnas_or_trnas?
+    number_of_16s_any.present? ||
+      number_of_23s_any.present? ||
+      number_of_trnas_any.present?
+  end
+
   def source_text
     source? ? "#{source_database}: #{source_accession}" : ''
   end

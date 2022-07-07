@@ -5,9 +5,10 @@
   <%= f.input :ncbi_taxonomy, label: 'NCBI Taxonomy ID' %>
   <br/>
 
-  <%= hidden_field_tag(:return_to, tutorial_path(@tutorial)) if @tutorial %>
-  <%= f.button :submit, 'Submit' %>
+  <% if @tutorial %>
+    <%= hidden_field_tag(:return_to, tutorial_path(@tutorial, next: true)) %>
+  <% end %>
+  <%= f.button(:submit, 'Submit') %>
   <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
   <br/><br/>
 <% end %>
-

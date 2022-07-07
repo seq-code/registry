@@ -18,7 +18,15 @@ class Tutorial < ApplicationRecord
           prompt: 'New species and parent taxa',
           description: 'If you want to register a novel species from a novel ' \
                        'genus',
-          steps: 10
+          steps: [
+            'Name and classification',
+            'Lineage',
+            'Description',
+            'Etymology',
+            'Type',
+            'Type details',
+            'Next name'
+          ]
         },
         species: {
           title: 'Register species',
@@ -27,7 +35,7 @@ class Tutorial < ApplicationRecord
                        'that is already validly published under the SeqCode ' \
                        'or under the ICNP rules, or currently under revision ' \
                        'in the SeqCode Registry',
-          steps: 10
+          steps: []
         },
         subspecies: {
           title: 'Register subspecies',
@@ -36,7 +44,7 @@ class Tutorial < ApplicationRecord
                        'species that is already validly published under the ' \
                        'SeqCode or under the ICNP rules, or currently under ' \
                        'revision in the SeqCode Registry',
-          steps: 10
+          steps: []
         },
         parent: {
           title: 'Register higher taxa',
@@ -46,7 +54,7 @@ class Tutorial < ApplicationRecord
                        '(or genus) is already validly published under the ' \
                        'SeqCode or under the ICNP rules, or currently under ' \
                        'revision in the SeqCode Registry',
-          steps: 10
+          steps: []
         },
         neotype: {
           title: 'Register new type',
@@ -55,7 +63,7 @@ class Tutorial < ApplicationRecord
                        'material of an existing species or subspecies, or ' \
                        'want to register a different genus as the type name ' \
                        'of a taxon above the rank of genus',
-          steps: 10
+          steps: []
         }
       }
     end
@@ -71,6 +79,10 @@ class Tutorial < ApplicationRecord
 
   %i[title prompt description steps].each do |i|
     define_method(i) { tutorial_hash[i] }
+  end
+
+  def step_name
+    steps[step]
   end
 
   def next_step_symbol
@@ -216,7 +228,7 @@ class Tutorial < ApplicationRecord
     end
 
     def lineage_step_03(params, user)
-      if current_name.description?
+      if current_name.description? && params[:next]
         update(step: step + 1)
       else
         @next_action = [:edit, current_name, tutorial: self]
@@ -224,7 +236,7 @@ class Tutorial < ApplicationRecord
     end
 
     def lineage_step_04(params, user)
-      if current_name.etymology?
+      if current_name.etymology? && params[:next]
         update(step: step + 1)
       else
         @next_action = [:edit_etymology, current_name, tutorial: self]
@@ -232,7 +244,7 @@ class Tutorial < ApplicationRecord
     end
 
     def lineage_step_05(params, user)
-      if current_name.type?
+      if current_name.type? && params[:next]
         update(step: step + 1)
       else
         @next_action = [:edit_type, current_name, tutorial: self]
@@ -241,15 +253,28 @@ class Tutorial < ApplicationRecord
 
     def lineage_step_06(params, user)
       if current_name.type_is_genome?
-        if !current_name.type_genome.complete?
-          @notice = 'Please complete the genomic information in the next step'
+        if current_name.type_genome.complete? && params[:next]
+          update(step: step + 1)
+        else
+          @notice = 'Please complete the genomic information'
           par = { name: current_name, tutorial: self }
           @next_action = [:edit, current_name.type_genome, par]
-        else
-          update(step: step + 1)
         end
       else
         # TODO Deal with genus and above
+      end
+    end
+
+    def lineage_step_07(params, user)
+      if current_name.parent.id.in? value(:lineage_ids)
+        update(
+          step: 2,
+          data: data_hash.merge(
+            current_name_id: current_name.parent.id
+          ).to_json
+        )
+      else
+        # TODO The turorial is complete!
       end
     end
 

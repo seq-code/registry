@@ -2,7 +2,7 @@
   <div class="navbar-nav m-1">
     <%= link_to('Guided registrations', tutorials_url) %> &nbsp;&raquo;
     <%= @tutorial.title %> &raquo;
-    Step <%= @tutorial.step %>
+    Step <%= @tutorial.step %>: <%= @tutorial.step_name %>
   </div>
   <div>
     <%= f.submit('>', class: 'btn btn-secondary btn-sm') %>

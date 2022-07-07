@@ -1,3 +1,7 @@
 
-<%= render(partial: 'tutorials/lineage/02', locals: { f: f }) %>
+<%= render(partial: 'tutorials/lineage/03', locals: { f: f }) %>
+
+<% @name.only_display = true %>
+<%= render(partial: 'names/nomenclature') %>
+<% @name.only_display = nil %>
 

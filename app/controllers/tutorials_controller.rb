@@ -11,6 +11,10 @@ class TutorialsController < ApplicationController
   # GET /tutorials/1
   def show
     flash[:notice] = @tutorial.notice if @tutorial.notice
+    if params[:next]
+      params[:tutorial] = { id: @tutorial.id, next: true }
+      update
+    end
   end
 
   # POST /tutorials
@@ -33,7 +37,7 @@ class TutorialsController < ApplicationController
       @tutorial.update(step: @tutorial.step - 1)
       redirect_to(@tutorial)
     elsif @tutorial.next_step(params.require(:tutorial), current_user)
-      redirect_to(@tutorial.next_action)
+      redirect_to(@tutorial.next_action, notice: @tutorial.notice)
     else
       render(:show)
     end
