@@ -40,6 +40,7 @@ class NamesController < ApplicationController
   # GET /names
   # GET /names.json
   def index(opts = {})
+    return user_names if params[:status] == 'user' && opts == {}
     @submitted ||= false
     @drafts    ||= false
     @sort      ||= params[:sort] || 'date'
@@ -92,6 +93,7 @@ class NamesController < ApplicationController
       user = User.find_by(username: params[:user])
     end
     @title = "Names by #{user.username}"
+    @status = 'user'
     index(where: { created_by: user }, status: Name.status_hash.keys)
     render(:index)
   end
