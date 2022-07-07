@@ -2,7 +2,7 @@
 <h3>&raquo; Etymology of the word <u><b><%= @name.last_epithet %></b></u></h3>
 <hr/>
 
-<% if @name.can_autofill_etymology? || @name.syllabication.empty? %>
+<% if @name.can_autofill_etymology? || !@name.syllabication? %>
   <p class="lead">
   <%= link_to(autofill_etymology_name_path(@name)) do %>
     <%= fa_icon('magic') %> &nbsp;
