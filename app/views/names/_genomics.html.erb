@@ -27,6 +27,21 @@
       <dd><%= @genome.kind_name %></dd>
     <% end %>
 
+    <% if @genome.completeness_any? || @genome.contamination_any? %>
+      <dt><%= fa_icon('star-half-alt') %> Quality</dt>
+      <dd>
+        <% if @genome.completeness_any? %>
+          <b>Completeness:</b> <%= @genome.completeness_any %>%<br/>
+        <% end %>
+        <% if @genome.contamination? %>
+          <b>Contamination:</b> <%= @genome.contamination_any %>%<br/>
+        <% end %>
+        <% if @genome.quality_any? %>
+          <b>Quality:</b> <%= @genome.quality_any %><br/>
+        <% end %>
+      </dd>
+    <% end %>
+
     <% if @genome.seq_depth.present? %>
       <dt><%= fa_icon('align-center') %> Sequencing depth</dt>
       <dd><%= @genome.seq_depth %> X</dd>

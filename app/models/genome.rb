@@ -98,12 +98,31 @@ class Genome < ApplicationRecord
     User.find(updated_by) if updated_by?
   end
 
+  def quality
+    completeness - 5 * contamination
+  end
+
+  def quality_auto
+    completeness - 5 * contamination
+  end
+
+  def quality?
+    completeness? && contamination?
+  end
+
+  def quality_auto?
+    completeness_auto? && contamination_auto?
+  end
+
   %i[
     gc_content completeness contamination most_complete_16s number_of_16s
-    most_complete_23s number_of_23s number_of_trnas
+    most_complete_23s number_of_23s number_of_trnas quality
   ].each do |i|
     define_method(:"#{i}_any") do
       send(:"#{i}_auto") || send(i)
+    end
+    define_method(:"#{i}_any?") do
+      send(:"#{i}_auto?") || send(:"#{i}?")
     end
   end
 
