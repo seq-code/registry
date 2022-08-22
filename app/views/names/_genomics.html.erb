@@ -27,16 +27,16 @@
       <dd><%= @genome.kind_name %></dd>
     <% end %>
 
-    <% if @genome.completeness_any? || @genome.contamination_any? %>
+    <% if @genome.completeness_any.present? || @genome.contamination_any.present? %>
       <dt><%= fa_icon('star-half-alt') %> Estimated Quality Metrics</dt>
       <dd>
-        <% if @genome.completeness_any? %>
+        <% if @genome.completeness_any.present? %>
           <b>Completeness:</b> <%= @genome.completeness_any %>%<br/>
         <% end %>
-        <% if @genome.contamination? %>
+        <% if @genome.contamination.present? %>
           <b>Contamination:</b> <%= @genome.contamination_any %>%<br/>
         <% end %>
-        <% if @genome.quality_any? %>
+        <% if @genome.quality_any.present? %>
           <b>Quality:</b> <%= @genome.quality_any %><br/>
         <% end %>
       </dd>
