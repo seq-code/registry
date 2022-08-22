@@ -28,7 +28,7 @@
     <% end %>
 
     <% if @genome.completeness_any? || @genome.contamination_any? %>
-      <dt><%= fa_icon('star-half-alt') %> Quality</dt>
+      <dt><%= fa_icon('star-half-alt') %> Estimated Quality Metrics</dt>
       <dd>
         <% if @genome.completeness_any? %>
           <b>Completeness:</b> <%= @genome.completeness_any %>%<br/>
