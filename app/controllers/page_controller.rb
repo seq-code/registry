@@ -15,6 +15,10 @@ class PageController < ApplicationController
   def initiative
     redirect_to 'https://www.isme-microbes.org/seqcode-initiative'
   end
+
+  def connect
+    redirect_to slack_url
+  end
 end
 
 class SeqCodeDown < Redcarpet::Render::HTML

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get  'page/publications', as: :page_publications
   get  'page/seqcode',      as: :page_seqcode
   get  'page/initiative',   as: :page_initiative
+  get  'page/connect',      as: :page_connect
 
   resources(:genomes)
   root(to: 'application#main')
