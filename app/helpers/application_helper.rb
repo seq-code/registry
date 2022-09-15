@@ -141,7 +141,7 @@ module ApplicationHelper
                     :span, '&times;'.html_safe, aria: { hidden: true }
                   )
                 end
-            end + content_tag(:div, class: 'modal-body') { yield } 
+            end + content_tag(:div, class: 'modal-body') { yield }
           end
         end
       end
@@ -166,11 +166,6 @@ module ApplicationHelper
 
   def yield_modals
     (@modals ||= []).inject(:+)
-  end
-
-  def slack_url
-    # Generated June 15 2022 (never expires)
-    'https://join.slack.com/t/seqcode-public/shared_invite/zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
   end
 end
 
@@ -279,4 +274,3 @@ class AdaptableListValue
     { cards: :dd, table: :td }[type]
   end
 end
-

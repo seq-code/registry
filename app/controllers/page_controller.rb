@@ -17,7 +17,13 @@ class PageController < ApplicationController
   end
 
   def connect
-    redirect_to slack_url
+    # Generated June 15 2022 (never expires)
+    redirect_to 'https://join.slack.com/t/seqcode-public/shared_invite/zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
+  end
+
+  def join
+    # Generated September 15 2022 (Google form)
+    redirect_to 'https://forms.gle/ZJQVu3XqZwBp4jb4A'
   end
 end
 
