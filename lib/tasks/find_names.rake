@@ -19,7 +19,7 @@ namespace :names do
       instead of preferred provided list uncovers rhetoricae predominate[ds]?
       detection have genomes? like related associated infected lacks?
       pathosystems? into shares names? across do incorporate? represents?
-      predominantly enrichment found members? includes? chromosomes? can
+      predominantly enrichment found members? includes? chromosomes? can with
     ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
