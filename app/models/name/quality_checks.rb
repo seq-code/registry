@@ -200,7 +200,7 @@ module Name::QualityChecks
           @qc_warnings << {
             type: :missing_genome_completeness,
             message: 'The completeness of the type genome has not been specified',
-            rules: %[26 appendix-i],
+            rules: %w[26 appendix-i],
             link_text: 'Edit genome',
             link_to: [:edit, type_genome, name: id]
           }
@@ -208,7 +208,7 @@ module Name::QualityChecks
           @qc_warnings << {
             type: :low_genome_completeness,
             message: 'The completeness of the type genome should be above 90%',
-            rules: %[appendix-i],
+            rules: %w[appendix-i],
             link_text: 'Edit genome',
             link_to: [:edit, type_genome, name: id]
           }
@@ -218,7 +218,7 @@ module Name::QualityChecks
           @qc_warnings << {
             type: :missing_genome_contamination,
             message: 'The contamination of the type genome has not been specified',
-            rules: %[26 appendix-i],
+            rules: %w[26 appendix-i],
             link_text: 'Edit genome',
             link_to: [:edit, type_genome, name: id]
           }
@@ -226,7 +226,7 @@ module Name::QualityChecks
           @qc_warnings << {
             type: :high_genome_contamination,
             message: 'The contamination of the type genome should be below 5%',
-            rules: %[appendix-i],
+            rules: %w[appendix-i],
             link_text: 'Edit genome',
             link_to: [:edit, type_genome, name: id]
           }
