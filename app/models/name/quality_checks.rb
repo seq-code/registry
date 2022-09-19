@@ -148,7 +148,7 @@ module Name::QualityChecks
       end
 
       unless type_genome.source?
-        if proposed_by? && proposed_by.journal_date.year < 2023
+        if !proposed_by.nil? && proposed_by.journal_date.year < 2023
           # Only a warning for publications before 1st January 2023
           @qc_warnings << {
             type: :missing_genome_source,
