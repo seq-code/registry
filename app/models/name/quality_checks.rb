@@ -102,19 +102,7 @@ module Name::QualityChecks
       }
     end
 
-    if type?
-      if %w[species subspecies].include?(inferred_rank) &&
-           !%w[nuccore assembly].include?(type_material)
-        @qc_warnings << {
-          type: :unrecognized_type_material,
-          message: 'A sequence used as type material must be available ' +
-                   'in the INSDC databases',
-          link_text: 'Edit type',
-          link_to: [:edit_type, self],
-          rules: %w[18a]
-        }
-      end
-    else
+    if !type?
       @qc_warnings << {
         type: :missing_type,
         message: 'The name is missing a type definition',
@@ -124,6 +112,16 @@ module Name::QualityChecks
           %w[subspecies species].include?(inferred_rank) ? %w[18a] :
           %w[genus].include?(inferred_rank) ? %w[21a] : []
         )
+      }
+    elsif %w[species subspecies].include?(inferred_rank) &&
+          !%w[nuccore assembly].include?(type_material)
+      @qc_warnings << {
+        type: :unrecognized_type_material,
+        message: 'A sequence used as type material must be available ' +
+                 'in the INSDC databases',
+        link_text: 'Edit type',
+        link_to: [:edit_type, self],
+        rules: %w[18a]
       }
     end
 
@@ -143,29 +141,118 @@ module Name::QualityChecks
         @qc_warnings << {
           type: :missing_genome_kind,
           message: 'The kind of genome used as type has not been specified',
+          rules: %w[26],
           link_text: 'Edit genome',
           link_to: [:edit, type_genome, name: id]
         }
       end
 
       unless type_genome.source?
+        if proposed_by? && proposed_by.journal_date.year < 2023
+          # Only a warning for publications before 1st January 2023
+          @qc_warnings << {
+            type: :missing_genome_source,
+            message: 'The source of the type genome has not been specified',
+            recommendations: %w[appendix-i],
+            link_text: 'Edit genome',
+            link_to: [:edit, type_genome, name: id]
+          }
+        else
+          @qc_warnings << {
+            type: :missing_genome_source,
+            message: 'The source of the type genome has not been specified',
+            rules: %w[26 appendix-i],
+            link_text: 'Edit genome',
+            link_to: [:edit, type_genome, name: id]
+          }
+        end
+      end
+
+      if !type_genome.seq_depth?
         @qc_warnings << {
-          type: :missing_genome_source,
-          message: 'The source of the type genome has not been specified',
+          type: :missing_genome_sequencing_depth,
+          message: 'The sequencing depth of the type genome has not been specified',
+          rules: %w[26 appendix-i],
+          link_text: 'Edit genome',
+          link_to: [:edit, type_genome, name: id]
+        }
+      elsif type_genome.isolate? && type_genome.seq_depth < 10.0
+        @qc_warnings << {
+          type: :low_genome_sequencing_depth,
+          message: 'The sequencing depth of the type genome should be 10X or greater',
+          rules: %w[appendix-i],
+          link_text: 'Edit genome',
+          link_to: [:edit, type_genome, name: id]
+        }
+      elsif type_genome.mag_or_sag? && type_genome.seq_depth < 10.0
+        @qc_warnings << {
+          type: :low_genome_sequencing_depth,
+          message: 'The sequencing depth of the type genome should be 10X or greater',
+          recommendations: %w[appendix-i],
           link_text: 'Edit genome',
           link_to: [:edit, type_genome, name: id]
         }
       end
 
-      unless type_genome.seq_depth?
+      # Completeness and contamination are only required for MAGs/SAGs
+      if type_genome.mag_or_sag?
+        if !type_genome.completeness_any?
+          @qc_warnings << {
+            type: :missing_genome_completeness,
+            message: 'The completeness of the type genome has not been specified',
+            rules: %[26 appendix-i],
+            link_text: 'Edit genome',
+            link_to: [:edit, type_genome, name: id]
+          }
+        elsif type_genome.completeness_any <= 90.0
+          @qc_warnings << {
+            type: :low_genome_completeness,
+            message: 'The completeness of the type genome should be above 90%',
+            rules: %[appendix-i],
+            link_text: 'Edit genome',
+            link_to: [:edit, type_genome, name: id]
+          }
+        end
+
+        if !type_genome.contamination_any?
+          @qc_warnings << {
+            type: :missing_genome_contamination,
+            message: 'The contamination of the type genome has not been specified',
+            rules: %[26 appendix-i],
+            link_text: 'Edit genome',
+            link_to: [:edit, type_genome, name: id]
+          }
+        elsif type_genome.contamination_any >= 5.0
+          @qc_warnings << {
+            type: :high_genome_contamination,
+            message: 'The contamination of the type genome should be below 5%',
+            rules: %[appendix-i],
+            link_text: 'Edit genome',
+            link_to: [:edit, type_genome, name: id]
+          }
+        end
+      end # type_genome.mag_or_sag?
+
+      if type_genome.most_complete_16s_any? && type_genome.most_complete_16s_any <= 75.0
         @qc_warnings << {
-          type: :missing_genome_sequencing_depth,
-          message: 'The sequencing depth of the type genome has not been specified',
+          type: :low_genome_16s_completeness,
+          message: '16S rRNA genes should be more than 75% complete',
+          recommendations: %w[appendix-i],
           link_text: 'Edit genome',
           link_to: [:edit, type_genome, name: id]
         }
       end
-    end
+
+      if type_genome.number_of_trnas_any? && type_genome.number_of_trnas_any <= 22
+        @qc_warnings << {
+          type: :low_genome_trnas_completeness,
+          message: 'The type genome should contain more than 80% of tRNAs',
+          recommendations: %w[appendix-i],
+          link_text: 'Edit genome',
+          link_to: [:edit, type_genome, name: id]
+        }
+      end
+    end # type_is_genome?
 
     unless consistent_type_rank?
       @qc_warnings << {

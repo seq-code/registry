@@ -8,11 +8,19 @@ module PageHelper
   end
 
   def link_to_rule(number)
-    link_to_seqcode_section(number, "rule-#{number.gsub(/\..*/, '')}")
+    link_to_rule_or_recommendation('rule', number)
   end
 
   def link_to_recommendation(number)
-    link_to_seqcode_section(number, "recommendation-#{number.gsub(/\..*/, '')}")
+    link_to_rule_or_recommendation('recommendation', number)
+  end
+
+  def link_to_rule_or_recommendation(section, number)
+    if number =~ /^appendix-(\S+)$/
+      link_to_seqcode_section("Appendix #{$1.upcase}", "appendix-#{$1}")
+    else
+      link_to_seqcode_section(number, "#{section}-#{number.gsub(/\..*/, '')}")
+    end
   end
 
   def link_to_seqcode_section(text, anchor)

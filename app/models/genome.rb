@@ -60,6 +60,16 @@ class Genome < ApplicationRecord
     kind_hash[:name]
   end
 
+  %w[mag sag enrichment isolate].each do |i|
+    define_method(:"#{i}?") do
+      kind? && kind.to_s == i
+    end
+  end
+
+  def mag_or_sag?
+    mag? || sag? || enrichment?
+  end
+
   def source?
     source_accession? || source_database?
   end
