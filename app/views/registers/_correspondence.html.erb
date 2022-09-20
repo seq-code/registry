@@ -1,0 +1,25 @@
+<% if @register.can_edit?(current_user) %>
+  <dl name="correspondence" class="main-section name-details">
+    <h2>Correspondence with curators</h2>
+    <% @register.correspondences.each do |correspondence| %>
+      <dt>
+        <%= link_to(correspondence.user.username, correspondence.user) %>,
+        <%= time_ago_in_words(correspondence.created_at) %> ago:
+      </dt>
+      <dd><%= correspondence.message %></dd>
+    <% end %>
+    <dt>New message</dt>
+    <dd class="pt-2">
+      <%= simple_form_for(
+            RegisterCorrespondence.new,
+            url: new_correspondence_register_url(accession: @register.accession),
+            method: :post
+          ) do |f| %>
+        <%= f.input(:message, as: :rich_text_area, label: false) %>
+        <%= f.button(:submit, 'Send message') %>
+        &raquo; The messages will be in the permanent record,
+        visible only to submitter and curators
+      <% end %>
+    </dd>
+  </dl>
+<% end %>

@@ -4,7 +4,7 @@ class RegistersController < ApplicationController
     only: %i[
       show table list edit update destroy
       submit return return_commit approve notification notify
-      validate publish
+      validate publish new_correspondence
     ]
   )
   before_action(
@@ -21,7 +21,7 @@ class RegistersController < ApplicationController
   )
   before_action(
     :authenticate_can_edit!,
-    only: %i[edit update destroy submit notification notify]
+    only: %i[edit update destroy submit notification notify new_correspondence]
   )
 
   # GET /registers or /registers.json
@@ -267,6 +267,23 @@ class RegistersController < ApplicationController
         )
       end
     end
+  end
+
+  # POST /registers/r:abc/new_correspondence
+  def new_correspondence
+    @register_correspondence = RegisterCorrespondence.new(
+      params.require(:register_correspondence).permit(:message)
+    )
+    unless @register_correspondence.message.empty?
+      @register_correspondence.user = current_user
+      @register_correspondence.register = @register
+      if @register_correspondence.save
+        flash[:notice] = 'Correspondence recorded'
+      else
+        flash[:alert] = 'An unexpected error occurred with the correspondence'
+      end
+    end
+    redirect_to @register
   end
 
   private

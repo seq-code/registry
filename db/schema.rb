@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_27_161834) do
+ActiveRecord::Schema.define(version: 2022_09_20_120311) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -211,6 +211,15 @@ ActiveRecord::Schema.define(version: 2022_06_27_161834) do
     t.index ["journal"], name: "index_publications_on_journal"
   end
 
+  create_table "register_correspondences", force: :cascade do |t|
+    t.integer "register_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["register_id"], name: "index_register_correspondences_on_register_id"
+    t.index ["user_id"], name: "index_register_correspondences_on_user_id"
+  end
+
   create_table "registers", force: :cascade do |t|
     t.string "accession"
     t.integer "user_id", null: false
@@ -297,6 +306,8 @@ ActiveRecord::Schema.define(version: 2022_06_27_161834) do
   add_foreign_key "names", "genomes"
   add_foreign_key "names", "registers"
   add_foreign_key "names", "tutorials"
+  add_foreign_key "register_correspondences", "registers"
+  add_foreign_key "register_correspondences", "users"
   add_foreign_key "registers", "publications"
   add_foreign_key "registers", "users"
   add_foreign_key "tutorials", "users"
