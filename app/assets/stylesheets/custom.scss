@@ -47,6 +47,15 @@ trix-editor {
   }
 }
 
+.trix-content {
+  .action-text-attachment {
+    .attachment--file {
+      padding: 0.4em 1em !important;
+      background: white;
+    }
+  }
+}
+
 .hover-help {
   text-decoration: underline;
   &.fa, &.fas, &.far, &.fal, &.fad, &.fab {
