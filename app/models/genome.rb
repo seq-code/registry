@@ -128,9 +128,22 @@ class Genome < ApplicationRecord
     gc_content completeness contamination most_complete_16s number_of_16s
     most_complete_23s number_of_23s number_of_trnas quality
   ].each do |i|
+    # Redefine to consider valid estimates of 0 or 0.0
+    define_method(:"#{i}?") do
+      send(i).present?
+    end
+
+    # Redefine to consider valid estimates of 0 or 0.0
+    define_method(:"#{i}_auto?") do
+      send(:"#{i}_auto").present?
+    end
+
+    # Find whichever is defined
     define_method(:"#{i}_any") do
       send(:"#{i}_auto") || send(i)
     end
+
+    # Is any defined?
     define_method(:"#{i}_any?") do
       send(:"#{i}_auto?") || send(:"#{i}?")
     end
