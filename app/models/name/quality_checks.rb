@@ -243,7 +243,7 @@ module Name::QualityChecks
         }
       end
 
-      if type_genome.number_of_trnas_any? && type_genome.number_of_trnas_any <= 22
+      if type_genome.number_of_trnas_any? && type_genome.number_of_trnas_any <= 16
         @qc_warnings << {
           type: :low_genome_trnas_completeness,
           message: 'The type genome should contain more than 80% of tRNAs',
