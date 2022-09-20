@@ -1,4 +1,7 @@
-<h1>Authors</h1>
+<h1>
+  Authors
+  <small class='text-muted'>(<%= @authors.count %>)</small>
+</h1>
 Sort by
 <% %w[date publications names alphabetically].map do |sort| %>
   <span class='text-muted'>·</span>
