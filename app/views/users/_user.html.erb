@@ -1,4 +1,7 @@
 <%= adaptable_entry(list, user.username, user) do |entry| %>
+  <%= adaptable_value(entry, 'Name') do %>
+    <%= user.full_name %>
+  <% end %>
   <%= adaptable_value(entry, 'Email') do %>
     <%= user.email %>
   <% end %>
