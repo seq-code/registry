@@ -78,7 +78,7 @@
           <% end %>
           <% if @genome.number_of_trnas_any.present? %>
             <li>
-              <%= pluralize(@genome.number_of_trnas_any, 'tRNA') %>
+              tRNAs for <%= pluralize(@genome.number_of_trnas_any, 'amino acid') %>
             </li>
           <% end %>
         </ul>
