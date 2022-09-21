@@ -449,20 +449,20 @@ module Name::QualityChecks
     unless consistent_genus_gender?
       if feminine? || masculine? || neuter?
         @qc_warnings << {
-          type: :missing_grammatical_gender,
-          message: 'Authors must give the gender of any proposed genus name',
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          rules: %w[49.1 49.3]
-        }
-      else
-        @qc_warnings << {
           type: :inconsistent_grammatical_gender,
           message: 'A genus name formed by two or more Latin words should take ' +
                    'gender of the last component of the word',
           link_text: 'Edit etymology',
           link_to: [:edit_etymology, self],
           rules: %w[49.2]
+        }
+      else
+        @qc_warnings << {
+          type: :missing_grammatical_gender,
+          message: 'Authors must give the gender of any proposed genus name',
+          link_text: 'Edit etymology',
+          link_to: [:edit_etymology, self],
+          rules: %w[49.1 49.3]
         }
       end
     end
@@ -578,6 +578,7 @@ module Name::QualityChecks
 
     # Rule 49.1 and 49.3
     return true unless self.class.etymology_particles.map { |i| latin?(i) }.compact.all?
+    return true unless %i[feminine? masculine? neuter?].any? { |i| self.send(i, last_component) }
 
     # Rule 49.2
     %i[feminine? masculine? neuter?].all? do |i|
