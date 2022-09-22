@@ -370,7 +370,8 @@ class NamesController < ApplicationController
   # POST /names/1/unclaim
   def unclaim
     par = { status: 0 }
-    if !@name.user?(current_user) || @name.status != 5
+    curator_or_owner = current_user.try(:curator?) || @name.user?(current_user)
+    if !curator_or_owner || @name.status != 5
       flash[:alert]  = 'You cannot unclaim this name'
     elsif @name.update(par)
       flash[:notice] = 'Name successfully returned to the public pool'
