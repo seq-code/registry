@@ -17,7 +17,7 @@ class NamesController < ApplicationController
       autofill_etymology link_parent link_parent_commit new_correspondence
     ]
   )
-  before_action(:authenticate_created!, only: %i[unclaim])
+  before_action(:authenticate_owner_or_curator!, only: %i[unclaim])
   before_action(:authenticate_contributor!, only: %i[new create batch claim])
   before_action(
     :authenticate_curator!,
@@ -414,8 +414,8 @@ class NamesController < ApplicationController
       @tutorial = Tutorial.find(params[:tutorial])
     end
 
-    def authenticate_created!
-      unless @name.user?(current_user)
+    def authenticate_owner_or_creator!
+      unless current_curator? || @name.user?(current_user)
         flash[:alert] = 'User is not the owner of the name'
         redirect_to(root_path)
       end
