@@ -105,6 +105,7 @@ nwfsc.edu
 wvwc.edu
 utica.edu
 ccnn.edu
+csn.edu
 ung.edu
 principia.edu
 lynn.edu
@@ -325,6 +326,7 @@ mines.edu
 colostate.edu
 coloradotech.edu
 ctuonline.edu
+cuanschutz.edu
 colum.edu
 colsouth.edu
 cuc.edu
@@ -398,6 +400,7 @@ erau.edu
 emerson.edu
 emmanuel.edu
 emory.edu
+ehc.edu
 emporia.edu
 ecc.edu
 lecom.edu
@@ -1070,6 +1073,7 @@ mrs.umn.edu
 umn.edu
 olemiss.edu
 missouri.edu
+umsystem.edu
 umkc.edu
 umr.edu
 umsl.edu
@@ -1514,10 +1518,12 @@ rmit.edu.au
 scu.edu.au
 swin.edu.au
 une.edu.au
+unimelb.edu
 unimelb.edu.au
 unisa.edu.au
 unsw.edu.au
 uow.edu.au
+uowmail.edu.au
 uq.edu.au
 usc.edu.au
 usq.edu.au
@@ -1763,6 +1769,7 @@ ugent.be
 rug.ac.be
 thierryschool.org
 ua.ac.be
+uantwerpen.be
 uams.be
 ubi.edu
 ucl.ac.be
@@ -1776,6 +1783,7 @@ vesalius.edu
 vlekho.be
 vlerick.be
 vub.ac.be
+vub.be
 wenk.be
 odisee.be
 aucmed.edu
@@ -2879,6 +2887,7 @@ ubouake.ci
 univ-cocody.ci
 tabari.ac.ir
 zut.edu.pl
+vistula.edu.pl
 unidu.hr
 unios.hr
 unipu.hr
@@ -3088,6 +3097,7 @@ mtc.edu.eg
 mti.edu.eg
 must.edu.eg
 nileu.edu.eg
+nu.edu.eg
 o6u.edu.eg
 pua.edu.eg
 sadatacademy.edu.eg
@@ -3385,6 +3395,7 @@ polytechnique.edu
 schillerparis.com
 schillerstrasbourg.com
 sciences-po.fr
+sciencespo.fr
 sigu7.jussieu.fr
 sorbon.fr
 supaero.fr
@@ -3435,6 +3446,7 @@ univ-montp1.fr
 univ-montp2.fr
 univ-montp3.fr
 univ-mulhouse.fr
+uha.fr
 univ-nancy2.fr
 univ-nantes.fr
 univ-orleans.fr
@@ -3465,6 +3477,7 @@ u-paris2.fr
 u-picardie.fr
 ups-tlse.fr
 u-psud.fr
+univ-amu.fr
 up.univ-mrs.fr
 ushs.u-strasbg.fr
 utbm.fr
@@ -3802,25 +3815,25 @@ uni-wuerzburg.de
 uni-wuppertal.de
 uni-wuppertal.de
 whu-koblenz.de
-accrapolytechnic.edu.gh
+atu.edu.gh
 acighana.org
 anuc.edu.gh
 ashesi.edu.gh
 central.edu.gh
-cpoly.edu.gh
+cctu.edu.gh
 ghanacu.org
 gimpa.edu.gh
 gtuc.edu.gh
-hopoly.edu.gh
+htu.edu.gh
 iug.edu.gh
 knust.edu.gh
-koforiduapoly.edu.gh
-kpoly.edu.gh
+ktu.edu.gh
+kstu.edu.gh
 pacuc.edu.gh
-prempeh-college.com
 presbyuniversity.edu.gh
 regentghana.net
-tpoly.edu.gh
+stu.edu.gh
+ttu.edu.gh
 trinity.edu.gh
 ucc.edu.gh
 uds.edu.gh
@@ -4037,6 +4050,7 @@ nitj.ac.in
 brauagra.com
 bsauniv.ac.in
 bubhopal.nic.in
+vitbhopal.ac.in
 bundelkhanduniversity.org
 burdwanuniversity.ac.in
 caluniv.ac.in
@@ -4123,6 +4137,7 @@ iipsindia.org
 iisc.ernet.in
 iitb.ac.in
 iitd.ernet.in
+iitd.ac.in
 iitgn.ac.in
 iitg.ernet.in
 iitg.ac.in
@@ -4878,6 +4893,7 @@ nyuniversity.net
 pio.urbe.it
 poliba.it
 polimi.it
+mail.polimi.it
 polito.it
 pul.it
 pusc.it
@@ -6003,10 +6019,11 @@ vu.lt
 iuil.lu
 uni.lu
 ipm.edu.mo
-umac.mo
+um.edu.mo
 usj.edu.mo
 fon.edu.mk
 seeu.edu.mk
+manu.edu.mk
 ugd.edu.mk
 uist.edu.mk
 ukim.edu.mk
@@ -6402,6 +6419,7 @@ um5s.ac.ma
 univ-ibntofail.ac.ma
 univ-oujda.ac.ma
 usmba.ac.ma
+ump.ac.ma
 isctem.ac.mz
 ispu.ac.mz
 isri.ac.mz
@@ -6462,6 +6480,7 @@ student.tudelft.nl
 tue.nl
 unesco-ihe.org
 unimaas.nl
+student.maastrichtuniversity.nl
 utwente.nl
 uu.nl
 uva.nl
@@ -7090,6 +7109,7 @@ puls.edu.pl
 put.poznan.pl
 pw.edu.pl
 pwr.wroc.pl
+pwr.edu.pl
 pwst.krakow.pl
 pwsz.eu
 pwsz.pila.pl
@@ -7391,6 +7411,7 @@ iubnt.yar.ru
 iufs.edu
 ivanovo.ac.ru
 jum.ru
+mpgu.su
 kai.ru
 kalmsu.ru
 kamgu.ru
@@ -7910,6 +7931,7 @@ upo.es
 upsa.es
 upv.es
 urjc.es
+gsyc.es
 url.es
 urv.es
 usal.es
@@ -8325,7 +8347,8 @@ atilim.edu.tr
 bahcesehir.edu.tr
 balikesir.edu.tr
 baskent.edu.tr
-bayar.edu.tr
+mcbu.edu.tr
+cbu.edu.tr
 beykent.edu.tr
 bilecik.edu.tr
 bilgi.edu.tr
@@ -8547,6 +8570,7 @@ aston.ac.uk
 aul.edu
 bangor.ac.uk
 bath.ac.uk
+bathspa.ac.uk
 bbk.ac.uk
 bcom.ac.uk
 bcu.ac.uk
@@ -8677,6 +8701,7 @@ schillerlondon.ac.uk
 sclondon.ac
 sghms.ac.uk
 shef.ac.uk
+sheffield.ac.uk
 shu.ac.uk
 smu.ac.uk
 soas.ac.uk
@@ -8729,6 +8754,7 @@ ucu.edu.uy
 ude.edu.uy
 um.edu.uy
 universidad.edu.uy
+fing.edu.uy
 agrar.uz
 ferpi.dem.ru
 ibs.uz
@@ -9964,8 +9990,14 @@ fatecie.edu.br
 hamk.fi
 ktun.edu.tr
 uet.vnu.edu.vn
+uni-corvinus.hu
+uni-obuda.hu
+uni-bge.hu
+ufn.edu.br
+iitbbs.ac.in
 mpi-bremen.de
 mpg.de
 uni-due.de
 ukaachen.de
 dri.edu
+inta.uchile.cl
