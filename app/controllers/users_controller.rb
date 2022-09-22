@@ -1,9 +1,13 @@
 class UsersController < ApplicationController
   before_action(:authenticate_user!)
   before_action(
+    :authenticate_admin_or_curator!,
+    only: %i[show]
+  )
+  before_action(
     :authenticate_admin!,
     only: %i[
-      index show contributor_grant contributor_deny curator_grant curator_deny
+      index contributor_grant contributor_deny curator_grant curator_deny
     ]
   )
   before_action(

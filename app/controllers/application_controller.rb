@@ -102,6 +102,10 @@ class ApplicationController < ActionController::Base
       authenticate_role! :editor?
     end
 
+    def authenticate_admin_or_curator!
+      authenticate_admin! || authenticate_curator!
+    end
+
   private
 
     def search_by(k, q)
