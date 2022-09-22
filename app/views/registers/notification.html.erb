@@ -73,6 +73,31 @@
       ) %>
 
   <br/>
+  <h2>Authorship</h2>
+  <%= f.input(
+        :submitter_is_author, as: :boolean,
+        label: 'I, the submitter, am an author of the effective publication',
+        hint: 'Please indicate if you are listed as (co)author in the ' \
+              'publication above'
+      ) %>
+
+  <%= f.input(
+        :authors_approval, as: :boolean,
+        label: 'I have approval of all the coauthors of the effective publication',
+        hint: 'Please indicate if you have the consent of the coauthors ' \
+              'listed in the publication above to submit this entry'
+      ) %>
+
+  <%= f.input(
+        :submitter_authorship_explanation, as: :rich_text_area,
+        label: 'If either of the above are not selected, please explain your reasons',
+        hint: 'Please make sure to indicate if the authors were contacted ' \
+              'or not before submitting this entry, as well as the reason(s) ' \
+              'the above authorship statements are not true but you want to ' \
+              'continue the present submission'
+      ) %>
+
+  <br/>
   <%= f.button(:submit, 'Submit list for validation') %>
   <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
   <br/><br/>

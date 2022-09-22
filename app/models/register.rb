@@ -13,6 +13,7 @@ class Register < ApplicationRecord
   alias :correspondences :register_correspondences
   has_rich_text(:notes)
   has_rich_text(:abstract)
+  has_rich_text(:submitter_authorship_explanation)
 
   before_create(:assign_accession)
 

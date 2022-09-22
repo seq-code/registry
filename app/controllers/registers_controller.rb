@@ -174,9 +174,7 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abc/notify
   def notify
-    par = params.require(:register).permit(
-      :title, :abstract, :publication_pdf, :supplementary_pdf
-    ).merge(notified: true, notified_at: Time.now)
+    par = register_notify_params.merge(notified: true, notified_at: Time.now)
     @register.title = par[:title]
     @register.abstract = par[:abstract]
 
@@ -297,6 +295,15 @@ class RegistersController < ApplicationController
       params.require(:register)
             .permit(
               :publication_id, :publication_pdf, :supplementary_pdf, :record_pdf
+            )
+    end
+
+    def register_notify_params
+      params.require(:register)
+            .permit(
+              :title, :abstract, :publication_pdf, :supplementary_pdf,
+              :submitter_is_author, :authors_approval,
+              :submitter_authorship_explanation
             )
     end
 
