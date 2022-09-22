@@ -26,7 +26,7 @@
 
 <%= adaptable_list(set: @registers) do |list| %>
   <% @registers.each do |register| %>
-    <%= render(partial: register, locals: { list: list }) %>
+    <%= render(partial: register, locals: { list: list, status: @status }) %>
   <% end %>
 <% end %>
 

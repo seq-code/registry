@@ -1,20 +1,34 @@
+<% status ||= 'validated' %>
+
 <%= adaptable_entry(list, register.acc_url, register) do |entry| %>
+  <% if status == 'validated' %>
+    <%= adaptable_value(entry, 'Title') do %>
+      <%= register.title %>
+    <% end %>
+  <% end %>
+
   <%= adaptable_value(entry, 'Names') do %>
     <%= register.names.count %>
   <% end %>
+
   <%= adaptable_value(entry, 'Status') do %>
     <%= register.status_name.capitalize %>
   <% end %>
+
   <%= adaptable_value(entry, 'Last update') do %>
     <%= time_ago_in_words(register.updated_at).capitalize %> ago
   <% end %>
+
   <%= adaptable_value(entry, 'User') do %>
     <%= link_to(register.user.username, register.user) %>
   <% end %>
-  <%= adaptable_value(entry, 'Need review') do %>
-    <div class="text-<%= register.names_to_review.count.zero? ? 'success' : 'danger' %>">
-      <%= pluralize(register.names_to_review.count, 'name') %>
-    </div>
+
+  <% if status == 'validated' %>
+    <%= adaptable_value(entry, 'Need review') do %>
+      <div class="text-<%= register.names_to_review.count.zero? ? 'success' : 'danger' %>">
+        <%= pluralize(register.names_to_review.count, 'name') %>
+      </div>
+    <% end %>
   <% end %>
 <% end %>
 

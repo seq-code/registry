@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_21_095931) do
+ActiveRecord::Schema.define(version: 2022_09_22_152043) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -220,8 +220,31 @@ ActiveRecord::Schema.define(version: 2022_09_21_095931) do
     t.index ["user_id"], name: "index_register_correspondences_on_user_id"
   end
 
-# Could not dump table "registers" because of following StandardError
-#   Unknown type 'bool' for column 'submitter_is_author'
+  create_table "registers", force: :cascade do |t|
+    t.string "accession"
+    t.integer "user_id", null: false
+    t.integer "validated_by"
+    t.boolean "submitted", default: false
+    t.boolean "validated", default: false
+    t.integer "publication_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "title"
+    t.boolean "notified", default: false
+    t.datetime "notified_at"
+    t.datetime "validated_at"
+    t.boolean "published"
+    t.datetime "published_at"
+    t.string "published_doi"
+    t.integer "published_by"
+    t.boolean "submitter_is_author"
+    t.boolean "authors_approval"
+    t.index ["accession"], name: "index_registers_on_accession", unique: true
+    t.index ["publication_id"], name: "index_registers_on_publication_id"
+    t.index ["submitted"], name: "index_registers_on_submitted"
+    t.index ["user_id"], name: "index_registers_on_user_id"
+    t.index ["validated"], name: "index_registers_on_validated"
+  end
 
   create_table "subjects", force: :cascade do |t|
     t.string "name"
