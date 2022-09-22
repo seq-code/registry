@@ -1,10 +1,8 @@
 <% status ||= 'validated' %>
 
 <%= adaptable_entry(list, register.acc_url, register) do |entry| %>
-  <% if status == 'validated' %>
-    <%= adaptable_value(entry, 'Title') do %>
-      <%= register.title %>
-    <% end %>
+  <%= adaptable_value(entry, 'Title') do %>
+    <%= register.title %>
   <% end %>
 
   <%= adaptable_value(entry, 'Names') do %>
