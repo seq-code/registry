@@ -414,7 +414,7 @@ class NamesController < ApplicationController
       @tutorial = Tutorial.find(params[:tutorial])
     end
 
-    def authenticate_owner_or_creator!
+    def authenticate_owner_or_curator!
       unless current_curator? || @name.user?(current_user)
         flash[:alert] = 'User is not the owner of the name'
         redirect_to(root_path)
