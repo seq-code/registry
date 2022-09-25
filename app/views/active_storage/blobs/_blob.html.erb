@@ -1,17 +1,14 @@
 <div>
 <%= link_to(rails_blob_path(blob, disposition: 'attachment'), class: 'btn') do %>
+  <% pdf = blob.filename.extension == 'pdf' %>
   <figure
-    class="attachment attachment--<%= blob.representable? ? 'preview' : 'file' %>
+    class="attachment attachment--<%= blob.representable? && !pdf ? 'preview' : 'file' %>
            attachment--<%= blob.filename.extension %>">
-    <% if blob.representable? %>
+    <% if blob.representable? && !pdf %>
       <%=
-        image_tag(
-          blob.representation(
-            resize_to_limit:
-              local_assigns[:in_gallery] || blob.filename.extension == 'pdf' ?
-                [ 400, 300 ] : [ 512, 384 ]
-          )
-        )
+        image_tag(blob.representation(
+          resize_to_limit: local_assigns[:in_gallery] ? [400, 300] : [512, 384]
+        ))
       %>
     <% end %>
 
@@ -19,6 +16,7 @@
       <% if caption = blob.try(:caption) %>
         <%= caption %>
       <% else %>
+        <%= fa_icon('file-pdf') if pdf %>
         <span class="attachment__name"><%= blob.filename %></span>
         <span class="attachment__size"><%= number_to_human_size blob.byte_size %></span>
       <% end %>
