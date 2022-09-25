@@ -428,6 +428,10 @@ module Name::QualityChecks
       set.each(&blk)
     end
 
+    def select(&blk)
+      set.select(&blk)
+    end
+
     def empty?
       set.empty?
     end
