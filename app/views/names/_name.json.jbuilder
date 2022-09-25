@@ -33,13 +33,8 @@ json.parent(id: name.parent.id, name: name.parent.name) if name.parent
 json.children(name.children) { |child| json.(child, :id, :name) }
 
 # QC Warnings
-json.qc_warnings(
-  name.qc_warnings.map do |i|
-    i.select { |k, _| !%i[link_to link_text].include? k }
-  end
-)
+json.qc_warnings(name.qc_warnings.map(&:to_hash))
 
 # Local metadata
 json.(name, :created_at, :updated_at)
 json.url name_url(name, format: :json)
-

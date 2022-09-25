@@ -1,531 +1,614 @@
 module Name::QualityChecks
   ##
+  # Model QC Warnings as objects
+  class QcWarning
+
+    # Attributes supported for warnings
+    @@attributes = %i[
+      message link_text link_to rules recommendations can_approve
+      link_public rule_notes
+    ]
+
+    # Preformed links to common targets
+    @@link_to_edit_spelling = {
+      link_text: 'Edit spelling',
+      link_to: lambda { |w| [:edit, w.name] }
+    }
+    @@link_to_edit_type = {
+      link_text: 'Edit type',
+      link_to: lambda { |w| [:edit_type, w.name] }
+    }
+    @@link_to_edit_genome = {
+      link_text: 'Edit genome',
+      link_to: lambda { |w| [:edit, w.name.type_genome, name: w.name.id] }
+    }
+    @@link_to_edit_parent = {
+      link_text: 'Edit parent',
+      link_to: lambda { |w| [:link_parent, w.name] }
+    }
+    @@link_to_edit_etymology = {
+      link_text: 'Edit etymology',
+      link_to: lambda { |w| [:edit_etymology, w.name] }
+    }
+
+    # Default values for all evaluated warnings
+    @@defaults = {
+      # Not explicitly stated in the SeqCode
+      missing_description: {
+        message: 'The name has no registered description',
+        link_text: 'Edit description',
+        link_to: lambda { |w| [:edit, w.name] }
+      },
+
+      # Section 1. General
+      # Rules 1-6 deal with the structure of the SeqCode and the SeqCode
+      # Committee, and do not regulate names
+
+      # Section 2. Ranks of Taxa
+      missing_rank: {
+        message: 'The taxon has not been assigned a rank',
+        link_text: 'Define rank',
+        link_to: lambda { |w| [:edit_rank, w.name] },
+        recommendations: %w[7],
+        rules: %w[26.4]
+      },
+      missing_parent: {
+        message: 'The taxon has not been assigned to a higher classification',
+        link_text: 'Link parent',
+        link_to: lambda { |w| [:link_parent, w.name] },
+        recommendations: %w[7]
+      },
+      inconsistent_parent_rank: {
+        message: lambda { |w|
+          "The parent rank (#{w.name.parent.rank}) is inconsistent " +
+            "with the rank of this name (#{w.name.inferred_rank})"
+        },
+        rules: %w[7a 7b]
+      }.merge(@@link_to_edit_parent),
+
+      # Section 3. Naming of Taxa
+      inconsistent_language: {
+        message: 'A name must be treated as Latin (L. or N.L.)',
+        rules: %w[8]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_format: {
+        message: 'Names should only include Latin characters. ' \
+                 'The first word must be capitalized, and other ' \
+                 'epithets (if any) should be given in lower case',
+        rules: lambda { |w|
+          %w[8 45] + (
+            case w.name.inferred_rank
+            when 'genus'; %w[10]
+            when 'species'; %w[11]
+            when 'subspecies'; %w[13a 13b]
+            else %w[14]
+            end
+          )
+        }
+      }.merge(@@link_to_edit_spelling),
+      binary_name_above_species: {
+        message: 'Names above the rank of species must be single words',
+        rules: %w[8 10]
+      }.merge(@@link_to_edit_spelling),
+      inconsistent_species_name: {
+        message: 'The first word of species names must correspond to the ' \
+                 'parent genus',
+        rules: %w[8 11]
+      }.merge(@@link_to_edit_parent),
+      unary_species_name: {
+        message: 'Species must be binary names',
+        rules: %w[8 11]
+      }.merge(@@link_to_edit_spelling),
+      # - Rule 9a automatically enforced by the Registry
+      identical_base_name: {
+        message: 'Name already exists with different qualifiers',
+        rules: %w[9b],
+        recommendations: %w[9.2],
+        link_text: lambda { |w| w.name.identical_base_name.abbr_name },
+        link_to: lambda { |w| [:edit, w.identical_base_name] },
+        link_public: true
+      },
+      identical_external_name: {
+        message: lambda { |w|
+          homonyms = w.name.external_homonyms
+          "Name is already in use: #{homonyms.to_sentence}".html_safe
+        },
+        rules: %w[9b],
+        recommendations: %w[9.2]
+      }.merge(@@link_to_edit_spelling),
+      long_name: {
+        message: 'Consider reducing the length of the name',
+        recommendations: %w[9.1]
+      }.merge(@@link_to_edit_spelling),
+      difficult_to_pronounce: {
+        message: 'Consider revising the name to make it easier to pronounce',
+        recommendations: %w[9.1]
+      }.merge(@@link_to_edit_spelling),
+      # - Recommendation 9.2 [TODO]:
+      #   Names should differ by at least three characters from existing names
+      #   of genera or species within the same genus.
+      # - Recommendation 9.3 [Checklist]:
+      #   Languages other than Latin should be avoided when Latin equivalents
+      #   exist or can be constructed by combining Latin word elements.
+      #   Exceptions include names derived from local items such as foods,
+      #   drinks, geographic localities, and other names for which no Latin
+      #   words exist.
+      # - Recommendation 9.4 [Checklist]:
+      #   Authors should not name organisms after themselves. If names are
+      #   formed from personal names, they should contain only the name of one
+      #   person. They may contain the untruncated family and/or first names.
+      # - Recommendation 9.5 [Checklist]:
+      #   All personal genus names should be feminine regardless of the gender
+      #   identity of the person they commemorate.
+      # - Recommendation 9.6 [Checklist]:
+      #   Names should not be deliberately contentious or abusive of any person,
+      #   race, religion, political belief, or ideology.
+      # - Recommendation 9.7 [Checklist]:
+      #   Names that include mnemonic cues are preferred because they promote
+      #   learning and memory.
+      reserved_suffix: {
+        message: 'Avoid reserved suffixes for genus names',
+        recommendations: %w[10.1]
+      }.merge(@@link_to_edit_spelling),
+      inconsistent_genus_grammatical_number_or_gender: {
+        message: 'A genus must be a noun or an adjective used as a noun, ' \
+                 'given in the singular number',
+        rules: %w[10]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_grammar_for_species_name: {
+        message: "A species name must be an adjective or a noun",
+        rules: %w[12]
+      }.merge(@@link_to_edit_etymology),
+      # - Rule 12 [Checklist, also applies to subspecies by Rule 13b]:
+      #   A species epithet must be related to the genus name in one of three ways.
+      #   1. As an adjective. Example: aureus in Staphylococcus aureus.
+      #   2. As a substantive (noun) in apposition in the nominative case.
+      #      Example: Desulfovibrio gigas or other names cited in Trüper and
+      #      De’Clari (1997).
+      #   3. As a noun in the genitive case. Example: coli in Escherichia coli.
+      inconsistent_grammar_for_subspecies_name: {
+        message: "A subspecies name must be an adjective or a noun",
+        rules: %w[12 13b]
+      }.merge(@@link_to_edit_etymology),
+      # - Recommendation 12.1 [Checklist]
+      #   When a species epithet is chosen to indicate a property or source of
+      #   the species, epithets should not express a character common to all,
+      #   or nearly all, the species of a genus.
+      inconsistent_species_grammatical_number_or_gender: {
+        message: 'A specific epithet formed by an adjective ' \
+                 'should agree in number and gender with the genus name',
+        recommendations: %w[12.2]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_subspecies_grammatical_number_or_gender: {
+        message: 'A subspecific epithet formed by an adjective ' \
+                 'should agree in number and gender with the genus name ' \
+                 '(see Rule 13b)',
+        recommendations: %w[12.2]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_subspecies_name: {
+        message: 'The first two epithets of subspecies names must correspond ' \
+                 'to the parent species',
+        rules: %w[13a]
+      }.merge(@@link_to_edit_parent),
+      malformed_subspecies_name: {
+        message: 'Subspecies names should include the species name, ' \
+                 'the abbreviation "subsp.", and the subspecies epithet',
+        rules: %w[13a]
+      }.merge(@@link_to_edit_spelling),
+      inconsistent_name_for_subspecies_with_type: {
+        message: 'A subspecies including the type of the species must have ' \
+                 'the same epithet',
+        rules: %w[13c]
+      }.merge(@@link_to_edit_spelling),
+      #
+      #-----------> SeqCode review up to here (25.09.22, LRR)
+      #             https://seqco.de/seqcode#rule-14
+      #
+      inconsistent_family_grammatical_number_or_gender: {
+        message: 'A name in the rank of family must be feminine and plural',
+        recommendations: %w[14]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_order_grammatical_number_or_gender: {
+        message: 'A name in the rank of order must be feminine and plural',
+        recommendations: %w[14]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_class_grammatical_number_or_gender: {
+        message: 'A name in the rank of class must be neuter and plural',
+        recommendations: %w[14]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_phylum_grammatical_number_or_gender: {
+        message: 'A name in the rank of phylum must be neuter and plural',
+        recommendations: %w[14]
+      }.merge(@@link_to_edit_etymology),
+      incorrect_suffix: {
+        message: lambda { |w|
+          "The ending of the name is incompatible with the rank of #{w.name.rank}"
+        },
+        rules: %w[15]
+      }.merge(@@link_to_edit_spelling),
+      inconsistent_with_type_genus: {
+        message: lambda { |w|
+          "The etymology should be formed by the stem of the type " +
+            "genus and the suffix -#{w.name.rank_suffix}"
+        },
+        link_text: 'Autofill etymology',
+        link_to: lambda { |w| [:autofill_etymology, w.name, method: :post] },
+        rules: %w[15]
+      },
+      inconsistent_with_type_genus: {
+        message: lambda { |w|
+          "The name should be formed by adding the suffix " +
+            "-#{w.name.rank_suffix} to the stem of the type genus"
+        },
+        rules: %w[15]
+      }.merge(@@link_to_edit_spelling),
+
+      # Section 4. Nomenclatural Types and Their Designation
+      inconsistent_type_rank: {
+        message: lambda { |w|
+          "The nomenclatural type of a #{w.name.inferred_rank} must " +
+            "be a designated #{w.name.expected_type_rank}"
+        },
+        rules: lambda { |w|
+          %w[16] + (w.name.inferred_rank == 'genus' ? %w[21a] : [])
+        }
+      }.merge(@@link_to_edit_type),
+      missing_type: {
+        message: 'The name is missing a type definition',
+        rules: lambda { |w|
+          %w[16 17 26.3] + (
+            %w[subspecies species].include?(w.name.inferred_rank) ? %w[18a] :
+              %w[genus].include?(w.name.inferred_rank) ? %w[21a] : []
+          )
+        }
+      }.merge(@@link_to_edit_type),
+      unrecognized_type_material: {
+        message: 'A sequence used as type material must be available ' \
+                 'in the INSDC databases',
+        rules: %w[18a]
+      }.merge(@@link_to_edit_type),
+      non_valid_name_as_type: {
+        message: 'Only a valid name can be used as nomenclatural type',
+        rules: %w[20],
+        can_approve: true
+      }.merge(@@link_to_edit_type),
+
+      # Section 5. Priority and Valid Publication of Names
+      missing_effective_publication: {
+        message: 'The publication proposing this name has not been identified',
+        link_text: 'Register publication',
+        link_to: lambda { |w| [:new_publication, { link_name: w.name.id }] },
+        rules: %w[24a],
+        can_approve: true
+      },
+      invalid_effective_publication: {
+        message: 'The publication proposing this name is a preprint or some ' \
+                 'other type of publication not accepted',
+        link_text: 'Register another publication',
+        link_to: lambda { |w| [:new_publication_path, { link_name: w.name.id }] },
+        rules: %w[24c]
+      },
+      missing_genome_kind: {
+        message: 'The kind of genome used as type has not been specified',
+        rules: %w[26]
+      }.merge(@@link_to_edit_genome),
+      missing_genome_source: {
+        message: 'The source of the type genome has not been specified',
+        rules: %w[26 appendix-i]
+      }.merge(@@link_to_edit_genome),
+      missing_genome_sequencing_depth: {
+        message: 'The sequencing depth of the type genome has not been specified',
+        rules: %w[26 appendix-i]
+      }.merge(@@link_to_edit_genome),
+      missing_genome_completeness: {
+        message: 'The completeness of the type genome has not been specified',
+        rules: %w[26 appendix-i]
+      }.merge(@@link_to_edit_genome),
+      missing_genome_contamination: {
+        message: 'The contamination of the type genome has not been specified',
+        rules: %w[26 appendix-i]
+      }.merge(@@link_to_edit_genome),
+      missing_full_epithet_etymology: {
+        message: 'The etymology of one or more particles is provided, but ' \
+                 'the etymology of the full name or epithet is missing',
+        rules: %w[26.5]
+      }.merge(@@link_to_edit_etymology),
+      missing_etymology: {
+        message: 'The etymology of the name has not been provided',
+        rules: %w[26.5]
+      }.merge(@@link_to_edit_etymology),
+
+      # Section 6. Citation of Authors and Names
+
+      # Section 7. Changes in Names of Taxa as a Result of Transference, Union,
+      # or Change in Rank
+
+      # Section 8. Illegitimate Names and Epithets: Replacement, Rejection, and
+      # Conservation of Names and Epithets
+
+      # Section 9. Orthography
+      corrigendum_affecting_initials: {
+        message: 'A corrigendum should be issued with reserve when affecting ' \
+                 'the first letter of a name',
+        rule_notes: %w[47]
+      }.merge(@@link_to_edit_spelling),
+      missing_grammatical_gender: {
+        message: 'Authors must give the gender of any proposed genus name',
+        rules: %w[49.1 49.3]
+      }.merge(@@link_to_edit_etymology),
+      inconsistent_grammatical_gender: {
+        message: 'A genus name formed by two or more Latin words should take ' \
+                 'gender of the last component of the word',
+        rules: %w[49.2]
+      }.merge(@@link_to_edit_etymology),
+
+      # APPENDIX I
+      low_genome_sequencing_depth: {
+        message: 'The sequencing depth of the type genome should be 10X or greater',
+        recommendations: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+      low_genome_completeness: {
+        message: 'The completeness of the type genome should be above 90%',
+        rules: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+      high_genome_contamination: {
+        message: 'The contamination of the type genome should be below 5%',
+        rules: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+      low_genome_16s_completeness: {
+        message: '16S rRNA genes should be more than 75% complete',
+        recommendations: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+      low_genome_trnas_completeness: {
+        message: 'The type genome should contain more than 80% of tRNAs',
+        recommendations: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+    }
+
+    attr_accessor :type, :name
+    attr_writer *@@attributes
+
+    @@attributes.each do |k|
+      define_method(k) do
+        v = instance_variable_get("@#{k}")
+        v.is_a?(Proc) ? v.call(self) : v
+      end
+    end
+
+    def initialize(type, opts)
+      @type = type.to_sym
+      defaults.each { |k, v| send("#{k}=", v) }
+      opts.each { |k, v| send("#{k}=", v) }
+    end
+
+    def defaults
+      @@defaults[type] || {}
+    end
+
+    def is_error?
+      rules && (!can_approve || name.notified?)
+    end
+
+    def fail
+      is_error? ? :error : :warn
+    end
+
+    def to_hash
+      Hash[
+        @@attributes.map do |k|
+          next if k.to_s =~ /^link_/
+          v = send(k)
+          [k, v] unless v.nil?
+        end.compact
+      ]
+    end
+
+    def [](k)
+      send(k)
+    end
+  end # QcWarning
+
+  class QcWarningSet
+    attr_accessor :name, :set
+
+    def initialize(name)
+      @name = name
+      @set = []
+    end
+
+    def add(type, opts = {})
+      @set << QcWarning.new(type, opts.merge(name: name))
+    end
+
+    def map(&blk)
+      set.map(&blk)
+    end
+
+    def each(&blk)
+      set.each(&blk)
+    end
+
+    def empty?
+      set.empty?
+    end
+  end # QcWarningSet
+
+  ##
   # Test all relevant quality checks and return the QC warnings
   # as a Hash
   def qc_warnings
     return @qc_warnings unless @qc_warnings.nil?
 
-    @qc_warnings = []
+    @qc_warnings = QcWarningSet.new(self)
     return @qc_warnings if inferred_rank == 'domain'
 
-    unless rank?
-      @qc_warnings << {
-        type: :missing_rank,
-        message: 'The taxon has not been assigned a rank',
-        link_text: 'Define rank',
-        link_to: [:edit_rank, self],
-        recommendations: %w[7],
-        rules: %w[26.4]
-      }
-    end
 
-    unless identical_base_name.nil?
-      @qc_warnings << {
-        type: :identical_base_name,
-        message: 'Name already exists with different qualifiers',
-        link_text: identical_base_name.abbr_name,
-        link_to: identical_base_name,
-        link_public: true,
-        rules: %w[9b],
-        recommendations: %w[9.2]
-      }
-    end
-
-    unless external_homonyms.empty?
-      @qc_warnings << {
-        type: :identical_external_name,
-        message:
-          "Name is already in use: #{external_homonyms.to_sentence}".html_safe,
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        rules: %w[9b],
-        recommendations: %w[9.2]
-      }
-    end
-
-    unless description?
-      @qc_warnings << {
-        type: :missing_description,
-        message: 'The name has no registered description',
-        link_text: 'Edit description',
-        link_to: [:edit, self]
-      }
-    end
-
-    if proposed_by.nil?
-      @qc_warnings << {
-        type: :missing_effective_publication,
-        message: 'The publication proposing this name has not been identified',
-        link_text: 'Register publication',
-        link_to: [:new_publication, { link_name: id }],
-        rules: %w[24a],
-        can_approve: true
-      }
-    elsif proposed_by.prepub?
-      @qc_warnings << {
-        type: :invalid_effective_publication,
-        message: 'The publication proposing this name is a preprint or some ' \
-                 'other type of publication not accepted',
-        link_text: 'Register another publication',
-        link_to: [:new_publication_path, { link_name: id }],
-        rules: %w[24c]
-      }
-    end
+    @qc_warnings.add(:missing_rank) unless rank?
+    @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
+    @qc_warnings.add(:identical_external_name) unless external_homonyms.empty?
+    @qc_warnings.add(:missing_description) unless description?
+    @qc_warnings.add(:missing_effective_publication) if proposed_by.nil?
+    @qc_warnings.add(:invalid_effective_publication) if proposed_by&.prepub?
 
     unless base_name =~ /\A[A-Z][a-z ]+( subsp\. )?[a-z ]+\z/
-      @qc_warnings << {
-        type: :inconsistent_format,
-        message: 'Names should only include Latin characters. ' +
-                 'The first word must be capitalized, and other ' +
-                 'epithets (if any) should be given in lower case',
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        rules: %w[8 45] + (
-          case inferred_rank
-          when 'genus'; %w[10]
-          when 'species'; %w[11]
-          when 'subspecies'; %w[13a 13b]
-          else %w[14]
-          end
-        )
-      }
+      @qc_warnings.add(:inconsistent_format)
     end
 
-    unless correct_suffix?
-      @qc_warnings << {
-        type: :incorrect_suffix,
-        message: 'The ending of the name is incompatible with the rank of ' +
-                 rank,
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        rules: %w[15]
-      }
-    end
+    @qc_warnings.add(:incorrect_suffix) unless correct_suffix?
 
     if !type?
-      @qc_warnings << {
-        type: :missing_type,
-        message: 'The name is missing a type definition',
-        link_text: 'Edit type',
-        link_to: [:edit_type, self],
-        rules: %w[16 17 26.3] + (
-          %w[subspecies species].include?(inferred_rank) ? %w[18a] :
-          %w[genus].include?(inferred_rank) ? %w[21a] : []
-        )
-      }
+      @qc_warnings.add(:missing_type)
     elsif %w[species subspecies].include?(inferred_rank) &&
           !%w[nuccore assembly].include?(type_material)
-      @qc_warnings << {
-        type: :unrecognized_type_material,
-        message: 'A sequence used as type material must be available ' +
-                 'in the INSDC databases',
-        link_text: 'Edit type',
-        link_to: [:edit_type, self],
-        rules: %w[18a]
-      }
+      @qc_warnings.add(:unrecognized_type_material)
     end
 
     if type_is_name? && !type_name.validated?
-      @qc_warnings << {
-        type: :non_valid_name_as_type,
-        message: 'Only a valid name can be used as nomenclatural type',
-        link_text: 'Edit type',
-        link_to: [:edit_type, self],
-        rules: %w[20],
-        can_approve: true
-      }
+      @qc_warnings.add(:non_valid_name_as_type)
     end
 
     if type_is_genome?
-      unless type_genome.kind.present?
-        @qc_warnings << {
-          type: :missing_genome_kind,
-          message: 'The kind of genome used as type has not been specified',
-          rules: %w[26],
-          link_text: 'Edit genome',
-          link_to: [:edit, type_genome, name: id]
-        }
-      end
+      @qc_warnings.add(:missing_genome_kind) unless type_genome.kind.present?
 
       unless type_genome.source?
         if !proposed_by.nil? && proposed_by.journal_date.year < 2023
           # Only a warning for publications before 1st January 2023
-          @qc_warnings << {
-            type: :missing_genome_source,
-            message: 'The source of the type genome has not been specified',
+          @qc_warnings.add(
+            :missing_genome_source,
+            rules: [],
             recommendations: %w[appendix-i],
-            link_text: 'Edit genome',
-            link_to: [:edit, type_genome, name: id]
-          }
+          )
         else
-          @qc_warnings << {
-            type: :missing_genome_source,
-            message: 'The source of the type genome has not been specified',
-            rules: %w[26 appendix-i],
-            link_text: 'Edit genome',
-            link_to: [:edit, type_genome, name: id]
-          }
+          @qc_warnings.add(:missing_genome_source)
         end
       end
 
       if !type_genome.seq_depth?
-        @qc_warnings << {
-          type: :missing_genome_sequencing_depth,
-          message: 'The sequencing depth of the type genome has not been specified',
-          rules: %w[26 appendix-i],
-          link_text: 'Edit genome',
-          link_to: [:edit, type_genome, name: id]
-        }
-      elsif type_genome.isolate? && type_genome.seq_depth < 10.0
-        @qc_warnings << {
-          type: :low_genome_sequencing_depth,
-          message: 'The sequencing depth of the type genome should be 10X or greater',
-          rules: %w[appendix-i],
-          link_text: 'Edit genome',
-          link_to: [:edit, type_genome, name: id]
-        }
+        @qc_warnings.add(:missing_genome_sequencing_depth)
       elsif type_genome.mag_or_sag? && type_genome.seq_depth < 10.0
-        @qc_warnings << {
-          type: :low_genome_sequencing_depth,
-          message: 'The sequencing depth of the type genome should be 10X or greater',
-          recommendations: %w[appendix-i],
-          link_text: 'Edit genome',
-          link_to: [:edit, type_genome, name: id]
-        }
+        @qc_warnings.add(:low_genome_sequencing_depth)
+      elsif type_genome.isolate? && type_genome.seq_depth < 10.0
+        # A rule for isolates (only a recommendation for SAGs/MAGs)
+        @qc_warnings.add(
+          :low_genome_sequencing_depth,
+          recommendations: [],
+          rules: %w[appendix-i]
+        )
       end
 
       # Completeness and contamination are only required for MAGs/SAGs
       if type_genome.mag_or_sag?
         if !type_genome.completeness_any?
-          @qc_warnings << {
-            type: :missing_genome_completeness,
-            message: 'The completeness of the type genome has not been specified',
-            rules: %w[26 appendix-i],
-            link_text: 'Edit genome',
-            link_to: [:edit, type_genome, name: id]
-          }
+          @qc_warnings.add(:missing_genome_completeness)
         elsif type_genome.completeness_any <= 90.0
-          @qc_warnings << {
-            type: :low_genome_completeness,
-            message: 'The completeness of the type genome should be above 90%',
-            rules: %w[appendix-i],
-            link_text: 'Edit genome',
-            link_to: [:edit, type_genome, name: id]
-          }
+          @qc_warnings.add(:low_genome_completeness)
         end
 
         if !type_genome.contamination_any?
-          @qc_warnings << {
-            type: :missing_genome_contamination,
-            message: 'The contamination of the type genome has not been specified',
-            rules: %w[26 appendix-i],
-            link_text: 'Edit genome',
-            link_to: [:edit, type_genome, name: id]
-          }
+          @qc_warnings.add(:missing_genome_contamination)
         elsif type_genome.contamination_any >= 5.0
-          @qc_warnings << {
-            type: :high_genome_contamination,
-            message: 'The contamination of the type genome should be below 5%',
-            rules: %w[appendix-i],
-            link_text: 'Edit genome',
-            link_to: [:edit, type_genome, name: id]
-          }
+          @qc_warnings.add(:high_genome_contamination)
         end
       end # type_genome.mag_or_sag?
 
-      if type_genome.most_complete_16s_any? && type_genome.most_complete_16s_any <= 75.0
-        @qc_warnings << {
-          type: :low_genome_16s_completeness,
-          message: '16S rRNA genes should be more than 75% complete',
-          recommendations: %w[appendix-i],
-          link_text: 'Edit genome',
-          link_to: [:edit, type_genome, name: id]
-        }
+      if type_genome.most_complete_16s_any? &&
+         type_genome.most_complete_16s_any <= 75.0
+        @qc_warnings.add(:low_genome_16s_completeness)
       end
 
-      if type_genome.number_of_trnas_any? && type_genome.number_of_trnas_any <= 16
-        @qc_warnings << {
-          type: :low_genome_trnas_completeness,
-          message: 'The type genome should contain more than 80% of tRNAs',
-          recommendations: %w[appendix-i],
-          link_text: 'Edit genome',
-          link_to: [:edit, type_genome, name: id]
-        }
+      if type_genome.number_of_trnas_any? &&
+         type_genome.number_of_trnas_any <= 16
+        @qc_warnings.add(:low_genome_trnas_completeness)
       end
     end # type_is_genome?
 
-    unless consistent_type_rank?
-      @qc_warnings << {
-        type: :inconsistent_type_rank,
-        message: "The nomenclatural type of a #{inferred_rank} must " +
-                 "be a designated #{expected_type_rank}",
-        link_text: 'Edit type',
-        link_to: [:edit_type, self],
-        rules: %w[16] + (inferred_rank == 'genus' ? %w[21a] : [])
-      }
-    end
+
+    @qc_warnings.add(:inconsistent_type_rank) unless consistent_type_rank?
 
     unless !rank? || top_rank? || incertae_sedis? || !parent.nil?
-      @qc_warnings << {
-        type: :missing_parent,
-        message: 'The taxon has not been assigned to a higher classification',
-        link_text: 'Link parent',
-        link_to: [:link_parent, self],
-        recommendations: %w[7]
-      }
+      @qc_warnings.add(:missing_parent)
     end
 
-    unless consistent_parent_rank?
-      @qc_warnings << {
-        type: :inconsistent_parent_rank,
-        message: "The parent rank (#{parent.rank}) is inconsistent " +
-                 "with the rank of this name (#{inferred_rank})",
-        link_text: 'Edit parent',
-        link_to: [:link_parent, self],
-        rules: %w[7a 7b]
-      }
-    end
+    @qc_warnings.add(:inconsistent_parent_rank) unless consistent_parent_rank?
 
     if rank?
       if rank == 'species' && base_name !~ / /
-        @qc_warnings << {
-          type: :unary_species_name,
-          message: 'Species must be binary names',
-          link_text: 'Edit spelling',
-          link_to: [:edit, self],
-          rules: %w[8 11]
-        }
+        @qc_warnings.add(:unary_species_name)
       end
 
-      if rank == 'subspecies' && base_name !~ /\A[A-Z][a-z]* [a-z]+ subsp\. [a-z]+\z/
-        @qc_warnings << {
-          type: :malformed_subspecies_name,
-          message: 'Subspecies names should include the species name, ' +
-                   'the abbreviation "subsp.", and the subspecies epithet',
-          link_text: 'Edit spelling',
-          link_to: [:edit, self],
-          rules: %w[13a]
-        }
+      if rank == 'subspecies' &&
+         base_name !~ /\A[A-Z][a-z]* [a-z]+ subsp\. [a-z]+\z/
+        @qc_warnings.add(:malformed_subspecies_name)
       end
 
       if !%w[species subspecies].include?(rank) && base_name =~ / /
-        @qc_warnings << {
-          type: :binary_name_above_species,
-          message: 'Names above the rank of species must be single words',
-          link_text: 'Edit spelling',
-          link_to: [:edit, self],
-          rules: %w[8 10]
-        }
+        @qc_warnings.add(:binary_name_above_species)
       end
 
       if rank == 'genus'
         if self.class.rank_regexps.any? { |_, i| name =~ i }
-          @qc_warnings << {
-            type: :reserved_suffix,
-            message: 'Avoid reserved suffixes for genus names',
-            link_text: 'Edit spelling',
-            link_to: [:edit, self],
-            recommendations: %w[10]
-          }
-        end
-
-        if etymology? && !latin?
-          @qc_warnings << {
-            type: :inconsistent_language_for_genus,
-            message: 'A genus name must be treated as Latin (L. or N.L.)',
-            link_text: 'Edit etymology',
-            link_to: [:edit_etymology, self],
-            rules: %w[10]
-          }
+          @qc_warnings.add(:reserved_suffix)
         end
       end
     end
 
+    @qc_warnings.add(:inconsistent_language) if etymology? && !latin?
+
     unless consistent_with_type_genus?
-      @qc_warnings << {
-        type: :inconsistent_with_type_genus,
-        message: "The name should be formed by adding the suffix " +
-                 "-#{rank_suffix} to the stem of the type genus",
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        rules: %w[15]
-      }
+      @qc_warnings.add(:inconsistent_with_type_genus)
     end
 
     unless consistent_etymology_with_type_genus?
-      @qc_warnings << {
-        type: :inconsistent_with_type_genus,
-        message: "The etymology should be formed by the stem of the type " +
-                 "genus and the suffix -#{rank_suffix}",
-        link_text: 'Autofill etymology',
-        link_to: [:autofill_etymology, self, method: :post],
-        rules: %w[15]
-      }
+      @qc_warnings.add(:inconsistent_with_type_genus)
     end
 
-    if long_word?
-      @qc_warnings << {
-        type: :long_name,
-        message: 'Consider reducing the length of the name',
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        recommendations: %w[9.1]
-      }
-    end
+    @qc_warnings.add(:long_name) if long_word?
+    @qc_warnings.add(:difficult_to_pronounce) if hard_to_pronounce?
 
-    if hard_to_pronounce?
-      @qc_warnings << {
-        type: :difficult_to_pronounce,
-        message: 'Consider revising the name to make it easier to pronounce',
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        recommendations: %w[9.1]
-      }
-    end
+    if rank? && %w[species subspecies].include?(rank)
+      unless consistent_species_name?
+        @qc_warnings.add(:inconsistent_species_name)
+      end
 
-    unless consistent_species_name?
-      @qc_warnings << {
-        type: :inconsistent_species_name,
-        message: 'The first word of species names must correspond to the ' +
-                 'parent genus',
-        link_text: 'Edit parent',
-        link_to: [:link_parent, self],
-        rules: %w[8 11]
-      }
-    end
+      unless consistent_subspecies_name?
+        @qc_warnings.add(:inconsistent_subspecies_name)
+      end
 
-    unless consistent_subspecies_name?
-      @qc_warnings << {
-        type: :inconsistent_subspecies_name,
-        message: 'The first two epithets of subspecies names must correspond to the ' +
-                 'parent species',
-        link_text: 'Edit parent',
-        link_to: [:link_parent, self],
-        rules: %w[13a]
-      }
-    end
+      unless consistent_grammar_for_species_or_subspecies?
+        @qc_warnings.add(:"inconsistent_grammar_for_#{rank}_name")
+      end
 
-    unless consistent_grammar_for_species_or_subspecies?
-      @qc_warnings << {
-        type: :"inconsistent_grammar_for_#{rank}_name",
-        message: "A #{inferred_rank} name must be an adjective or a noun",
-        link_text: 'Edit etymology',
-        link_to: [:edit_etymology, self],
-        rules: (rank == 'subspecies' ? %w[13b] : []) + %w[12]
-      }
-    end
-
-    unless consistent_name_for_subspecies_with_type?
-      @qc_warnings << {
-        type: :inconsistent_name_for_subspecies_with_type,
-        message: 'A subspecies including the type of the species must have the same epithet',
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        rules: %w[13c]
-      }
+      unless consistent_name_for_subspecies_with_type?
+        @qc_warnings.add(:inconsistent_name_for_subspecies_with_type)
+      end
     end
 
     if etymology?
       if etymology(:p1, :grammar) && !etymology(:xx, :grammar)
-        @qc_warnings << {
-          type: :missing_full_epithet_etymology,
-          message: 'The etymology of one or more particles is provided, but ' +
-                   'the etymology of the full name or epithet is missing',
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          rules: %w[26.5]
-        }
+        @qc_warnings.add(:missing_full_epithet_etymology)
       end
     else
-      @qc_warnings << {
-        type: :missing_etymology,
-        message: 'The etymology of the name has not been provided',
-        link_text: 'Edit etymology',
-        link_to: [:edit_etymology, self],
-        rules: %w[26.5]
-      }
+      @qc_warnings.add(:missing_etymology)
     end
 
     unless consistent_genus_gender?
       if feminine? || masculine? || neuter?
-        @qc_warnings << {
-          type: :inconsistent_grammatical_gender,
-          message: 'A genus name formed by two or more Latin words should take ' +
-                   'gender of the last component of the word',
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          rules: %w[49.2]
-        }
+        @qc_warnings.add(:inconsistent_grammatical_gender)
       else
-        @qc_warnings << {
-          type: :missing_grammatical_gender,
-          message: 'Authors must give the gender of any proposed genus name',
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          rules: %w[49.1 49.3]
-        }
+        @qc_warnings.add(:missing_grammatical_gender)
       end
     end
 
     unless consistent_grammatical_number_and_gender?
-      case inferred_rank
-      when 'genus'
-        @qc_warnings << {
-          type: :inconsistent_grammatical_number,
-          message: 'A genus must be a noun or and adjective used as a noun, ' +
-                   'given in the singular number',
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          rules: %w[10]
-        }
-      when 'species', 'subspecies'
-        @qc_warnings << {
-          type: :inconsistent_grammatical_number_or_gender,
-          message: 'A specific epithet formed by an adjective ' +
-                   'should agree in number and gender with the parent name' +
-                   (inferred_rank == 'subspecies' ? ' (see Rule 13b)' : ''),
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          recommendations: %w[12.2]
-        }
-      when 'family', 'order'
-        @qc_warnings << {
-          type: :inconsistent_grammatical_number_or_gender,
-          message: "A name in the rank of #{inferred_rank} must be " +
-                   "feminine and plural",
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          recommendations: %w[14]
-        }
-      when 'class', 'phylum'
-        @qc_warnings << {
-          type: :inconsistent_grammatical_number_or_gender,
-          message: "A name in the rank of #{inferred_rank} must be " +
-                   "neuter and plural",
-          link_text: 'Edit etymology',
-          link_to: [:edit_etymology, self],
-          recommendations: %w[14]
-        }
-      end
+      @qc_warnings.add(:"inconsistent_#{inferred_rank}_grammatical_number_or_gender")
     end
 
     if corrigendum_from &&
          corrigendum_from.sub(/^Candidatus /, '')[0] != base_name[0]
-      @qc_warnings << {
-        type: :corrigendum_affecting_initials,
-        message: 'A corrigendum should be issued with reserve when affecting ' \
-                 'the first letter of a name',
-        link_text: 'Edit spelling',
-        link_to: [:edit, self],
-        rule_notes: %w[47]
-      }
+      @qc_warnings.add(:corrigendum_affecting_initials)
     end
 
-    @qc_warnings.map do |warning|
-      is_error = warning[:rules] && (!warning[:can_approve] || notified?)
-      warning[:fail] = is_error ? :error : :warn
-      warning
-    end
+    @qc_warnings
   end
 
   def identical_base_name
@@ -594,11 +677,12 @@ module Name::QualityChecks
       return false if plural?
       adjective? || noun?
     when 'species', 'subspecies'
-      return true unless parent&.grammar # If it cannot be checked
+      return true unless genus&.grammar # If it cannot be checked
       return true unless adjective? # Only adjectives are checked
 
+      # Recommendation 12.2, Rule 13b
       agree = %i[plural? masculine? feminine? neuter?]
-      agree.all? { |x| parent.send(x) == send(x) }
+      agree.all? { |x| genus.send(x) == send(x) }
     when 'family', 'order'
       return false unless feminine?
       return false unless plural?
