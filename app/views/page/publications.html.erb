@@ -21,20 +21,21 @@
         Konstantinos T. Konstantinidis, Alison E. Murray, Marike Palmer,
         Donovan H. Parks, Alexander J. Probst, Anna-Louise Reysenbach,
         Luis M. Rodriguez-R, Ramon Rossello-Mora, Iain C. Sutcliffe,
-        Stephanus N. Venter, and William B. Whitman
-        <b>[under review]</b>
+        Stephanus N. Venter, and William B. Whitman.
+        <b>
+          <i>Nature Microbiology</i> (2022).
+          <a href="https://doi.org/10.1038/s41564-022-01214-9" target=_blank>
+            https://doi.org/10.1038/s41564-022-01214-9
+          </a>
+        </b>
       </i></p>
       <hr/>
       <p>
-        Most prokaryotes are not available as pure cultures and therefore
-        ineligible for naming under the International Code of Nomenclature of
-        Prokaryotes. Here we summarize the development of the SeqCode, a code of
-        nomenclature under which genome sequences can serve as nomenclatural
-        types. The SeqCode operates through self-registration
-        (<a href="https://seqco.de/">https://seqco.de/</a>), provides a
-        reproducible and objective framework for all prokaryotes, regardless of
-        cultivability, and facilitates communication across microbiological
-        disciplines.
+        Most prokaryotes cannot easily be grown in the laboratory and
+        distributed as pure cultures. Thus, these organisms could not be
+        officially named. A code of nomenclature — the SeqCode — provides paths
+        to name such organisms on the basis of genomic data, aiming to unify
+        field and laboratory studies in microbiology.
       </p>
     </div>
     <div class="card-footer">
@@ -56,24 +57,21 @@
           %>
         </li>
         <li>
-          <%= download_link(
-                'SeqCode-V1.01.pdf',
-                'International Code of Nomenclature of Prokaryotes Described ' \
-                  'from Sequence Data, V1.0.1'
-              )
-          %>
+          <%= link_to(page_seqcode_url) do %>
+            <%= fa_icon('satellite-dish') %>&nbsp;&nbsp;
+            Live version of the SeqCode
+          <% end %>
         </li>
       </ul>
     </div>
   </div>
   <br/>
 
-  <%#
   <!-- Barny's paper -->
   <div class="card my-3">
     <div class="card-header">
       <h2>
-        Development of the SeqCode: a proposed nomenclatural code for
+        Development of the SeqCode: A proposed nomenclatural code for
         uncultivated prokaryotes with DNA sequences as type
       </h2>
     </div>
@@ -84,31 +82,41 @@
         Marike Palmer, Donovan H Parks, Alexander J Probst,
         Anna-Louise Reysenbach, Luis M Rodriguez-R, Ramon Rossello-Mora,
         Iain Sutcliffe, and Stephanus N Venter
-        <b>[in press]</b>
+        <b>
+          <i>Systematic and Applied Microbiology</i> (2022).
+          <a href="https://doi.org/10.1016/j.syapm.2022.126305">
+            https://doi.org/10.1016/j.syapm.2022.126305
+          </a>
+        </b>
       </i></p>
       <hr/>
       <p>
-        Over the last fifteen years, genomics has become fully integrated into prokaryotic systematics.
-        The genomes of most type strains have been sequenced, genome sequence similarity is widely
-        used for delineation of species, and phylogenomic methods are commonly used for classification
-        of higher taxonomic ranks. Additionally, environmental genomics has revealed a vast diversity of
-        as-yet-uncultivated taxa. In response to these developments, a new code of nomenclature, the
-        International Code of Nomenclature of Prokaryotes Described from Sequence Data (SeqCode),
-        has been developed over the last two years to allow naming of Archaea and Bacteria using DNA
-        sequences as the nomenclatural types. The SeqCode also allows naming of fastidious
-        prokaryotes that cannot be deposited into culture collections. Several simplifications relative to
-        the International Code of Nomenclature of Prokaryotes (ICNP) are implemented to make
-        nomenclature more accessible, easier to apply and more readily communicated. By simplifying
-        nomenclature with the goal of a unified taxonomy, inclusive of both cultured and uncultured taxa,
-        the SeqCode will facilitate the naming of taxa in every biome on Earth, encourage the isolation
-        and characterization of as-yet-uncultivated taxa, and promote synergies between the ecological,
-        environmental, physiological, biochemical, and molecular biological disciplines to more fully
-        describe prokaryotic life.
+        Over the last fifteen years, genomics has become fully integrated into
+        prokaryotic systematics. The genomes of most type strains have been
+        sequenced, genome sequence similarity is widely used for delineation of
+        species, and phylogenomic methods are commonly used for classification
+        of higher taxonomic ranks. Additionally, environmental genomics has
+        revealed a vast diversity of as-yet-uncultivated taxa. In response to
+        these developments, a new code of nomenclature,
+        the <i>Code of Nomenclature of Prokaryotes Described from Sequence
+        Data</i> (SeqCode), has been developed over the last two years to allow
+        naming of Archaea and Bacteria using DNA sequences as the nomenclatural
+        types. The SeqCode also allows naming of cultured organisms, including
+        fastidious prokaryotes that cannot be deposited into culture
+        collections. Several simplifications relative to the <i>International
+        Code of Nomenclature of Prokaryotes</i> (ICNP) are implemented to make
+        nomenclature more accessible, easier to apply and more readily
+        communicated. By simplifying nomenclature with the goal of a unified
+        classification, inclusive of both cultured and uncultured taxa, the
+        SeqCode will facilitate the naming of taxa in every biome on Earth,
+        encourage the isolation and characterization of as-yet-uncultivated
+        taxa, and promote synergies between the ecological, environmental,
+        physiological, biochemical, and molecular biological disciplines to more
+        fully describe prokaryotes.
       </p>
     </div>
   </div>
   <br/>
-  %>
 
   <!-- The SeqCode -->
   <div class="card my-3">
@@ -126,23 +134,14 @@
         Anna-Louise Reysenbach, Luis M Rodriguez-R, Ramon Rossello-Mora,
         Iain Sutcliffe, and Stephanus N Venter
       </i></p>
-      <hr/>
-      <p>
-        <%= link_to(page_seqcode_url) do %>
-          <%= fa_icon('satellite-dish') %>&nbsp;
-          See also the live version of the SeqCode
-        <% end %>
-      </p>
     </div>
     <div class="card-footer">
       <ul>
         <li>
-          <%= download_link(
-                'SeqCode-V1.01.pdf',
-                'International Code of Nomenclature of Prokaryotes Described ' \
-                  'from Sequence Data, V1.0.1'
-              )
-          %>
+          <%= link_to(page_seqcode_url) do %>
+            <%= fa_icon('satellite-dish') %>&nbsp;
+            Live version of the SeqCode
+          <% end %>
         </li>
       </ul>
     </div>
