@@ -9,8 +9,10 @@
     <%= register.names.count %>
   <% end %>
 
-  <%= adaptable_value(entry, 'Status') do %>
-    <%= register.status_name.capitalize %>
+  <% if !%w[validated draft submitted notified].include?(status) %>
+    <%= adaptable_value(entry, 'Status') do %>
+      <%= register.status_name.capitalize %>
+    <% end %>
   <% end %>
 
   <%= adaptable_value(entry, 'Last update') do %>
