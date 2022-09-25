@@ -145,7 +145,7 @@ module Name::Etymology
       self.etymology_p1_particle = type_name.base_name
       self.etymology_p1_description =
         "referring to the type #{type_name.rank} #{type_name.base_name}"
-      self.etymology_p2_lang = 'L.'
+      self.etymology_p2_lang = 'N.L.'
       gen = %w[family order].include?(rank) ? 'fem.' : 'neut.'
       self.etymology_p2_grammar = "#{gen} pl. suff."
       self.etymology_p2_particle = "-#{rank_suffix}"
