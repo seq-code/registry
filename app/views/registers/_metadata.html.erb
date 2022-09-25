@@ -32,7 +32,7 @@
         <dt><%= fa_icon('pen-nib') %> Authorship</dt>
         <dd>
           <% if @register.submitter_is_author? && @register.authors_approval? %>
-            The submitter has declared authorship and approval of all coauthors
+            The submitter has declared authorship and approval of coauthor(s)
             of the effective publication for submission
           <% elsif @register.submitter_is_author? %>
             <%= fa_icon('exclamation-circle', class: 'text-danger') %>
@@ -40,11 +40,11 @@
             but not coauthor approval for submission
           <% elsif @register.authors_approval? %>
             The submitter is not an author of the effective publication but has
-            declared approval for submission from all authors
+            declared approval for submission from the author(s)
           <% else %>
             <%= fa_icon('exclamation-circle', class: 'text-danger') %>
             The submitter is not an author of the effective publication and has
-            not declared approval for submission from all authors
+            not declared approval for submission from the author(s)
           <% end %>
           <% unless @register.submitter_authorship_explanation.empty? %>
             <br/>
