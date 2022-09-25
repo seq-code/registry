@@ -21,7 +21,7 @@
     <%= link_to(register.user.username, register.user) %>
   <% end %>
 
-  <% if status == 'validated' %>
+  <% if status != 'validated' %>
     <%= adaptable_value(entry, 'Need review') do %>
       <div class="text-<%= register.names_to_review.count.zero? ? 'success' : 'danger' %>">
         <%= pluralize(register.names_to_review.count, 'name') %>
