@@ -1,7 +1,7 @@
 class Name < ApplicationRecord
   has_many(:publication_names, dependent: :destroy)
   has_many(:publications, through: :publication_names)
-  has_many(:name_correspondences)
+  has_many(:name_correspondences, dependent: :destroy)
   has_many(
     :children, class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
   )

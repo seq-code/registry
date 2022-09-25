@@ -9,7 +9,7 @@ class Register < ApplicationRecord
   has_one_attached(:supplementary_pdf)
   has_one_attached(:certificate_pdf)
   has_many(:names, -> { order('updated_at') })
-  has_many(:register_correspondences)
+  has_many(:register_correspondences, dependent: :destroy)
   alias :correspondences :register_correspondences
   has_rich_text(:notes)
   has_rich_text(:abstract)
