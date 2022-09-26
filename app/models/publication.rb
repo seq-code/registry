@@ -138,6 +138,10 @@ class Publication < ApplicationRecord
     "#{short_citation}, #{journal || pub_type.tr('-', ' ')}"
   end
 
+  def long_citation
+    "#{citation}. #{title.gsub(/\.$/, '')}."
+  end
+
   def emended_names
     publication_names.where(emends: true).map(&:name)
   end

@@ -106,7 +106,7 @@
     <ol>
       <% @register.citations.each do |publication| %>
         <li>
-          <%= publication.citation %>.
+          <%= publication.long_citation %>
           <%= link_to(
                 "DOI:#{publication.doi}", publication.link, target: '_blank'
               ) %>
