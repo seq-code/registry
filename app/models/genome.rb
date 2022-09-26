@@ -87,9 +87,9 @@ class Genome < ApplicationRecord
   def source_link
     case source_database
     when 'sra'
-      "https://www.ncbi.nlm.nih.gov/biosample/#{source_accession}"
-    when 'biosample'
       "https://www.ncbi.nlm.nih.gov/sra/#{source_accession}"
+    when 'biosample'
+      "https://www.ncbi.nlm.nih.gov/biosample/#{source_accession}"
     end
   end
 
