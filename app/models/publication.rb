@@ -138,8 +138,12 @@ class Publication < ApplicationRecord
     "#{short_citation}, #{journal || pub_type.tr('-', ' ')}"
   end
 
-  def long_citation
-    "#{citation}. #{title.gsub(/\.$/, '')}."
+  def long_citation_html
+    <<~HTML.html_safe
+      #{authors_et_al} (#{journal_date.year}). #{title.gsub(/\.$/, '')}.
+      <i>#{journal || pub_type.tr('-', ' ')}</i>.
+      <a href="#{publication.link}" target="_blank">DOI:#{publication.doi}</a>
+    HTML
   end
 
   def emended_names
