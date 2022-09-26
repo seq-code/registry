@@ -361,7 +361,17 @@ class Name < ApplicationRecord
   end
 
   def links?
-    ncbi_taxonomy? || !gbif_homonyms(false, true).empty?
+    ncbi_taxonomy? || gtdb_genome? || !gbif_homonyms(false, true).empty?
+  end
+
+  def gtdb_genome?
+    type? && type_material == 'assembly'
+  end
+
+  def gtdb_genome_url
+    return unless gtdb_genome?
+
+    'https://gtdb.ecogenomic.org/genome?gid=%s' % type_accession
   end
 
   def ncbi_taxonomy_url

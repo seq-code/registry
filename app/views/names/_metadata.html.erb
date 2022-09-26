@@ -14,6 +14,15 @@
           </li>
         <% end %>
 
+        <% if @name.gtdb_genome? %>
+          <li>
+            <%= link_to(@name.gtdb_genome_url, target: '_blank') do %>
+              GTDB Genome: <%= @name.type_accession %>
+              <%= fa_icon('external-link-alt') %>
+            <% end %>
+          </li>
+        <% end %>
+
         <% gbif = @name.gbif_homonyms(false, true) %>
         <% if gbif.present? %>
           <% id = modal('GBIF Links') do %>
