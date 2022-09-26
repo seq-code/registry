@@ -122,7 +122,7 @@ class Publication < ApplicationRecord
     if authors.count < 3
       authors.pluck(:family).join(', ')
     else
-      authors.pluck(:family).first + ', et al.'
+      authors.pluck(:family).first + ' et al.'
     end
   end
 
