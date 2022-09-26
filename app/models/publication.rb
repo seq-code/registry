@@ -142,7 +142,7 @@ class Publication < ApplicationRecord
     <<~HTML.html_safe
       #{authors_et_al} (#{journal_date.year}). #{title.gsub(/\.$/, '')}.
       <i>#{journal || pub_type.tr('-', ' ')}</i>.
-      <a href="#{publication.link}" target="_blank">DOI:#{publication.doi}</a>
+      <a href="#{link}" target="_blank">DOI:#{doi}</a>
     HTML
   end
 
