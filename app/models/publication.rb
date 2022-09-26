@@ -131,7 +131,7 @@ class Publication < ApplicationRecord
   end
 
   def short_citation
-    "#{authors_et_al} (#{journal_date.year})"
+    "#{authors_et_al} #{journal_date.year}"
   end
 
   def citation
