@@ -3,13 +3,13 @@
     <h2 class="text-center my-3">
       Register List Certificate of Validation
     </h2>
-      <p>
-        On behalf of <i>The International Committee on the Systematics of
-        Prokaryotes Described from Sequence Data</i> (SeqCode Committee), we
-        hereby certify that the Register List <b><%= @register.acc_url %></b>
-        submitted by <b><%= @register.user.display_name %></b> and including
-        <%= pluralize(@register.names.count, 'new name') %> has been
-        successfully validated.
+    <p>
+      On behalf of <i>Committee on the Systematics of Prokaryotes Described
+      from Sequence Data</i> (SeqCode Committee), we hereby certify that the
+      Register List <b><%= @register.acc_url %></b> submitted by
+      <b><%= @register.user.display_name %></b> and including
+      <%= pluralize(@register.names.count, 'new name') %> has been
+      successfully validated.
     </p>
     <div class="row my-5">
       <div class="col-6 text-center">
