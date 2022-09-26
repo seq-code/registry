@@ -122,7 +122,7 @@ class Publication < ApplicationRecord
     if authors.count < 3
       authors.pluck(:family).join(', ')
     else
-      authors.pluck(:family).first + ', et al'
+      authors.pluck(:family).first + ', et al.'
     end
   end
 
@@ -131,7 +131,7 @@ class Publication < ApplicationRecord
   end
 
   def short_citation
-    "#{authors_et_al} #{journal_date.year}"
+    "#{authors_et_al}, #{journal_date.year}"
   end
 
   def citation
