@@ -115,20 +115,29 @@ class Register < ApplicationRecord
 
     case names.size
     when 0
-      "Empty register List #{acc_url}"
+      'Empty register List %s' % acc_url
     when 1
       self.class.nom_nov(names.first)
     when 2
-      "#{self.class.nom_nov(names.first)} and " \
-        "#{self.class.nom_nov(names.second)}"
+
+      # TODO Handle special (common) case of a species
+      # name proposed with its genus: we can simply
+      # use the species name sp. nov. gen. nov.
+
+      <<~TITLE
+        #{self.class.nom_nov(names.first)} and \
+        #{self.class.nom_nov(names.second)}
+      TITLE
     else
-      "Register list proposing #{names.size} new names" \
-        " including #{self.class.nom_nov(names.first)}"
+      <<~TITLE
+        Register list for #{names.size} new names \
+        including #{self.class.nom_nov(names.first)}
+      TITLE
     end
   end
 
   def propose_doi
-    "10.25651/seqcode.#{accession}"
+    '10.25651/seqcode.%s' % accession
   end
 
   def citations

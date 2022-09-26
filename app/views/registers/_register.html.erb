@@ -2,7 +2,11 @@
 
 <%= adaptable_entry(list, register.acc_url, register) do |entry| %>
   <%= adaptable_value(entry, 'Title') do %>
-    <%= register.title %>
+    <% if register.title? %>
+      <%= register.title %>
+    <% else %>
+      <span class="text-muted"><%= register.propose_title %></span>
+    <% end %>
   <% end %>
 
   <%= adaptable_value(entry, 'Names') do %>
