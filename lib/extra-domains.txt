@@ -4,3 +4,5 @@ uni-due.de
 ukaachen.de
 dri.edu
 inta.uchile.cl
+unistra.fr
+pnnl.gov
