@@ -87,7 +87,7 @@ class Register < ApplicationRecord
     return false unless user
     return true if user.curator?
 
-    user.id == user_id && !submitted
+    user.id == user_id # && !submitted
   end
 
   def can_view?(user)
