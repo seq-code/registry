@@ -105,7 +105,7 @@ module Name::QualityChecks
         rules: %w[9b],
         recommendations: %w[9.2],
         link_text: lambda { |w| w.name.identical_base_name.abbr_name },
-        link_to: lambda { |w| [:edit, w.identical_base_name] },
+        link_to: lambda { |w| [:edit, w.name.identical_base_name] },
         link_public: true
       },
       identical_external_name: {
