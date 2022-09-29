@@ -386,7 +386,7 @@ module Name::QualityChecks
     end
 
     def is_error?
-      rules && (!can_approve || name.notified?)
+      rules.present? && (!can_approve || name.notified?)
     end
 
     def fail
