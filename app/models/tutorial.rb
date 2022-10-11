@@ -21,11 +21,12 @@ class Tutorial < ApplicationRecord
           steps: [
             'Name and classification',
             'Lineage',
-            'Description',
-            'Etymology',
             'Type',
             'Type details',
-            'Next name'
+            'Description',
+            'Etymology',
+            'Quality checks',
+            'Validation list'
           ]
         },
         species: {
@@ -86,7 +87,7 @@ class Tutorial < ApplicationRecord
   end
 
   def next_step_symbol
-    :"#{symbol}_step_#{'%02i' % (step + 1)}"
+    :"#{symbol}_step_#{'%02i' % step}"
   end
 
   def next_step(params, user)
@@ -157,9 +158,19 @@ class Tutorial < ApplicationRecord
     n
   end
 
+  def add_to_register(register, user)
+    Tutorial.transaction do
+      names.each do |name|
+        name.add_to_register(register, user)
+      end
+    end
+  end
+
   private
 
-    def lineage_step_01(params, user)
+    ##
+    # Lineage Step 00: Create Names
+    def lineage_step_00(params, user)
       mandatory = %i[species_name lowest_classified_taxon]
       require_params(params, mandatory) or return false
 
@@ -201,7 +212,9 @@ class Tutorial < ApplicationRecord
       true
     end
 
-    def lineage_step_02(params, user)
+    ##
+    # Lineage Step 01: Lineage
+    def lineage_step_01(params, user)
       mandatory = %i[species_name ranks]
       require_params(params, mandatory) or return false
 
@@ -209,14 +222,33 @@ class Tutorial < ApplicationRecord
       ranks = params[:ranks].split(' ') + ['species']
       require_params(params, ranks.map { |i| :"#{i}_name" }) or return false
 
+      # Create names
       lineage_ids = []
       parent = lowest_classified_taxon_obj
+      types  = {}
       ranks.each_with_index do |rank, k|
         field = :"#{rank}_name"
         name = find_or_register_name(params[field], field, user) or return false
+        case rank.to_s
+          when 'species'; types[:species] = name.id
+          when 'genus';   types[:genus]   = name.id
+        end
         name.update(rank: rank, tutorial_id: id, parent: parent)
         lineage_ids << name.id
         parent = name
+      end
+
+      # Set type material for genus and above
+      lineage_ids.each do |name_id|
+        name = Name.find(name_id)
+        case name.rank
+        when 'species'
+          # Do nothing
+        when 'genus'
+          name.update(type_material: :name, type_accession: types[:species])
+        else
+          name.update(type_material: :name, type_accession: types[:genus])
+        end
       end
 
       self.step += 1
@@ -227,7 +259,43 @@ class Tutorial < ApplicationRecord
       save
     end
 
+    ##
+    # Lineage Step 02: Type
+    def lineage_step_02(params, user)
+      if current_name.type? && params[:next]
+        if current_name.type_is_name?
+          # Genus and above
+          update(step: step + 2)
+        else
+          # Species and subspecies
+          update(step: step + 1)
+        end
+      else
+        @next_action = [:edit_type, current_name, tutorial: self]
+      end
+    end
+
+    ##
+    # Lineage Step 03: Type Details
     def lineage_step_03(params, user)
+      if current_name.type_is_genome?
+        # Species and subspecies
+        if current_name.type_genome.complete? && params[:next]
+          update(step: step + 1)
+        else
+          @notice = 'Please complete the minimum genomic information'
+          par = { name: current_name, tutorial: self }
+          @next_action = [:edit, current_name.type_genome, par]
+        end
+      elsif current_name.type_is_name?
+        # Genus and above (only if going backwards)
+        update(step: step - 1)
+      end
+    end
+
+    ##
+    # Lineage Step 04: Description
+    def lineage_step_04(params, user)
       if current_name.description? && params[:next]
         update(step: step + 1)
       else
@@ -235,7 +303,9 @@ class Tutorial < ApplicationRecord
       end
     end
 
-    def lineage_step_04(params, user)
+    ##
+    # Lineage Step 05: Etymology
+    def lineage_step_05(params, user)
       if current_name.etymology? && params[:next]
         update(step: step + 1)
       else
@@ -243,39 +313,35 @@ class Tutorial < ApplicationRecord
       end
     end
 
-    def lineage_step_05(params, user)
-      if current_name.type? && params[:next]
-        update(step: step + 1)
-      else
-        @next_action = [:edit_type, current_name, tutorial: self]
-      end
-    end
-
+    ##
+    # Lineage Step 06: Next Name
     def lineage_step_06(params, user)
-      if current_name.type_is_genome?
-        if current_name.type_genome.complete? && params[:next]
-          update(step: step + 1)
-        else
-          @notice = 'Please complete the genomic information'
-          par = { name: current_name, tutorial: self }
-          @next_action = [:edit, current_name.type_genome, par]
+      next_name = false
+      if current_name.qc_warnings.errors?
+        if current_name.can_edit?(user) && current_name.correspondence_by?(user)
+          next_name = true
         end
+      elsif current_name.parent.id.in? value(:lineage_ids)
+        next_name = true
       else
-        # TODO Deal with genus and above
+        update(step: step + 1)
       end
-    end
 
-    def lineage_step_07(params, user)
-      if current_name.parent.id.in? value(:lineage_ids)
+      if next_name
         update(
           step: 2,
           data: data_hash.merge(
             current_name_id: current_name.parent.id
           ).to_json
         )
-      else
-        # TODO The turorial is complete!
       end
+    end
+
+    ##
+    # Lineage Step 07: Validation list
+    def lineage_step_07(params, user)
+      update(ongoing: false)
+      @next_action = [:new_register, tutorial: self]
     end
 
     def require_params(params, keys)

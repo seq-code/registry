@@ -32,8 +32,8 @@ class Genome < ApplicationRecord
 
     def source_databases
       {
-        sra: { name: 'INSDC Sequence Read Archive (SRA)' },
-        biosample: { name: 'INSDC BioSample' }
+        sra: { name: 'INSDC Sequence Read Archive (SRA)', display: 'SRA' },
+        biosample: { name: 'INSDC BioSample', display: 'BioSample' }
       }
     end
 
@@ -71,7 +71,7 @@ class Genome < ApplicationRecord
   end
 
   def source?
-    source_accession? || source_database?
+    source_accession? && source_database?
   end
 
   def rrnas_or_trnas?
@@ -80,16 +80,37 @@ class Genome < ApplicationRecord
       number_of_trnas_any.present?
   end
 
-  def source_text
-    source? ? "#{source_database}: #{source_accession}" : ''
+  def source_database_display
+    self.class.source_databases.dig(source_database.to_sym, :display)
   end
 
-  def source_link
+  def source_database_name
+    self.class.source_databases.dig(source_database.to_sym, :name)
+  end
+
+  def source_text(acc = nil)
+    acc ||= source_accession
+    return '' unless source?
+
+    "#{source_database_display}: #{acc}"
+  end
+
+  def source_link(acc = nil)
+    acc ||= source_accession if source?
+    return unless acc
+
     case source_database
     when 'sra'
-      "https://www.ncbi.nlm.nih.gov/sra/#{source_accession}"
+      "https://www.ncbi.nlm.nih.gov/sra/#{acc}"
     when 'biosample'
-      "https://www.ncbi.nlm.nih.gov/biosample/#{source_accession}"
+      "https://www.ncbi.nlm.nih.gov/biosample/#{acc}"
+    end
+  end
+
+  def source_links
+    return [] unless source?
+    source_accession.split(/, */).map do |acc|
+      [source_link(acc), source_text(acc), source_database_name]
     end
   end
 

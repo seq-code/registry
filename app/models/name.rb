@@ -433,6 +433,12 @@ class Name < ApplicationRecord
     !after_approval? && created_by.nil?
   end
 
+  def correspondence_by?(user)
+    return false unless user
+
+    correspondences.any? { |msg| msg.user == user }
+  end
+
   # ============ --- TAXONOMY --- ============
 
   def top_rank?

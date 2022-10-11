@@ -1,7 +1,19 @@
 
-<%= render(partial: 'tutorials/lineage/05', locals: { f: f }) %>
+<%= render(partial: 'tutorials/lineage/header', locals: { f: f }) %>
+
+<% if @name.qc_warnings.errors? %>
+  <div class="alert alert-warning">
+    Please check the warnings below. If you believe any of the warnings
+    should be bypassed, please indicate the reason(s) in the box for
+    correspondence with curators at the bottom of this page.
+  </div>
+<% end %>
 
 <% @name.only_display = true %>
+<%= render(partial: 'names/quality_checks') %>
+<!-- To be reviewed -->
+<%= render(partial: 'names/taxonomy') %>
+<%= render(partial: 'names/nomenclature') %>
 <%= render(partial: 'names/genomics') %>
 <% @name.only_display = nil %>
 

@@ -5,6 +5,15 @@
     Step <%= @tutorial.step %>: <%= @tutorial.step_name %>
   </div>
   <div>
-    <%= f.submit('>', class: 'btn btn-secondary btn-sm') %>
+    <% if @tutorial.step > 0 %>
+      <%=
+        link_to(
+          '<',
+          tutorial_url(@tutorial, step_back: true),
+          method: :patch, class: 'btn btn-secondary btn-sm'
+        )
+      %>
+    <% end %>
+    <%= f.submit('>', class: 'btn btn-info btn-sm') %>
   </div>
 </nav>

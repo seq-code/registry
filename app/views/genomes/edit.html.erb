@@ -29,29 +29,29 @@
     <p class="lead">
       General information about the sequenced genome
     </p>
-    <%= f.input(:kind, collection: Genome.kinds_opt, label: 'Type of genome') %>
-    <%= f.input(:seq_depth, label: 'Sequencing depth (X)') %>
+    <%= f.input(:kind, collection: Genome.kinds_opt, label: 'Type of genome', required: true) %>
+    <%= f.input(:seq_depth, label: 'Sequencing depth (X)', required: true) %>
 
     <h2 class="mt-5">Source material</h2>
     <p class="lead">
       Database entry describing the source material from which the genome was
       derived
     </p>
-    <%= f.input(:source_database, collection: Genome.source_databases_opt, label: 'Database') %>
-    <%= f.input(:source_accession, label: 'Accession') %>
+    <%= f.input(:source_database, collection: Genome.source_databases_opt, label: 'Database', required: true) %>
+    <%= f.input(:source_accession, label: 'Accession', required: true) %>
 
     <h2 class="mt-5">Quality assessment</h2>
     <p class="lead">
       Quality metrics assessed by the submitter
     </p>
     <%= f.input(:gc_content, label: 'G+C content (%)') %>
-    <%= f.input(:completeness, label: 'Estimated completeness (%)') %>
-    <%= f.input(:contamination, label: 'Estimated contamination (%)') %>
-    <%= f.input(:most_complete_16s, label: 'Fraction of the most complete 16S rRNA gene fragment (%)') %>
-    <%= f.input(:number_of_16s, label: 'Number of 16S rRNA gene fragments') %>
+    <%= f.input(:completeness, label: 'Estimated completeness (%)', required: true) %>
+    <%= f.input(:contamination, label: 'Estimated contamination (%)', required: true) %>
+    <%= f.input(:most_complete_16s, label: 'Fraction of the most complete 16S rRNA gene fragment (%)', required: true) %>
+    <%= f.input(:number_of_16s, label: 'Number of 16S rRNA gene fragments', required: true) %>
     <%= f.input(:most_complete_23s, label: 'Fraction of the most complete 23S rRNA gene fragment (%)') %>
     <%= f.input(:number_of_23s, label: 'Number of 23S rRNA gene fragments') %>
-    <%= f.input(:number_of_trnas, label: 'Number of standard amino acids for which tRNA elements were detected') %>
+    <%= f.input(:number_of_trnas, label: 'Number of standard amino acids for which tRNA elements were detected', required: true) %>
 
     <h2 class="mt-5">Comments</h2>
     <p class="lead">
@@ -65,8 +65,8 @@
     <% if @tutorial %>
       <%= hidden_field_tag(:return_to, tutorial_path(@tutorial, next: true)) %>
     <% end %>
-    <%= f.button(:submit) %>
     <%= link_to('Cancel', @tutorial || @name || @genome, class: 'btn btn-secondary') %>
+    <%= f.button(:submit) %>
   </div>
 <% end %>
 <br/><br/>

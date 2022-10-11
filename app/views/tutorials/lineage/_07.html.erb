@@ -1,0 +1,27 @@
+
+<%= f.input(:id, as: :hidden) %>
+
+<br/>
+<p class="lead mt-2 mb-4 mx-1">
+  This is the last step of the guided registration. Once you proceed, the names
+  will be transferred to a validation list and will be automatically submitted
+  for curator review.
+</p>
+
+<h3>Names in this guided registration</h3>
+<ol class="blockquote">
+  <% @tutorial.names.each do |name| %>
+    <li><%= link_to_name(name) %></li>
+  <% end %>
+</ol>
+
+<div class="alert alert-info my-4">
+  <h3>Important note</h3>
+  <hr/>
+  If the effective publication for the names above has already been published in
+  a peer-reviewed venue, please continue to <b>Notify about effective
+  publication</b> after creating the validation list. Otherwise, just await the
+  approval from our curators.
+</div>
+
+

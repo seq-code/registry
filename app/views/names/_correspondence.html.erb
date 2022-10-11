@@ -10,9 +10,12 @@
     <% end %>
     <dt>New message</dt>
     <dd class="pt-2">
+      <% par = { id: @name.id } %>
+      <% tutorial ||= nil %>
+      <% par[:tutorial] = tutorial if tutorial %>
       <%= simple_form_for(
             NameCorrespondence.new,
-            url: new_correspondence_name_url(id: @name.id),
+            url: new_correspondence_name_url(par),
             method: :post
           ) do |f| %>
         <%= f.input(:message, as: :rich_text_area, label: false) %>

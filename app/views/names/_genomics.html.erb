@@ -42,20 +42,6 @@
       </dd>
     <% end %>
 
-    <% if @genome.seq_depth.present? %>
-      <dt><%= fa_icon('align-center') %> Sequencing depth</dt>
-      <dd><%= @genome.seq_depth %> X</dd>
-    <% end %>
-
-    <% if @genome.source? %>
-      <dt><%= fa_icon('flask') %> Source</dt>
-      <dd>
-        <%= link_to(@genome.source_link, target: '_blank') do %>
-          <%= @genome.source_text %> <%= fa_icon('external-link-alt') %>
-        <% end %>
-      </dd>
-    <% end %>
-
     <% if @genome.rrnas_or_trnas? %>
       <dt><%= fa_icon('splotch') %> Ribosomal and transfer RNA genes</dt>
       <dd>
@@ -81,6 +67,37 @@
               tRNAs for <%= pluralize(@genome.number_of_trnas_any, 'amino acid') %>
             </li>
           <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @genome.seq_depth.present? %>
+      <dt><%= fa_icon('align-center') %> Sequencing depth</dt>
+      <dd><%= @genome.seq_depth %> &times;</dd>
+    <% end %>
+
+    <% if @genome.source? %>
+      <dt><%= fa_icon('flask') %> Source</dt>
+      <dd>
+        <ul>
+          <% @genome.source_links.each do |link| %>
+            <li>
+              <%= link_to(link[0], target: '_blank', title: link[2]) do %>
+                <%= link[1] %> <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @genome.gc_content_any? %>
+      <dt><%= fa_icon('table') %> Other features</dt>
+      <dd>
+        <ul>
+          <li>
+            <b>G+C Content:</b> <%= @genome.gc_content_any %>%
+          </li>
         </ul>
       </dd>
     <% end %>

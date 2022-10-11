@@ -47,7 +47,7 @@
               %>
             <% end %>
             <% unless warn[:can_approve].blank? || @name.validated? %>
-              but can be safely ignored before validation
+              but <u>it can be safely ignored</u> before validation
             <% end %>
           </div>
         <% end %>

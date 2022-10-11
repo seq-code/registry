@@ -395,7 +395,7 @@ class NamesController < ApplicationController
         flash[:alert] = 'An unexpected error occurred with the correspondence'
       end
     end
-    redirect_to @name
+    redirect_to(@tutorial || @name)
   end
 
   private

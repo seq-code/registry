@@ -20,3 +20,8 @@
   </div>
 <% end %>
 
+<% if @tutorial.step < 7 %>
+  <br/><hr/>
+  <%= render(partial: 'names/correspondence', locals: { tutorial: @tutorial }) %>
+<% end %>
+

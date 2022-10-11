@@ -1,7 +1,7 @@
 <br/>
 <h1>New Register</h1>
 <% if @name %>
-  <p class='lead'>
+  <p class="lead">
     Add name to register for submission:
     <%= link_to(@name) do %>
       <%= @name.name_html %>
@@ -9,9 +9,17 @@
   </p>
 <% end %>
 
+<% if @tutorial %>
+  <p class="lead">
+    Add <%= pluralize(@tutorial.names.count, 'name') %>
+    in <%= link_to('guided registration', @tutorial) %> to this register:
+  </p>
+<% end %>
+
 <%= simple_form_for(@register) do |f| %>
   <div class="form-actions">
     <%= hidden_field_tag(:name, @name&.id) %>
+    <%= hidden_field_tag(:tutorial, @tutorial&.id) %>
     <% unless @registers.empty? %>
       <%= label_tag(:existing_register) %>
       <%=
@@ -22,7 +30,8 @@
               [
                 "#{r.accession} " \
                   "(created #{time_ago_in_words(r.created_at)} ago, " \
-                  "#{pluralize(r.names.size, 'name')})",
+                  "#{pluralize(r.names.size, 'name')}) -- " \
+                  "#{r.propose_title}",
                 r.accession
               ]
             end + [['Create a new register', nil]]

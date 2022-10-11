@@ -1,10 +1,10 @@
 
-<p class="lead mt-2 mx-1">
-  Carefully review that the names in the lineage are correct
+<p class="alert alert-warning mt-3">
+  Carefully review that the names in the lineage are correct before you continue
 </p>
 
-<div class="card card-body mb-3">
-  <b><%= @tutorial.lowest_classified_taxon_obj.inferred_rank %></b>
+<div class="card card-body mb-3 bg-light">
+  <b><%= @tutorial.lowest_classified_taxon_obj.inferred_rank.capitalize %></b>
   <%= link_to_name(@tutorial.lowest_classified_taxon_obj) %>
 </div>
 

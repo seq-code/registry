@@ -40,6 +40,10 @@ module Name::QualityChecks
         link_to: lambda { |w| [:edit, w.name] }
       },
 
+      candidatus_modifier: {
+        message: 'The name has a Candidatus modifier that should be removed'
+      }.merge(@@link_to_edit_spelling),
+
       # Section 1. General
       # Rules 1-6 deal with the structure of the SeqCode and the SeqCode
       # Committee, and do not regulate names
@@ -435,6 +439,10 @@ module Name::QualityChecks
     def empty?
       set.empty?
     end
+
+    def errors?
+      !set.empty? && set.any?(&:is_error?)
+    end
   end # QcWarningSet
 
   ##
@@ -446,7 +454,7 @@ module Name::QualityChecks
     @qc_warnings = QcWarningSet.new(self)
     return @qc_warnings if inferred_rank == 'domain'
 
-
+    @qc_warnings.add(:candidatus_modifier) if candidatus?
     @qc_warnings.add(:missing_rank) unless rank?
     @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
     @qc_warnings.add(:identical_external_name) unless external_homonyms.empty?

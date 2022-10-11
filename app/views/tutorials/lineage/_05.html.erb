@@ -1,3 +1,10 @@
 
-<%= render(partial: 'tutorials/lineage/04', locals: { f: f }) %>
+<%= render(partial: 'tutorials/lineage/header', locals: { f: f }) %>
+
+<%# STEP ONLY FOR SPECIES AND SUBSPECIES %>
+
+<% @name.only_display = true %>
+<%= render(partial: 'names/nomenclature') %>
+<% @name.only_display = nil %>
+
 

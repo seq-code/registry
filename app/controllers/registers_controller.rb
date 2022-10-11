@@ -7,6 +7,8 @@ class RegistersController < ApplicationController
       validate publish new_correspondence
     ]
   )
+  before_action(:set_name, only: %i[new create])
+  before_action(:set_tutorial, only: %i[new create])
   before_action(
     :authenticate_contributor!, only: %i[new create edit update destroy]
   )
@@ -59,7 +61,6 @@ class RegistersController < ApplicationController
   # GET /registers/new
   def new
     @register = Register.new
-    @name = Name.where(id: params[:name]).first
     @registers = current_user.registers.where(submitted: false)
     @crumbs = ['Register Lists']
   end
@@ -75,18 +76,20 @@ class RegistersController < ApplicationController
       @register = Register.where(accession: params[:existing_register]).first
     end
     @register ||= Register.new(user: current_user)
-    @name = Name.where(id: params[:name]).first
     @registers = current_user.registers.where(submitted: false)
 
-    respond_to do |format|
-      if @register.can_edit?(current_user) && @register.save &&
-           (!@name || @name.add_to_register(@register, current_user))
-        format.html { redirect_to @register, notice: "Register was successfully created." }
-        format.json { render :show, status: :created, location: @register }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @register.errors, status: :unprocessable_entity }
-      end
+    if @register.can_edit?(current_user) && @register.save &&
+         (!@name || @name.add_to_register(@register, current_user)) &&
+         (!@tutorial || @tutorial.add_to_register(@register, current_user))
+      flash[:notice] = 'Register was successfully created'
+    else
+      flash[:alert] = 'An error occurred while creating the registration list'
+    end
+
+    if @tutorial
+      submit
+    else
+      redirect_to @register
     end
   end
 
@@ -288,6 +291,18 @@ class RegistersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_register
       @register = Register.find_by(accession: params[:accession])
+    end
+
+    # Set tutorial if parameter defined
+    def set_tutorial
+      return if params[:tutorial].blank?
+      @tutorial = Tutorial.find(params[:tutorial])
+    end
+
+    # Set name if parameter defined
+    def set_name
+      return if params[:name].blank?
+      @name = Name.find(params[:name])
     end
 
     # Only allow a list of trusted parameters through.

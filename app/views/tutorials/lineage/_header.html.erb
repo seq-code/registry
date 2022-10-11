@@ -1,0 +1,14 @@
+
+<div class="card my-3">
+  <div class="card-body">
+    <h4><%= @name.inferred_rank.capitalize %></h4>
+    <%= @name.name_html %>
+    <%= link_to(@name, class: 'ml-2') do %>
+      [<%= fa_icon('vial') %> Edit in expert mode]
+    <% end %>
+    <%= f.input(:id, as: :hidden) %>
+    <hr/>
+    <%= f.submit('Continue registration', class: 'btn btn-primary') %>
+  </div>
+</div>
+

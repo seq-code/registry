@@ -50,6 +50,10 @@ module ApplicationHelper
     current_user.try :editor?
   end
 
+  def current_user?(user)
+    current_user && current_user == user
+  end
+
   def adaptable_list(opts = {}, &blk)
     opts[:type] ||= list_preference.to_sym
     list = AdaptableList.new(opts)

@@ -4,7 +4,9 @@
 
 <% if @name.can_autofill_etymology? || !@name.syllabication? %>
   <p class="lead">
-  <%= link_to(autofill_etymology_name_path(@name)) do %>
+  <% pars = {} %>
+  <% pars[:tutorial] = @tutorial.id if @tutorial %>
+  <%= link_to(autofill_etymology_name_path(@name, pars)) do %>
     <%= fa_icon('magic') %> &nbsp;
     Automatically fill the etymology
   <% end %>
@@ -65,7 +67,7 @@
   <% if @tutorial %>
     <%= hidden_field_tag(:return_to, tutorial_path(@tutorial, next: true)) %>
   <% end %>
-  <%= f.button(:submit, 'Submit') %>
   <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
+  <%= f.button(:submit, 'Submit') %>
   <br/><br/>
 <% end %>

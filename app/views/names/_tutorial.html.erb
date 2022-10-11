@@ -1,0 +1,9 @@
+<% if @name.tutorial && current_user?(@name.tutorial.user) &&
+      @name.tutorial.ongoing? %>
+  <div class="alert alert-info">
+    You have an ongoing guided registration including this name:
+    <b><%= @name.tutorial.title %></b>
+    <hr/>
+    <%= link_to('Continue', @name.tutorial, class: 'btn btn-info') %>
+  </div>
+<% end %>
