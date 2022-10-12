@@ -137,7 +137,7 @@ class Register < ApplicationRecord
   end
 
   def propose_doi
-    '10.25651/seqcode.%s' % accession
+    '10.57973/seqcode.%s' % accession
   end
 
   def citations
