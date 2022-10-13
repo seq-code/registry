@@ -2,7 +2,7 @@ class RegistersController < ApplicationController
   before_action(
     :set_register,
     only: %i[
-      show table list edit update destroy
+      show table list cite edit update destroy
       submit return return_commit approve notification notify
       validate publish new_correspondence
     ]
@@ -21,6 +21,7 @@ class RegistersController < ApplicationController
   before_action(
     :authenticate_can_view!, only: %i[show table list]
   )
+  before_action(:ensure_valid!, only: %i[list])
   before_action(
     :authenticate_can_edit!,
     only: %i[edit update destroy submit notification notify new_correspondence]
@@ -52,7 +53,8 @@ class RegistersController < ApplicationController
     @registers = @registers&.paginate(page: params[:page], per_page: 30)
   end
 
-  # GET /registers/r:abcd or /registers/r:abcd.json
+  # GET /registers/r:abcd
+  # GET /registers/r:abcd.json
   def show
     @names = @register.names.paginate(page: params[:page], per_page: 30)
     @crumbs = [['Register Lists', registers_url], @register.acc_url]
@@ -270,6 +272,10 @@ class RegistersController < ApplicationController
     end
   end
 
+  # GET /registers/r:abc/cite.xml
+  def cite
+  end
+
   # POST /registers/r:abc/new_correspondence
   def new_correspondence
     @register_correspondence = RegisterCorrespondence.new(
@@ -334,5 +340,9 @@ class RegistersController < ApplicationController
         flash[:alert] = 'User cannot edit register list'
         redirect_to(root_path)
       end
+    end
+
+    def ensure_valid!
+      @register.validated?
     end
 end

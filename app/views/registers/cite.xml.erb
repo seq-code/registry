@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd">
+  <identifier identifierType="DOI"><%= @register.propose_doi %></identifier>
+  <creators>
+    <creator>
+      <%# ========= Submitter ========= %>
+      <creatorName nameType="Personal"><%= @register.user.display_name %></creatorName>
+      <% if @register.user.given? %>
+      <givenName><%= @register.user.given %></givenName>
+      <% end %>
+      <% if @register.user.family? %>
+      <familyName><%= @register.user.family %></familyName>
+      <% end %>
+      <% if @register.user.orcid? %>
+      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org">https://orcid.org/<%= @register.user.orcid %></nameIdentifier>
+      <% else %>
+      <nameIdentifier nameIdentifierScheme="" schemeURI=""/>
+      <% end %>
+      <% if @register.user.affiliation_ror? %>
+      <affiliation affiliationIdentifier="https://ror.org/<%= @register.user.affiliation_ror %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= @register.user.affiliation %></affiliation>
+      <% elsif @register.user.affiliation? %>
+      <affiliation><%= @register.user.affiliation %></affiliation>
+      <% end %>
+    </creator>
+  </creators>
+  <%# ========= Title ========= %>
+  <titles>
+    <title><%= @register.title %></title>
+  </titles>
+  <publisher>SeqCode Registry</publisher>
+  <%# %>
+  <%# Note that the validation year *could* differ from the priority year! %>
+  <publicationYear><%= @register.validated_at.year %></publicationYear>
+  <resourceType resourceTypeGeneral="Text">NotificationList</resourceType>
+  <contributors>
+    <%# ========= Curators ========= %>
+    <% @register.curators.each do |curator| %>
+    <contributor contributorType="DataCurator">
+      <contributorName nameType="Personal"><%= curator.display_name %></contributorName>
+      <% if curator.given? %>
+      <givenName><%= curator.given %></givenName>
+      <% end %>
+      <% if curator.family? %>
+      <familyName><%= curator.family %></familyName>
+      <% end %>
+      <% if curator.orcid? %>
+      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org">https://orcid.org/<%= curator.orcid %></nameIdentifier>
+      <% else %>
+      <nameIdentifier nameIdentifierScheme="" schemeURI=""/>
+      <% end %>
+      <% if curator.affiliation_ror? %>
+      <affiliation affiliationIdentifier="https://ror.org/<%= curator.affiliation_ror %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= curator.affiliation %></affiliation>
+      <% elsif curator.affiliation? %>
+      <affiliation><%= curator.affiliation %></affiliation>
+      <% end %>
+    </contributor>
+    <% end %>
+    <contributor contributorType="RightsHolder">
+      <contributorName nameType="Organizational">The SeqCode Initiative</contributorName>
+      <nameIdentifier nameIdentifierScheme="" schemeURI=""/>
+      <affiliation/>
+    </contributor>
+  </contributors>
+  <dates>
+    <%# ========= Dates ========= %>
+    <% fmt = '%Y-%m-%d%H:%M:%S%Z' %>
+    <date dateType="Created"><%= @register.created_at.strftime(fmt) %></date>
+    <date dateType="Accepted"><%= @register.validated_at.strftime(fmt) %></date>
+    <date dateType="Other" dateInformation="Priority"><%= @register.priority_date.strftime(fmt) %></date>
+  </dates>
+  <relatedIdentifiers>
+    <%# ========= Citations ========= %>
+    <% @register.citations.each do |publication| %>
+    <relatedIdentifier relatedIdentifierType="DOI" relationType="Cites" resourceTypeGeneral="JournalArticle"><%= publication.doi %></relatedIdentifier>
+    <% end %>
+  </relatedIdentifiers>
+  <language>en</language>
+  <alternateIdentifiers>
+    <alternateIdentifier alternateIdentifierType="SeqCode Accession"><%= @register.acc_url %></alternateIdentifier>
+  </alternateIdentifiers>
+  <sizes/>
+  <formats/>
+  <version>1.0</version>
+  <rightsList>
+    <rights rightsURI="https://creativecommons.org/licenses/by/4.0/legalcode">Creative Commons Attribution 4.0 International</rights>
+  </rightsList>
+  <%# ========= Abstract ========= %>
+  <% if @register.abstract? %>
+  <descriptions>
+    <description descriptionType="Abstract"><%= @register.abstract.body.to_plain_text %></description>
+  </descriptions>
+  <% end %>
+</resource>
+

@@ -253,6 +253,13 @@ class Register < ApplicationRecord
     names.all?(&:after_approval?)
   end
 
+  def curators
+    @curators ||=
+      User.where(
+        id: names.pluck(:validated_by, :approved_by).flatten.compact.uniq
+      )
+  end
+
   private
 
   def assign_accession
