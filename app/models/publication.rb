@@ -127,7 +127,7 @@ class Publication < ApplicationRecord
   end
 
   def clean_abstract
-    abstract.gsub(/<[^>]+>/, '').gsub(/<script/i, '') if abstract
+    abstract.gsub(/<([^>]+>|script[^>]+>?)/, '') if abstract
   end
 
   def short_citation
