@@ -17,7 +17,7 @@ class Tutorial < ApplicationRecord
           title: 'Register species lineage',
           prompt: 'New species and parent taxa',
           description: 'If you want to register a novel species from a novel ' \
-                       'genus',
+                       'or existing genus',
           steps: [
             'Name and classification',
             'Lineage',
@@ -28,15 +28,6 @@ class Tutorial < ApplicationRecord
             'Quality checks',
             'Validation list'
           ]
-        },
-        species: {
-          title: 'Register species',
-          prompt: 'New species from a previously described genus',
-          description: 'If you want to register a new species from a genus ' \
-                       'that is already validly published under the SeqCode ' \
-                       'or under the ICNP rules, or currently under revision ' \
-                       'in the SeqCode Registry',
-          steps: []
         },
         subspecies: {
           title: 'Register subspecies',
@@ -183,10 +174,10 @@ class Tutorial < ApplicationRecord
         )
         return false
       end
-      if %w[genus species subspecies].include?(lct.inferred_rank)
+      if %w[species subspecies].include?(lct.inferred_rank)
         errors.add(
           :lowest_classified_taxon,
-          'must be above the rank of genus'
+          'must be above the rank of species'
         )
         return false
       end
