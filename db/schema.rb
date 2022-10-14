@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_13_182735) do
+ActiveRecord::Schema.define(version: 2022_10_14_140907) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 2022_10_13_182735) do
     t.text "gbif_json"
     t.datetime "gbif_at"
     t.datetime "queued_external"
+    t.integer "nomenclature_reviewer"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"

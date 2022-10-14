@@ -9,6 +9,10 @@ class User < ApplicationRecord
   has_many(:submitted_names, class_name: 'Name', foreign_key: 'submitted_by')
   has_many(:approved_names, class_name: 'Name', foreign_key: 'approved_by')
   has_many(:validated_names, class_name: 'Name', foreign_key: 'validated_by')
+  has_many(
+    :nomenclature_reviewed_for_names,
+    class_name: 'Name', foreign_key: 'nomenclature_reviewer'
+  )
   has_many(:registers)
   has_many(:name_correspondences)
   has_many(:register_correspondences)

@@ -31,6 +31,10 @@ class Name < ApplicationRecord
     :validated_by, optional: true,
     class_name: 'User', foreign_key: 'validated_by'
   )
+  belongs_to(
+    :nomenclature_reviewer, optional: true,
+    class_name: 'User', foreign_key: 'nomenclature_reviewer'
+  )
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
 

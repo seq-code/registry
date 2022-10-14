@@ -256,7 +256,8 @@ class Register < ApplicationRecord
   def curators
     @curators ||=
       User.where(
-        id: names.pluck(:validated_by, :approved_by).flatten.compact.uniq
+        id: names.pluck(:validated_by, :approved_by, :nomenclature_reviewer)
+                 .flatten.compact.uniq
       )
   end
 
