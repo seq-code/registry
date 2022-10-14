@@ -206,8 +206,9 @@ class Tutorial < ApplicationRecord
     ##
     # Lineage Step 01: Lineage
     def lineage_step_01(params, user)
-      mandatory = %i[species_name ranks]
+      mandatory = %i[species_name]
       require_params(params, mandatory) or return false
+      params[:ranks] ||= ''
 
       # Register names
       ranks = params[:ranks].split(' ') + ['species']
