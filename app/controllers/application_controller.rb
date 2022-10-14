@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
     params[:path] = "p:#{params[:path]}" if params[:path].in? super_pages
     case params[:path]
     when *%w[robots sw favicon apple-touch-icon apple-touch-icon-precomposed]
-      path = params[:path]
+      path = params[:path].gsub(/[^A-Za-z0-9-]/, '') # So code scanner is happy
       path = "#{path}.#{params[:format]}" if params[:format]
       redirect_to(File.join(root_path, path))
     when /\Ap:(.+)\z/
