@@ -191,6 +191,8 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redcarpet (3.5.1)
+    redirect_safely (1.0.0)
+      activemodel
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -303,6 +305,7 @@ DEPENDENCIES
   puma (~> 4.3)
   rails (~> 6.1)
   redcarpet (~> 3.5)
+  redirect_safely (~> 1.0)
   rexml
   sass-rails (~> 5.0)
   selenium-webdriver

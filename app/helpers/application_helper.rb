@@ -23,7 +23,7 @@ module ApplicationHelper
   end
 
   def list_type_selector
-    link_to(set_list_url) do
+    link_to(set_list_url(from: request.filtered_path)) do
       if list_preference.to_s == 'table'
         content_tag(:span, 'See as cards ') +
           fa_icon('th')

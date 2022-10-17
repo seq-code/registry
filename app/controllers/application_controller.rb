@@ -51,7 +51,12 @@ class ApplicationController < ActionController::Base
   def set_list
     list_preference = cookies['list'] || 'cards'
     cookies.permanent[:list] = list_preference == 'cards' ? 'table' : 'cards'
-    redirect_back(fallback_location: root_url)
+
+    if params[:from] && RedirectSafely.safe?(params[:from])
+      redirect_to(params[:from])
+    else
+      redirect_to(root_url)
+    end
   end
 
   # GET /link/Patescibacteria
@@ -65,7 +70,7 @@ class ApplicationController < ActionController::Base
     params[:path] = "p:#{params[:path]}" if params[:path].in? super_pages
     case params[:path]
     when *%w[robots sw favicon apple-touch-icon apple-touch-icon-precomposed]
-      path = params[:path]
+      path = RedirectSafely.safe?(params[:path]) ? params[:path] : '/'
       path = "#{path}.#{params[:format]}" if params[:format]
       redirect_to(File.join(root_path, path))
     when /\Ap:(.+)\z/

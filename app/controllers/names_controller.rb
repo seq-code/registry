@@ -83,6 +83,9 @@ class NamesController < ApplicationController
     @names = @names.where(status: opts[:status])
     @names = @names.where(opts[:where]) if opts[:where]
     @names = @names.paginate(page: params[:page], per_page: 30)
+
+    @count = @names.count
+    @count = @count.size if @count.is_a? Hash
     @crumbs = ['Names']
   end
 
