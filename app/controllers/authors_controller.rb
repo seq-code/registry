@@ -24,6 +24,9 @@ class AuthorsController < ApplicationController
         Author.order(:given, :family)
       end
     @authors = @authors.paginate(page: params[:page], per_page: 100)
+
+    @count = @authors.count
+    @count = @count.size if @count.is_a? Hash
     @crumbs = ['Authors']
   end
 

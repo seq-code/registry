@@ -17,6 +17,9 @@ class PublicationsController < ApplicationController
         Publication
       end
     @publications = @publications.paginate(page: params[:page], per_page: 10)
+
+    @count = @publications.count
+    @count = @count.size if @count.is_a? Hash
     @crumbs = ['Publications']
   end
 
