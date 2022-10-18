@@ -1,7 +1,23 @@
 <% if @name.auto? %>
-  <div class="alert alert-warning">
+  <div class="alert alert-info">
     This name was automatically created through literature mining,
-    and it currently has no standing or validity
+    and it currently has no standing or validity.<br/>
+    Authors of original publications are encouraged to claim the name
+    and submit it for validation
+    <hr/>
+    <% if user_signed_in? %>
+      <%= link_to(
+            claim_name_url(@name),
+            method: :post, class: 'btn btn-info btn-sm',
+            data: { confirm: 'Are you sure? This action cannot be undone' }
+          ) do %>
+        <%= fa_icon('flag') %> Claim name
+      <% end %>
+    <% else %>
+      <%= link_to('Login', new_user_session_path) %> or
+      <%= link_to('Signup', new_user_registration_path) %> to claim
+      this name.
+    <% end %>
   </div>
 <% elsif !@name.public? %>
   <div class="alert alert-warning">
