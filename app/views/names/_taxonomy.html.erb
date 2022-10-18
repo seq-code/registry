@@ -1,92 +1,95 @@
-<dl name="taxonomy" class="main-section name-details">
-  <h2>Taxonomy</h2>
+<% if @name.taxonomic_data? || @name.can_edit?(current_user) %>
+  <dl name="taxonomy" class="main-section name-details">
+    <h2>Taxonomy</h2>
 
-  <% if @name.description? || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon('file-alt') %> Description</dt>
-    <dd>
-      <%= @name.description %>
-      <% if @name.can_edit?(current_user) %>
-        <%= link_to(
-              edit_name_url(@name),
-              class: 'badge badge-pill badge-info',
-              title: 'edit description'
-            ) do %>
-          <%= fa_icon('edit') %> Edit
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% if @name.notes? || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon('sticky-note') %> Notes</dt>
-    <dd>
-      <%= @name.notes %>
-      <% if @name.can_edit?(current_user) %>
-        <%= link_to(
-              edit_notes_name_url(@name),
-              class: 'badge badge-pill badge-info',
-              title: 'edit notes'
-            ) do %>
-          <%= fa_icon 'edit' %> Edit
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% if @name.parent %>
-    <dt><%= fa_icon('layer-group') %> Classification</dt>
-    <dd><%= name_lineage(@name) %></dd>
-  <% end %>
-
-  <% if @name.parent || @name.incertae_sedis? || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon('sort-amount-up-alt') %> Parent</dt>
-    <dd>
-      <% if @name.incertae_sedis? %>
-        <div class="border-left px-3">
-          <b><%= @name.incertae_sedis_html %>:</b>
-          <%= @name.incertae_sedis_text %>
-        </div>
-      <% elsif @name.parent %>
-        <%= link_to_name(@name.parent) %>
-      <% end %>
-
-      <% if @name.can_edit?(current_user) %>
-        <%= link_to(
-              link_parent_name_path(@name),
-              class: 'badge badge-pill badge-info',
-              title: 'edit parent'
-            ) do %>
-          <%= fa_icon 'edit' %> Edit
-        <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% unless @name.children.empty? %>
-    <dt><%= fa_icon('sort-amount-down-alt') %> Children<dt>
-    <dd><ul class='pl-3'>
-      <%
-        set_type = @name.can_edit?(current_user) && @name.rank? &&
-                   %w[genus family].include?(@name.rank)
-      %>
-      <% @name.children.each do |child| %>
-        <li>
-          <%= link_to(child.name_html, child) %>
-          <% if set_type && @name.type_accession.to_i != child.id %>
-            <%= link_to(
-                  name_url(
-                    @name,
-                    name: { type_material: :name, type_accession: child.id }
-                  ),
-                  method: :patch,
-                  class: 'badge badge-pill badge-info',
-                  data: { confirm: 'Are you sure?' }
-                ) do %>
-              <%= fa_icon 'clipboard-check' %> Set as type
-            <% end %>
+    <% if @name.description? || @name.can_edit?(current_user) %>
+      <dt><%= fa_icon('file-alt') %> Description</dt>
+      <dd>
+        <%= @name.description %>
+        <% if @name.can_edit?(current_user) %>
+          <%= link_to(
+                edit_name_url(@name),
+                class: 'badge badge-pill badge-info',
+                title: 'edit description'
+              ) do %>
+            <%= fa_icon('edit') %> Edit
           <% end %>
-        </li>
-      <% end %>
-    </ul></dd>
-  <% end %>
-</dl>
+        <% end %>
+      </dd>
+    <% end %>
+
+    <% if @name.notes? || @name.can_edit?(current_user) %>
+      <dt><%= fa_icon('sticky-note') %> Notes</dt>
+      <dd>
+        <%= @name.notes %>
+        <% if @name.can_edit?(current_user) %>
+          <%= link_to(
+                edit_notes_name_url(@name),
+                class: 'badge badge-pill badge-info',
+                title: 'edit notes'
+              ) do %>
+            <%= fa_icon 'edit' %> Edit
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
+
+    <% if @name.parent %>
+      <dt><%= fa_icon('layer-group') %> Classification</dt>
+      <dd><%= name_lineage(@name) %></dd>
+    <% end %>
+
+    <% if @name.parent || @name.incertae_sedis? || @name.can_edit?(current_user) %>
+      <dt><%= fa_icon('sort-amount-up-alt') %> Parent</dt>
+      <dd>
+        <% if @name.incertae_sedis? %>
+          <div class="border-left px-3">
+            <b><%= @name.incertae_sedis_html %>:</b>
+            <%= @name.incertae_sedis_text %>
+          </div>
+        <% elsif @name.parent %>
+          <%= link_to_name(@name.parent) %>
+        <% end %>
+
+        <% if @name.can_edit?(current_user) %>
+          <%= link_to(
+                link_parent_name_path(@name),
+                class: 'badge badge-pill badge-info',
+                title: 'edit parent'
+              ) do %>
+            <%= fa_icon 'edit' %> Edit
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
+
+    <% unless @name.children.empty? %>
+      <dt><%= fa_icon('sort-amount-down-alt') %> Children<dt>
+      <dd><ul class='pl-3'>
+        <%
+          set_type = @name.can_edit?(current_user) && @name.rank? &&
+                     %w[genus family].include?(@name.rank)
+        %>
+        <% @name.children.each do |child| %>
+          <li>
+            <%= link_to(child.name_html, child) %>
+            <% if set_type && @name.type_accession.to_i != child.id %>
+              <%= link_to(
+                    name_url(
+                      @name,
+                      name: { type_material: :name, type_accession: child.id }
+                    ),
+                    method: :patch,
+                    class: 'badge badge-pill badge-info',
+                    data: { confirm: 'Are you sure?' }
+                  ) do %>
+                <%= fa_icon 'clipboard-check' %> Set as type
+              <% end %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul></dd>
+    <% end %>
+  </dl>
+<% end %>
+  </dl>

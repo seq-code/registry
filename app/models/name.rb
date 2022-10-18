@@ -593,6 +593,10 @@ class Name < ApplicationRecord
     end
   end
 
+  def taxonomic_data?
+    description? || notes? || parent || incertae_sedis? || !children.empty?
+  end
+
   # ============ --- GENOMICS --- ============
 
   def genome?
