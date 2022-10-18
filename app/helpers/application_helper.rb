@@ -22,6 +22,10 @@ module ApplicationHelper
     )
   end
 
+  def full_title(page_title = '')
+    page_title + (' | ' unless page_title.empty?) + 'SeqCode Registry'
+  end
+
   def list_type_selector
     link_to(set_list_url(from: request.filtered_path)) do
       if list_preference.to_s == 'table'

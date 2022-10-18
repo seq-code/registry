@@ -230,6 +230,22 @@ class Name < ApplicationRecord
     end
   end
 
+  def abbr_name_raw(name = nil, assume_valid = false)
+    name ||= self.name
+    if candidatus?
+      name.gsub(/^Candidatus /, 'Ca. ')
+    elsif (assume_valid || validated?) && name =~ /(.+) subsp\. (.+)/
+      "#{$1} subsp. #{$2}"
+    elsif (assume_valid || validated?) || inferred_rank == 'domain'
+      "#{name}" +
+        if rank == 'species' && parent&.type_accession&.==(id.to_s)
+          " (T#{'s' if status != 20})"
+        end
+    else
+      "\"#{name}\""
+    end
+  end
+
   def name_html(name = nil, assume_valid = false)
     name ||= self.name
     if candidatus?
