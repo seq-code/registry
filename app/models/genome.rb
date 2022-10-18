@@ -130,19 +130,15 @@ class Genome < ApplicationRecord
   end
 
   def quality
+    return nil unless completeness? && contamination?
+
     completeness - 5 * contamination
   end
 
   def quality_auto
-    completeness - 5 * contamination
-  end
+    return nil unless completeness_auto? && contamination_auto?
 
-  def quality?
-    completeness? && contamination?
-  end
-
-  def quality_auto?
-    completeness_auto? && contamination_auto?
+    completeness_auto - 5 * contamination_auto
   end
 
   %i[
