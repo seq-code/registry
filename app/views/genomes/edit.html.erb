@@ -22,7 +22,7 @@
       url: genome_url(@genome, name: params[:name]), method: :patch
     ) do |f| %>
   <%= f.error_notification %>
-  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+  <%= f.error_notification(message: f.object.errors[:base].to_sentence) if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
     <h2 class="mt-5">Genome information</h2>
@@ -30,7 +30,7 @@
       General information about the sequenced genome
     </p>
     <%= f.input(:kind, collection: Genome.kinds_opt, label: 'Type of genome', required: true) %>
-    <%= f.input(:seq_depth, label: 'Sequencing depth (X)', required: true) %>
+    <%= f.input(:seq_depth, label: 'Sequencing depth (X)') %>
 
     <h2 class="mt-5">Source material</h2>
     <p class="lead">
