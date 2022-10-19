@@ -224,6 +224,8 @@ class Name < ApplicationRecord
       "<i>#{name}</i>".html_safe +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
           " <sup>T#{'s' if status != 20}</sup>".html_safe
+        else
+          ''
         end
     else
       "&#8220;#{name}&#8221;".html_safe
@@ -240,6 +242,8 @@ class Name < ApplicationRecord
       "#{name}" +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
           " (T#{'s' if status != 20})"
+        else
+          ''
         end
     else
       "\"#{name}\""
