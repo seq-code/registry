@@ -235,7 +235,7 @@ module Name::QualityChecks
         },
         rules: %w[15]
       }.merge(@@link_to_edit_spelling),
-      inconsistent_with_type_genus: {
+      inconsistent_etymology_with_type_genus: {
         message: lambda { |w|
           "The etymology should be formed by the stem of the type " +
             "genus and the suffix -#{w.name.rank_suffix}"
@@ -579,7 +579,7 @@ module Name::QualityChecks
     end
 
     unless consistent_etymology_with_type_genus?
-      @qc_warnings.add(:inconsistent_with_type_genus)
+      @qc_warnings.add(:inconsistent_etymology_with_type_genus)
     end
 
     @qc_warnings.add(:long_name) if long_word?
@@ -737,11 +737,11 @@ module Name::QualityChecks
   end
 
   def consistent_with_type_genus?
-    return true unless rank? && type_is_name?
+    return true unless rank? && type_is_name? && rank != 'genus'
     return true unless rank_suffix
 
     root = base_name.sub(/#{rank_suffix}$/, '')
-    !!(type_name.base_name =~ /^#{root}/)
+    root == genus_root(type_name.base_name)
   end
 
   def consistent_etymology_with_type_genus?
