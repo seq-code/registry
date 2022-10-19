@@ -44,6 +44,11 @@ module Name::QualityChecks
         message: 'The name has a Candidatus modifier that should be removed'
       }.merge(@@link_to_edit_spelling),
 
+      too_many_amino_acids: {
+        message: 'The genome is reported to encode tRNAs for too many ' \
+                 'amino acids'
+      }.merge(@@link_to_edit_genome),
+
       # Section 1. General
       # Rules 1-6 deal with the structure of the SeqCode and the SeqCode
       # Committee, and do not regulate names
@@ -528,9 +533,12 @@ module Name::QualityChecks
         @qc_warnings.add(:low_genome_16s_completeness)
       end
 
-      if type_genome.number_of_trnas_any? &&
-         type_genome.number_of_trnas_any <= 16
-        @qc_warnings.add(:low_genome_trnas_completeness)
+      if type_genome.number_of_trnas_any?
+        if type_genome.number_of_trnas_any <= 16
+          @qc_warnings.add(:low_genome_trnas_completeness)
+        elsif type_genome.number_of_trnas_any > 21
+          @qc_warnings.add(:too_many_amino_acids)
+        end
       end
     end # type_is_genome?
 
