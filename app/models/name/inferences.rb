@@ -8,6 +8,7 @@ module Name::Inferences
       # - Acidaminococcus -- Acidaminococc-aceae
       # - Acidilobus -- Acidilob-aceae
       # - Acidimicrobium -- Acidimicrobi-aceae
+      # - Eubacterium -- Eubacteri-aceae
       base.gsub!(/u[ms]$/, '')
     when /glans$/
       # - Desulfatiglans -- Desulfatiglan-d-aceae
