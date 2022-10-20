@@ -653,7 +653,7 @@ module Name::QualityChecks
   end
 
   def consistent_type_rank?
-    return true if !rank? || %w[species subspecies].include?(rank) || !type?
+    return true if !rank? || !type_is_name?
 
     type_name.rank == expected_type_rank
   end
