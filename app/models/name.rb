@@ -484,6 +484,11 @@ class Name < ApplicationRecord
 
     @lineage ||= [self]
     while par = @lineage.first.parent
+      if @lineage.include? par
+        self.parent = nil
+        @lineage = [self]
+        break
+      end
       @lineage.unshift(par)
     end
     @lineage.pop
