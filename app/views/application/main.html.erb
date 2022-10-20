@@ -75,14 +75,23 @@
         <%= render(partial: 'shared/search_bar') %>
       </div>
       <p class="small mt-4">
-        We have identified or registered
+        We have identified
         <%= link_to(pluralize(@names.count, 'name'), names_path) %> from
         <%= link_to(
               pluralize(@publications.count, 'publication'),
               publications_path
             )
-        %> by
-        <%= link_to(pluralize(@authors.count, 'author'), authors_path) %>.
+        %>, including
+        <%= link_to(
+              pluralize(@validated[:names].count, 'valid name'),
+              names_path(status: 'SeqCode')
+            )
+        %> in
+        <%= link_to(
+              pluralize(@validated[:registers].count, 'list'),
+              registers_path(status: 'validated')
+            )
+        %>.
       </p>
     </div>
     <div class="tab-pane fade jumbotron p-5" id="read-content" role="tabpanel" aria-labelledby="read-tab">
@@ -127,11 +136,11 @@
     </div>
     <div class="col-lg-4 pb-5">
       <div class="text-center bg-light rounded-lg border p-5 h-100">
-        <h2>Authors</h2>
-        <% @authors.first(5).each do |author| %>
-          <hr/><%= link_to(author.full_name, author) %>
+        <h2>Validated names</h2>
+        <% @validated[:names].first(5).each do |name| %>
+          <hr/><%= link_to(name.abbr_name, name) %>
         <% end %>
-        <hr/><%= link_to('more...', authors_path) %>
+        <hr/><%= link_to('more...', names_path(sort: :date, status: :SeqCode)) %>
       </div>
     </div>
   </div>
