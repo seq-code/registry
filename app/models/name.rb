@@ -528,7 +528,12 @@ class Name < ApplicationRecord
   end
 
   def type_is_name?
-    type? && type_material == 'name'
+    # TODO
+    # The last check is to account for type names that have been
+    # eliminated after setting them as type. This causes a mostly
+    # unnecessary DB query, so a more efficient solution would be
+    # to trigger unlinking on name destruction
+    type? && type_material == 'name' && !type_name.nil?
   end
 
   def type_is_genome?
