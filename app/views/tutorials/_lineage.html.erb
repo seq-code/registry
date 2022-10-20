@@ -1,11 +1,13 @@
 <%= simple_form_for(@tutorial) do |f| %>
   <%= render(partial: 'bar', locals: { f: f }) %>
-  <%=
-    render(
-      partial: "tutorials/#{@tutorial.pipeline}/#{'%02i' % @tutorial.step}",
-      locals: { f: f }
-    )
-  %>
+  <% if @tutorial.step < 2 || @name %>
+    <%=
+      render(
+        partial: "tutorials/#{@tutorial.pipeline}/#{'%02i' % @tutorial.step}",
+        locals: { f: f }
+      )
+    %>
+  <% end %>
   <div class="actions">
     <% if @tutorial.step > 0 %>
       <%=
