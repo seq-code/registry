@@ -1,4 +1,4 @@
-<% if @name.can_edit?(current_user) %>
+<% if @name&.can_edit?(current_user) %>
   <dl name="correspondence" class="main-section name-details">
     <h2>Correspondence with curators</h2>
     <% @name.correspondences.each do |correspondence| %>
