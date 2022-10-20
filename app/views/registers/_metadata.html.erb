@@ -65,7 +65,7 @@
 
       <%# TODO Once publication is sorted out, this should be `published?` %>
       <% if @register.validated? %>
-        <dt><%= fa_icon(:asterisk) %> How to cite</dt>
+        <dt><%= fa_icon('book-open') %> How to cite</dt>
         <dd>
           <%= @register.user.display_name %>
           (<%= @register.validated_at.year %>).
