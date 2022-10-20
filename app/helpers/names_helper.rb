@@ -21,8 +21,11 @@ module NamesHelper
   end
 
   def name_lineage(name)
-    name.lineage.map do |name|
-      link_to(name.name_html, name) + content_tag(:span, ' &raquo; '.html_safe)
-    end.inject(:+) + @name.name_html
+    content_tag(:span, '') +
+      name.lineage.map do |name|
+        link_to(name.name_html, name) +
+          content_tag(:span, ' &raquo; '.html_safe)
+      end.inject(:+) +
+      @name.name_html
   end
 end
