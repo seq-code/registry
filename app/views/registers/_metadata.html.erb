@@ -1,11 +1,10 @@
 <div class="container main-section name-details">
   <div class="row">
-    <dl class="col-md-7">
-      <% if @register.title? %>
-        <dt><%= fa_icon('book-open')  %> Title</dt>
-        <dd><%= @register.title %></dd>
-      <% end %>
+    <% if @register.title? %>
+      <h3 class="mb-4 mx-4 border-bottom pb-1"><%= @register.title %></h3>
+    <% end %>
 
+    <dl class="col-md-7">
       <dt><%= fa_icon(:barcode) %> Accession</dt>
       <dd><%= @register.acc_url %></dd>
 
