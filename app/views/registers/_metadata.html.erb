@@ -1,6 +1,11 @@
 <div class="container main-section name-details">
   <div class="row">
     <dl class="col-md-7">
+      <% if @register.title? %>
+        <dt><%= fa_icon('book-open')  %> Title</dt>
+        <dd><%= @register.title %></dd>
+      <% end %>
+
       <dt><%= fa_icon(:barcode) %> Accession</dt>
       <dd><%= @register.acc_url %></dd>
 
@@ -55,8 +60,21 @@
       <% end %>
 
       <% if @register.notes? %>
-        <dt><%= fa_icon 'sticky-note' %> Notes</dt>
+        <dt><%= fa_icon('sticky-note') %> Notes</dt>
         <dd><%= @register.notes %></dd>
+      <% end %>
+
+      <%# TODO Once publication is sorted out, this should be `published?` %>
+      <% if @register.validated? %>
+        <dt><%= fa_icon(:asterisk) %> How to cite</dt>
+        <dd>
+          <%= @register.user.display_name %>
+          (<%= @register.validated_at.year %>).
+          <%= @register.propose_title %>.
+          <i>The SeqCode Registry</i>
+          <%= @register.accession %>.
+          https://doi.org/<%= @register.propose_doi %>
+        </dd>
       <% end %>
     </dl>
     <div class="col-md-5 border-left border-secondary">
