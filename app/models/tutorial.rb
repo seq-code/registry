@@ -29,6 +29,13 @@ class Tutorial < ApplicationRecord
             'Validation list'
           ]
         },
+        batch: {
+          title: 'Batch upload of new names',
+          prompt: 'New names from a single spreadsheet',
+          description: 'If you want to upload up to 100 names described in a ' \
+                       'spreadsheet template',
+          steps: []
+        },
         subspecies: {
           title: 'Register subspecies',
           prompt: 'New subspecies from a previously described species',
@@ -87,7 +94,7 @@ class Tutorial < ApplicationRecord
 
   def lowest_classified_taxon_obj
     @lowest_classified_taxon_obj ||=
-      Name.find_by(id: value(:lowest_classified_taxon_id))
+      Name.where(id: value(:lowest_classified_taxon_id)).first
   end
 
   def lowest_new_name
@@ -98,7 +105,7 @@ class Tutorial < ApplicationRecord
   end
 
   def current_name
-    @current_name ||= Name.find(value(:current_name_id))
+    @current_name ||= Name.where(id: value(:current_name_id)).first
   end
   
   def next_action
