@@ -533,7 +533,7 @@ class Name < ApplicationRecord
     # eliminated after setting them as type. This causes a mostly
     # unnecessary DB query, so a more efficient solution would be
     # to trigger unlinking on name destruction
-    type? && type_material == 'name' && !type_name.nil?
+    type? && type_material == 'name' && !type_name(false).nil?
   end
 
   def type_is_genome?
@@ -547,8 +547,8 @@ class Name < ApplicationRecord
       end
   end
 
-  def type_name
-    if type_is_name?
+  def type_name(check_material = true)
+    if !check_material || type_is_name?
       @type_name ||= self.class.where(id: type_accession).first
     end
   end
