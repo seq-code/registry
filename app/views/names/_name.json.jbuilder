@@ -32,8 +32,17 @@ end
 json.parent(id: name.parent.id, name: name.parent.name) if name.parent
 json.children(name.children) { |child| json.(child, :id, :name) }
 
-# QC Warnings
-json.qc_warnings(name.qc_warnings.map(&:to_hash))
+if name.validated?
+  # Register list
+  json.register(
+    acc: name.register.acc_url,
+    doi: name.register.propose_doi,
+    url: register_url(name.register, format: :json)
+  )
+else
+  # QC Warnings
+  json.qc_warnings(name.qc_warnings.map(&:to_hash))
+end
 
 # Local metadata
 json.(name, :created_at, :updated_at)

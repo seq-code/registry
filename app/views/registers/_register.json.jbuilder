@@ -1,6 +1,18 @@
-json.extract! register, :accession, :validated_by, :submitted, :validated, :publication_id, :created_at, :updated_at
-json.acc_url register.acc_url(true)
+json.extract!(
+  register, :acc_url, :title, :submitted, :validated,
+  :created_at, :updated_at, :priority_date
+)
+json.validated_by register.validated_by&.display_name
+json.submitter register.user&.display_name
+if register.publication_id
+  json.effective_publication(
+    id: register.publication_id,
+    url: publication_url(register.publication_id, format: :json)
+  )
+else
+  json.effective_publication(nil)
+end
+if register.validated?
+  json.doi(register.propose_doi)
+end
 json.url register_url(register, format: :json)
-#json.publication_pdf url_for(register.publication_pdf)
-#json.supplementary_pdf url_for(register.supplementary_pdf)
-#json.record_pdf url_for(register.record_pdf)
