@@ -9995,6 +9995,7 @@ uni-obuda.hu
 uni-bge.hu
 ufn.edu.br
 iitbbs.ac.in
+sciencespo-rennes.fr
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10006,3 +10007,4 @@ pnnl.gov
 embl.de
 nih.gov
 scilifelab.se
+pasteur.fr
