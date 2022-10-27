@@ -1,0 +1,21 @@
+<h1>
+  Type genomes of valid names
+  <small class='text-muted'>(<%= @names.count %>)</small>
+</h1>
+<div class="container p-0">
+  <div class="row">
+    <div class="col-sm-9">
+    </div>
+    <div class="col-sm-3 text-right">
+      <%= list_type_selector %>
+    </div>
+  </div>
+</div>
+<hr/>
+
+<%= adaptable_list(set: @names) do |list| %>
+  <% @names.each do |name| %>
+    <%= render(partial: name, locals: { list: list }) %>
+  <% end %>
+<% end %>
+

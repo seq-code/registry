@@ -32,15 +32,17 @@ end
 json.parent(id: name.parent.id, name: name.parent.name) if name.parent
 json.children(name.children) { |child| json.(child, :id, :name) }
 
-if name.validated?
-  # Register list
+# Register list
+if name.status == 15
   json.register(
     acc: name.register.acc_url,
     doi: name.register.propose_doi,
     url: register_url(name.register, format: :json)
   )
-else
-  # QC Warnings
+end
+
+# QC Warnings
+unless name.validated?
   json.qc_warnings(name.qc_warnings.map(&:to_hash))
 end
 

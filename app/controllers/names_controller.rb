@@ -89,6 +89,14 @@ class NamesController < ApplicationController
     @crumbs = ['Names']
   end
 
+  # GET /type-genomes
+  # GET /type-genomes.json
+  def type_genomes
+    @names = Name.where(status: 15, type_material: :nuccore)
+                 .or(Name.where(status: 15, type_material: :assembly))
+                 .paginate(page: params[:page], per_page: 100)
+  end
+
   # GET /user-names
   def user_names
     user = current_user
