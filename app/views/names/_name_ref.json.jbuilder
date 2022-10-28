@@ -1,5 +1,5 @@
 # Basic data
-json.(name, :id, :name, :rank, :status_name)
+json.(name, :id, :name, :rank, :status_name, :type_material, :type_accession)
 
 # Local metadata
 json.(name, :created_at, :updated_at)
