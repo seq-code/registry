@@ -68,10 +68,9 @@ class ApplicationController < ActionController::Base
     params[:path].sub!(%r[\A/+], '')
     params[:path].sub!(%r[(?<!/)/+\z], '')
     params[:path] = "p:#{params[:path]}" if params[:path].in? super_pages
-    case params[:path]
+    case path = params[:path]
     when *%w[robots sw favicon apple-touch-icon apple-touch-icon-precomposed]
-      path = RedirectSafely.safe?(params[:path]) ? params[:path] : '/'
-      path = "#{path}.#{params[:format]}" if params[:format]
+      path += '.' + params[:format].gsub(/[^A-Z0-9]/i, '') if params[:format]
       redirect_to(File.join(root_path, path))
     when /\Ap:(.+)\z/
       redirect_to(page_path($1))
