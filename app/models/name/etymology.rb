@@ -180,6 +180,8 @@ module Name::Etymology
   # - The rules above don't explicitly define a vowel. Appart from the
   #   above digraphs, the letters a, e, i, o, and u are considered vowels,
   #   as well as the letter y except at the beginning of a word
+  # - The last two syllables are merged back if the last syllable results in
+  #   only consonants, as in vi-vens (which would otherwise result in vi-ven-s)
   def guess_syllabication(word = last_epithet)
     pos = 0
     syllables = ['']
@@ -229,7 +231,6 @@ module Name::Etymology
         # (e.g., "vi-ta" and "ho-ra")
         syllables << '' if next_consonant && !post_consonant
 
-        # LRR: The following is not 
       else
         # 3. After the first consonant when two or more consonants follow a
         # vowel (e.g., "mis-sa", "minis-ter", and "san-ctus").
@@ -240,6 +241,13 @@ module Name::Etymology
     end
 
     syllables.delete_if(&:empty?)
+
+    # Join last and second to last syllables if the last syllable is
+    # exclusively composed of consonants (e.g., vi-vens)
+    if syllables[-1] =~ /^[^aeiouy]+$/
+      syllables[-2] += syllables[-1]
+      syllables.pop
+    end
 
     # Propose emphasis
     if syllables.size == 1
