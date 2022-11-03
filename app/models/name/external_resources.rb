@@ -184,7 +184,9 @@ module Name::ExternalResources
     return gbif_homonyms unless gbif_homonyms.empty?
 
     # Finally, try COL, which is the least convenient but most comprehensive
-    return col_homonyms unless col_homonyms.empty?
+    ### Excluding COL for now, since it generates too many false positives
+    ### that cannot be filtered due to the lack of additional information
+    ### return col_homonyms unless col_homonyms.empty?
 
     []
   end
