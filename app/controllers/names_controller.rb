@@ -71,7 +71,11 @@ class NamesController < ApplicationController
     @names =
       case @sort
       when 'date'
-        Name.order(created_at: :desc)
+        if opts[:status] == 15
+          Name.order(validated_at: :desc)
+        else
+          Name.order(created_at: :desc)
+        end
       when 'citations'
         Name
           .left_joins(:publication_names).group(:id)

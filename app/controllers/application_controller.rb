@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
           .or(Name.where(status: 15))
           .order(created_at: :desc)
     @validated = {
-      names: Name.where(status: 15),
+      names: Name.where(status: 15).order(validated_at: :desc),
       registers: Register.where(validated: true)
     }
   end
