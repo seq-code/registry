@@ -354,7 +354,7 @@ module Name::QualityChecks
       # APPENDIX I
       low_genome_sequencing_depth: {
         message: 'The sequencing depth of the type genome should be 10X or greater',
-        recommendations: %w[appendix-i]
+        rules: %w[appendix-i]
       }.merge(@@link_to_edit_genome),
       low_genome_completeness: {
         message: 'The completeness of the type genome should be above 90%',
@@ -500,17 +500,17 @@ module Name::QualityChecks
         end
       end
 
+      # Sequencing depth checks
+      seq_depth_extra = {}
+      if type_genome.mag_or_sag?
+        # Sequencing depth (≥10x) is only a recommendation for MAGs/SAGs
+        seq_depth_extra = { recommendations: %w[appendix-i], rules: [] }
+      end
+
       if !type_genome.seq_depth?
-        @qc_warnings.add(:missing_genome_sequencing_depth)
-      elsif type_genome.mag_or_sag? && type_genome.seq_depth < 10.0
-        @qc_warnings.add(:low_genome_sequencing_depth)
-      elsif type_genome.isolate? && type_genome.seq_depth < 10.0
-        # A rule for isolates (only a recommendation for SAGs/MAGs)
-        @qc_warnings.add(
-          :low_genome_sequencing_depth,
-          recommendations: [],
-          rules: %w[appendix-i]
-        )
+        @qc_warnings.add(:missing_genome_sequencing_depth, seq_depth_extra)
+      elsif type_genome.seq_depth < 10.0
+        @qc_warnings.add(:low_genome_sequencing_depth, seq_depth_extra)
       end
 
       # Completeness and contamination are only required for MAGs/SAGs
