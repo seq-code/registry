@@ -24,7 +24,7 @@
             <div class="text-muted">
               <b>§ Contravenes SeqCode</b>:
               <% unless warn[:rules].blank? %>
-                <%= warn[:rules].size == 1 ? 'Rule' : 'Rules' %>
+                Rule<%= 's' unless warn[:rules].size == 1 %>
                 <%=
                   warn[:rules]
                     .map { |i| link_to_rule(i) }.to_sentence.html_safe
@@ -36,7 +36,7 @@
                 %>
               <% end %>
               <% unless warn[:rule_notes].blank? %>
-                Note to <%= pluralize(warn[:rule_notes].size, 'Rule') %>
+                Note to Rule<%= 's' unless warn[:rule_note].size == 1 %>
                 <%=
                   warn[:rule_notes]
                     .map { |i| link_to_rule(i) }.to_sentence.html_safe
@@ -44,7 +44,7 @@
                 <%= 'and' if warn[:recommendations] %>
               <% end %>
               <% unless warn[:recommendations].blank? %>
-                <%= pluralize(warn[:recommendations].size, 'Recommendation') %>
+                Recommendation<%= 's' unless warn[:recommendations].size == 1 %>
                 <%=
                   warn[:recommendations]
                     .map { |i| link_to_recommendation(i) }.to_sentence.html_safe
