@@ -119,10 +119,11 @@ class Publication < ApplicationRecord
   end
 
   def authors_et_al
-    if authors.count < 3
-      authors.pluck(:family).join(', ')
+    family = authors.pluck(:family) # To reduce SQL requests
+    if family.count < 3
+      family.join(', ')
     else
-      authors.pluck(:family).first + ' et al.'
+      family.first + ' et al.'
     end
   end
 
