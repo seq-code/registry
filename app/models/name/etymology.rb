@@ -122,7 +122,7 @@ module Name::Etymology
       Name.where('name LIKE ?', "% #{last_epithet}")
           .where.not(id: id)
           .where.not(etymology_xx_grammar: [nil, ''])
-          .order(status: :asc, modified_at: :desc)
+          .order(status: :asc, updated_at: :desc)
           .limit(1).first
   end
 
