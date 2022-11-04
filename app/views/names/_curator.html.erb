@@ -1,4 +1,4 @@
-<% if current_curator? %>
+<% if current_curator? && !@name.validated? %>
   <dl name="curator" class="main-section name-details">
     <h2>Curator Actions</h2>
     <dd class="pt-2">
@@ -36,20 +36,20 @@
         &raquo; Indicate that this name has already been validly published under
         the ICNP
         <hr/>
-      <% end %>
-      <% if @name.after_submission? && !@name.validated? %>
-        <%= link_to(
-              return_name_url(@name),
-              method: :post,
-              class: 'btn btn-primary btn-sm',
-              data: {
-                confirm: 'Are you sure? The author will regain edit access'
-              }
-            ) do %>
-          <%= fa_icon('undo-alt') %> Return to submitter
+        <% if @name.after_submission? %>
+          <%= link_to(
+                return_name_url(@name),
+                method: :post,
+                class: 'btn btn-primary btn-sm',
+                data: {
+                  confirm: 'Are you sure? The author will regain edit access'
+                }
+              ) do %>
+            <%= fa_icon('undo-alt') %> Return to submitter
+          <% end %>
+          &raquo; Send this name back to the author for additional revisions
+          <hr/>
         <% end %>
-        &raquo; Send this name back to the author for additional revisions
-        <hr/>
       <% end %>
     </dd>
   </dl>
