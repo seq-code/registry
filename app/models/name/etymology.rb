@@ -1,4 +1,6 @@
 module Name::Etymology
+  attr_accessor :autofilled_etymology
+
   ##
   # Pull the component identified as +component+ from the name, and return
   # the field +field+
@@ -120,13 +122,14 @@ module Name::Etymology
       Name.where('name LIKE ?', "% #{last_epithet}")
           .where.not(id: id)
           .where.not(etymology_xx_grammar: [nil, ''])
-          .last
+          .order(status: :asc, modified_at: :desc)
+          .limit(1).first
   end
 
   ##
   # Can the etymology be automatically filled on the basis of the type genus?
   def can_autofill_etymology?
-    return false unless rank?
+    return false if autofilled_etymology || !rank?
     (type_is_name? && type_name.rank == 'genus') || !importable_etymology.nil?
   end
 
@@ -137,20 +140,27 @@ module Name::Etymology
     self.syllabication = guess_syllabication unless syllabication?
     return unless can_autofill_etymology?
 
+    self.autofilled_etymology = true
     clean_etymology
     if type_is_name? && type_name.rank == 'genus'
-      # Based on type genus
+      # Type genus
       self.etymology_p1_lang = type_name.language
       self.etymology_p1_grammar = type_name.grammar
       self.etymology_p1_particle = type_name.base_name
       self.etymology_p1_description =
         "referring to the type #{type_name.rank} #{type_name.base_name}"
-      self.etymology_p2_lang = 'N.L.'
       gen = %w[family order].include?(rank) ? 'fem.' : 'neut.'
-      self.etymology_p2_grammar = "#{gen} pl. suff."
+
+      # Suffix
+      # The below lines are correct, but the language and grammar of standard
+      # suffixes are not proposed in the interest of simplicity (LRR):
+      # self.etymology_p2_lang = 'N.L.'
+      # self.etymology_p2_grammar = "#{gen} pl. suff."
       self.etymology_p2_particle = "-#{rank_suffix}"
       self.etymology_p2_description =
         "ending to denote #{rank[0] =~ /[aeiou]/ ? 'an' : 'a'} #{rank}"
+
+      # Full word
       self.etymology_xx_lang = 'N.L.'
       self.etymology_xx_grammar = "#{gen} pl. n."
       self.etymology_xx_description = "the #{type_name.base_name} #{rank}"
