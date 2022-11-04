@@ -129,14 +129,16 @@ module ApplicationHelper
     o.compact.inject(:+)
   end
 
-  def modal(title)
+  def modal(title, opts = {})
     @modals ||= []
     id = "modal-#{@modals.size}"
     @modals <<
       content_tag(
         :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog'
       ) do
-        content_tag(:div, class: 'modal-dialog', role: 'document') do
+        dialog_class = 'modal-dialog'
+        dialog_class += " modal-#{opts[:size]}" if opts[:size]
+        content_tag(:div, class: dialog_class, role: 'document') do
           content_tag(:div, class: 'modal-content') do
             content_tag(:div, class: 'modal-header') do
               content_tag(:h5, title, class: 'modal-title') +

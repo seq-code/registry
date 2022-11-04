@@ -2,16 +2,24 @@
 <h3>&raquo; Etymology of the word <u><b><%= @name.last_epithet %></b></u></h3>
 <hr/>
 
-<% if @name.can_autofill_etymology? || !@name.syllabication? %>
-  <p class="lead">
-  <% pars = {} %>
-  <% pars[:tutorial] = @tutorial.id if @tutorial %>
-  <%= link_to(autofill_etymology_name_path(@name, pars)) do %>
-    <%= fa_icon('magic') %> &nbsp;
-    Automatically fill the etymology
+<div class="mt-3 mb-4">
+  <% if @name.can_autofill_etymology? || !@name.syllabication? %>
+    <% pars = {} %>
+    <% pars[:tutorial] = @tutorial.id if @tutorial %>
+    <%= link_to(autofill_etymology_name_path(@name, pars), class: 'btn btn-primary') do %>
+      <%= fa_icon('magic') %> &nbsp;
+      Automatically fill the etymology
+    <% end %>
   <% end %>
-  </p>
-<% end %>
+
+  <% help_id = modal('Etymology help', size: 'xl') do %>
+    <%= render(partial: 'etymology_help') %>
+  <% end %>
+  <%= modal_button(help_id, class: 'btn btn-info') do %>
+    <%= fa_icon('question-circle') %>&nbsp;
+    How to fill the etymology table
+  <% end %>
+</div>
 
 <%= simple_form_for(@name) do |f| %>
   <%= f.input(:syllabication, label: 'Syllabification', required: false, autofocus: true) %>
