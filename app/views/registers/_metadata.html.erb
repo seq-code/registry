@@ -1,9 +1,9 @@
 <div class="container main-section name-details">
-  <div class="row">
-    <% if @register.title? %>
-      <h3 class="mb-4 mx-3 border-bottom pb-1"><%= @register.title %></h3>
-    <% end %>
+  <% if @register.title? %>
+    <h3 class="mb-4 mx-3 border-bottom pb-1"><%= @register.title %></h3>
+  <% end %>
 
+  <div class="row">
     <dl class="col-md-7">
       <dt><%= fa_icon(:barcode) %> Accession</dt>
       <dd><%= @register.acc_url %></dd>
