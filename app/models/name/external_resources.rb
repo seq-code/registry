@@ -15,7 +15,7 @@ module Name::ExternalResources
   def queue_for_external_resources
     unless queued_for_external_resources
       NameExternalResourcesJob.perform_later(self)
-      update(queued_external: DateTime.now)
+      update_column(:queued_external, DateTime.now)
     end
   end
 
@@ -44,10 +44,8 @@ module Name::ExternalResources
     body = external_request(uri)
 
     if body.present?
-      update(
-        "#{service}_json" => body.force_encoding('UTF-8'),
-        "#{service}_at" => Time.now
-      )
+      send("#{service}_json=", body.force_encoding('UTF-8'))
+      send("#{service}_at=", Time.now)
     end
   end
 
@@ -78,7 +76,7 @@ module Name::ExternalResources
 
     # Return parsed cached response or nil
     if external_json(service)
-      update(queued_external: nil) if queued_for_external_resources
+      update_column(:queued_external, nil) if queued_for_external_resources
       @external_hash[service] = JSON.parse(
         external_json(service), symbolize_names: true
       )
@@ -190,6 +188,5 @@ module Name::ExternalResources
 
     []
   end
-  
-end
 
+end

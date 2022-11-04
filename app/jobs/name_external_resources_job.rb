@@ -3,11 +3,13 @@ class NameExternalResourcesJob < ApplicationJob
 
   def perform(*names)
     names.each do |name|
-      name.make_external_requests = true
       Name.transaction do
+        name.make_external_requests = true
         name.external_homonyms
         name.gbif_homonyms
-        name.update(queued_external: nil)
+        name.queued_external = nil
+        name.save(touch: false)
+        name.make_external_requests = false
       end
     end
   end
