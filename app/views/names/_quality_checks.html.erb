@@ -36,7 +36,7 @@
                 %>
               <% end %>
               <% unless warn[:rule_notes].blank? %>
-                Note to Rule<%= 's' unless warn[:rule_note].size == 1 %>
+                Note to Rule<%= 's' unless warn[:rule_notes].size == 1 %>
                 <%=
                   warn[:rule_notes]
                     .map { |i| link_to_rule(i) }.to_sentence.html_safe
