@@ -7,20 +7,24 @@ module PageHelper
     send("page_#{name}_path")
   end
 
-  def link_to_rule(number)
-    link_to_rule_or_recommendation('rule', number)
+  def link_to_rule(number, text = nil)
+    link_to_rule_or_recommendation('rule', number, text)
   end
 
-  def link_to_recommendation(number)
-    link_to_rule_or_recommendation('recommendation', number)
+  def link_to_recommendation(number, text = nil)
+    link_to_rule_or_recommendation('recommendation', number, text)
   end
 
-  def link_to_rule_or_recommendation(section, number)
+  def link_to_rule_or_recommendation(section, number, text = nil)
     if number =~ /^appendix-(\S+)$/
-      link_to_seqcode_section("Appendix #{$1.upcase}", "appendix-#{$1}")
+      text ||= "Appendix #{$1.upcase}"
+      anchor = "appendix-#{$1}"
     else
-      link_to_seqcode_section(number, "#{section}-#{number.gsub(/\..*/, '')}")
+      text ||= number
+      anchor = "#{section}-#{number.to_s.gsub(/\..*/, '')}"
     end
+
+    link_to_seqcode_section(text, anchor)
   end
 
   def link_to_seqcode_section(text, anchor)
