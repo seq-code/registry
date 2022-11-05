@@ -48,10 +48,25 @@ class PublicationsController < ApplicationController
       if params[:link_name] && params[:link_name][:id]
         @name = Name.find(params[:link_name][:id])
         par = { publication: @publication, name: @name }
-        PublicationName.new(par).save if PublicationName.where(par).empty?
-      end
+        pn = PublicationName.find_or_create_by(par)
 
-      redirect_to(@publication)
+        case params[:link_name][:as]
+        when 'propose'
+          @name.update(proposed_by: @publication)
+          redirect_to(@name, notice: 'Effective publication registered')
+        when 'corrig'
+          redirect_to(
+            corrigendum_by_name_url(@name, publication_id: @publication.id)
+          )
+        when 'emend'
+          pn.update(emends: true)
+          redirect_to(@name, notice: 'Emending publication registered')
+        else
+          redirect_to(@name, notice: 'Corrigendum registered')
+        end
+      else
+        redirect_to(@publication)
+      end
     end
   end
 

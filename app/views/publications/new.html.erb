@@ -7,17 +7,33 @@
 </p>
 
 <%= simple_form_for(@publication, hrml: { method: :post }) do |f| %>
-  <%= f.input(:doi, required: true, autofocus: true, label: 'DOI') %>
+  <%= f.input(:doi,
+              required: true, autofocus: true, label: 'DOI of publication') %>
   <% if @name %>
     <%= hidden_field(:link_name, :id, value: @name.id) %>
     <p>
       This publication will be automatically linked to
-      <%= link_to(@name) do %>
-        <%= @name.abbr_name %>
-      <% end %>
+      <%= link_to(@name) { @name.abbr_name } %>:
+      <div class="m-3">
+        <label>
+          <%= radio_button(:link_name, :as, :propose) %>
+          Proposing the name (effective publication)
+        </label><br/>
+        <label>
+          <%= radio_button(:link_name, :as, :emend) %>
+          Emending the name (<i>emend.</i>)
+        </label><br/>
+        <label>
+          <%= radio_button(:link_name, :as, :corrig) %>
+          Correcting the name (<i>corrig.</i>)
+        </label><br/>
+        <label>
+          <%= radio_button(:link_name, :as, :cite, checked: true) %>
+          Citing the name
+        </label>
+      </div>
     </p>
+    <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
   <% end %>
   <%= f.button(:submit, 'Register') %>
 <% end %>
-<hr/>
-<%= link_to 'Back', publications_path %>
