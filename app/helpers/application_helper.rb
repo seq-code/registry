@@ -171,7 +171,10 @@ module ApplicationHelper
   def help_message(title = '', opts = {})
     id = modal(title) { yield }
     opts[:class] ||= ''
-    modal_button(id, opts) { fa_icon('question-circle', class: 'hover-help') }
+    modal_button(id, opts) do
+      content_tag(:span, opts[:text], class: 'text-info') +
+      fa_icon('question-circle', class: 'hover-help')
+    end
   end
 
   def yield_modals
