@@ -18,6 +18,14 @@
         <label>
           <%= radio_button(:link_name, :as, :propose) %>
           Proposing the name (effective publication)
+          <%= help_message('Effective Publication') do %>
+            For the purposes of the SeqCode, an "Effective publication" refers
+            to: The peer-reviewed publication in which a name first appears.
+            Under the SeqCode, preprints are not eligible as an effective
+            publication.
+            See <%= link_to_rule('24a', 'Rule 24') %> for additional
+            explanation.
+          <% end %>
         </label><br/>
         <label>
           <%= radio_button(:link_name, :as, :emend) %>

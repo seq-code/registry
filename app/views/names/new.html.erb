@@ -1,15 +1,29 @@
 <br/>
 <h1>New Name</h1>
 <p class='lead'>
-  Carefully revise the spelling of the name before submitting.
+  Carefully revise the spelling of the name before submitting.<br/>
+  <%= help_message('What is a name?', text: 'What is a name ') do %>
+    <p>
+      For the purposes of the SeqCode, a name can be defined as: The label
+      applied to an object. A word or set of words by which a taxon is known,
+      addressed, or referred to. A term used for identification.
+      <br/><br/>
+      Provide the novel name proposed for registration and validation under the
+      SeqCode.
+      If this is a species name, be sure to provide both the genus name and
+      species epithet here (<i>e.g.</i>, <i>Wolframiiraptor gerlachensis</i>).
+      Upon completion of the information for the species, continue to complete
+      the information for registration of the genus
+      (<i>e.g.</i>, <i>Wolframiiraptor</i>) and higher taxonomic ranks
+      (<i>i.e.</i>, family, order, class, or phylum).
+    </p>
+  <% end %>
 </p>
 
 <%= simple_form_for(@name, hrml: { method: :post }) do |f| %>
   <%= f.input :name, required: true, autofocus: true %>
   <%= f.button :submit, 'Register' %>
 <% end %>
-<hr/>
-<%= link_to 'Back', names_path %>
 
 <br/><br/><br/>
 <%= render(partial: 'shared/cc') %>
