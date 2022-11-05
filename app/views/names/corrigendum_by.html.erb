@@ -6,7 +6,6 @@
     Corrigendum by <%= link_to(@publication.short_citation, @publication) %>
   </h4>
   <%= f.hidden_field(:corrigendum_by) %>
-  <%= f.hidden_field(:redirect_to, value: request.referrer) %>
   <%=
     f.input(
       :corrigendum_from, required: true, autofocus: true,

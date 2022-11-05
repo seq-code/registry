@@ -275,7 +275,7 @@ class NamesController < ApplicationController
     par = params.require(:name).permit(:corrigendum_by, :corrigendum_from)
     par[:corrigendum_by] = Publication.find(par[:corrigendum_by])
     @name.update(par)
-    redirect_to(params[:name][:redirect_to] || @name)
+    redirect_to(@name)
   end
 
   # POST /names/1/emended_by/2
