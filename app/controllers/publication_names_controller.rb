@@ -15,13 +15,23 @@ class PublicationNamesController < ApplicationController
   end
 
   # DELETE /publication_names/1
-  # DELETE /publication_names/1.json
   def destroy
-    @publication_name.destroy
-    respond_to do |format|
-      format.html { redirect_to publications_url, notice: 'Publication name was successfully destroyed.' }
-      format.json { head :no_content }
+    name = @publication_name.name
+    publication = @publication_name.publication
+    PublicationName.transaction do
+      if name.proposed_by == publication
+        name.update(proposed_by: nil)
+      end
+      if name.corrigendum_by == publication
+        name.update(corrigendum_by: nil, corrigendum_from: nil)
+      end
+      @publication_name.destroy
     end
+
+    redirect_to(
+      params[:from_name] ? name : publication,
+      notice: 'The publication was unlinked from the name'
+    )
   end
 
   # GET /publications/1/link_names

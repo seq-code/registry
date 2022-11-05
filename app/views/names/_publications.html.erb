@@ -65,7 +65,8 @@
               <% end %>
 
               <%= link_to(
-                    publication_name, class: 'badge badge-pill badge-info',
+                    publication_name_url(publication_name, from_name: true),
+                    class: 'badge badge-pill badge-info',
                     method: :delete, title: 'Unlink this publication',
                     data: { confirm: 'Are you sure?' }
                   ) do %>
