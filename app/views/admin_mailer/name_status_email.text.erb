@@ -1,0 +1,82 @@
+<% case @action %>
+<% when 'approve' %>
+  The name <%= @name.name %> has been approved.
+  
+  What does this mean?
+  ====================
+  Our team of curators have marked this name and the associated metadata as
+  suitable for validation. However, names are not valid (and do not have
+  priority) until they have been published and the Registry is notified of
+  publication.
+  
+  What to do next?
+  ================
+  If you are currently writing the manuscript that describes this taxon,
+  undergoing peer-review, or the manuscript is currently in press, please
+  remember to notify the SeqCode registry once the paper has been published.
+  <% if @name.register %>
+  If the paper has already been published and a DOI has been assigned, notify
+  the SeqCode Registry at:
+  <%= notification_register_url(@name.register) %>
+  <% end %>
+  To view the name's entry in the Registry, visit:
+  <%= name_url(@name) %>
+<% when 'return' %>
+  The name <%= @name.name %> has been returned.
+
+  What does this mean?
+  ====================
+  Our team of curators have found some issues with the name and have returned
+  it to you for further inspection.
+
+  What to do next?
+  ================
+  Review the correspondance with the curators to determine the following
+  actions in the name page:
+  <%= name_url(@name) %>
+  <% if @name.register %>
+  Additional information may also be available in the register list page:
+  <%= register_url(@name.register) %>
+  <% end %>
+<% when 'validate' %>
+  The name <%= @name.name %> has been validated.
+
+  What does this mean?
+  ====================
+  The name is now considered valid under the SeqCode.
+
+  What to do next?
+  ================
+  You can cite the name without quotation marks now. The formal recommended
+  styling is: <%= @name.formal_txt %>
+  <% if @name.register %>
+  You can also cite the register list using the assigned DOI:
+  <%= @name.register.doi_url %>
+  (it may take a few days before the DOI is properly registered).
+  <% end %>
+<% when 'claim' %>
+  You have claimed the name <%= @name.name %>
+
+  What does this mean?
+  ====================
+  The data and metadata associated to this name are no longer publicly
+  available, and you are now able to edit all the associated metadata.
+
+  What to do next?
+  ================
+  You can now complete all the validation requirements and submit the name for
+  approval. To see and edit the name data and metadata, visit:
+  <%= name_url(@name) %>
+<% when 'unclaim' %>
+  You have unclaimed the name <%= @name.name %>.
+
+  What does this mean?
+  ====================
+  You are no longer authorized to modify this name's data and metadata.
+
+  What to do next?
+  ================
+  If you were aware and agree with this, you don't need to take any further
+  actions. If you think this was a mistake, please contact us at:
+  <%= page_connect_url %>
+<% end %>

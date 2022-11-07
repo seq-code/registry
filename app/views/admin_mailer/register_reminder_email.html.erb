@@ -1,0 +1,27 @@
+<% list_s = @registers.count == 1 ? 'list' : 'lists' %>
+<p>
+  You have pending actions for the following register <%= list_s %>:
+</p>
+<ul>
+  <% @registers.each do |register| %>
+    <li>
+      <b><%= link_to(register.acc_url, register.acc_url(true)) %></b>:
+      <% if register.all_approved? && !register.notified? %>
+        All the names in the register list have been approved but you have
+        not yet notified of effective publication. If the effective
+        publication is still under review, please dismiss this reminder,
+        otherwise
+        <%= link_to('notify the SeqCode Registry',
+                    notification_register_url(register)) %>.
+      <% elsif !register.submitted? %>
+        This register list has been in <i>draft</i> status for over a month.
+        Please don't forget to finalize and submit so our team of curators
+        can proceed to evaluate your entries.
+      <% else %>
+        <%# This should never happen, but just in case... %>
+        Visit the register page to determine the next steps for validation.
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+

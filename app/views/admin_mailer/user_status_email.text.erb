@@ -1,0 +1,37 @@
+<% case @action[1] %>
+<% when 'approve' %>
+  Your application as a <%= @action[0] %> of the SeqCode Registry has been
+  approved.
+
+  What does this mean?
+  ====================
+  <% case @action[0] %>
+  <% when 'curator' %>
+  You are now authorized to access and edit any pre-validation names, including
+  changing their status (e.g., approving or returning to submitters). We
+  appreciate your commitment to the community, and thank you for enrolling as a
+  curator.
+  <% when 'contributor' %>
+  You are now authorized to register and submit new names to the SeqCode
+  Registry. If the Registry already includes any names you want to submit and
+  these names have status of "Automated Discovery", you can now claim these
+  names too.
+  <% end %>
+<% when 'deny' %>
+  Your application as a <%= @action[0] %> of the SeqCode Registry has been
+  denied.
+
+  What does this mean?
+  ====================
+  <% case @action[0] %>
+  <% when 'curator' %>
+  You are not authorized to curate other submitter's records in the Registry,
+  but you can still submit your own names as a contributor.
+  <% when 'contributor' %>
+  You are not authorized to submit any new names using this account.
+  <% end %>
+
+  We appreciate your interest in serving as a <%= @action[0] %>.
+  If you would like to appeal this decision, please contact us at:
+  <%= page_connect_url %>
+<% end %>

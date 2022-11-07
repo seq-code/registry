@@ -329,6 +329,12 @@ class NamesController < ApplicationController
     if !@name.after_submission?
       flash[:alert]  = 'Name status is incompatible with return'
     elsif @name.update(par)
+      # Email notification
+      AdminMailer.with(
+        user: @name.created_by,
+        name: @name,
+        action: 'return'
+      ).name_status_email.deliver_later
       flash[:notice] = 'Name returned to author'
     else
       flash[:alert]  = 'An unexpected error occurred'
@@ -345,12 +351,19 @@ class NamesController < ApplicationController
       if @name.validated?
         flash[:alert] = 'Name status is incompatible with validation'
       elsif @name.update(par)
+        # Email notification
+        AdminMailer.with(
+          user: @name.created_by,
+          name: @name,
+          action: 'validate'
+        ).name_status_email.deliver_later
         flash[:notice] = 'Name successfully validated'
       else
         flash[:alert] = 'An unexpected error occurred'
       end
     else
-      flash[:alert] = 'Invalid procedure for nomenclatural code ' + params[:code]
+      flash[:alert] =
+        'Invalid procedure for nomenclatural code ' + params[:code]
     end
     redirect_to(@name)
   end
@@ -361,6 +374,12 @@ class NamesController < ApplicationController
     if @name.after_approval?
       flash[:alert] = 'Name status is incompatible with approval'
     elsif @name.update(par)
+      # Email notification
+      AdminMailer.with(
+        user: @name.created_by,
+        name: @name,
+        action: 'approve'
+      ).name_status_email.deliver_later
       flash[:notice] = 'Name successfully approved'
     else
       flash[:alert] = 'An unexpected error occurred'
@@ -375,6 +394,12 @@ class NamesController < ApplicationController
     if !@name.can_claim?(current_user)
       flash[:alert]  = 'You cannot claim this name'
     elsif @name.update(par)
+      # Email notification
+      AdminMailer.with(
+        user: current_user,
+        name: @name,
+        action: 'claim'
+      ).name_status_email.deliver_later
       flash[:notice] = 'Name successfully claimed'
     else
       flash[:alert]  = 'An unexpected error occurred'
@@ -389,6 +414,12 @@ class NamesController < ApplicationController
     if !curator_or_owner || @name.status != 5
       flash[:alert]  = 'You cannot unclaim this name'
     elsif @name.update(par)
+      # Email notification
+      AdminMailer.with(
+        user: @name.created_by,
+        name: @name,
+        action: 'unclaim'
+      ).name_status_email.deliver_later
       flash[:notice] = 'Name successfully returned to the public pool'
     else
       flash[:alert]  = 'An unexpected error occurred'

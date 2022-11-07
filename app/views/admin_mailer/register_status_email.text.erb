@@ -1,0 +1,60 @@
+<% name_s = @register.names.count == 1 ? 'name' : 'names' %>
+<% case @action %>
+<% when 'approve' %>
+  The register list <%= @register.acc_url %> has been approved.
+  
+  What does this mean?
+  ====================
+  Our team of curators have marked this list and all the included names and
+  their associated metadata as suitable for validation. However, names are not
+  valid (and do not have priority) until they have been published and the
+  Registry is notified of publication.
+
+  What to do next?
+  ================
+  If you are currently writing the manuscript that describes these taxa,
+  undergoing peer-review, or the manuscript is currently in press, please
+  remember to notify the SeqCode registry once the paper has been published.
+
+  If the paper has already been published and a DOI has been assigned, please
+  notify the SeqCode Registry at:
+  <%= notification_register_url(@register) %>
+<% when 'validate' %>
+  The register list <%= @register.acc_url %> has been validated.
+
+  What does this mean?
+  ====================
+  All the names in this list are now considered valid under the SeqCode. The
+  exact priority date for all included names is: <%= @register.priority_date %>.
+
+  What to do next?
+  ================
+  You can now cite the registration list using the assigned DOI:
+  <%= @register.doi_url %>
+  (it may take a few days before the DOI is properly registered).
+  
+  You can also cite the <%= name_s %> without quotation marks now. The formal
+  recommended styling for the included <%= name_s %> is:
+  <% @register.names.each do |name| %>
+    - <%= name.formal_txt %>
+  <% end %>
+<% when 'return' %>
+  The register list <%= @register.acc_url %> has been returned to you.
+
+  What does this mean?
+  ====================
+  Our team of curators have identified at least one blocking issue with your
+  list, and have returned it to you for inspection.
+
+  What to do next?
+  ================
+  Please visit the register list page and revise the correspondence with
+  curators to identify the next steps. Visit the register list page at:
+  <%= @register.acc_url(true) %>
+
+  <% unless @register.notes.empty? %>
+  System and curator notes
+  ========================
+  <%= @register.notes.body.to_plain_text %>
+  <% end %>
+<% end %>

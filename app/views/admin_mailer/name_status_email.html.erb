@@ -1,0 +1,94 @@
+<% case @action %>
+<% when 'approve' %>
+  <p>The name <%= link_to(@name.name_html, @name) %> has been approved.</p>
+  <br/>
+  <h2>What does this mean?</h2>
+  <p>
+    Our team of curators have marked this name and the associated metadata
+    as suitable for validation. However, names are not valid (and do not
+    have priority) until they have been published and the Registry is
+    notified of publication.
+  </p>
+  <br/>
+  <h2>What to do next?</h2>
+  <p>
+    If you are currently writing the manuscript that describes this taxon,
+    undergoing peer-review, or the manuscript is currently in press, please
+    remember to notify the SeqCode registry once the paper has been
+    published.
+    <% if @name.register %>
+      <br/>
+      If the paper has already been published and a DOI has been assigned,
+      <%= link_to('Notify the SeqCode Registry',
+                  notification_register_url(@name.register)) %>.
+    <% end %>
+  </p>
+<% when 'return' %>
+  <p>The name <%= link_to(@name.name_html, @name) %> has been returned.</p>
+  <br/>
+  <h2>What does this mean?</h2>
+  <p>
+    Our team of curators have found some issues with the name and have returned
+    it to you for further inspection.
+  </p>
+  <br/>
+  <h2>What to do next?</h2>
+  <p>
+    Review the correspondance with the curators to determine the following
+    actions in the <%= link_to('name page', @name) %>.
+    <% if @name.register %>
+      <br/>
+      Additional information may also be available in the
+      <%= link_to('register list page', @name.register) %>.
+    <% end %>
+  </p>
+<% when 'validate' %>
+  <p>The name <%= link_to(@name.name_html, @name) %> has been validated.</p>
+  <br/>
+  <h2>What does this mean?</h2>
+  <p>
+    The name is now considered valid under the SeqCode.
+  </p>
+  <br/>
+  <h2>What to do next?</h2>
+  <p>
+    You can cite the name without quotation marks now. The formal recommended
+    styling is: <%= @name.formal_html %>
+    <% if @name.register %>
+      <br/>
+      You can also cite the register list using the assigned DOI:
+      <%= link_to(@name.register.doi_url, @name.register.doi_url) %>
+      (it may take a few days before the DOI is properly registered).
+    <% end %>
+  </p>
+<% when 'claim' %>
+  <p>You have claimed the name <%= link_to(@name.name_html, @name) %>.</p>
+  <br/>
+  <h2>What does this mean?</h2>
+  <p>
+    The data and metadata associated to this name are no longer publicly
+    available, and you are now able to edit all the associated metadata.
+  </p>
+  <br/>
+  <h2>What to do next?</h2>
+  <p>
+    You can now complete all the validation requirements and submit the
+    name for approval. To see and edit the name data and metadata,
+    <%= link_to('visit the name page', @name) %>.
+  </p>
+<% when 'unclaim' %>
+  <p>You have unclaimed the name <%= @name.name_html %>.</p>
+  <br/>
+  <h2>What does this mean?</h2>
+  <p>
+    You are no longer authorized to modify this name's data and metadata.
+  </p>
+  <br/>
+  <h2>What to do next?</h2>
+  <p>
+    If you were aware and agree with this, you don't need to take any further
+    actions. If you think this was a mistake, please
+    <%= link_to('contact us', page_connect_url) %>.
+  </p>
+<% end %>
+

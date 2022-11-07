@@ -16,7 +16,8 @@ class UsersController < ApplicationController
   )
 
   def index
-    @users = User.all.order('created_at').paginate(page: params[:page], per_page: 30)
+    @users = User.all.order('created_at')
+                 .paginate(page: params[:page], per_page: 30)
   end
 
   def show
@@ -95,6 +96,10 @@ class UsersController < ApplicationController
     def status_application_action(params)
       if @user.update(params)
         flash[:notice] = 'Application successfully processed'
+
+        # Notify user
+        AdminMailer.with(user: @user, params: params)
+                   .user_status_email.deliver_later
       else
         flash[:alert] = 'Error processing application, still pending'
       end
