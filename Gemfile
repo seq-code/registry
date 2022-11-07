@@ -29,7 +29,6 @@ gem 'whenever', require: false
 gem 'image_processing', '~> 1.2'
 gem 'redirect_safely', '~> 1.0'
 
-
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
