@@ -19,7 +19,7 @@ class AdminMailer < ApplicationMailer
       else
         %w[unknown unknown]
       end
-    mail(subject: 'Your Application Process Completed')
+    mail(subject: 'New user status in SeqCode Registry')
   end
 
   ##
