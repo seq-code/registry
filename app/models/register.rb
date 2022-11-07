@@ -140,6 +140,10 @@ class Register < ApplicationRecord
     '10.57973/seqcode.%s' % accession
   end
 
+  def doi_url
+    'https://doi.org/%s' % propose_doi
+  end
+
   def citations
     @citations ||=
       ([publication] + sorted_names.map(&:citations).flatten).compact.uniq

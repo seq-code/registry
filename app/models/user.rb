@@ -60,6 +60,10 @@ class User < ApplicationRecord
     full_name? ? full_name : "SeqCode user #{username}"
   end
 
+  def informal_name
+    given? ? given : username
+  end
+
   def academic_email?
     uni_dom = Rails.root.join('lib', 'uni-domains.txt')
     File.open(uni_dom, 'r') do |fh|

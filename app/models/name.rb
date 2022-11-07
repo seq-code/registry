@@ -289,6 +289,10 @@ class Name < ApplicationRecord
     y.html_safe
   end
 
+  def formal_txt
+    "#{formal_html}".gsub(/<[^>]+>/, '').gsub(/&#822[01];/, "'")
+  end
+
   def rank_suffix
     self.class.rank_suffixes[inferred_rank.to_s.to_sym]
   end
