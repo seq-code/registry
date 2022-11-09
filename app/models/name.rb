@@ -206,6 +206,10 @@ class Name < ApplicationRecord
   end
 
   # ============ --- NOMENCLATURE --- ============
+  def sanitize(str)
+    ActionView::Base.full_sanitizer.sanitize(str)
+  end
+
   def candidatus?
     name.match? /^Candidatus /
   end
@@ -251,7 +255,7 @@ class Name < ApplicationRecord
   end
 
   def name_html(name = nil, assume_valid = false)
-    name ||= self.name
+    name = sanitize(name || self.name)
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
     elsif (assume_valid || validated?) && name =~ /(.+) subsp\. (.+)/
@@ -278,7 +282,7 @@ class Name < ApplicationRecord
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
     y += " <i>corrig.</i>".html_safe if corrigendum_by
-    y += " #{proposed_by.short_citation}" if proposed_by
+    y += " #{sanitize(proposed_by.short_citation)}" if proposed_by
     if priority_date && priority_date.year != proposed_by&.journal_date&.year
       y += " (valid #{priority_date.year})"
     end
@@ -290,7 +294,7 @@ class Name < ApplicationRecord
   end
 
   def formal_txt
-    "#{formal_html}".gsub(/<[^>]+>/, '').gsub(/&#822[01];/, "'")
+    sanitize(formal_html.gsub(/&#822[01];/, "'"))
   end
 
   def rank_suffix

@@ -5,7 +5,7 @@ unless name.description.empty?
     raw: name.description.body.to_plain_text, html: name.description.body
   )
 end
-json.formal_styling(raw: strip_tags(name.formal_html), html: name.formal_html)
+json.formal_styling(raw: name.formal_txt, html: name.formal_html)
 json.etymology(name.full_etymology(false))
 json.type(name.type_is_name? ? name.type_name.name : name.type_text)
 
