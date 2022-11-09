@@ -18,5 +18,8 @@ module CandidatusExcubia
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
+
+    # Define mailer job method
+    config.action_mailer.delivery_job = 'ActionMailer::MailDeliveryJob'
   end
 end

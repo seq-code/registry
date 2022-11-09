@@ -63,7 +63,8 @@ class RegistersController < ApplicationController
   # GET /registers/new
   def new
     @register = Register.new
-    @registers = current_user.registers.where(submitted: false)
+    @registers =
+      current_user.registers.where(submitted: false, validated: false)
     @crumbs = ['Register Lists']
   end
 
@@ -152,10 +153,16 @@ class RegistersController < ApplicationController
       @register.update!(
         submitted: false, notified: false, notes: params[:register][:notes]
       )
-      # TODO Notify submitter
     end
 
-    redirect_to @register
+    # Notify submitter
+    AdminMailer.with(
+      user: @register.user,
+      register: @register,
+      action: 'return'
+    ).register_status_email.deliver_later
+
+    redirect_to(@register)
   end
 
   # POST /registers/r:abcd/approve
@@ -165,8 +172,14 @@ class RegistersController < ApplicationController
       @register.names.each do |name|
         name.update!(par) unless name.after_approval?
       end
-      # TODO Notify submitter
     end
+
+    # Notify submitter
+    AdminMailer.with(
+      user: @register.user,
+      register: @register,
+      action: 'approve'
+    ).register_status_email.deliver_later
 
     redirect_to(@register)
   end
@@ -233,6 +246,14 @@ class RegistersController < ApplicationController
     else
       flash['alert'] = 'An unexpected error occurred while validating the list'
     end
+
+    # Notify submitter
+    AdminMailer.with(
+      user: @register.user,
+      register: @register,
+      action: 'validate'
+    ).register_status_email.deliver_later
+
     redirect_to(@register)
   end
 

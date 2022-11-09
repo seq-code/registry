@@ -7,8 +7,12 @@
 #   rake "some:great:rake:task"
 # end
 
-every 1.week do
+every 1.day do
   rake 'works:update names:find parents:infer'
+end
+
+every 1.month do
+  runner 'ReminderMail.register_reminder'
 end
 
 # IF CHANGED, don't forget to run:
