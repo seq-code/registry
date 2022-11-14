@@ -37,10 +37,10 @@ class AdminMailer < ApplicationMailer
   end
 
   ##
-  # Periodic reminder for contributors
+  # Periodic reminder for contributors sent by +ReminderMail.register_reminder+
   def register_reminder_email
     @registers = params[:registers]
-    mail(subject: 'SeqCode Weekly Reminder')
+    mail(subject: 'SeqCode Monthly Reminder')
   end
 
 end
