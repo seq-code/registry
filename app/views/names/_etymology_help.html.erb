@@ -1,7 +1,11 @@
 
 <h2>Video Tutorial</h2>
 <div class="text-center mt-3 mb-5">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/y3T7yGgLD6E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="560" height="315" frameborder="0"
+          src="https://www.youtube.com/embed/y3T7yGgLD6E"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
 </div>
 
 <hr/>
@@ -181,4 +185,48 @@
   </tbody> 
 </table>
 <br/>
+
+<hr/>
+
+<h2>Additional Resources</h2>
+
+<p class="my-3">
+  To learn more about etymology and nomenclature of prokaryotes, we invite you
+  to read these external resources:
+</p>
+<ul>
+  <li>
+    <b>Appendix 9 of the ICNP.</b>
+    <%= link_to('https://doi.org/10.1099/ijsem.0.000778', target: :_blank) do %>
+      DOI: 10.1099/ijsem.0.000778
+      <%= fa_icon('external-link-alt') %>
+    <% end %>
+  </li>
+  <li>
+    <b>Oren A (2015).</b>
+    <i>How to name new taxa of archaea and bacteria.</i>
+    Bergey's Manual of Systematics of Archaea and Bacteria 17:1-24.
+    <%= link_to(
+          'https://doi.org/10.1002/9781118960608.bm00008.pub2',
+          target: :_blank) do %>
+      DOI: 10.1002/9781118960608.bm00008.pub2
+      <%= fa_icon('external-link-alt') %>
+    <% end %>
+  </li>
+  <li>
+    <%= link_to('https://lpsn.dsmz.de/text/etymology', target: :_blank) do %>
+      <b>Etymology (LPSN)</b>
+      <%= fa_icon('external-link-alt') %>
+    <% end %>
+  </li>
+  <li>
+    <b>Lewis CT, Short C (1879).</b> <i>A Latin Dictionary.</i>
+    <%= link_to(
+         'https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0059',
+         target: :_blank) do %>
+      Perseus, Latin-English Dictionary
+      <%= fa_icon('external-link-alt') %>
+    <% end %>
+  </li>
+</ul>
 
