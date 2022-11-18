@@ -28,75 +28,87 @@
         @name.only_display = true
       %>
       <dl>
-        <dt>Etymology</dt>
-        <dd>
-          <% if name.syllabication? %>
-            [<%= name.syllabication %>]
-          <% end %>
-          <%= name.full_etymology(true) %>
-        </dd>
-        <dt>Nomenclatural type</dt>
-        <dd>
-          <% if name.type_is_name? %>
-            <%= name.type_name.rank.capitalize %>
-            <% if @register.names.include? name.type_name %>
-              <%= name.type_name.name_html(nil, true) %>
-            <% else %>
-              <%= name.type_name.name_html %>
-            <% end %>
-          <% elsif name.type? %>
-            <%= link_to(name.type_text, name.type_link) %> <sup>Ts</sup>
-          <% else %>
-            <u>Unknown</u>
-          <% end %>
-        </dd>
-        <% if name.description? %>
-          <dt>Description</dt>
+        <div class="avoid-page-break">
+          <dt>Etymology</dt>
           <dd>
-            <%= name.description %>
+            <% if name.syllabication? %>
+              [<%= name.syllabication %>]
+            <% end %>
+            <%= name.full_etymology(true) %>
           </dd>
-        <% end %>
-        <dt>Classification</dt>
-        <dd>
-          <% if name.parent %>
-            <% name.lineage.each do |par| %>
-              <% if @register.names.include? par %>
-                <%= par.name_html(nil, true) %> &raquo;
+        </div>
+        <div class="avoid-page-break">
+          <dt>Nomenclatural type</dt>
+          <dd>
+            <% if name.type_is_name? %>
+              <%= name.type_name.rank.capitalize %>
+              <% if @register.names.include? name.type_name %>
+                <%= name.type_name.name_html(nil, true) %>
               <% else %>
-                <%= par.name_html %> &raquo;
+                <%= name.type_name.name_html %>
               <% end %>
-            <% end %>
-            <%= name.name_html(nil, true) %>
-          <% elsif name.incertae_sedis? %>
-            <b><%= name.incertae_sedis_html %>:</b>
-            <%= name.incertae_sedis_text %>
-          <% else %>
-            <u>Unknown</u>
-          <% end %>
-        </dd>
-        <% if name.citations.any? %>
-          <dt>References</dt>
-          <dd>
-            <% if name.proposed_by %>
-              Proposed: <%= name.proposed_by.short_citation %>
-              <br/>
-            <% end %>
-            <% if name.corrigendum_by %>
-              <i>Corrigendum</i>: <%= name.corrigendum_by.short_citation %>
-              <% unless name.corrigendum_from.blank? %>
-                (from &#8220;<%= name.corrigendum_from %>&#8221;)
-              <% end %>
-              <br/>
-            <% end %>
-            <% if name.emended_by.any? %>
-               <i>Emendavit</i>:
-               <%= name.emended_by.map(&:short_citation).to_sentence %>
-               <br/>
+            <% elsif name.type? %>
+              <%= link_to(name.type_text, name.type_link) %> <sup>Ts</sup>
+            <% else %>
+              <u>Unknown</u>
             <% end %>
           </dd>
+        </div>
+        <% if name.description? %>
+          <div class="avoid-page-break">
+            <dt>Description</dt>
+            <dd>
+              <%= name.description %>
+            </dd>
+          </div>
         <% end %>
-        <dt>Registry URL</dt>
-        <dd><%= link_to(name.seqcode_url, name.seqcode_url) %></dd>
+        <div class="avoid-page-break">
+          <dt>Classification</dt>
+          <dd>
+            <% if name.parent %>
+              <% name.lineage.each do |par| %>
+                <% if @register.names.include? par %>
+                  <%= par.name_html(nil, true) %> &raquo;
+                <% else %>
+                  <%= par.name_html %> &raquo;
+                <% end %>
+              <% end %>
+              <%= name.name_html(nil, true) %>
+            <% elsif name.incertae_sedis? %>
+              <b><%= name.incertae_sedis_html %>:</b>
+              <%= name.incertae_sedis_text %>
+            <% else %>
+              <u>Unknown</u>
+            <% end %>
+          </dd>
+        </div>
+        <% if name.citations.any? %>
+          <div class="avoid-page-break">
+            <dt>References</dt>
+            <dd>
+              <% if name.proposed_by %>
+                Proposed: <%= name.proposed_by.short_citation %>
+                <br/>
+              <% end %>
+              <% if name.corrigendum_by %>
+                <i>Corrigendum</i>: <%= name.corrigendum_by.short_citation %>
+                <% unless name.corrigendum_from.blank? %>
+                  (from &#8220;<%= name.corrigendum_from %>&#8221;)
+                <% end %>
+                <br/>
+              <% end %>
+              <% if name.emended_by.any? %>
+                 <i>Emendavit</i>:
+                 <%= name.emended_by.map(&:short_citation).to_sentence %>
+                 <br/>
+              <% end %>
+            </dd>
+          </div>
+        <% end %>
+        <div class="avoid-page-break">
+          <dt>Registry URL</dt>
+          <dd><%= link_to(name.seqcode_url, name.seqcode_url) %></dd>
+        </div>
       </dl>
     </div>
   <% end %>

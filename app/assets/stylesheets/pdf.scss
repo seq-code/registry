@@ -91,9 +91,10 @@ sup {
   margin: 0 0 3em 0;
   padding: 0 1em;
   border-radius: 5px;
-//  page-break-inside: avoid;
 }
-
+.avoid-page-break {
+  page-break-inside: avoid;
+}
 .pdf-certificate {
   margin: 3em 0;
   padding: 0.5em 3em 1.5em 3em;
