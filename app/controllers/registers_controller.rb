@@ -287,6 +287,8 @@ class RegistersController < ApplicationController
         render(
           template: 'registers/list.html.erb',
           pdf: "Register List #{@register.acc_url}",
+          header: { html: { template: 'layouts/_pdf_header' } },
+          footer: { html: { template: 'layouts/_pdf_footer' } },
           page_size: 'A4'
         )
       end

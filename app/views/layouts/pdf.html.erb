@@ -6,28 +6,29 @@
     <%# wicked_pdf_javascript_include_tag('number_pages') %>
     <script>
       function alter_pdf() {
+        // Handle links
         var a = document.getElementsByTagName("A");
         for(var j=0; j < a.length; ++j) {
           a[j].html = "";
+        }
+
+        // Add page numbers
+        var vars = {};
+        var x = document.location.search.substring(1).split('&');
+        for (var i in x) {
+          var z = x[i].split('=', 2);
+          vars[z[0]] = decodeURIComponent(z[1]);
+        }
+        var x = ['frompage', 'topage', 'page', 'webpage', 'section',
+                 'subsection','subsubsection'];
+        for (var i in x) {
+          var y = document.getElementsByClassName(x[i]);
+          for (var j = 0; j < y.length; ++j) y[j].textContent = vars[x[i]];
         }
       }
     </script>
   </head>
   <body onload="alter_pdf()">
-    <div id="header">
-      <div><b>SeqCode Registry</b></div>
-      <% if @register ||= nil %>
-        <div style="text-align: right; position: fixed; top: 0; right: 0;">
-          <b>
-            Register List
-            <%= link_to(@register.acc_url(true), @register.acc_url(true)) %>
-            [<%= @register.priority_date&.year || @register.status_name %>]
-          </b>
-        </div>
-      <% end %>
-    </div>
-    <div id="content">
-      <%= yield %>
-    </div>
+    <%= yield %>
   </body>
 </html>
