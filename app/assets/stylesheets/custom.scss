@@ -7,14 +7,6 @@
 .bg-vdark-ce {
   background-color: #221831 !important;
 }
-.bg-dark-ce, .bg-vdark-ce {
-  a {
-    color: rgba(255, 255, 255, 0.5);
-    &:hover{
-      color: white;
-    }
-  }
-}
 
 .main-section {
   background-color: var(--light);
@@ -64,6 +56,75 @@ trix-editor {
     &:hover {
       color: theme-color-level(info, 3);
     }
+  }
+}
+
+/* Header Bar */
+.bg-dark-ce, .bg-vdark-ce {
+  a {
+    color: white;
+    &:hover{
+      color: white;
+      text-shadow: 0 0 5px #ffffff66, 0 0 10px #ff4da666, 0 0 15px #ff4da666, 0 0 20px #ff4da666 ;
+    }
+  }
+}
+
+nav.navbar-dark {
+  @include media-breakpoint-down(md) {
+    /* When the links are in a burger menu */
+    font-size: 200%;
+    .navbar-lemma {
+      font-size: 75%;
+    }
+    .navbar-brand {
+      font-size: 100%;
+    }
+  }
+  .navbar-lemma {
+    @include media-breakpoint-down(sm) {
+      font-size: 50%;
+    }
+    @include media-breakpoint-down(xs) {
+      display: none;
+    }
+  }
+  /* When the links are out */
+  @include media-breakpoint-up(lg) {
+    .nav-item-text {
+      color: #ffffffc0;
+      padding: 0 0.1em;
+      &:hover {
+        color: white;
+      }
+    }
+  }
+  /* General */
+  #navbarNav {
+    color: rgba(255, 255, 255, 0.5);
+    text-align: right;
+    .nav-item, .nav-text {
+      padding-left: 0.75em;
+      .nav-item-text {
+        padding: 0 0.1em;
+      }
+      a {
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+    .navbar-lemma {
+      background: #ffffff50;
+    }
+  }
+}
+
+/* Home Page */
+.user-actions {
+  .btn {
+    margin-top: 0.25em;
+    margin-bottom: 0.75em;
   }
 }
 

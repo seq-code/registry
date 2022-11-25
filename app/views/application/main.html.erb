@@ -97,13 +97,17 @@
     <div class="tab-pane fade jumbotron p-5" id="read-content" role="tabpanel" aria-labelledby="read-tab">
       Interested in learning more about the SeqCode?
       <br/>
+      <%= link_to(page_about_url) do %>
+        <%= fa_icon('question-circle') %>
+        Visit the <i>About</i> page of the SeqCode Registry<% end %>,
+      <br/>
       <%= link_to(page_seqcode_url) do %>
-        <%= fa_icon('book') %> Read the current version of the SeqCode
-      <% end %> or
+        <%= fa_icon('book') %>
+        Read the current version of the SeqCode<% end %> or
       <br/>
       <%= link_to(page_publications_url) do %>
-        <%= fa_icon('newspaper') %> Check-out the SeqCode publications
-      <% end %>
+        <%= fa_icon('newspaper') %>
+        Check-out the SeqCode publications<% end %>
     </div>
   </div>
 </div>

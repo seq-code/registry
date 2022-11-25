@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get  'page/initiative',   as: :page_initiative
   get  'page/connect',      as: :page_connect
   get  'page/join',         as: :page_join
+  get  'page/about',        as: :page_about
 
   resources(:genomes)
   root(to: 'application#main')

@@ -136,7 +136,7 @@ module ApplicationHelper
       content_tag(
         :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog'
       ) do
-        dialog_class = 'modal-dialog'
+        dialog_class = 'modal-dialog modal-dialog-centered'
         dialog_class += " modal-#{opts[:size]}" if opts[:size]
         content_tag(:div, class: dialog_class, role: 'document') do
           content_tag(:div, class: 'modal-content') do
