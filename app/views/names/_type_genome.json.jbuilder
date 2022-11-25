@@ -1,5 +1,5 @@
 # Basic data + nomenclature
-json.(name, :id, :name, :rank, :status_name)
+json.(name, :id, :name, :rank, :status_name, :priority_date)
 json.type_material(
   name.type_material => name.type_accession
 )
