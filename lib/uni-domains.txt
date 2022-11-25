@@ -9550,6 +9550,14 @@ hostos.cuny.edu
 kbcc.cuny.edu
 lagcc.cuny.edu
 qcc.cuny.edu
+baruch.cuny.edu
+qc.cuny.edu
+citytech.cuny.edu
+ccny.cuny.edu
+brooklyn.cuny.edu
+mec.cuny.edu
+csi.cuny.edu
+macauly.cuny.edu
 sunydutchess.edu
 flcc.edu
 fmcc.edu
@@ -9996,6 +10004,8 @@ uni-bge.hu
 ufn.edu.br
 iitbbs.ac.in
 sciencespo-rennes.fr
+cau.edu
+morehouse.edu
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10009,3 +10019,5 @@ nih.gov
 scilifelab.se
 pasteur.fr
 uohyd.ac.in
+mail.sysu.edu.cn
+kurenai.waseda.jp
