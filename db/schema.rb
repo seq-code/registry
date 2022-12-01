@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_14_140907) do
+ActiveRecord::Schema.define(version: 2022_11_29_222608) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -297,6 +297,8 @@ ActiveRecord::Schema.define(version: 2022_10_14_140907) do
     t.boolean "editor", default: false
     t.string "orcid"
     t.string "affiliation_ror"
+    t.boolean "opt_regular_email", default: true
+    t.boolean "opt_notification", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

@@ -40,7 +40,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def configure_account_params
-    plus_attrs = [:username, :affiliation, :family, :given]
+    plus_attrs = %i[
+      username affiliation family given opt_notification opt_regular_email
+    ]
     devise_parameter_sanitizer.permit(:sign_up, keys: plus_attrs)
     devise_parameter_sanitizer.permit(:account_update, keys: plus_attrs)
   end
@@ -54,4 +56,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  def user_root_path
+    dashboard_url
+  end
 end

@@ -6,6 +6,8 @@ class AdminMailer < ApplicationMailer
   ##
   # Email notifying of a user status change
   def user_status_email
+    return unless @user.opt_regular_email
+
     @params = params
     @action =
       if params[:params][:curator]
@@ -25,6 +27,8 @@ class AdminMailer < ApplicationMailer
   ##
   # Email notifying of a name status change
   def name_status_email
+    return unless @user.opt_regular_email
+
     @name = params[:name]
     mail(subject: 'New name status in SeqCode Registry')
   end
@@ -32,6 +36,8 @@ class AdminMailer < ApplicationMailer
   ##
   # Email notifying of a register list status change
   def register_status_email
+    return unless @user.opt_regular_email
+
     @register = params[:register]
     mail(subject: 'New register list status in SeqCode Registry')
   end
@@ -39,6 +45,8 @@ class AdminMailer < ApplicationMailer
   ##
   # Periodic reminder for contributors sent by +ReminderMail.register_reminder+
   def register_reminder_email
+    return unless @user.opt_notification?
+
     @registers = params[:registers]
     mail(subject: 'SeqCode Monthly Reminder')
   end
