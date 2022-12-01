@@ -6,8 +6,8 @@
     <ul class="nav flex-column">
       <li class="nav-item">
         <%= link_to(edit_user_registration_path, class: 'nav-link') do %>
-          <%= fa_icon 'user-edit' %>
-          Edit profile information
+          <%= fa_icon('user-cog') %>
+          Edit profile information and settings
         <% end %>
       </li>
       <% unless current_contributor? %>
