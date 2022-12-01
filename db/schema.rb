@@ -297,8 +297,8 @@ ActiveRecord::Schema.define(version: 2022_11_29_222608) do
     t.boolean "editor", default: false
     t.string "orcid"
     t.string "affiliation_ror"
-    t.boolean "opt_regular_email", default: false
-    t.boolean "opt_notification", default: false
+    t.boolean "opt_regular_email", default: true
+    t.boolean "opt_notification", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
