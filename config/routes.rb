@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get  'page/connect',      as: :page_connect
   get  'page/join',         as: :page_join
   get  'page/about',        as: :page_about
+  get  'help/etymology' => 'page#etymology_help', as: :help_etymology
 
   resources(:genomes)
   root(to: 'application#main')
