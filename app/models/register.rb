@@ -49,6 +49,12 @@ class Register < ApplicationRecord
         end
       o + ' nov.'
     end
+
+    def pending_for_curation
+      where(validated: false, notified: true).or(
+        where(validated: false, submitted: true)
+      ).order(updated_at: :asc)
+    end
   end
 
   def acc_url(protocol = false)
@@ -80,6 +86,10 @@ class Register < ApplicationRecord
     return nil unless validated?
 
     notified_at || validated_at
+  end
+
+  def last_submission_date
+    [notified_at, submitted_at].compact.max || names.pluck(:submitted_at).max
   end
 
   def can_edit?(user)

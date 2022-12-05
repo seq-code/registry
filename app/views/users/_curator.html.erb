@@ -3,6 +3,24 @@
     <h1>Curator Dashboard</h1>
   </div>
   <div class="card-body">
+    <h2>Pending submissions</h2>
+    <% if @pending_registers.empty? %>
+      None pending
+    <% else %>
+      <ul class="flex-column">
+        <% @pending_registers.each do |r| %>
+          <li class="">
+            <%= link_to(r.acc_url, r) %>:
+            <% if r.title? %>
+              <%= r.title %>
+            <% else %>
+              <span class="text-muted"><%= r.propose_title %></span>
+            <% end %>
+            [<%= time_ago_in_words(r.updated_at) %> ago]
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
     <ul class="nav flex-column">
       <li class="nav-item mt-3"><h4>Review Register Lists</h4></li>
       <li class="nav-item">

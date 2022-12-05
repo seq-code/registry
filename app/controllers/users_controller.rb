@@ -31,6 +31,10 @@ class UsersController < ApplicationController
       @contributor_applications = User.contributor_applications
       @curator_applications = User.curator_applications
     end
+
+    if current_user.curator?
+      @pending_registers = Register.pending_for_curation
+    end
   end
 
   def contributor_request

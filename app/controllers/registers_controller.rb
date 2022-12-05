@@ -131,7 +131,7 @@ class RegistersController < ApplicationController
         end
         name.update!(par)
       end
-      @register.update!(submitted: true)
+      @register.update!(submitted: true, submitted_at: Time.now)
       flash[:notice] = 'Register list successfully submitted for review'
     end
 
