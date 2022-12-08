@@ -56,9 +56,10 @@ module Tutorial::Lineage
     Tutorial.transaction do
       names.where.not(id: name.id).update(tutorial_id: nil)
       name.update(tutorial_id: id)
-      self.step += 1
-      self.data = { lowest_classified_taxon_id: lct.id }.to_json
-      save
+      update(
+        step: step + 1,
+        data: { lowest_classified_taxon_id: lct.id }.to_json
+      )
     end
 
     true
