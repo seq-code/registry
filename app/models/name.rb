@@ -227,7 +227,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          " <sup>T#{'s' if status != 20}</sup>".html_safe
+          " <sup>T#{'s' unless icnp?}</sup>".html_safe
         else
           ''
         end
@@ -245,7 +245,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "#{name}" +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          " (T#{'s' if status != 20})"
+          " (T#{'s' unless icnp?})"
         else
           ''
         end
@@ -263,7 +263,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          "<sup>T#{'s' if status != 20}</sup>".html_safe
+          "<sup>T#{'s' unless icnp?}</sup>".html_safe
         end
     else
       "&#8220;#{name}&#8221;".html_safe
@@ -453,27 +453,27 @@ class Name < ApplicationRecord
   def can_edit?(user)
     return false if only_display
     return false if user.nil?
-    return false if status >= 15
+    return false if validated?
     return true if user.curator?
-    return true if status == 5 && user?(user)
+    return true if draft? && user?(user)
     false
   end
 
   def can_claim?(user)
     return false unless user.try(:contributor?)
-    return true if status == 0
-    return true if status == 5 && user?(user)
+    return true if auto?
+    return true if draft? && user?(user)
     !after_approval? && created_by.nil?
   end
 
   def claimed?(user)
-    status == 5 && user?(user)
+    draft? && user?(user)
   end
 
   def claim(user)
     raise('User cannot claim name') unless can_claim?(user)
     par = { created_by: user, created_at: Time.now }
-    par[:status] = 5 if status == 0
+    par[:status] = 5 if auto?
     return false unless update(par)
 
     # Email notification
@@ -488,7 +488,7 @@ class Name < ApplicationRecord
 
   def can_unclaim?(user)
     curator_or_owner = user.try(:curator?) || self.user?(user)
-    curator_or_owner && status == 5
+    curator_or_owner && draft?
   end
 
   def unclaim(user)
@@ -699,7 +699,12 @@ class Name < ApplicationRecord
   end
 
   def priority_date
-    register&.priority_date
+    @priority_date ||= attribute(:priority_date)
+    if !@priority_date && seqcode?
+      @priority_date = register&.priority_date
+      update_column(:priority_date, @priority_date)
+    end
+    @priority_date
   end
 
   # ============ --- INTERNAL CHECKS --- ============
