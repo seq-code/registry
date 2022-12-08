@@ -5,7 +5,7 @@ class TutorialsController < ApplicationController
 
   # GET /tutorials
   def index
-    @tutorials = current_user.tutorials
+    @tutorials = current_user.tutorials.order(created_at: :desc)
   end
 
   # GET /tutorials/1

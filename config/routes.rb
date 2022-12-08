@@ -34,7 +34,6 @@ Rails.application.routes.draw do
   get  'drafts' => 'names#drafts', as: :draft_names
   get  'user-names' => 'names#user_names', as: :user_names
   get  'search' => 'application#search', as: :search
-  get  'names/batch' => 'names#batch', as: :new_batch_name
   get  'type-genomes(.:format)' => 'names#type_genomes', as: :name_type_genomes
 
   resources(:names)

@@ -50,7 +50,7 @@ class RegistersController < ApplicationController
       else # :validated
         Register.where(validated: true)
       end
-    @registers = @registers&.paginate(page: params[:page], per_page: 30)
+    @registers &&= @registers.paginate(page: params[:page], per_page: 30)
   end
 
   # GET /registers/r:abcd
