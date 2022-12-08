@@ -40,6 +40,14 @@ class Genome < ApplicationRecord
     def source_databases_opt
       source_databases.map { |k, v| [v[:name], k] }
     end
+
+    def required
+      %i[
+        kind? source_database? source_accession?
+        completeness_any contamination_any most_complete_16s_any
+        number_of_16s_any number_of_trnas_any
+      ]
+    end
   end
 
   def names
@@ -167,11 +175,10 @@ class Genome < ApplicationRecord
   end
 
   def complete?
-    required = %i[
-      kind? source_database? source_accession?
-      completeness_any contamination_any most_complete_16s_any
-      number_of_16s_any number_of_trnas_any
-    ]
-    required.all? { |i| send(i) }
+    self.class.required.all? { |i| send(i) }
+  end
+
+  def can_edit?(user)
+    names.all? { |name| name.can_edit?(user) }
   end
 end

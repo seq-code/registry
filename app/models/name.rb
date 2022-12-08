@@ -460,9 +460,49 @@ class Name < ApplicationRecord
   end
 
   def can_claim?(user)
-    return false unless user&.contributor?
+    return false unless user.try(:contributor?)
     return true if status == 0
+    return true if status == 5 && user?(user)
     !after_approval? && created_by.nil?
+  end
+
+  def claimed?(user)
+    status == 5 && user?(user)
+  end
+
+  def claim(user)
+    raise('User cannot claim name') unless can_claim?(user)
+    par = { created_by: user, created_at: Time.now }
+    par[:status] = 5 if status == 0
+    return false unless update(par)
+
+    # Email notification
+    AdminMailer.with(
+      user: user,
+      name: self,
+      action: 'claim'
+    ).name_status_email.deliver_later
+
+    true
+  end
+
+  def can_unclaim?(user)
+    curator_or_owner = user.try(:curator?) || self.user?(user)
+    curator_or_owner && status == 5
+  end
+
+  def unclaim(user)
+    raise('User cannot unclaim name') unless can_unclaim?(user)
+    return false unless update(status: 0)
+
+    # Email notification
+    AdminMailer.with(
+      user: created_by,
+      name: self,
+      action: 'unclaim'
+    ).name_status_email.deliver_later
+
+    true
   end
 
   def correspondence_by?(user)
@@ -575,6 +615,8 @@ class Name < ApplicationRecord
       @type_name ||= self.class.where(id: type_accession).first
     end
   end
+
+  attr_writer :type_name
 
   def type_genome
     if type_is_genome?

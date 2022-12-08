@@ -3,7 +3,7 @@
     <h2>Curator Actions</h2>
     <dd class="pt-2">
       <% unless @name.validated? %>
-        <% if @name.status == 5 && @name.created_by %>
+        <% if @name.can_unclaim?(current_user) %>
           <%= link_to(
                 unclaim_name_url(@name),
                 method: :post, class: 'btn btn-primary btn-sm'
@@ -50,7 +50,7 @@
           &raquo; Send this name back to the author for additional revisions
           <hr/>
         <% end %>
-      <% end %>
+      <% end # unless @name.validated? %>
     </dd>
   </dl>
 <% end %>

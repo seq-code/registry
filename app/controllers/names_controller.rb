@@ -18,7 +18,7 @@ class NamesController < ApplicationController
     ]
   )
   before_action(:authenticate_owner_or_curator!, only: %i[unclaim])
-  before_action(:authenticate_contributor!, only: %i[new create batch claim])
+  before_action(:authenticate_contributor!, only: %i[new create claim])
   before_action(
     :authenticate_curator!,
     only: %i[
@@ -142,10 +142,6 @@ class NamesController < ApplicationController
   # GET /names/new
   def new
     @name = Name.new
-  end
-
-  # GET /names/batch
-  def batch
   end
 
   # GET /names/1/edit
@@ -389,17 +385,9 @@ class NamesController < ApplicationController
 
   # POST /names/1/claim
   def claim
-    par = { created_by: current_user, created_at: Time.now }
-    par[:status] = 5 if @name.status == 0
     if !@name.can_claim?(current_user)
       flash[:alert]  = 'You cannot claim this name'
-    elsif @name.update(par)
-      # Email notification
-      AdminMailer.with(
-        user: current_user,
-        name: @name,
-        action: 'claim'
-      ).name_status_email.deliver_later
+    elsif @name.claim(current_user)
       flash[:notice] = 'Name successfully claimed'
     else
       flash[:alert]  = 'An unexpected error occurred'
@@ -410,16 +398,9 @@ class NamesController < ApplicationController
   # POST /names/1/unclaim
   def unclaim
     par = { status: 0 }
-    curator_or_owner = current_user.try(:curator?) || @name.user?(current_user)
-    if !curator_or_owner || @name.status != 5
+    if !@name.can_unclaim?(current_user)
       flash[:alert]  = 'You cannot unclaim this name'
-    elsif @name.update(par)
-      # Email notification
-      AdminMailer.with(
-        user: @name.created_by,
-        name: @name,
-        action: 'unclaim'
-      ).name_status_email.deliver_later
+    elsif @name.unclaim(current_user)
       flash[:notice] = 'Name successfully returned to the public pool'
     else
       flash[:alert]  = 'An unexpected error occurred'

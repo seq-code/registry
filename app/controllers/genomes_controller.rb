@@ -17,21 +17,15 @@ class GenomesController < ApplicationController
   def edit
   end
 
-  # PATCH/PUT /genomes/1 or /genomes/1.json
+  # PATCH/PUT /genomes/1
   def update
-    respond_to do |format|
-      if @genome.update(genome_params.merge(updated_by: current_user.id))
-        format.html do
-          redirect_to(
-            params[:return_to] || @name || @genome,
-            notice: 'Genome was successfully updated.'
-          )
-        end
-        format.json { render :show, status: :ok, location: @genome }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @genome.errors, status: :unprocessable_entity }
-      end
+    if @genome.update(genome_params.merge(updated_by: current_user.id))
+        redirect_to(
+          params[:return_to] || @name || @genome,
+          notice: 'Genome was successfully updated.'
+        )
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -63,7 +57,7 @@ class GenomesController < ApplicationController
     end
 
     def authenticate_can_edit!
-      unless @genome.names.any? { |name| name.can_edit?(current_user) }
+      unless @genome.can_edit?(current_user)
         flash[:alert] = 'User cannot edit genome'
         redirect_to(root_path)
       end

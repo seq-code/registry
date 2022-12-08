@@ -36,7 +36,7 @@
           <hr/>
         <% end %>
       <% end %>
-      <% if @name.can_claim?(current_user) %>
+      <% if @name.can_claim?(current_user) && !@name.claimed?(current_user) %>
         <%= link_to(
               claim_name_url(@name),
               method: :post, class: 'btn btn-primary btn-sm',
