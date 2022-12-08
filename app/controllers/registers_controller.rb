@@ -85,15 +85,14 @@ class RegistersController < ApplicationController
          (!@name || @name.add_to_register(@register, current_user)) &&
          (!@tutorial || @tutorial.add_to_register(@register, current_user))
       flash[:notice] = 'Register was successfully created'
+      if @tutorial
+        flash[:notice] += '. Remember to submit register list for evaluation'
+      end
     else
       flash[:alert] = 'An error occurred while creating the registration list'
     end
 
-    if @tutorial
-      submit
-    else
-      redirect_to @register
-    end
+    redirect_to @register
   end
 
   # PATCH/PUT /registers/r:abcd or /registers/r:abcd.json
