@@ -1,0 +1,153 @@
+
+<p class="alert alert-warning mt-3">
+  Carefully review that the information below is correct before you continue,
+  paying particular attention to issues detected in preliminary checks
+</p>
+
+<div class="card card-body mb-3">
+  <h2>Proposed Names</h2>
+  <div class="accordion" id="batch-names-accordion">
+    <% @tutorial.check_ephemeral_names(current_user) %>
+    <% @tutorial.ephemeral_names.each_with_index do |name, idx| %>
+      <div class="card">
+        <% id = "batch-names-#{idx}" %>
+        <% if name.nil? %>
+          <h2 class="card-header" id="<%= id %>-h">
+            <button class="btn btn-link btn-block text-left text-danger"
+                    type="button"
+                    data-toggle="collapse" data-target="#<%= id %>"
+                    aria-expanded="false" aria-controls="<%= id %>">
+              <%= fa_icon('exclamation-circle', class: 'text-danger') %>
+              Parsing Error
+            </button>
+          </h2>
+          <div id="<%= id %>" class="collapse" aria-labelledby="<%= id %>-h"
+               data-parent="#batch-names-accordion">
+            <div class="card-body">
+              Error parsing data: <%= @tutorial.value(:names)[idx] %>
+            </div>
+          </div>
+        <% else %>
+          <h2 class="card-header" id="<%= id %>-h">
+            <button class="btn btn-link btn-block text-left" type="button"
+                    data-toggle="collapse" data-target="#<%= id %>"
+                    aria-expanded="false" aria-controls="<%= id %>">
+              <% if name.errors.any? %>
+                <%= fa_icon('exclamation-circle', class: 'text-danger') %>
+              <% end %>
+              <%= name.name_html %>
+              <span class="text-muted">
+                - <%= name.rank %> of <%= name.parent.name_html %>
+              </span>
+            </button>
+          </h2>
+          <div id="<%= id %>" class="card-collapse collapse"
+               aria-labelledby="<%= id %>-h"
+               data-parent="#batch-names-accordion">
+            <div class="card-body">
+              <p>
+                [<%= name.syllabication %>] <%= name.full_etymology(true) %>
+              </p>
+              <hr/>
+              <p><b>Description:</b> <%= name.description %></p>
+              <p><b>Nomenclatural type:</b> <%= name.type_text %></p>
+              <% if name.errors.any? %>
+                <div class="alert alert-danger">
+                  <h4>Issues detected in preliminary check:</h4>
+                  <ul>
+                    <% name.errors.full_messages.each do |error| %>
+                      <li><%= error %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="card card-body mb-3">
+  <h2>Proposed Genomes</h2>
+  <div class="accordion" id="batch-genomes-accordion">
+    <% @tutorial.check_ephemeral_genomes(current_user) %>
+    <% @tutorial.ephemeral_genomes.each_with_index do |genome, idx| %>
+      <div class="card">
+        <% id = "batch-genomes-#{idx}" %>
+        <% if genome.nil? %>
+          <h2 class="card-header" id="<%= id %>-h">
+            <button class="btn btn-link btn-block text-left text-danger"
+                    type="button"
+                    data-toggle="collapse" data-target="#<%= id %>"
+                    aria-expanded="false" aria-controls="<%= id %>">
+              <%= fa_icon('exclamation-circle', class: 'text-danger') %>
+              Parsing Error
+            </button>
+          </h2>
+          <div id="<%= id %>" class="collapse" aria-labelledby="<%= id %>-h"
+               data-parent="#batch-genomes-accordion">
+            <div class="card-body">
+              Error parsing data: <%= @tutorial.value(:genomes)[idx] %>
+            </div>
+          </div>
+        <% else %>
+          <h2 class="card-header" id="<%= id %>-h">
+            <button class="btn btn-link btn-block text-left" type="button"
+                    data-toggle="collapse" data-target="#<%= id %>"
+                    aria-expanded="false" aria-controls="<%= id %>">
+              <% if genome.errors.any? %>
+                <%= fa_icon('exclamation-circle', class: 'text-danger') %>
+              <% end %>
+              <%= genome.text %>
+            </button>
+          </h2>
+          <div id="<%= id %>" class="card-collapse collapse"
+               aria-labelledby="<%= id %>-h"
+               data-parent="#batch-genomes-accordion">
+            <div class="card-body">
+              <p>
+                <b>Link</b>
+                <%= link_to(genome.link, target: '_blank') do %>
+                  <%= genome.text %> <%= fa_icon('external-link-alt') %>
+                <% end %>
+              </p>
+              <% if genome.source? %>
+                <p>
+                  <b>Source link</b>
+                  <%= link_to(genome.source_link, target: '_blank') do %>
+                    <%= genome.source_text %>
+                    <%= fa_icon('external-link-alt') %>
+                  <% end %>
+                </p>
+              <% end %>
+              <p>
+                <% JSON.parse(genome.to_json).each do |k, v| %>
+                  <% next if k == 'id' || k =~ /_auto$/ %>
+                  <b><%= k.humanize %>:</b> <%= v %>
+                <% end %>
+              </p>
+              <% if genome.errors.any? %>
+                <div class="alert alert-danger">
+                  <h4>Issues detected in preliminary check:</h4>
+                  <ul>
+                    <% genome.errors.full_messages.each do |error| %>
+                      <li><%= error %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<p class="lead my-5">
+  If all the information above seems correct, continue to create the entries.
+  Please note that any errors saved will have to be individually resolved.
+</p>
+

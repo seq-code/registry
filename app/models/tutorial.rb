@@ -4,7 +4,7 @@ class Tutorial < ApplicationRecord
 
   %i[
     species_name genus_name family_name order_name class_name phylum_name
-    lowest_classified_taxon lineage_ids ranks name_description
+    lowest_classified_taxon lineage_ids ranks name_description file
   ].each do |i|
     attr(i)
     attr_writer(i)

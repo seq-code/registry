@@ -1,0 +1,24 @@
+
+<p class="lead my-4 mx-1">
+  Fill up the template spreadsheet and upload it to review your data:<br/>
+  <%= link_to(root_url + '/SCR_UploadBatch-templates.xlsx',
+              class: 'btn btn-primary m-2') do %>
+    <%= fa_icon('file-excel') %>
+    SCR_UploadBatch-templates.xlsx
+  <% end %>
+  <br/>
+  Or see some examples of a filled table:<br/>
+  <%= link_to(root_url + '/SCR_UploadBatch-examples.xlsx',
+              class: 'btn btn-primary m-2') do %>
+    <%= fa_icon('file-excel') %>
+    SCR_UploadBatch-examples.xlsx
+  <% end %>
+</p>
+<hr/>
+
+<%=
+  f.input(
+    :file, label: 'Batch spreadsheet', as: :file, hint: 'Complete Spreadsheet'
+  )
+%>
+

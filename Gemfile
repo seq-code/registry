@@ -28,6 +28,7 @@ gem 'redcarpet', '~> 3.5'
 gem 'whenever', require: false
 gem 'image_processing', '~> 1.2'
 gem 'redirect_safely', '~> 1.0'
+gem 'roo', '~> 2.9.0'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
