@@ -141,8 +141,9 @@ class Publication < ApplicationRecord
 
   def long_citation_html
     <<~HTML.html_safe
-      #{authors_et_al} (#{journal_date.year}). #{title.gsub(/\.$/, '')}. 
-      <i>#{journal || pub_type.tr('-', ' ')}</i>. 
+      #{ERB::Util.h(authors_et_al)} (#{journal_date.year}).
+      #{ERB::Util.h(title).gsub(/\.$/, '')}. 
+      <i>#{ERB::Util.h(journal || pub_type.tr('-', ' '))}</i>. 
       <a href="#{link}" target="_blank">DOI:#{doi}</a>
     HTML
   end
