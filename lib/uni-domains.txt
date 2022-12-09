@@ -10006,6 +10006,9 @@ iitbbs.ac.in
 sciencespo-rennes.fr
 cau.edu
 morehouse.edu
+audencia.com
+ufro.cl
+ufromail.cl
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10021,3 +10024,4 @@ pasteur.fr
 uohyd.ac.in
 mail.sysu.edu.cn
 kurenai.waseda.jp
+quadram.ac.uk
