@@ -4,7 +4,7 @@
 <% unless @name.rank? %>
   <div class="alert alert-warning">
     The rank of this taxon has not been defined yet.
-    Confirm the rank before registering the parent taxon:<br/>
+    Confirm the rank before registering the parent taxon:<br/><br/>
     <%= link_to(edit_rank_name_url(@name), class: 'btn btn-warning') do %>
       <%= fa_icon('edit') %> Edit rank
     <% end %>
