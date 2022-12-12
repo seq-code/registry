@@ -1,6 +1,16 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
+<% unless @name.rank? %>
+  <div class="alert alert-warning">
+    The rank of this taxon has not been defined yet.
+    Confirm the rank before registering the parent taxon:<br/>
+    <%= link_to(edit_rank_name_url(@name), class: 'btn btn-warning') do %>
+      <%= fa_icon('edit') %> Edit rank
+    <% end %>
+  </div>
+<% end %>
+
 <%= simple_form_for(
       @name, url: link_parent_commit_name_path(@name),
       html: { method: :post }
@@ -14,9 +24,9 @@
   <%=
     f.input(
       :parent, autofocus: true,
-      label: @name.expected_parent_rank.capitalize,
+      label: @name.expected_parent_rank.try(:capitalize),
       input_html: {
-        value: @name.parent&.name,
+        value: @name.parent.try(:name),
         data: {
           behavior: 'autocomplete', autocomplete: 'name',
           rank: @name.expected_parent_rank
