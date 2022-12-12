@@ -17,6 +17,12 @@
         <% end %>
       </li>
       <li class="nav-item">
+        <%= link_to(tutorials_url(pipeline: :lineage), method: :post) do %>
+          <%= fa_icon('plus-circle') %>
+          Register names by lineage
+        <% end %>
+      </li>
+      <li class="nav-item">
         <%= link_to(tutorials_url(pipeline: :batch), method: :post) do %>
           <%= fa_icon('plus-circle') %>
           Register names in batch
