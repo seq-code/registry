@@ -294,7 +294,7 @@ module Name::QualityChecks
         message: 'The publication proposing this name is a preprint or some ' \
                  'other type of publication not accepted',
         link_text: 'Register another publication',
-        link_to: lambda { |w| [:new_publication_path, { link_name: w.name.id }] },
+        link_to: lambda { |w| [:new_publication, { link_name: w.name.id }] },
         rules: %w[24c]
       },
       missing_genome_kind: {
