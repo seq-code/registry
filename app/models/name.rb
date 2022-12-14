@@ -712,6 +712,8 @@ class Name < ApplicationRecord
   private
 
   def standardize_grammar
+    self.syllabication&.gsub!(/[‘’ʼ＇´]/, "'")
+
     return unless etymology?
 
     self.class.etymology_particles.each do |i|
