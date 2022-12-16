@@ -41,6 +41,11 @@ class TutorialsController < ApplicationController
     else
       render(:show)
     end
+
+    # TODO
+    # Catch exceptions (mostly from +next_step+) and display them without
+    # committing. It currently throws a generic server-side error that's
+    # fairly unhelpful.
   end
 
   # DELETE /tutorials/1 or /tutorials/1.json

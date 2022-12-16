@@ -295,18 +295,33 @@ module Tutorial::Batch
       end
 
       # Link foreign keys
+      default_pars = {status: 0, created_by: user}
       param_names.each_with_index do |par, idx|
+        if par['name'] != names[idx].name
+          raise "Something went wrong with name ##{idx+1}: " \
+                "Got #{names[idx].name}, expected #{par['name']}"
+        end
         new_par = {}
 
         # Parents
         if par['parent']
           new_par[:parent] = Name.find_by_variants(par['parent'].name)
+          unless new_par[:parent]
+            name = Name.new(default_pars.merge(name: par['parent'].name))
+            name.save!
+            new_par[:parent_id] = name.id
+          end
         end
 
         # Type names
         if par['type_material'] == 'name' && par['type_material']
           new_par[:type_accession] =
             Name.find_by_variants(par['type_accession']).try(:id)
+          unless new_par[:type_accession]
+            name = Name.new(default_pars.merge(name: par['type_material']))
+            name.save!
+            new_par[:type_accession] = name.id
+          end
         end
 
         names[idx].update!(new_par)
