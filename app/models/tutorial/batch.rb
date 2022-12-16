@@ -296,11 +296,7 @@ module Tutorial::Batch
 
       # Link foreign keys
       default_pars = {status: 0, created_by: user}
-      param_names.each_with_index do |par, idx|
-        if par['name'] != names[idx].name
-          raise "Something went wrong with name ##{idx+1}: " \
-                "Got #{names[idx].name}, expected #{par['name']}"
-        end
+      param_names.each do |par|
         new_par = {}
 
         # Parents
@@ -324,7 +320,7 @@ module Tutorial::Batch
           end
         end
 
-        names[idx].update!(new_par)
+        Name.find_by_variants(par['name']).update!(new_par)
       end
 
       # If all is good, go to next step
