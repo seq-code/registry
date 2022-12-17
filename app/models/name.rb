@@ -38,7 +38,7 @@ class Name < ApplicationRecord
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
 
-  before_save(:standardize_grammar)
+  before_save(:standardize_etymology)
   before_save(:prevent_self_parent)
   before_save(:monitor_name_changes)
 
@@ -711,54 +711,23 @@ class Name < ApplicationRecord
 
   private
 
-  def standardize_grammar
-    self.syllabication&.gsub!(/[‘’ʼ＇´]/, "'")
-
-    return unless etymology?
-
-    self.class.etymology_particles.each do |i|
-      # Standardize language
-      l = etymology(i, :lang)
-      p = "etymology_#{i}_lang="
-      case l.to_s.downcase
-      when 'latin'
-        self.send(p, 'L.')
-      when 'new latin', /neo[ -]?latin/
-        self.send(p, 'N.L.')
-      when 'greek'
-        self.send(p, 'Gr.')
-      end
-
-      # Ensure grammar indicators are separated by spaces
-      g = etymology(i, :grammar)
-      self.send("etymology_#{i}_grammar=", g.gsub(/\.(\S)/, '. \1')) if g
-    end
-
-    # Check if the last particle should be the full epithet
-    lc = last_component
-    return if grammar || language
-    return unless last_epithet.downcase == etymology(lc, :particle).downcase
-
-    self.class.etymology_fields.each do |i|
-      self.send("etymology_xx_#{i}=", etymology(lc, i)) unless i == :particle
-      self.send("etymology_#{lc}_#{i}=", nil)
-    end
-  end
-
   def prevent_self_parent
     parent = nil if parent_id == id
   end
 
   def monitor_name_changes
-    if name_changed?
-      self.itis_json = nil
-      self.itis_at = nil
-      self.irmng_json = nil
-      self.irmng_at = nil
-      self.col_json = nil
-      self.col_at = nil
-      self.gbif_json = nil
-      self.gbif_at = nil
-    end
+    return unless name_changed?
+
+    self.itis_json = nil
+    self.itis_at = nil
+    self.irmng_json = nil
+    self.irmng_at = nil
+    self.col_json = nil
+    self.col_at = nil
+    self.gbif_json = nil
+    self.gbif_at = nil
+
+    self.name.strip!
+    self.name.gsub!(/\s+/, ' ')
   end
 end

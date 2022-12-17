@@ -24,6 +24,20 @@
 <%= simple_form_for(@name) do |f| %>
   <%= f.input(:syllabication, label: 'Syllabification', required: false, autofocus: true) %>
 
+  <% if @name.autofilled_etymology %>
+    <div class="alert alert-info mt-4">
+      <% case @name.autofilled_etymology_method %>
+      <% when :type_genus %>
+        The etymology below was inferred on the basis of the type genus,
+        please revise carefully for consistency
+      <% when :same_word %>
+        The etymology below was inferred on the basis of a shared epithet with
+        the name <%= @name.importable_etymology.name_html %>,
+        please revise carefully for consistency
+      <% end %>
+    </div>
+  <% end %>
+
   <br/>
   <table class="table table-hover table-responsive-lg">
     <thead>

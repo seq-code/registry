@@ -1,5 +1,6 @@
 module Name::Etymology
   attr_accessor :autofilled_etymology
+  attr_accessor :autofilled_etymology_method
 
   ##
   # Pull the component identified as +component+ from the name, and return
@@ -9,6 +10,8 @@ module Name::Etymology
   # complete name or epithet, or +:p1+, +:p2+, ..., +:p5+ for each of the
   # particles
   def etymology(component, field)
+    return unless component.present? && field.present?
+
     component = component.to_sym
     component = :xx if component == :full
     field = field.to_sym
@@ -18,6 +21,18 @@ module Name::Etymology
       y = send(:"etymology_#{component}_#{field}")
       y.nil? || y.empty? ? nil : y
     end
+  end
+
+  ##
+  # Modify the +field+ of +component+ in the name *without* saving the change to
+  # the database
+  def set_etymology(component, field, value)
+    return unless component.present? && field.present?
+
+    component = :xx if component.to_sym == :full
+    return if component.to_sym == :xx && field.to_sym == :particle
+
+    send("etymology_#{component}_#{field}=", value)
   end
 
   def etymology?
@@ -57,9 +72,14 @@ module Name::Etymology
     y.empty? ? nil : html ? y.html_safe : y
   end
 
+  ##
+  # Find the symbol representing the last defined component of the name
+  # (excluding the full epithet), or nil if none is defined
   def last_component
     parts = (self.class.etymology_particles - [:xx]).reverse
-    parts.find { |i| self.class.etymology_fields.any? { |j| etymology(i, j) } }
+    parts.find do |i|
+      self.class.etymology_fields.any? { |j| etymology(i, j).present? }
+    end
   end
 
   def grammar(component = :xx)
@@ -92,6 +112,10 @@ module Name::Etymology
     grammar_has?(/neut(\.|er)/, component)
   end
 
+  def gender?(component = :xx)
+    feminine?(component) || masculine?(component) || neuter?(component)
+  end
+
   def plural?(component = :xx)
     grammar_has?(/pl(\.|ural)/, component)
   end
@@ -110,9 +134,115 @@ module Name::Etymology
   def clean_etymology
     self.class.etymology_particles.any? do |i|
       self.class.etymology_fields.any? do |j|
-        self.send("etymology_#{i}_#{j}=", nil) unless i == :xx && j == :particle
+        set_etymology(i, j, nil)
       end
     end
+  end
+
+  ##
+  # Standardize the way the etymology values are saved for all components of the
+  # current instance *without* saving the changes to the database
+  def standardize_etymology_strings
+    # Clean spaces and nil-ify empty entries
+    self.class.etymology_particles.any? do |i|
+      self.class.etymology_fields.any? do |j|
+        next if i == :xx && j == :particle
+
+        v = etymology(i, j) or next
+        v.strip!
+        v = nil unless v.present?
+        set_etymology(i, j, v)
+      end
+    end
+  end
+
+  ##
+  # Standardize the way the syllabification is represented for the
+  # current instance *without* saving the changes to the database
+  def standardize_syllabication
+    self.syllabication&.gsub!(/[-\.\/]+/, ".")
+    self.syllabication&.gsub!(/\.?[‘’ʼ＇´']\.?/, "'")
+  end
+
+  ##
+  # Standardize the way the language is represented for all components of the
+  # current instance *without* saving the changes to the database
+  def standardize_language
+    self.class.etymology_particles.each do |i|
+      l = etymology(i, :lang).to_s
+      l =
+        case l.downcase
+        when 'greek'; 'Gr.'
+        when 'latin'; 'L.'
+        when /^ne[ow][ -]*latin$/; 'N.L.'
+        else ; l.strip
+        end
+      l = nil unless l.present?
+      set_etymology(i, :lang, l)
+    end
+  end
+
+  ##
+  # Standardize the way the grammar is represented for all components of the
+  # current instance *without* saving the changes to the database
+  def standardize_grammar
+    self.class.etymology_particles.each do |i|
+      # Standardize grammar strings
+      g = etymology(i, :grammar)
+      if g.present?
+        # Pad and downcase to simplify regexps
+        g = " #{g.downcase} "
+
+        # Abbreviate common particles
+        abbr = {
+          n: /noun|s(ubst(antive)?)?/, pl: /plur(al)?/,
+          masc: /mascul(ine)?/, fem: /femin(ine)?/, neut: /neut(er|ral)/,
+          gen: /genit(ive)?/, adj: /adject(ive)?/, pref: 'prefix'
+        }
+        abbr.each { |k, v| g.gsub!(/ #{v}\.? /, " #{k}. ") }
+
+        # Add dots to common abbreviations (if missing)
+        g.gsub!(/ (#{abbr.keys.join('|')}) /, ' \1. ')
+
+        # Multiple or no spaces to one space
+        g.gsub!(/\.\s*(\S)/, '. \1')
+        g.strip!
+      end
+
+      g = nil unless g.present?
+      set_etymology(i, :grammar, g)
+    end
+  end
+
+  ##
+  # Check if the last defined component should instead correspond to the
+  # full-epithet definition, and move the data there if that's the case
+  # *without* saving the changes to the database
+  #
+  # Returns the symbol representing the replaced component, or +nil+ if
+  # no replacement was made
+  def standardize_last_component
+    return if grammar || language # <- xx already defined
+
+    lc = last_component or return
+    return unless last_epithet&.downcase == etymology(lc, :particle)&.downcase
+
+    self.class.etymology_fields.each do |i|
+      set_etymology(:xx, i, etymology(lc, i)) unless i == :particle
+      set_etymology(lc, i, nil)
+    end
+    return lc
+  end
+
+  ##
+  # Standardize all etymology fields *without* saving the changes to the
+  # database
+  def standardize_etymology
+    standardize_syllabication
+    standardize_etymology_strings
+    standardize_language
+    standardize_grammar
+    standardize_last_component
   end
 
   def importable_etymology
@@ -144,6 +274,7 @@ module Name::Etymology
     clean_etymology
     if type_is_name? && type_name.rank == 'genus'
       # Type genus
+      self.autofilled_etymology_method = :type_genus
       self.etymology_p1_lang = type_name.language
       self.etymology_p1_grammar = type_name.grammar
       self.etymology_p1_particle = type_name.base_name
@@ -166,12 +297,10 @@ module Name::Etymology
       self.etymology_xx_description = "the #{type_name.base_name} #{rank}"
     else
       # Based on another (sub)species with the same epithet
+      self.autofilled_etymology_method = :same_word
       self.class.etymology_particles.each do |i|
         self.class.etymology_fields.each do |j|
-          next if i == :xx && j == :particle
-
-          acc = "etymology_#{i}_#{j}"
-          self.send("#{acc}=", importable_etymology.send(acc))
+          set_etymology(i, j, importable_etymology.etymology(i, j))
         end
       end
     end
