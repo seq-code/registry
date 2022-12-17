@@ -172,9 +172,9 @@ module Name::Etymology
       l = etymology(i, :lang).to_s
       l =
         case l.downcase
-        when 'greek'; 'Gr.'
-        when 'latin'; 'L.'
-        when /^ne[ow][ -]*latin$/; 'N.L.'
+        when /^gr(eek)?\.?$/;    'Gr.'
+        when /^l(at(in)?)?\/?$/; 'L.'
+        when /^ne[ow][ -]*latin\.?$/; 'N.L.'
         else ; l.strip
         end
       l = nil unless l.present?
@@ -197,7 +197,8 @@ module Name::Etymology
         abbr = {
           n: /noun|s(ubst(antive)?)?/, pl: /plur(al)?/,
           masc: /mascul(ine)?/, fem: /femin(ine)?/, neut: /neut(er|ral)/,
-          gen: /genit(ive)?/, adj: /adject(ive)?/, pref: 'prefix'
+          gen: /genit(ive)?/, adj: /adject(ive)?/,
+          pref: 'prefix', suff: 'suffix'
         }
         abbr.each { |k, v| g.gsub!(/ #{v}\.? /, " #{k}. ") }
 
