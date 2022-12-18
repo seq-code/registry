@@ -258,7 +258,7 @@ module Tutorial::Batch
     genomes = parse_proposed_genomes(genomes_sheet)
 
     # Save in tutorial
-    update(step: step + 1, data: { names: names, genomes: genomes }.to_json)
+    update!(step: step + 1, data: { names: names, genomes: genomes }.to_json)
   end
 
   ##
@@ -271,7 +271,7 @@ module Tutorial::Batch
           database: genome.database, accession: genome.accession
         ).first
         if g
-          g.update(param_genomes[idx])
+          g.update!(param_genomes[idx])
         else
           genome.save
         end
@@ -324,14 +324,14 @@ module Tutorial::Batch
       end
 
       # If all is good, go to next step
-      update(step: step + 1)
-    end
+      update!(step: step + 1)
+    end # Tutorial.transaction
   end
 
   ##
   # Batch Step 02: Validation list
   def batch_step_02(params, user)
-    update(ongoing: false)
+    update!(ongoing: false)
     @next_action = [:new_register, tutorial: self]
   end
 

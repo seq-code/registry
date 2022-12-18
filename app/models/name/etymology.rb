@@ -197,6 +197,7 @@ module Name::Etymology
         abbr = {
           n: /noun|s(ubst(antive)?)?/, pl: /plur(al)?/,
           masc: /mascul(ine)?/, fem: /femin(ine)?/, neut: /neut(er|ral)/,
+          pres: 'present', part: 'participle',
           gen: /genit(ive)?/, adj: /adject(ive)?/,
           pref: 'prefix', suff: 'suffix'
         }
