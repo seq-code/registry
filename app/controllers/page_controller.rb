@@ -35,8 +35,8 @@ class PageController < ApplicationController
     redirect_to 'https://forms.gle/ZJQVu3XqZwBp4jb4A'
   end
 
-  # GET /page/officers
-  def officers
+  # GET /page/committee
+  def committee
   end
 
   # GET /help/etymology
