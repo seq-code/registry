@@ -131,7 +131,7 @@ module ApplicationHelper
 
   def modal(title, opts = {})
     @modals ||= []
-    id = "modal-#{@modals.size}"
+    id = opts[:id] || "modal-#{@modals.size}"
     @modals <<
       content_tag(
         :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog'
