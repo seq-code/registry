@@ -53,35 +53,33 @@
     <% end %>
   </dd>
 
-  <% id = modal('Executive Board Co-opted Member', size: 'lg') do %>
-    <h3>Fengping Wang</h3>
-    <h4>Shanghai Jiao Tong University, China</h4>
-  <% end %>
-  <dt>Co-opted Member</dt>
-  <dd>
-    <%= modal_button(id, class: 'text-primary') do %>
-      <b>Fengping Wang</b>, Shanghai Jiao Tong University, China
-      <%= fa_icon('address-card', type: :far, class: 'ml-1') %>
-    <% end %>
-  </dd>
-
-  <% id = modal('Executive Board Co-opted Member', size: 'lg') do %>
-    <h3>Phil Hugenholtz</h3>
-    <h4>The University of Queensland, Australia</h4>
-    I have had a long standing interest in microbial diversity, in particular the uncultured microbial majority. More recently I have been drawn into nomenclatural issues via the Genome Taxonomy Database (GTDB) project, which highlighted to me the need for the SeqCode. My research strengths in the context of the SeqCode are phylogenetics, comparative genomics and microbial taxonomy.
-  <% end %>
-  <dt>Co-opted Member</dt>
-  <dd>
-    <%= modal_button(id, class: 'text-primary') do %>
-      <b>Phil Hugenholtz</b>, The University of Queensland, Australia
-      <%= fa_icon('address-card', type: :far, class: 'ml-1') %>
-    <% end %>
-  </dd>
   <dt><i>Ex Officio</i> Members</dt>
   <dd>
     <b>Iain Sutcliffe</b>, <b>Maria Chuvochina</b>,
     <b>Luis Miguel Rodriguez-R</b>, and <b>Kostas Konstantinidis</b>
     (see below for details)
+  </dd>
+
+  <dt>Members without Portfolio</dt>
+  <dd>
+    <% id = modal('Executive Board Member without Portfolio', size: 'lg') do %>
+      <h3>Fengping Wang</h3>
+      <h4>Shanghai Jiao Tong University, China</h4>
+    <% end %>
+    <%= modal_button(id, class: 'text-primary') do %>
+      <b>Fengping Wang</b>, Shanghai Jiao Tong University, China
+      <%= fa_icon('address-card', type: :far, class: 'ml-1') %>
+    <% end %>
+    <br/>
+    <% id = modal('Executive Board Member without Portfolio', size: 'lg') do %>
+      <h3>Phil Hugenholtz</h3>
+      <h4>The University of Queensland, Australia</h4>
+      I have had a long standing interest in microbial diversity, in particular the uncultured microbial majority. More recently I have been drawn into nomenclatural issues via the Genome Taxonomy Database (GTDB) project, which highlighted to me the need for the SeqCode. My research strengths in the context of the SeqCode are phylogenetics, comparative genomics and microbial taxonomy.
+    <% end %>
+    <%= modal_button(id, class: 'text-primary') do %>
+      <b>Phil Hugenholtz</b>, The University of Queensland, Australia
+      <%= fa_icon('address-card', type: :far, class: 'ml-1') %>
+    <% end %>
   </dd>
 </dl>
 
