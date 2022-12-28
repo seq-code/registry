@@ -51,7 +51,7 @@
               <%= pluralize(@genome.number_of_16s_any, '16S rRNA') %>
               <%= @genome.most_complete_16s_any.present? ?
                     "(up to #{@genome.most_complete_16s}%)" :
-                    'unknown length'  %>
+                    '(unknown length)'  %>
             </li>
           <% end %>
           <% if @genome.number_of_23s_any.present? %>
@@ -59,7 +59,7 @@
               <%= pluralize(@genome.number_of_23s_any, '23S rRNA') %>
               <%= @genome.most_complete_23s_any.present? ?
                     "(up to #{@genome.most_complete_23s}%)" :
-                    'unknown length'  %>
+                    '(unknown length)'  %>
             </li>
           <% end %>
           <% if @genome.number_of_trnas_any.present? %>
