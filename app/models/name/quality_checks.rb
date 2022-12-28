@@ -367,7 +367,7 @@ module Name::QualityChecks
       low_genome_16s_count: {
         message: 'At least one 16S rRNA gene should be identified',
         recommendations: %w[appendix-i]
-      },
+      }.merge(@@link_to_edit_genome),
       low_genome_16s_completeness: {
         message: '16S rRNA genes should be more than 75% complete',
         recommendations: %w[appendix-i]
