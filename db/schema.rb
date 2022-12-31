@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_08_194759) do
+ActiveRecord::Schema.define(version: 2022_12_30_233019) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -85,6 +85,8 @@ ActiveRecord::Schema.define(version: 2022_12_08_194759) do
     t.float "most_complete_23s_auto"
     t.integer "number_of_23s_auto"
     t.integer "number_of_trnas_auto"
+    t.datetime "auto_scheduled_at"
+    t.text "auto_failed"
     t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
     t.index ["updated_by"], name: "index_genomes_on_updated_by"
   end

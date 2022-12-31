@@ -9,6 +9,7 @@
 
 every 1.day do
   rake 'works:update names:find parents:infer'
+  rake 'genomes:save genomes:download'
 end
 
 every 1.month do

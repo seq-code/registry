@@ -48,6 +48,13 @@ class Genome < ApplicationRecord
         number_of_16s_any number_of_trnas_any
       ]
     end
+
+    def fields_with_auto
+      %i[
+        gc_content completeness contamination most_complete_16s number_of_16s
+        most_complete_23s number_of_23s number_of_trnas
+      ]
+    end
   end
 
   def names
@@ -165,12 +172,12 @@ class Genome < ApplicationRecord
 
     # Find whichever is defined
     define_method(:"#{i}_any") do
-      send(:"#{i}_auto") || send(i)
+      send(i) || send(:"#{i}_auto")
     end
 
     # Is any defined?
     define_method(:"#{i}_any?") do
-      send(:"#{i}_auto?") || send(:"#{i}?")
+      send(:"#{i}?") || send(:"#{i}_auto?")
     end
   end
 
@@ -180,5 +187,11 @@ class Genome < ApplicationRecord
 
   def can_edit?(user)
     names.all? { |name| name.can_edit?(user) }
+  end
+
+  # MiGA Checks
+
+  def miga_name
+    "genome_#{id}"
   end
 end
