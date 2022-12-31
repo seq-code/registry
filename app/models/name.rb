@@ -445,7 +445,7 @@ class Name < ApplicationRecord
   end
 
   def can_see?(user)
-    return true if self.public?
+    return true if public?
 
     (!user.nil?) && (user.curator? || user?(user))
   end
