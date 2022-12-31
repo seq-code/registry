@@ -1,4 +1,37 @@
 <% @genome = @name.genome %>
+
+<% @auto_modal = modal('Automated Estimates') do %>
+  This genome was automatically retrieved and processed using MiGA
+  (The Microbial Genomes Atlas) <sup>[1]</sup>, and the estimate has not been
+  overridden by the submitter.
+  <hr/>
+  <ol class="text-muted">
+    <li>
+      Rodriguez-R et al, 2018, NAR.
+      <%= link_to('DOI: 10.1093/nar/gky467',
+            'https://doi.org/10.1093/nar/gky467', target: '_blank') %>
+    </li>
+  </ol>
+<% end %>
+
+<%
+def report_auto(field)
+  return unless @genome.send(:"#{field}_any?")
+
+  if @genome.send(:"#{field}?")
+    if @genome.can_edit?(current_user) && @genome.send(:"#{field}_auto?")
+      content_tag(:span, class: 'text-info small') do
+        "(automated estimate: #{@genome.send(:"#{field}_auto")})"
+      end
+    end
+  else
+    modal_button(@auto_modal, class: 'ml-1 small', title: 'Automated estimate') do
+      fa_icon('robot', class: 'hover-help small')
+    end
+  end
+end
+%>
+
 <% if @genome.present? %>
   <dl name="genomics" class="main-section name-details">
     <h2>Genomics</h2>
@@ -30,15 +63,20 @@
     <% if @genome.completeness_any.present? || @genome.contamination_any.present? %>
       <dt><%= fa_icon('star-half-alt') %> Estimated Quality Metrics</dt>
       <dd>
-        <% if @genome.completeness_any.present? %>
-          <b>Completeness:</b> <%= @genome.completeness_any %>%<br/>
-        <% end %>
-        <% if @genome.contamination.present? %>
-          <b>Contamination:</b> <%= @genome.contamination_any %>%<br/>
-        <% end %>
-        <% if @genome.quality_any.present? %>
-          <b>Quality:</b> <%= @genome.quality_any %><br/>
-        <% end %>
+        <ul>
+          <% if @genome.completeness_any.present? %>
+            <li><b>Completeness:</b> <%= @genome.completeness_any %>%
+            <%= report_auto(:completeness) %></li>
+          <% end %>
+          <% if @genome.contamination_any.present? %>
+            <li><b>Contamination:</b> <%= @genome.contamination_any %>%
+            <%= report_auto(:contamination) %></li>
+          <% end %>
+          <% if @genome.quality_any.present? %>
+            <li><b>Quality:</b> <%= @genome.quality_any %>
+            <%= report_auto(:quality) %></li>
+          <% end %>
+        </ul>
       </dd>
     <% end %>
 
@@ -49,17 +87,21 @@
           <% if @genome.number_of_16s_any.present? %>
             <li>
               <%= pluralize(@genome.number_of_16s_any, '16S rRNA') %>
-              <%= @genome.most_complete_16s_any.present? ?
-                    "(up to #{@genome.most_complete_16s}%)" :
+              <%= @genome.number_of_16s_any.zero? ? '' :
+                    @genome.most_complete_16s_any.present? ?
+                    "(up to #{@genome.most_complete_16s_any}%)" :
                     '(unknown length)'  %>
+              <%= report_auto(:number_of_16s) %>
             </li>
           <% end %>
           <% if @genome.number_of_23s_any.present? %>
             <li>
               <%= pluralize(@genome.number_of_23s_any, '23S rRNA') %>
-              <%= @genome.most_complete_23s_any.present? ?
-                    "(up to #{@genome.most_complete_23s}%)" :
+              <%= @genome.number_of_23s_any.zero? ? '' :
+                    @genome.most_complete_23s_any.present? ?
+                    "(up to #{@genome.most_complete_23s_any}%)" :
                     '(unknown length)'  %>
+              <%= report_auto(:number_of_23s) %>
             </li>
           <% end %>
           <% if @genome.number_of_trnas_any.present? %>
@@ -97,6 +139,7 @@
         <ul>
           <li>
             <b>G+C Content:</b> <%= @genome.gc_content_any %>%
+            <%= report_auto(:gc_content) %>
           </li>
         </ul>
       </dd>

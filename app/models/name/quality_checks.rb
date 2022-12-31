@@ -39,14 +39,44 @@ module Name::QualityChecks
         link_text: 'Edit description',
         link_to: lambda { |w| [:edit, w.name] }
       },
-
       candidatus_modifier: {
         message: 'The name has a Candidatus modifier that should be removed'
       }.merge(@@link_to_edit_spelling),
-
       too_many_amino_acids: {
         message: 'The genome is reported to encode tRNAs for too many ' \
                  'amino acids'
+      }.merge(@@link_to_edit_genome),
+      discrepant_gc_content: {
+        message: 'The reported G+C content has over 10% difference with ' \
+                 'the automated estimate'
+      }.merge(@@link_to_edit_genome),
+      discrepant_completeness: {
+        message: 'The reported completeness has over 10% difference with ' \
+                 'the automated estimate'
+      }.merge(@@link_to_edit_genome),
+      discrepant_contamination: {
+        message: 'The reported contamination has over 10% difference with ' \
+                 'the automated estimate'
+      }.merge(@@link_to_edit_genome),
+      discrepant_most_complete_16s: {
+        message: 'The reported fraction of 16S fragments has over 10% ' \
+                 'difference with the automated estimate'
+      }.merge(@@link_to_edit_genome),
+      discrepant_number_of_16s: {
+        message: 'The reported number of 16S fragments has over 10% ' \
+                 'difference with the automated estimate'
+      }.merge(@@link_to_edit_genome),
+      discrepant_most_complete_23s: {
+        message: 'The reported fraction of 23S fragments has over 10% ' \
+                 'difference with the automated estimate'
+      }.merge(@@link_to_edit_genome),
+      discrepant_number_of_23s: {
+        message: 'The reported number of 23S fragments has over 10% ' \
+                 'difference with the automated estimate'
+      }.merge(@@link_to_edit_genome),
+      discrepant_number_of_trnas: {
+        message: 'The reported number amino acids with tRNA elements has ' \
+                 'over 10% difference with the automated estimate'
       }.merge(@@link_to_edit_genome),
 
       # Section 1. General
@@ -276,6 +306,11 @@ module Name::QualityChecks
                  'in the INSDC databases',
         rules: %w[18a]
       }.merge(@@link_to_edit_type),
+      sequence_not_found: {
+        message: 'A sequence used as type material must be available ' \
+                 'in the INSDC databases',
+        rules: %w[18a]
+      }.merge(@@link_to_edit_type),
       non_valid_name_as_type: {
         message: 'Only a valid name can be used as nomenclatural type',
         rules: %w[20],
@@ -490,6 +525,7 @@ module Name::QualityChecks
 
     if type_is_genome?
       @qc_warnings.add(:missing_genome_kind) unless type_genome.kind.present?
+      @qc_warnings.add(:sequence_not_found) if type_genome.auto_failed.present?
 
       unless type_genome.source?
         if !proposed_by.nil? && proposed_by.journal_date.year < 2023
@@ -547,6 +583,14 @@ module Name::QualityChecks
         elsif type_genome.number_of_trnas_any > 21
           @qc_warnings.add(:too_many_amino_acids)
         end
+      end
+
+      # Measure discrepancy with automated checks
+      Genome.fields_with_auto.each do |field|
+        any  = type_genome.send(:"#{field}_any") or next
+        auto = type_genome.send(:"#{field}_auto") or next
+        diff = (any - auto).abs.to_f / [any, auto].max
+        @qc_warnings.add(:"discrepant_#{field}") if diff > 0.1
       end
     end # type_is_genome?
 
