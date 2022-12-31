@@ -1624,6 +1624,7 @@ nyit.edu.bh
 rcsi-mub.com
 ucb.edu.bh
 uob.edu.bh
+asb.bh
 aiub.edu
 asaub.edu.bd
 atishdipankaruniversity.edu.bd
@@ -1786,6 +1787,8 @@ vub.ac.be
 vub.be
 wenk.be
 odisee.be
+hogent.be
+thomasmore.be
 aucmed.edu
 cahsu.edu
 giuedu.bz
@@ -2317,6 +2320,7 @@ udesarrollo.cl
 udp.cl
 ufinis.cl
 ufro.cl
+ufromail.cl
 ugm.cl
 uisek.cl
 ujso.cl
@@ -2840,6 +2844,7 @@ utadeo.edu.co
 utch.edu.co
 ut.edu.co
 utp.edu.co
+eia.edu.co
 ucbc.org
 ucbukavu.ac.cd
 um-rdc.org
@@ -2993,6 +2998,7 @@ ruc.dk
 sdu.dk
 teologi.dk
 tietgen.dk
+en.via.dk
 univ.edu.dj
 dsc.dm
 newworld.ac
@@ -4304,6 +4310,7 @@ sagaruniversity.nic.in
 sambalpuruniversitypgc.in
 sanskrit.nic.in
 sastra.edu
+sastra.ac.in
 sathyabamauniv.ac.in
 saurashtrauniversity.edu
 sce.ac.in
@@ -4963,6 +4970,8 @@ univaq.it
 unive.it
 univr.it
 units.it
+aur.edu
+ihteamlingue.it
 ncu.edu.jm
 utech.edu.jm
 uwimona.edu.jm
@@ -5946,6 +5955,7 @@ dau.lv
 lama.lv
 lka.edu.lv
 llu.lv
+lbtu.lv
 lma.lv
 lmuza.lv
 lspa.lanet.lv
@@ -6365,6 +6375,7 @@ ver.ucc.mx
 westhill.edu.mx
 azc.uam.mx
 itsoeh.edu.mx
+jefferson.edu.mx
 ase.md
 kdu.md
 uasm.md
@@ -6502,6 +6513,7 @@ openpolytechnic.ac.nz
 otago.ac.nz
 vuw.ac.nz
 waikato.ac.nz
+nmit.ac.nz
 uam.edu.ni
 uca.edu.ni
 ucc.edu.ni
@@ -7232,6 +7244,7 @@ uportu.pt
 up.pt
 utad.pt
 utl.pt
+novasbe.unl.pt
 bayamon.inter.edu
 caribbean.edu
 cayey.upr.edu
@@ -7259,6 +7272,7 @@ uprutuado.edu
 ut.pr
 qatar.northwestern.edu
 qu.edu.qa
+oryxschool.qa
 univ-reunion.fr
 aistedaab.ro
 amgd.eu
@@ -7852,6 +7866,7 @@ ump.ac.za
 mut.ac.za
 smu.ac.za
 spu.ac.za
+aisct.org
 juba.edu.sd
 unbeg.edu.sd
 barcelonagse.eu
@@ -8071,7 +8086,6 @@ swissmc.ch
 swissu.org
 uccr.edu
 uniludes.ch
-unizh.ch
 victoria-uni.ch
 webster.ch
 zhwin.ch
@@ -8084,6 +8098,7 @@ unibas.ch
 unifr.ch
 unige.ch
 uzh.ch
+unizh.ch
 unibe.ch
 unilu.ch
 unisg.ch
@@ -8119,6 +8134,7 @@ chuv.ch
 hcuge.ch
 insel.ch
 unispital.ch
+rosey.ch
 aiu.edu.sy
 albaath-univ.edu.sy
 alepuniv.edu.sy
@@ -8386,7 +8402,6 @@ isikun.edu.tr
 iticu.edu.tr
 itu.edu.tr
 iyte.edu.tr
-izmirekonomi.edu.tr
 kafkas.edu.tr
 karaelmas.edu.tr
 khas.edu.tr
@@ -8559,6 +8574,7 @@ ud.ac.ae
 uojazeera.com
 uowdubai.ac.ae
 zu.ac.ae
+sia.ae
 abdn.ac.uk
 aberdeen.ac.uk
 aber.ac.uk
@@ -8748,6 +8764,12 @@ worc.ac.uk
 york.ac.uk
 middlesbro.ac.uk
 mbro.ac.uk
+stmarys.ac.uk
+leedstrinity.ac.uk
+eastcoast.ac.uk
+swansea.ac.uk
+yorksj.ac.uk
+cavc.ac.uk
 claeh.edu.uy
 ort.edu.uy
 ucu.edu.uy
@@ -8930,6 +8952,7 @@ iste.edu.tr
 medeniyet.edu.tr
 istanbul.edu.tr
 ikc.edu.tr
+ikcu.edu.tr
 karabuk.edu.tr
 kmu.edu.tr
 kastamonu.edu.tr
@@ -8965,6 +8988,7 @@ medipol.edu.tr
 rumeli.edu.tr
 iszu.edu.tr
 ieu.edu.tr
+izmirekonomi.edu.tr
 karatay.edu.tr
 gidatarim.edu.tr
 mef.edu.tr
@@ -9904,6 +9928,7 @@ wwcc.wy.edu
 freeuni.edu.ge
 ui1.es
 alumnos.ui1.es
+enae.es
 dhbw.de
 heidenheim.dhbw.de
 cas.dhbw.de
@@ -9943,6 +9968,7 @@ wbu.edu
 hust.edu.vn
 bhtafe.edu.au
 boxhill.edu.au
+linuwel.nsw.edu.au
 cust.edu.cn
 ieec.cust.edu.cn
 polk.edu
@@ -9975,6 +10001,8 @@ lynu.edu.cn
 pointpark.edu
 ontariotechu.ca
 ontariotechu.net
+torontomu.ca
+collegeuniversel.ca
 hsu.edu.hk
 htl-villach.at
 edu.htl-villach.at
@@ -10003,12 +10031,48 @@ uni-obuda.hu
 uni-bge.hu
 ufn.edu.br
 iitbbs.ac.in
+srmap.edu.in
 sciencespo-rennes.fr
+rennes-sb.com
 cau.edu
 morehouse.edu
 audencia.com
-ufro.cl
-ufromail.cl
+bakircay.edu.tr
+idu.edu.tr
+tinaztepe.edu.tr
+usa.edu
+calarts.edu
+dmu.edu
+utahtech.edu
+midwestern.edu
+iwu.edu
+maryvillecollege.edu
+endicott.edu
+ua.edu
+gbcnv.edu
+einsteinmed.edu
+mdc.edu
+fsw.edu
+bmhs.org
+chaminade.edu
+daltonstate.edu
+ojaiusd.org
+bismarckstate.edu
+quadratacademy.com
+una.edu
+kiet.edu
+wakefield.ac.uk
+student.uliege.be
+helpnet.uliege.be
+ddi.uliege.be
+uliege.be
+student.spsmb.cz
+spsmb.cz
+dnui.edu.cn
+neusoft.edu.cn
+mymail.mapua.edu.ph
+mapua.edu.ph
+faculdadedombosco.edu.br
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10025,3 +10089,4 @@ uohyd.ac.in
 mail.sysu.edu.cn
 kurenai.waseda.jp
 quadram.ac.uk
+kribb.re.kr
