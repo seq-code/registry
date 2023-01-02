@@ -86,7 +86,7 @@ end
               quality: ['Quality', '']
             }
           %>
-          <% %w[completeness contamination quality].each do |field, v| %>
+          <% fields.each do |field, v| %>
             <% if @genome.send("#{field}_any?") %>
               <li>
                 <b><%= v[0] %>:</b>
