@@ -571,8 +571,7 @@ module Name::QualityChecks
       if type_genome.number_of_16s_any? &&
          type_genome.number_of_16s_any.zero?
         @qc_warnings.add(:low_genome_16s_count)
-      end
-      if type_genome.most_complete_16s_any? &&
+      elsif type_genome.most_complete_16s_any? &&
          type_genome.most_complete_16s_any <= 75.0
         @qc_warnings.add(:low_genome_16s_completeness)
       end
