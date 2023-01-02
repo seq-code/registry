@@ -22,7 +22,9 @@ def report_auto(field, units = nil)
     if @genome.can_edit?(current_user) && @genome.send(:"#{field}_auto?")
       content_tag(:span, class: 'text-info small') do
         v = @genome.send(:"#{field}_auto")
-        v = ('%.2g' % v).to_f if v.is_a? Float
+        if v.is_a? Float
+          v = v.abs >= 1.0 ? v.round(2) : ('%.2g' % v).to_f
+        end
         "(automated estimate: #{v}#{units})"
       end
     end
