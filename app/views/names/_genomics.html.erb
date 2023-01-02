@@ -139,14 +139,30 @@ end
       </dd>
     <% end %>
 
-    <% if @genome.gc_content_any? %>
+    <% if @genome.gc_content_any? || @genome.auto_check %>
       <dt><%= fa_icon('table') %> Other features</dt>
       <dd>
         <ul>
-          <li>
-            <b>G+C Content:</b> <%= @genome.gc_content_any %>%
-            <%= report_auto(:gc_content, '%') %>
-          </li>
+          <%
+            fields = {
+              gc_content: ['G+C Content', '%'],
+              coding_density: ['Coding Density', '%'],
+              codon_table: ['Codon Table', ''],
+              n50: ['N50', ' bp'],
+              contigs: ['Contigs', ''],
+              assembly_length: ['Assembly Length', ' bp'],
+              ambiguous_fraction: ['Ambiguous Assembly Fraction', '%']
+            }
+          %>
+          <% fields.each do |k, v| %>
+            <% if @genome.send("#{k}_any?") %>
+              <li>
+                <b><%= v[0] %></b>
+                <%= @genome.send("#{k}_any") %><%= v[1] %>
+                <%= report_auto(k, v[1]) %>
+              </li>
+            <% end %>
+          <% end %>
         </ul>
       </dd>
     <% end %>

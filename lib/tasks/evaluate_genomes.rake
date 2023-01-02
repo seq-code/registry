@@ -54,6 +54,7 @@ namespace :genomes do
       assembly = d.result(:assembly).try(:stats)
       essential_genes = d.result(:essential_genes).try(:stats)
       ssu = d.result(:ssu).try(:stats)
+      cds = d.result(:cds).try(:stats)
 
       new_data = {
         gc_content_auto: assembly.try(:dig, :g_c_content, 0),
@@ -63,7 +64,13 @@ namespace :genomes do
         number_of_16s_auto: ssu.try(:dig, :ssu),
         most_complete_23s_auto: ssu.try(:dig, :lsu_fragment, 0),
         number_of_23s_auto: ssu.try(:dig, :lsu),
-        number_of_trnas_auto: ssu.try(:dig, :trna_aa)
+        number_of_trnas_auto: ssu.try(:dig, :trna_aa),
+        coding_density: cds.try(:dig, :coding_density, 0),
+        n50: assembly.try(:dig, :n50, 0),
+        contigs: assembly.try(:dig, :contigs),
+        assembly_length: assembly.try(:dig, :total_length, 0),
+        ambiguous_fraction: assembly.try(:dig, :x_content, 0),
+        codon_table: cds.try(:dig, :codon_table)
       }
       genome.update(new_data.merge(auto_check: true))
     end

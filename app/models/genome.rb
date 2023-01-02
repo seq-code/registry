@@ -48,13 +48,15 @@ class Genome < ApplicationRecord
         number_of_16s_any number_of_trnas_any
       ]
     end
-
-    def fields_with_auto
-      %i[
-        gc_content completeness contamination most_complete_16s number_of_16s
-        most_complete_23s number_of_23s number_of_trnas
-      ]
-    end
+  end
+  
+  @@FIELDS_WITH_AUTO = %i[
+    gc_content completeness contamination most_complete_16s number_of_16s
+    most_complete_23s number_of_23s number_of_trnas quality
+    coding_density n50 contigs assembly_length ambiguous_fraction codon_table
+  ]
+  def self.fields_with_auto
+    @@FIELDS_WITH_AUTO
   end
 
   def names
@@ -156,10 +158,12 @@ class Genome < ApplicationRecord
     (completeness_auto - 5 * contamination_auto).round(2)
   end
 
-  %i[
-    gc_content completeness contamination most_complete_16s number_of_16s
-    most_complete_23s number_of_23s number_of_trnas quality
-  ].each do |i|
+  # Dummy methods returning +nil+
+  attr_accessor *%i[
+    coding_density n50 contigs assembly_length ambiguous_fraction codon_table
+  ]
+
+  @@FIELDS_WITH_AUTO.each do |i|
     # Redefine to consider valid estimates of 0 or 0.0
     define_method(:"#{i}?") do
       send(i).present?
