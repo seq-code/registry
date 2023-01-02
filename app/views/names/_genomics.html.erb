@@ -26,7 +26,7 @@ def report_value(value)
 end
 
 def report_any(field, units = nil)
-  "#{report_value(@genome.send("#{k}_any"))}#{v[1]}"
+  "#{report_value(@genome.send("#{field}_any"))}#{units}"
 end
 
 def report_auto(field, units = nil)
