@@ -587,6 +587,7 @@ module Name::QualityChecks
 
       # Measure discrepancy with automated checks
       Genome.fields_with_auto.each do |field|
+        next if field == :quality
         any  = type_genome.send(:"#{field}_any") or next
         auto = type_genome.send(:"#{field}_auto") or next
         next unless any.is_a? Numeric
