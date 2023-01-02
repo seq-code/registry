@@ -589,8 +589,12 @@ module Name::QualityChecks
       Genome.fields_with_auto.each do |field|
         any  = type_genome.send(:"#{field}_any") or next
         auto = type_genome.send(:"#{field}_auto") or next
+        next unless any.is_a? Numberic
+
         diff = (any - auto).abs.to_f / [any, auto].max
-        @qc_warnings.add(:"discrepant_#{field}") if diff > 0.1
+        if diff > 0.1 && (any - auto).abs >= 1.0
+          @qc_warnings.add(:"discrepant_#{field}") if diff > 0.1
+        end
       end
     end # type_is_genome?
 
