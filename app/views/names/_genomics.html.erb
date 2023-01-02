@@ -15,17 +15,28 @@
 <% end %>
 
 <%
+def report_value(value)
+  if !value.is_a? Numeric
+    value
+  elsif value.abs < 1.0 && !value.zero?
+    ('%.2g' % value).to_f
+  else
+    number_with_delimiter(value.round(2))
+  end
+end
+
+def report_any(field, units = nil)
+  "#{report_value(@genome.send("#{k}_any"))}#{v[1]}"
+end
+
 def report_auto(field, units = nil)
   return unless @genome.send(:"#{field}_any?")
 
   if @genome.send(:"#{field}?")
     if @genome.can_edit?(current_user) && @genome.send(:"#{field}_auto?")
       content_tag(:span, class: 'text-info small') do
-        v = @genome.send(:"#{field}_auto")
-        if v.is_a? Float
-          v = v.abs >= 1.0 ? v.round(2) : ('%.2g' % v).to_f
-        end
-        "(automated estimate: #{v}#{units})"
+        value = report_value(@genome.send(:"#{field}_auto"))
+        "(automated estimate: #{value}#{units})"
       end
     end
   else
@@ -68,17 +79,20 @@ end
       <dt><%= fa_icon('star-half-alt') %> Estimated Quality Metrics</dt>
       <dd>
         <ul>
-          <% if @genome.completeness_any.present? %>
-            <li><b>Completeness:</b> <%= @genome.completeness_any %>%
-            <%= report_auto(:completeness, '%') %></li>
-          <% end %>
-          <% if @genome.contamination_any.present? %>
-            <li><b>Contamination:</b> <%= @genome.contamination_any %>%
-            <%= report_auto(:contamination, '%') %></li>
-          <% end %>
-          <% if @genome.quality_any.present? %>
-            <li><b>Quality:</b> <%= @genome.quality_any %>
-            <%= report_auto(:quality, '%') %></li>
+          <%
+            fields = {
+              completeness: ['Completeness', '%'],
+              contamination: ['Contamination', '%'],
+              quality: ['Quality', '']
+            }
+          %>
+          <% %w[completeness contamination quality].each do |field, v| %>
+            <% if @genome.send("#{field}_any?") %>
+              <li>
+                <b><%= v[0] %>:</b>
+                <%= report_any(field, v[1]) %> <%= report_auto(field, v[1]) %>
+              </li>
+            <% end %>
           <% end %>
         </ul>
       </dd>
@@ -157,8 +171,8 @@ end
           <% fields.each do |k, v| %>
             <% if @genome.send("#{k}_any?") %>
               <li>
-                <b><%= v[0] %></b>
-                <%= @genome.send("#{k}_any") %><%= v[1] %>
+                <b><%= v[0] %>:</b>
+                <%= report_any(k, v[1]) %>
                 <%= report_auto(k, v[1]) %>
               </li>
             <% end %>
