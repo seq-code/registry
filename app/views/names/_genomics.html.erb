@@ -106,7 +106,9 @@ end
           <% end %>
           <% if @genome.number_of_trnas_any.present? %>
             <li>
-              tRNAs for <%= pluralize(@genome.number_of_trnas_any, 'amino acid') %>
+              tRNAs for
+              <%= pluralize(@genome.number_of_trnas_any, 'amino acid') %>
+              <%= report_auto(:number_of_trnas) %>
             </li>
           <% end %>
         </ul>

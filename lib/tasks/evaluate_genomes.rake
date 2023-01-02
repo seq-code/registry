@@ -15,8 +15,9 @@ namespace :genomes do
       auto_check: false, auto_scheduled_at: nil, auto_failed: nil
     )
 
+    $stderr.puts "Download genomes:"
     genomes.each do |genome|
-      $stderr.puts "o #{genome.text}"
+      $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
       MiGA::Cli.new([
         'get', '--project', p_path, '--dataset', genome.miga_name,
         '--universe', 'ncbi', '--db', genome.database, '--ids', genome.accession
@@ -44,8 +45,9 @@ namespace :genomes do
     p = MiGA::Project.load(p_path)
     genomes = Genome.where(auto_check: false).where.not(auto_scheduled_at: nil)
 
+    $stderr.puts "Save genomes:"
     genomes.each do |genome|
-      $stderr.puts "o #{genome.text}"
+      $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
       d = p.dataset(genome.miga_name) or next
       d.result(:stats) or next # Check if it's complete first
 
