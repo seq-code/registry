@@ -15,13 +15,15 @@
 <% end %>
 
 <%
-def report_auto(field)
+def report_auto(field, units = nil)
   return unless @genome.send(:"#{field}_any?")
 
   if @genome.send(:"#{field}?")
     if @genome.can_edit?(current_user) && @genome.send(:"#{field}_auto?")
       content_tag(:span, class: 'text-info small') do
-        "(automated estimate: #{@genome.send(:"#{field}_auto")})"
+        v = @genome.send(:"#{field}_auto")
+        v = ('%.2g' % v).to_f if v.is_a? Float
+        "(automated estimate: #{v}#{units})"
       end
     end
   else
@@ -66,15 +68,15 @@ end
         <ul>
           <% if @genome.completeness_any.present? %>
             <li><b>Completeness:</b> <%= @genome.completeness_any %>%
-            <%= report_auto(:completeness) %></li>
+            <%= report_auto(:completeness, '%') %></li>
           <% end %>
           <% if @genome.contamination_any.present? %>
             <li><b>Contamination:</b> <%= @genome.contamination_any %>%
-            <%= report_auto(:contamination) %></li>
+            <%= report_auto(:contamination, '%') %></li>
           <% end %>
           <% if @genome.quality_any.present? %>
             <li><b>Quality:</b> <%= @genome.quality_any %>
-            <%= report_auto(:quality) %></li>
+            <%= report_auto(:quality, '%') %></li>
           <% end %>
         </ul>
       </dd>
@@ -141,7 +143,7 @@ end
         <ul>
           <li>
             <b>G+C Content:</b> <%= @genome.gc_content_any %>%
-            <%= report_auto(:gc_content) %>
+            <%= report_auto(:gc_content, '%') %>
           </li>
         </ul>
       </dd>
