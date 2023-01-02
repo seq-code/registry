@@ -589,7 +589,7 @@ module Name::QualityChecks
       Genome.fields_with_auto.each do |field|
         any  = type_genome.send(:"#{field}_any") or next
         auto = type_genome.send(:"#{field}_auto") or next
-        next unless any.is_a? Numberic
+        next unless any.is_a? Numeric
 
         diff = (any - auto).abs.to_f / [any, auto].max
         if diff > 0.1 && (any - auto).abs >= 1.0
