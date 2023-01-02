@@ -65,12 +65,12 @@ namespace :genomes do
         most_complete_23s_auto: ssu.try(:dig, :lsu_fragment, 0),
         number_of_23s_auto: ssu.try(:dig, :lsu),
         number_of_trnas_auto: ssu.try(:dig, :trna_aa),
-        coding_density: cds.try(:dig, :coding_density, 0),
-        n50: assembly.try(:dig, :n50, 0),
-        contigs: assembly.try(:dig, :contigs),
-        assembly_length: assembly.try(:dig, :total_length, 0),
-        ambiguous_fraction: assembly.try(:dig, :x_content, 0),
-        codon_table: cds.try(:dig, :codon_table)
+        coding_density_auto: cds.try(:dig, :coding_density, 0),
+        n50_auto: assembly.try(:dig, :n50, 0),
+        contigs_auto: assembly.try(:dig, :contigs),
+        assembly_length_auto: assembly.try(:dig, :total_length, 0),
+        ambiguous_fraction_auto: assembly.try(:dig, :x_content, 0),
+        codon_table_auto: cds.try(:dig, :codon_table)
       }
       genome.update(new_data.merge(auto_check: true))
     end
