@@ -20,18 +20,28 @@ module NamesHelper
     link_to(name.name_html, name)
   end
 
-  def name_lineage(name)
-    content_tag(:span, '') +
-      name.lineage.map do |name|
-        if name.incertae_sedis?
-          content_tag(:span, name.incertae_sedis_html) +
-            content_tag(:span, ' &raquo; '.html_safe)
-        else
-          content_tag(:span, '')
-        end +
-        link_to(name.name_html, name) +
-          content_tag(:span, ' &raquo; '.html_safe)
-      end.inject(:+) +
-      @name.name_html
+  def name_lineage(name, links: true, last: true, register: nil)
+    assume_valid = register&.names&.include?(name)
+    out = []
+
+    # Recursively get the parent(s)
+    if name.incertae_sedis?
+      out << content_tag(:span, name.incertae_sedis_html)
+      out << content_tag(:span, ' &raquo; '.html_safe)
+    elsif name.parent
+      out << name_lineage(
+        name.parent, links: links, last: false, register: register
+      )
+      out << content_tag(:span, ' &raquo; '.html_safe)
+    end
+
+    # Display the current name
+    if links && !last
+      out << link_to(name.name_html(nil, assume_valid), name)
+    else
+      out << name.name_html(nil, assume_valid)
+    end
+
+    out.inject(:+)
   end
 end
