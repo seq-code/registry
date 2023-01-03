@@ -24,8 +24,7 @@ module NamesHelper
     content_tag(:span, '') +
       name.lineage.map do |name|
         if name.incertae_sedis?
-          content_tag(:span, name.incertae_sedis) +
-            content_tag(:i, '(incertae sedis)') +
+          content_tag(:span, name.incertae_sedis_html) +
             content_tag(:span, ' &raquo; '.html_safe)
         else
           content_tag(:span, '')
