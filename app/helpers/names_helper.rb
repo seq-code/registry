@@ -23,6 +23,13 @@ module NamesHelper
   def name_lineage(name)
     content_tag(:span, '') +
       name.lineage.map do |name|
+        if name.incertae_sedis?
+          content_tag(:span, name.incertae_sedis) +
+            content_tag(:i, '(incertae sedis)') +
+            content_tag(:span, ' &raquo; '.html_safe)
+        else
+          content_tag(:span, '')
+        end +
         link_to(name.name_html, name) +
           content_tag(:span, ' &raquo; '.html_safe)
       end.inject(:+) +
