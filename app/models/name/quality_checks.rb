@@ -880,10 +880,9 @@ module Name::QualityChecks
     return true if [:p1, nil].include?(last_component)
 
     # Rule 50.1 and 50.3
-    # If the last component is not Latin, no further checks are necessary
-    return true unless i.latin?(last_component)
-    # If the last component has no defined gender, no further checks
-    return true unless i.gender?(last_component)
+    # If the last component is not Latin or has no defined gender,
+    # no further checks are necessary
+    return true unless latin?(last_component) && gender?(last_component)
 
     # Rule 50.2
     # Check if the gender between the last component and the full epithet
