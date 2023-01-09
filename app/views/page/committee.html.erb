@@ -1,3 +1,4 @@
+<% provide(:title, 'SeqCode Committee') %>
 <div class="px-md-3 mx-md-3 px-lg-5 mx-lg-5 mb-3">
   <%= inline_svg_tag('organigram.svg') %>
 </div>
@@ -408,39 +409,33 @@
       name: 'Kostas Konstantinidis',
       affiliation: 'Georgia Institute of Technology, USA',
       url: 'http://enve-omics.gatech.edu',
-      bio: <<~BIO
+      bio: <<~BIO.html_safe
         Dr. Kostas Konstantinidis is the Richard C. Tucker Professor in the
         School of Civil and Environmental Engineering and the School of
         Biological Sciences (adjunct) at Georgia Tech and Program Faculty for
         the Coulter Department of Biomedical Engineering at Georgia Tech and
         Emory University. He earned his BS (1999) in Agricultural Sciences from
-        the Aristotle University of Thessaloniki, Greece and his PhD (2004) from
-        the Center for Microbial Ecology at Michigan State University, under the
-        supervision of James Tiedje. Prior to joining the faculty at Georgia
-        Tech, he was a Postdoctoral Fellow in the Department of Civil and
-        Environmental Engineering at MIT under the supervision of Ed DeLong. Dr
-        Konstantinidis is an expert in environmental microbiology and microbial
-        ecology, and the development of associated omics and bioinformatics
-        techniques. Specifically for taxonomy and the SeqCode, he has developed
-        novel genome-based methods to catalogue the diversity among prokaryotic
-        isolate genomes and metagenomes such as the Average Nucleotide Identity
-        (ANI) of all shared genes between two organisms (Konstantinidis and
-        Tiedje, PNAS 2005). ANI has been recognized internationally as a
-        replacement of the “golden standard” of prokaryotic taxonomy, DNA-DNA
-        hybridization, and he received the prestigious Skerman Award from the
-        World Federation for Culture Collections for the ANI work. Dr
-        Konstantinidis is among the founding member of the SeqCode initiative
-        and is committed to further assist the development of the initiative.
-        He has published 180 papers in these areas, 13 in PNAS alone, which have
-        received >25,000 citations. Accordingly, he is in the top 1% of world's
-        Highly Cited scientists and engineers by Clarivate/Web of Science. He is
-        also an elected member of the honorary American Academy of Microbiology.
-        His bioinformatic tools are available for online analysis of microbial
-        genome and metagenome data through the lab webserver, which receives
-        >3,000 visitors each month. Therefore, he is well-prepared to help with
-        the SeqCode committee related to the genome standards and quality, and
-        the bioinformatic approaches to define and assess these standards, or
-        another related committee.
+        the Aristotle University of Thessaloniki, Greece and his PhD (2004)
+        from the Center for Microbial Ecology at Michigan State University,
+        under the supervision of James Tiedje. Prior to joining the faculty at
+        Georgia Tech, he was a Postdoctoral Fellow in the Department of Civil
+        and Environmental Engineering at MIT under the supervision of Ed DeLong.
+        Dr Konstantinidis is an expert in environmental microbiology and
+        microbial ecology, and the development of associated omics and
+        bioinformatics techniques. He has published 180 papers in these areas,
+        13 in PNAS alone, which have received >25,000 citations. Accordingly,
+        he is in the top 1% of world's Highly Cited scientists and engineers by
+        Clarivate/Web of Science. Specifically for taxonomy and the SeqCode, he
+        has developed novel genome-based methods to catalogue the diversity
+        among prokaryotic isolate genomes and metagenomes such as the Average
+        Nucleotide Identity (ANI) of all shared genes between two organisms
+        (<a href='http://enve-omics.ce.gatech.edu/g'>http://enve-omics.ce.gatech.edu/g</a>).
+        ANI has been recognized internationally as a replacement of the
+        “golden standard” of prokaryotic taxonomy, DNA-DNA hybridization, and he
+        received the prestigious Skerman Award from the World Federation for
+        Culture Collections for the ANI work. Dr Konstantinidis is among the
+        founding member of the SeqCode initiative and is committed to further
+        assist the development of the initiative.
       BIO
     },
     li: {
