@@ -189,7 +189,8 @@ end
     <dt><%= fa_icon('robot') %> Automated checks</dt>
     <dd><%=
       @genome.auto_check ? 'Complete' :
-        @genome.kind? ? 'Scheduled' : 'Missing information'
+        !@genome.kind? ? 'Missing information' :
+        @genome.auto_failed.present? ? 'Failed' : 'Scheduled'
     %></dd>
 
     <% if @name.can_edit?(current_user) %>
