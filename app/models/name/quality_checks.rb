@@ -42,6 +42,9 @@ module Name::QualityChecks
       candidatus_modifier: {
         message: 'The name has a Candidatus modifier that should be removed'
       }.merge(@@link_to_edit_spelling),
+      inconsistent_syllabification: {
+        message: 'The syllabification does not correspond to the proposed spelling'
+      }.merge(@@link_to_edit_etymology),
       too_many_amino_acids: {
         message: 'The genome is reported to encode tRNAs for too many ' \
                  'amino acids'
@@ -767,6 +770,9 @@ module Name::QualityChecks
     end
 
     @qc_warnings.add(:inconsistent_language) if etymology? && !latin?
+    unless consistent_syllabication?
+      @qc_warnings.add(:inconsistent_syllabification)
+    end
 
     unless consistent_with_type_genus?
       @qc_warnings.add(:inconsistent_with_type_genus)
@@ -943,5 +949,11 @@ module Name::QualityChecks
 
     first_particle = etymology(:p1, :particle)
     first_particle ? type_name.base_name == first_particle : true
+  end
+
+  def consistent_syllabication?
+    return true unless syllabication?
+
+    last_epithet.downcase == syllabication.gsub(/[^A-Za-z]/, '').downcase
   end
 end
