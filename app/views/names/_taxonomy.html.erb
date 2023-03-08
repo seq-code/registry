@@ -64,7 +64,8 @@
     <% end %>
 
     <% unless @name.children.empty? %>
-      <dt><%= fa_icon('sort-amount-down-alt') %> Children<dt>
+      <dt><%= fa_icon('sort-amount-down-alt') %> Children
+          <span class="text-muted">(<%= @name.children.count %>)</span><dt>
       <dd><ul class='pl-3'>
         <%
           set_type = @name.can_edit?(current_user) && @name.rank? &&
