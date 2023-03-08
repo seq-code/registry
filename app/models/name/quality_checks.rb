@@ -720,7 +720,7 @@ module Name::QualityChecks
       if type_genome.number_of_trnas_any?
         if type_genome.number_of_trnas_any <= 16
           @qc_warnings.add(:low_genome_trnas_completeness)
-        elsif type_genome.number_of_trnas_any > 21
+        elsif type_genome.number_of_trnas_any > 21 # 20 standard + SeC
           @qc_warnings.add(:too_many_amino_acids)
         end
       end
