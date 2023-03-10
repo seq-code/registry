@@ -23,7 +23,7 @@ module NamesHelper
   def name_lineage(name, links: true, last: true, register: nil, visited: [])
     assume_valid = register&.names&.include?(name)
     out = []
-    visited += name
+    visited << name
 
     # Recursively get the parent(s)
     if name.incertae_sedis?
