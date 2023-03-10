@@ -31,7 +31,7 @@ module NamesHelper
       out << content_tag(:span, ' &raquo; '.html_safe)
     elsif name.parent
       if visited.include? name.parent
-        out << content_tag(:span, ' Recursion found ' , class: 'text-danger')
+        out << content_tag(:span, 'Recursion found: ' , class: 'text-danger')
       else
         out << name_lineage(
           name.parent,
