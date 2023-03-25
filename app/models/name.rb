@@ -531,7 +531,7 @@ class Name < ApplicationRecord
     return @lineage unless @lineage.nil?
 
     @lineage ||= [self]
-    while par = @lineage.first.parent
+    while par = @lineage.first.lineage_parent
       if @lineage.include? par
         self.parent = nil
         @lineage = [self]
@@ -541,6 +541,14 @@ class Name < ApplicationRecord
     end
     @lineage.pop
     @lineage
+  end
+
+  def lineage_parent
+    return parent if parent
+
+    if incertae_sedis? && incertae_sedis =~ /Incertae sedis \((.+)\)/
+      self.class.find_by_variants($1)
+    end
   end
 
   def incertae_sedis_html

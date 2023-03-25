@@ -29,7 +29,9 @@ if name.corrigendum_by
 end
 
 # Taxonomy
-json.parent(id: name.parent.id, name: name.parent.name) if name.parent
+if name.parent
+  json.classification(name.lineage, partial: 'names/name_ref', as: :name)
+end
 json.children(name.children) { |child| json.(child, :id, :name) }
 
 # Register list

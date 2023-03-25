@@ -131,12 +131,26 @@ class NamesController < ApplicationController
 
   # GET /names/1
   # GET /names/1.json
+  # GET /names/1.pdf
   def show
     @publication_names =
       @name.publication_names_ordered
            .paginate(page: params[:page], per_page: 10)
     @oldest_publication = @name.publications.last
     @crumbs = [['Names', names_path], @name.abbr_name]
+    respond_to do |format|
+      format.html
+      format.json
+      format.pdf do
+        render(
+          template: 'names/show_pdf.html.erb',
+          pdf: "#{@name.name} | SeqCode Registry",
+          header: { html: { template: 'layouts/_pdf_header' } },
+          footer: { html: { template: 'layouts/_pdf_footer' } },
+          page_size: 'A4'
+        )
+      end
+    end
   end
 
   # GET /names/new

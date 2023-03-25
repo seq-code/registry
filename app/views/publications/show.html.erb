@@ -1,4 +1,6 @@
 <% provide(:title, @publication.title) %>
+<%= download_buttons(
+      [[publication_url(@publication, format: :json), 'file-code', 'JSON']]) %>
 <h1><%= @publication.title %></h1>
 <hr/>
 

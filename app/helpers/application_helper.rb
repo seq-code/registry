@@ -180,6 +180,18 @@ module ApplicationHelper
   def yield_modals
     (@modals ||= []).inject(:+)
   end
+
+  def download_buttons(list)
+    content_tag(:div, class: 'float-right') do
+      list.map { |i| download_button(*i) }.inject(:+)
+    end
+  end
+
+  def download_button(url, icon, text)
+    link_to(url, class: 'btn btn-light btn-sm text-muted') do
+      fa_icon(icon) + text
+    end
+  end
 end
 
 class AdaptableList

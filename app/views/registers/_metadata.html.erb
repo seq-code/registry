@@ -76,67 +76,70 @@
         </dd>
       <% end %>
     </dl>
-    <div class="col-md-5 border-left border-secondary">
-      <h2>Downloads</h2>
-      <p>
-        <b><%= fa_icon('table') %>&nbsp; Table &raquo;</b>
+    <!-- Right column -->
+    <dl class="col-md-5 border-left border-secondary">
+      <dt><%= fa_icon('table') %>&nbsp; Table &raquo;</dt>
+      <dd>
+        Download:
         <%= link_to(
               download_register_table_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-info'
+              class: 'btn btn-sm btn-light'
             ) do %>
           <%= fa_icon('file-pdf') %> PDF
         <% end %>
         <%= link_to(
               download_register_table_url(@register),
-              class: 'btn btn-sm btn-info'
+              class: 'btn btn-sm btn-light'
             ) do %>
           <%= fa_icon('file-code') %> HTML
         <% end %>
-      </p>
-      <p>
-        <b><%= fa_icon('list-ul') %>&nbsp; List &raquo;</b>
+      </dd>
+
+      <dt><%= fa_icon('list-ul') %>&nbsp; List &raquo;</dt>
+      <dd>
+        Download:
         <%= link_to(
               download_register_list_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-info'
+              class: 'btn btn-sm btn-light'
             ) do %>
           <%= fa_icon('file-pdf') %> PDF
         <% end %>
         <%= link_to(
               download_register_list_url(@register),
-              class: 'btn btn-sm btn-info'
+              class: 'btn btn-sm btn-light'
             ) do %>
           <%= fa_icon('file-code') %> HTML
         <% end %>
-      </p>
+      </dd>
+
       <% if @register.publication %>
-        <div class="mb-2">
-          <b><%= fa_icon('file-signature') %>&nbsp;
-          Effective publication &raquo;</b><br/>
-          <%= link_to(@register.publication) do %>
-            <%= fa_icon('arrow-circle-right') %><% end %>
-          &nbsp;<%= @register.publication.long_citation_html %>
-        </div>
-        <% if @register.can_view_publication?(current_user) %>
-          <% %i[publication_pdf supplementary_pdf].each do |attach| %>
-            <% as = @register.send(attach) %>
-            <% if as.attached? %>
-              <%= link_to(
-                    rails_blob_path(as, disposition: 'attachment'),
-                    class: 'btn btn-info btn-sm'
-                  ) do %>
-                <%= fa_icon('file-pdf') %>
-                <%= attach.to_s.sub(/_.*/, '') %>
-                <% if as.representable? %>
-                  <br/>
-                  <%= image_tag(
-                        as.representation(resize_to_limit: [100, 100])) %>
+        <dt>
+          <%= fa_icon('file-signature') %>&nbsp;
+          Effective publication &raquo;
+        </dt>
+        <dd>
+          <p>
+            <%= link_to(@register.publication) do %>
+              <%= fa_icon('arrow-circle-right') %><% end %>
+            &nbsp;<%= @register.publication.long_citation_html %>
+          </p>
+          <% if @register.can_view_publication?(current_user) %>
+            <% %i[publication_pdf supplementary_pdf].each do |attach| %>
+              <% as = @register.send(attach) %>
+              <% if as.attached? %>
+                <%= link_to(
+                      rails_blob_path(as, disposition: 'attachment'),
+                      class: 'btn btn-light btn-sm'
+                    ) do %>
+                  <%= fa_icon('file-pdf') %>
+                  <%= attach.to_s.sub(/_.*/, '') %>
                 <% end %>
               <% end %>
             <% end %>
           <% end %>
-        <% end %>
+        </dd>
       <% end %>
     </div>
-  </div>
+  </dl>
 </div>
 

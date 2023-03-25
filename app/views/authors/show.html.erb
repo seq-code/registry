@@ -1,3 +1,5 @@
+<%= download_buttons(
+      [[author_url(@author, format: :json), 'file-code', 'JSON']]) %>
 <% provide(:title, @author.full_name) %>
 <h1><%= @author.full_name %></h1>
 <hr/>
