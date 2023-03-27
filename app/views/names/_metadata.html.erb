@@ -2,7 +2,7 @@
   <h2>Metadata</h2>
 
   <% if @name.links? %>
-    <dt><%= fa_icon('link') %> Outside links</dt>
+    <dt><%= fa_icon('link') %> Outside links and data sources</dt>
     <dd>
       <ul>
         <% if @name.ncbi_taxonomy? %>
@@ -41,6 +41,15 @@
           <li>
             <%= modal_button(id, type: '', class: '', tag: 'a', href: '#') do %>
               Global Biodiversity Information Facility (GBIF)
+            <% end %>
+          </li>
+        <% end %>
+
+        <% if @name.lpsn_url? %>
+          <li>
+            <%= link_to(@name.lpsn_url, target: '_blank') do %>
+              LPSN: <%= @name.lpsn_url %>
+              <%= fa_icon('external-link-alt') %>
             <% end %>
           </li>
         <% end %>

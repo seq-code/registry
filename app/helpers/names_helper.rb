@@ -11,6 +11,30 @@ module NamesHelper
         content_tag(:span, name.type_text) +
           fa_icon('external-link-alt', class: 'ml-1')
       end
+    elsif name.type_is_strain?
+      ext  = '<sup class="fas fa-external-link-alt "> </sup>'
+      collections = {
+        DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-',
+        JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=',
+        KCTC: 'https://kctc.kribb.re.kr/collection/view?sn=',
+        ATCC: 'https://www.atcc.org/products/',
+        BCRC: 'https://catalog.bcrc.firdi.org.tw/BcrcContent?bid=',
+        LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=',
+        NBRC: 'https://www.nite.go.jp/nbrc/catalogue/' \
+              'NBRCCatalogueDetailServlet?ID=IFO&CAT=',
+        NCTC: 'https://www.culturecollections.org.uk/products/bacteria/' \
+              'detail.jsp?collection=nctc&refId=NCTC+',
+        CIP:  'https://catalogue-crbip.pasteur.fr/' \
+              'fiche_catalogue.xhtml?crbip=CIP%20',
+      }
+      o = sanitize(name.type_text)
+      collections.each do |k, v|
+        o = o.gsub(
+          /(Strain: | = )(#{k})[ -](\d+)( = |$)/,
+          "\\1<a href='#{v}\\3' target='_blank'>\\2 \\3 #{ext}</a>\\4"
+        )
+      end
+      o.html_safe
     else
       name.type_text
     end

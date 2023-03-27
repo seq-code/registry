@@ -91,6 +91,24 @@
         <% end %>
       </ul></dd>
     <% end %>
+
+    <% if @name.taxonomic_status? %>
+      <dt><%= fa_icon('clipboard-check') %> Taxonomic status</dt>
+      <dd><%= @name.taxonomic_status.upcase_first %></dd>
+    <% end %>
+
+    <% if @name.correct_name %>
+      <dt><%= fa_icon('spell-check') %> Correct name</dt>
+      <dd><%= link_to_name(@name.correct_name) %></dd>
+    <% end %>
+
+    <% if @name.synonyms.present? %>
+      <dt><%= fa_icon('exchange-alt') %> Synonyms</dt>
+      <dd><ul>
+        <% @name.synonyms.each do |synonym| %>
+          <li><%= link_to_name(synonym) %></li>
+        <% end %>
+      </ul></dd>
+    <% end %>
   </dl>
 <% end %>
-  </dl>

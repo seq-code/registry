@@ -5,6 +5,10 @@ class Name < ApplicationRecord
   has_many(
     :children, class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
   )
+  has_many(
+    :synonyms, class_name: 'Name', foreign_key: 'correct_name_id',
+    dependent: :nullify
+  )
   alias :correspondences :name_correspondences
   belongs_to(
     :proposed_by, optional: true,
@@ -15,6 +19,7 @@ class Name < ApplicationRecord
     class_name: 'Publication', foreign_key: 'corrigendum_by'
   )
   belongs_to(:parent, optional: true, class_name: 'Name')
+  belongs_to(:correct_name, optional: true, class_name: 'Name')
   belongs_to(
     :created_by, optional: true,
     class_name: 'User', foreign_key: 'created_by'
@@ -282,7 +287,9 @@ class Name < ApplicationRecord
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
     y += " <i>corrig.</i>".html_safe if corrigendum_by
-    y += " #{sanitize(proposed_by.short_citation)}" if proposed_by
+    if authority || proposed_by
+      y += " #{sanitize(authority || proposed_by.short_citation)}"
+    end
     if priority_date && priority_date.year != proposed_by&.journal_date&.year
       y += " (valid #{priority_date.year})"
     end
@@ -393,7 +400,8 @@ class Name < ApplicationRecord
   end
 
   def links?
-    ncbi_taxonomy? || gtdb_genome? || !gbif_homonyms(false, true).empty?
+    ncbi_taxonomy? || gtdb_genome? || !gbif_homonyms(false, true).empty? ||
+      lpsn_url?
   end
 
   def gtdb_genome?
@@ -611,6 +619,10 @@ class Name < ApplicationRecord
     type? && %w[assembly nuccore].include?(type_material)
   end
 
+  def type_is_strain?
+    type? && type_material == 'strain'
+  end
+
   def type_link
     @type_link ||=
       if type_is_genome?
@@ -676,7 +688,8 @@ class Name < ApplicationRecord
   end
 
   def taxonomic_data?
-    description? || notes? || parent || incertae_sedis? || !children.empty?
+    description? || notes? || parent || incertae_sedis? ||
+      !children.empty? || taxonomic_status?
   end
 
   # ============ --- GENOMICS --- ============

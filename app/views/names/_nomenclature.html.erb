@@ -41,7 +41,7 @@
   </dd>
 
   <% if @name.type? || @name.can_edit?(current_user) %>
-    <dt><%= fa_icon('clipboard-check') %> Nomenclatural type</dt>
+    <dt><%= fa_icon('id-card') %> Nomenclatural type</dt>
     <dd>
       <% if @name.type? %>
         <%= link_to_name_type(@name) %>
@@ -56,5 +56,10 @@
         <% end %>
       <% end %>
     </dd>
+  <% end %>
+
+  <% if @name.nomenclatural_status? %>
+    <dt><%= fa_icon('clipboard-check') %> Nomenclatural status</dt>
+    <dd><%= @name.nomenclatural_status.upcase_first %></dd>
   <% end %>
 </dl>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_02_141347) do
+ActiveRecord::Schema.define(version: 2023_03_27_193901) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -166,6 +166,12 @@ ActiveRecord::Schema.define(version: 2023_01_02_141347) do
     t.datetime "queued_external"
     t.integer "nomenclature_reviewer"
     t.datetime "priority_date"
+    t.string "proposal_kind"
+    t.string "nomenclatural_status"
+    t.string "taxonomic_status"
+    t.string "authority"
+    t.string "lpsn_url"
+    t.integer "correct_name_id"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"

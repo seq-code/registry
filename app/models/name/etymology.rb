@@ -3,6 +3,12 @@ module Name::Etymology
   attr_accessor :autofilled_etymology_method
 
   ##
+  # Alias of syllabication
+  def syllabification
+    syllabication
+  end
+
+  ##
   # Pull the component identified as +component+ from the name, and return
   # the field +field+
   #
