@@ -8,11 +8,11 @@
       <dt><%= fa_icon(:barcode) %> Accession</dt>
       <dd><%= @register.acc_url %></dd>
 
-      <dt><%= fa_icon(:user) %> Created by</dt>
+      <dt><%= fa_icon(:user) %> Created</dt>
       <dd>
-        <%= link_to(@register.user.username, @register.user) %>
         <u class="hover-help" title="<%= @register.created_at %>"
-           ><%= time_ago_in_words(@register.created_at) %> ago</u>
+           ><%= time_ago_in_words(@register.created_at).upcase_first %> ago</u>
+        by <%= link_to(@register.user.username, @register.user) %>
         <% if @register.updated_at != @register.created_at %>
           (updated <u class="hover-help" title="<%= @register.updated_at %>"
             ><%= time_ago_in_words(@register.updated_at) %> ago</u>)
