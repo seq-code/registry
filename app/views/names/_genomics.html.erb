@@ -69,6 +69,7 @@ end
         <%= fa_icon('external-link-alt', class: 'ml-1') %>
       <% end %>
       <% if current_curator? %>
+        <br/>
         <% miga_url = 'https://disc-genomics.uibk.ac.at/miga/projects/3/reference_datasets/genome_%i' % @genome.id %>
         <%= link_to(miga_url, target: '_blank') do %>
           View in MiGA (only visible to curators, requires separate login)
