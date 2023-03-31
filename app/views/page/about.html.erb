@@ -30,8 +30,10 @@
       <li>
         With contributions from the members of the
         <%= link_to('SeqCode Steering Committee',
-                    'https://www.isme-microbes.org/organizing-committee',
+                    'https://www.isme-microbes.org/governance',
                     target: '_blank') %>
+        and the
+        <%= link_to('SeqCode Committee', page_committee_url) %>
       </li>
     </ul>
   </dd>
@@ -54,12 +56,16 @@
     manuscripts
   </li>
   <li>
-    <%= link_to('Contact us', page_connect_url, target: '_blank') %>: Join the
-    discussion in Slack
+    <%= link_to('SeqCode Committee', page_committee_url) %>: The governance
+    structure behind the SeqCode
   </li>
   <li>
     <%= link_to('Join the Community', page_join_url, target: '_blank') %>:
     Become a member of the SeqCode Community
+  </li>
+  <li>
+    <%= link_to('Contact us', page_connect_url, target: '_blank') %>: Join the
+    discussion in Slack
   </li>
 </ul>
 
