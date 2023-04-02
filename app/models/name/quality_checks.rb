@@ -734,6 +734,10 @@ module Name::QualityChecks
 
         diff = (any - auto).abs.to_f / [any, auto].max
         if diff > 0.1 && (any - auto).abs >= 1.0
+          # Ignore if the automated estimates pass minimum quality
+          next if field == :completeness  && auto > 90.0
+          next if field == :contamination && auto <  5.0
+
           @qc_warnings.add(:"discrepant_#{field}") if diff > 0.1
         end
       end
