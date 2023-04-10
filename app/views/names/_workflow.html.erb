@@ -1,0 +1,246 @@
+<% @workflow_modal_id = modal('Workflow status', size: 'xl') do %>
+  <%
+    @downstream = false
+    def workflow_step(title, test_fun)
+      test = @name.send(test_fun)
+      content_tag(:div, class: 'card my-2') do
+        title_class = 'text-' + (
+          @downstream ? 'muted' : test ? 'success' : 'info'
+        )
+        icon = @downstream ? 'circle' : test ? 'check-circle' : 'hand-point-right'
+        content_tag(:div, class: "card-header #{title_class}") do
+          fa_icon(icon, class: 'mr-3') + content_tag(:span, title)
+        end +
+          unless @downstream
+            @downstream ||= !test.present?
+            content_tag(:div, class: 'card-body') do
+              yield(test)
+            end
+          end
+      end
+    end
+  %>
+
+  <!-- 01: Name exists -->
+  <%= workflow_step('Initial registration', :present?) do |pass| %>
+    <% if pass %>
+       This name was first registered in the system on
+       <%= time_tag(@name.created_at, format: '%F') %>.
+    <% else %>
+      This should never happen!
+    <% end %>
+  <% end %>
+
+  <!-- 02: Name claimed -->
+  <%= workflow_step('User claim', :after_claim?) do |pass| %>
+    <% if pass %>
+        <% if @name.created_by %>
+          This name was successfully claimed by
+          <%= link_to(@name.created_by.username, @name.created_by) %>.
+        <% else %>
+          This name was automatically processed by the SeqCode Registry.
+        <% end %>
+    <% else %>
+      <h5 class="mt-2 text-info">Next step:</h5>
+      <ul>
+        <li>
+          This name has not been claimed yet. You can
+          <%= link_to(
+                'claim it now', claim_name_url(@name),
+                method: :post,
+                data: { confirm: 'Are you sure? This action cannot be undone' }
+              ) %>.
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+
+  <!-- 03: Name in registry list -->
+  <%= workflow_step('Name in registry list', :after_register?) do |pass| %>
+    <% if pass %>
+      <% if @name.register %>
+        This name was added to the registry list
+        <%= link_to(@name.register.acc_url, @name.register) %>.
+      <% else %>
+        This name was registered by a mechanism parallel to registry lists.
+      <% end %>
+    <% else %>
+      This name has not been added to a registry list yet.
+      <h5 class="mt-2 text-info">Next step:</h5>
+      <ul>
+        <li>
+          <% if @name.can_edit?(current_user) %>
+            You can
+            <%= link_to(
+                  'propose name by adding it to a registry list',
+                  new_register_url(name: @name),
+                ) %>.
+          <% else %>
+            You cannot currently propose name, since you don't have editing
+            privileges. If you want to gain editing privileges for this name,
+            please <%= link_to('contact us', page_connect_url) %>.
+          <% end %>
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+
+  <!-- 04: Name submitted -->
+  <%= workflow_step('Name submission', :after_submission?) do |pass| %>
+    <% if pass %>
+      This name was submitted for evaluation
+      <% if @name.submitted_by %>
+        by <%= link_to(@name.submitted_by.username, @name.submitted_by) %>
+      <% end %>
+      <% if @name.submitted_at %>
+        on <%= time_tag(@name.submitted_at, format: '%F') %>
+      <% end %>
+      <% if @name.register %>
+        as part of the registry list
+        <%= link_to(@name.register.acc_url, @name.register) %>.
+      <% else %>
+        by a mechanism parallel to registry lists.
+      <% end %>
+    <% else %>
+      This name has not been submitted yet.
+      <h5 class="mt-2 text-info">Next step:</h5>
+      <% if @name.register %>
+        <ol>
+          <li>
+            If the publication reporting this name is still in preparation
+            or undergoing peer-review, go to
+            <%= link_to(@name.register.acc_url, @name.register) %> and
+            click <b>Submit register list for evaluation</b> at the bottom of
+            the page. This is known in SeqCode as "Path 1".
+          </li>
+          <li>
+            If this name has already been published in a peer-reviewed outlet,
+            go to <%= link_to(@name.register.acc_url, @name.register) %> and
+            click <b>Notify about effective publication</b> at the bottom of
+            the page. This is known in SeqCode as "Path 2".
+          </li>
+        </ol>
+      <% else %>
+        <ul>
+          <li>
+            <!-- This is definitively a mistake! -->
+            <span class="text-danger">No actions are currently available.</span>
+            If you think this is a mistake, please
+            <%= link_to('contact us', page_connect_url) %>.
+          </li>
+        </ul>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <!-- 05: Name approved -->
+  <%= workflow_step('Name approval', :after_approval?) do |pass| %>
+    <% if pass %>
+      <% if @name.approved_by %>
+        This name was approved
+        <% if @name.approved_by %>
+          by <%= link_to(@name.approved_by.username, @name.approved_by) %>
+        <% end %>
+        <% if @name.approved_at %>
+          on <%= time_tag(@name.approved_at, format: '%F') %>
+        <% end %>
+        after manual review.
+      <% else %>
+        This name was marked as approved.
+      <% end %>
+    <% else %>
+      This name is yet to be approved.
+      <h5 class="mt-2 text-info">Next step:</h5>
+      <ul>
+        <li>
+          This name is currently undergoing manual curation by the SeqCode team,
+          and the submitter will be notified soon about the next steps. If you
+          want to inquire about the status of this submission, please
+          <%= link_to('contact us', page_connect_url) %>.
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+
+  <!-- 06: SeqCode notified -->
+  <%= workflow_step('SeqCode notification', :after_notification?) do |pass| %>
+    <% if pass %>
+      The SeqCode was notified
+      <% if @name.register&.notified_at %>
+        on <%= time_tag(@name.register.notified_at, format: '%F') %>
+      <% end %>
+      of effective publication of this name,
+      <% if @name.register %>
+        as part of the register list
+        <%= link_to(@name.register.acc_url, @name.register) %>.
+      <% else %>
+        through validation under another code of nomenclature.
+      <% end %>
+    <% else %>
+      The SeqCode has not been notified of effective publication yet.
+      <h5 class="mt-2 text-info">Next step:</h5>
+      <ul>
+        <li>
+          <% if @name.register %>
+            If this name has already been published in a peer-reviewed outlet,
+            go to <%= link_to(@name.register.acc_url, @name.register) %> and
+            click <b>Notify about effective publication</b> at the bottom of
+            the page. Otherwise, this name is reserved for up to a year or until
+            an effective publication becomes available and the SeqCode is
+            notified.
+          <% else %>
+            <!-- This is definitively a mistake! -->
+            <span class="text-danger">No actions are currently available.</span>
+            If you think this is a mistake, please
+            <%= link_to('contact us', page_connect_url) %>.
+          <% end %>
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+
+  <!-- 07: Name validated -->
+  <%= workflow_step('Name validation', :validated?) do |pass| %>
+    <% if pass %>
+      This name is validly published
+      <% if @name.priority_date %>
+        with priority date: <%= time_tag(@name.priority_date, format: '%F') %>.
+      <% else %>
+        but the SeqCode Registry does not have a priority date on file.
+      <% end %>
+    <% else %>
+      This name is not validly published yet.
+      <h5 class="mt-2 text-info">Next step:</h5>
+      <ul>
+        <li>
+          This name is currently undergoing manual curation by the SeqCode team,
+          and the submitter will be notified soon about the next steps. If you
+          want to inquire about the status of this submission, please
+          <%= link_to('contact us', page_connect_url) %>.
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+
+  <% unless @name.icnp? %>
+    <!-- 08: Registry list published -->
+    <%= workflow_step(
+          'Register list publication',
+          :after_register_publication?) do |pass| %>
+      <% if pass %>
+        The register list including this name was successfully published with
+        DOI: <%= link_to(@name.register.doi_url, @name.register.doi_url) %>.
+      <% else %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if @name.can_see_status?(current_user) %>
+  <div class="text-center border-bottom mb-3 py-3">
+    <%= modal_button(@workflow_modal_id) do %>
+      <%= fa_icon('paper-plane') %>
+      See the current workflow status of this name
+    <% end %>
+  </div>
+<% end %>

@@ -29,11 +29,13 @@
   <% end %>
   <% entry.footer do %>
     <ul class='list-inline' style='margin: 0;'>
+      <!-- TODO: Link genome page instead
       <li class='list-inline-item'>
         <%= link_to name.ncbi_search_url, title: 'Search genomes', target: '_blank' do %>
           <%= fa_icon 'dna' %>
         <% end %>
       </li>
+      -->
       <li class='list-inline-item'>
         <%= link_to name, title: 'See more' do %>
           <%= fa_icon 'arrow-circle-right' %>

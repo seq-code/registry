@@ -19,7 +19,11 @@
 
 $theme-colors: (
   "primary": indigo,
-  "secondary": slategrey
+  "secondary": slategrey,
+  "info": rgb(23, 162, 184)
+  // TODO: color update
+  // "primary": rgb(38, 104, 153),
+  // "info": rgb(23, 172, 184)
 );
 
 @import "bootstrap";

@@ -147,7 +147,7 @@ class Register < ApplicationRecord
   end
 
   def propose_doi
-    '10.57973/seqcode.%s' % accession
+    doi || ('10.57973/seqcode.%s' % accession)
   end
 
   def doi_url

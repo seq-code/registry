@@ -79,14 +79,26 @@
 
   <dt><%= fa_icon 'calendar' %> Local history</dt>
   <dd>
-    <% if @name.created_at == @name.updated_at %>
-      This name has not been modified since creation
-    <% else %>
-      This name was last modified
-      <u class="hover-help"
-         title="<%= @name.updated_at %>"
-         ><%= time_ago_in_words(@name.updated_at) %> ago</u>
-    <% end %>
+    <ul>
+      <% if @name.created_at == @name.updated_at %>
+        <li>This name has not been modified since creation</li>
+      <% else %>
+        <li>
+          This name was last modified
+          <u class="hover-help"
+             title="<%= @name.updated_at %>"
+             ><%= time_ago_in_words(@name.updated_at) %> ago</u>
+        </li>
+      <% end %>
+      <% if @workflow_modal_id ||= nil %>
+        <li>
+          <%= modal_button(@workflow_modal_id,
+                type: '', class: '', tag: 'a', href: '#') do %>
+            Current workflow status
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
   </dd>
 
   <dt><%= fa_icon('user') %> Registered by</dt>

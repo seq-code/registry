@@ -375,12 +375,32 @@ class Name < ApplicationRecord
     status_hash[:public]
   end
 
+  def after_claim?
+    status >= 5
+  end
+
+  def after_register?
+    register.present? || after_submission?
+  end
+
   def after_submission?
     status >= 10
   end
 
   def after_approval?
     status >= 12
+  end
+
+  def after_notification?
+    validated? || register.try(:notified?)
+  end
+
+  def after_validation?
+    valid?
+  end
+
+  def after_register_publication?
+    register.try(:published?)
   end
 
   Name.status_hash.each do |k, v|
@@ -456,6 +476,10 @@ class Name < ApplicationRecord
     return true if public?
 
     (!user.nil?) && (user.curator? || user?(user))
+  end
+
+  def can_see_status?(user)
+    can_edit?(user) || can_claim?(user)
   end
 
   def can_edit?(user)
@@ -716,13 +740,13 @@ class Name < ApplicationRecord
   end
 
   def notified?
-    register&.notified?
+    register.try(:notified?)
   end
 
   def priority_date
     @priority_date ||= attribute(:priority_date)
     if !@priority_date && seqcode?
-      @priority_date = register&.priority_date
+      @priority_date = register.try(:priority_date)
       update_column(:priority_date, @priority_date)
     end
     @priority_date
