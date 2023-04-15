@@ -30,7 +30,7 @@
   <publisher>SeqCode Registry</publisher>
   <%# %>
   <%# Note that the validation year *could* differ from the priority year! %>
-  <publicationYear><%= @register.validated_at.year %></publicationYear>
+  <publicationYear><%= @register.validated_at&.year %></publicationYear>
   <resourceType resourceTypeGeneral="Text">NotificationList</resourceType>
   <contributors>
     <%# ========= Curators ========= %>
