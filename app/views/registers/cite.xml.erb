@@ -65,7 +65,7 @@
     <%# ========= Dates ========= %>
     <% fmt = '%Y-%m-%d%H:%M:%S%Z' %>
     <date dateType="Created"><%= @register.created_at.strftime(fmt) %></date>
-    <date dateType="Accepted"><%= @register.validated_at.strftime(fmt) %></date>
+    <date dateType="Accepted"><%= @register.validated_at&.strftime(fmt) %></date>
     <date dateType="Other" dateInformation="Priority"><%= @register.priority_date.strftime(fmt) %></date>
   </dates>
   <relatedIdentifiers>
@@ -87,7 +87,7 @@
   <%# ========= Abstract ========= %>
   <% if @register.abstract? %>
   <descriptions>
-    <description descriptionType="Abstract"><%= @register.abstract.body.to_plain_text %></description>
+    <description descriptionType="Abstract"><%= @register.abstract&.body&.to_plain_text %></description>
   </descriptions>
   <% end %>
 </resource>
