@@ -1,20 +1,23 @@
 <% if @register.title? %>
   <% provide(:title, @register.title) %>
 <% end %>
-<%=
-  download_buttons([
+<%
+  links = [
     [register_url(@register, format: :json), 'file-code', 'JSON'],
     [download_register_list_url(@register, format: :pdf), 'file-pdf', 'PDF'],
     [
       download_register_list_url(@register, format: :html),
       'file-code', 'Plain HTML'
-    ],
-    [
+    ]
+  ]
+  if @register.validated?
+    links << [
       cite_register_list_url(@register, format: :xml), 'file-code',
       'DataCite XML'
     ]
-  ])
+  end
 %>
+<%= download_buttons(links) %>
 
 <h1>
   Register List: <%= link_to(@register.acc_url, @register) %>
