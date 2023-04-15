@@ -66,7 +66,7 @@
     <% fmt = '%Y-%m-%d%H:%M:%S%Z' %>
     <date dateType="Created"><%= @register.created_at.strftime(fmt) %></date>
     <date dateType="Accepted"><%= @register.validated_at&.strftime(fmt) %></date>
-    <date dateType="Other" dateInformation="Priority"><%= @register.priority_date.strftime(fmt) %></date>
+    <date dateType="Other" dateInformation="Priority"><%= @register.priority_date&.strftime(fmt) %></date>
   </dates>
   <relatedIdentifiers>
     <%# ========= Citations ========= %>
