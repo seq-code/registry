@@ -16,3 +16,4 @@ kurenai.waseda.jp
 quadram.ac.uk
 kribb.re.kr
 icbm.de
+fcien.edu.uy

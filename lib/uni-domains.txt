@@ -1,3 +1,11 @@
+ieseg.fr
+mail2.sysu.edu.cn
+mail.sysu.edu.cn
+rhul.ac.uk
+hnu.edu.cn
+www-en.hnu.edu.cn
+myport.ac.uk
+myport.port.ac.uk
 ac-paris.fr
 ac-aix-marseille.fr
 marywood.edu
@@ -247,7 +255,7 @@ fullerton.edu
 csuhayward.edu
 csulb.edu
 calstatela.edu
-monterey.edu
+csumb.edu
 csun.edu
 csus.edu
 csusb.edu
@@ -676,7 +684,6 @@ nscc.edu
 ndu.edu
 nl.edu
 nrao.edu
-ntu.edu
 nu.edu
 nps.edu
 naz.edu
@@ -3602,6 +3609,7 @@ fh-kempten.de
 fh-kiel.de
 fh-kl.de
 fh-koblenz.de
+th-koeln.de
 fh-koeln.de
 fh-konstanz.de
 fhkt.de
@@ -3913,6 +3921,7 @@ uth.gr
 ilisimatusarfik.gl
 sgu.edu
 univ-ag.fr
+univ-antilles.fr
 uog.edu
 cucv.edu.gt
 cunoc.edu.gt
@@ -4154,6 +4163,7 @@ iiitvadodara.ac.in
 iiitkota.ac.in
 iipsindia.org
 iisc.ernet.in
+iisc.ac.in
 iitb.ac.in
 iitd.ernet.in
 iitd.ac.in
@@ -4937,6 +4947,7 @@ unicas.it
 unicatt.it
 unich.it
 unict.it
+uniecampus.it
 uniese.it
 unife.it
 unifg.it
@@ -8544,6 +8555,7 @@ univd.edu.ua
 univer.kharkov.ua
 university.kherson.ua
 univ.kiev.ua
+knu.ua
 univ.uzhgorod.ua
 uosa.uar.net
 usmtu.edu.ua
@@ -8682,7 +8694,7 @@ limt.co.uk
 lincoln.ac.uk
 liv.ac.uk
 ljmu.ac.uk
-lmu.ac.uk
+leedsbeckett.ac.uk
 lon.ac.uk
 londonmet.ac.uk
 lsbf.org.uk
@@ -8955,7 +8967,7 @@ bozok.edu.tr
 btu.edu.tr
 karatekin.edu.tr
 duzce.edu.tr
-erzincan.edu.tr
+ebyu.edu.tr
 erzurum.edu.tr
 gtu.edu.tr
 gata.edu.tr
@@ -9025,6 +9037,7 @@ bscc.edu
 bishop.edu
 cacc.edu
 cv.edu
+duke.edu
 escc.edu
 gadsdenstate.edu
 wallace.edu
@@ -10197,6 +10210,9 @@ wssu.edu
 student.upt.ro
 upt.ro
 msruas.ac.in
+skema.edu
+fs.de
+fs-students.de
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10215,3 +10231,4 @@ kurenai.waseda.jp
 quadram.ac.uk
 kribb.re.kr
 icbm.de
+fcien.edu.uy
