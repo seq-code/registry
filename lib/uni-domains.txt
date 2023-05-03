@@ -3364,6 +3364,7 @@ grenoble-em.com
 esc-grenoble.fr
 groupe-esa.com
 hec.fr
+hec.edu
 hei.fr
 icam.fr
 icam.fr
@@ -3697,6 +3698,9 @@ hs-zigr.de
 htw-dresden.de
 htwk-leipzig.de
 htwm.de
+hs-mittweida.de
+campus-m-university.de
+campusm21.de
 htw-saarland.de
 hu-berlin.de
 hwp-hamburg.de
@@ -10213,6 +10217,11 @@ msruas.ac.in
 skema.edu
 fs.de
 fs-students.de
+clsbe.lisboa.ucp.pt
+eada.edu
+imd.org
+insead.edu
+hff-muenchen.de
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10232,3 +10241,4 @@ quadram.ac.uk
 kribb.re.kr
 icbm.de
 fcien.edu.uy
+liverpool.ac.uk
