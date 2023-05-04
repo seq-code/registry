@@ -26,11 +26,14 @@ module NamesHelper
               'detail.jsp?collection=nctc&refId=NCTC+',
         CIP:  'https://catalogue-crbip.pasteur.fr/' \
               'fiche_catalogue.xhtml?crbip=CIP%20',
+        CCUG: 'https://www.ccug.se/strain?id=',
+        NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
+              'report.html?nrrlcodes='
       }
       o = sanitize(name.type_text)
       collections.each do |k, v|
         o = o.gsub(
-          /(Strain: | = )(#{k})[ -](\d+)( = |$)/,
+          /(Strain: | = )(#{k})[ -]([\d\-A-Za-z]+)(?=( = |$))/,
           "\\1<a href='#{v}\\3' target='_blank'>\\2 \\3 #{ext}</a>\\4"
         )
       end
