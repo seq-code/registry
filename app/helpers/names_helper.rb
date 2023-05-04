@@ -33,8 +33,8 @@ module NamesHelper
       o = sanitize(name.type_text)
       collections.each do |k, v|
         o = o.gsub(
-          /(Strain: | = )(#{k})[ -]([\d\-A-Za-z]+)(?=( = |$))/,
-          "\\1<a href='#{v}\\3' target='_blank'>\\2 \\3 #{ext}</a>\\4"
+          /(?<=Strain: | = )(#{k})[ -]([\d\-A-Za-z]+)(?= = |$)/,
+          "<a href='#{v}\\3' target='_blank'>\\2 \\3 #{ext}</a>"
         )
       end
       o.html_safe
