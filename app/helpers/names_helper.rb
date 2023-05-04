@@ -22,6 +22,8 @@ module NamesHelper
         LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=',
         NBRC: 'https://www.nite.go.jp/nbrc/catalogue/' \
               'NBRCCatalogueDetailServlet?ID=IFO&CAT=',
+        IFO:  'https://www.nite.go.jp/nbrc/catalogue/' \
+              'NBRCCatalogueDetailServlet?ID=IFO&CAT=',
         NCTC: 'https://www.culturecollections.org.uk/products/bacteria/' \
               'detail.jsp?collection=nctc&refId=NCTC+',
         CIP:  'https://catalogue-crbip.pasteur.fr/' \
