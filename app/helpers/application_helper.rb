@@ -172,7 +172,7 @@ module ApplicationHelper
     id = modal(title) { yield }
     opts[:class] ||= ''
     modal_button(id, opts) do
-      content_tag(:span, opts[:text], class: 'text-info') +
+      content_tag(:b, opts[:text], class: 'text-info') +
       fa_icon('question-circle', class: 'hover-help')
     end
   end

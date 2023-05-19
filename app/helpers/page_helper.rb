@@ -28,7 +28,7 @@ module PageHelper
   end
 
   def link_to_seqcode_section(text, anchor)
-    link_to(page_seqcode_path(anchor: anchor), class: 'text-info') do
+    link_to(page_seqcode_path(anchor: anchor)) do
       content_tag(:u, text)
     end
   end

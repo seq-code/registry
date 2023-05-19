@@ -34,11 +34,11 @@
                 data: { toggle: 'pill' }, role: 'tab',
                 aria: { controls: "#{k}-content", selected: v[2] },
                 class: 'p-3 w-100 h-100 rounded border w-100 text-primary ' \
-                       'border-primary btn btn-light nav-link' \
+                       'border-primary btn btn-light nav-link tab-button' \
                        ' ' + (v[2] ? 'active' : '')
               ) do %>
             <%= fa_icon(v[0], style: 'font-size: 300%;', class: 'mb-3') %><br/>
-            <%= v[1] %>
+            <b><%= v[1] %></b>
           <% end %>
         </li>
       <% end %>
@@ -121,30 +121,42 @@
       <hr/>
     </div>
     <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5 h-100">
+      <div class="text-center bg-light rounded-lg border p-5 h-100 recent-entries-list">
         <h2>Names</h2>
         <% @names.first(5).each do |name| %>
-          <hr/><%= link_to(name.abbr_name, name) %>
+          <%= link_to(name) do %>
+            <div><%= name.abbr_name %></div>
+          <% end %>
         <% end %>
-        <hr/><%= link_to('more...', names_path(sort: :date)) %>
+        <%= link_to(names_path(sort: :date)) do %>
+          <div>more...</div>
+        <% end %>
       </div>
     </div>
     <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5 h-100">
+      <div class="text-center bg-light rounded-lg border p-5 h-100 recent-entries-list">
         <h2>Publications</h2>
         <% @publications.first(5).each do |publication| %>
-          <hr/><%= link_to(publication.short_citation, publication) %>
+          <%= link_to(publication) do %>
+            <div><%= publication.short_citation %></div>
+          <% end %>
         <% end %>
-        <hr/><%= link_to('more...', publications_path(sort: :date)) %>
+        <%= link_to(publications_path(sort: :date)) do %>
+          <div>more...</div>
+        <% end %>
       </div>
     </div>
     <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5 h-100">
+      <div class="text-center bg-light rounded-lg border p-5 h-100 recent-entries-list">
         <h2>Validated names</h2>
         <% @validated[:names].first(5).each do |name| %>
-          <hr/><%= link_to(name.abbr_name, name) %>
+          <%= link_to(name) do %>
+            <div><%= name.abbr_name %></div>
+          <% end %>
         <% end %>
-        <hr/><%= link_to('more...', names_path(sort: :date, status: :SeqCode)) %>
+        <%= link_to(names_path(sort: :date, status: :SeqCode)) do %>
+          <div>more...</div>
+        <% end %>
       </div>
     </div>
   </div>

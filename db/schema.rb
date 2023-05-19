@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_27_193901) do
+ActiveRecord::Schema.define(version: 2023_04_15_000753) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -256,6 +256,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_193901) do
     t.boolean "submitter_is_author"
     t.boolean "authors_approval"
     t.datetime "submitted_at"
+    t.string "doi"
     t.index ["accession"], name: "index_registers_on_accession", unique: true
     t.index ["publication_id"], name: "index_registers_on_publication_id"
     t.index ["submitted"], name: "index_registers_on_submitted"

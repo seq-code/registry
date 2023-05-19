@@ -2,14 +2,13 @@
 @import "application";
 
 .bg-dark-ce {
-  background-color: #322348 !important;
-  // TODO: color update
-  // background-color: theme-color-level(primary, 7) !important;
+  // background-color: #322348 !important;
+  background-color: theme-color-level(primary, 7) !important;
 }
 .bg-vdark-ce {
-  background-color: #221831 !important;
-  // TODO: color update
-  // background-color: theme-color-level(primary, 9) !important;
+  // background-color: #221831 !important;
+  background-color: theme-color-level(primary, 7) !important;
+  //background-color: theme-color-level(primary, 9) !important;
 }
 
 .main-section {
@@ -132,3 +131,23 @@ nav.navbar-dark {
   }
 }
 
+.recent-entries-list {
+  a {
+    &:hover {
+      text-decoration: none;
+      div {
+        background: #00000010;
+      }
+    }
+    div {
+      padding: 1rem;
+      border-top: 1px solid #00000020;
+    }
+  }
+}
+
+.tab-button {
+  &:hover {
+    background: #00000010 !important;
+  }
+}

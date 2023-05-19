@@ -18,12 +18,12 @@
 @import 'easy-autocomplete/dist/easy-autocomplete';
 
 $theme-colors: (
-  "primary": indigo,
+  // "primary": indigo,
+  // "secondary": slategrey,
+  // "info": rgb(23, 162, 184)
+  "primary": rgb(38, 104, 153),
   "secondary": slategrey,
-  "info": rgb(23, 162, 184)
-  // TODO: color update
-  // "primary": rgb(38, 104, 153),
-  // "info": rgb(23, 172, 184)
+  "info": rgb(23, 172, 184)
 );
 
 @import "bootstrap";
@@ -45,8 +45,13 @@ $theme-colors: (
 .card-header-link {
   color: black;
   &:hover {
+    div {
+      background-color: theme-color-level(primary, 7) !important;
+      color: white;
+    }
     text-decoration: none;
-    color: var(--primary);
+    //color: var(--primary);
+    //color: theme-color-level(primary, 7);
   }
 }
 
