@@ -51,9 +51,10 @@ class Register < ApplicationRecord
     end
 
     def pending_for_curation
-      where(validated: false, notified: true).or(
-        where(validated: false, submitted: true)
-      ).order(updated_at: :asc)
+      where(validated: false, notified: true)
+        .or(where(validated: false, submitted: true))
+        .order(updated_at: :asc)
+        .select { |i| i.notified? || !i.approved? }
     end
   end
 
@@ -62,8 +63,14 @@ class Register < ApplicationRecord
   end
 
   def status_name
-    validated? ? 'validated' : notified? ? 'notified' :
-                               submitted? ? 'submitted' : 'draft'
+    validated? ? 'validated' :
+      notified? ? 'notified' :
+      approved? ? 'approved' :
+      submitted? ? 'submitted' : 'draft'
+  end
+
+  def approved?
+    submitted? && all_approved?
   end
 
   def draft?
