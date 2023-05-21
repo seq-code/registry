@@ -678,8 +678,12 @@ class Name < ApplicationRecord
     self.class.type_material_name(type_material) if type?
   end
 
+  def type_accession_text
+    type_accession.gsub(/,(?!\s)/, ', ')
+  end
+
   def type_text
-    @type_text ||= "#{type_material_name}: #{type_accession}" if type?
+    @type_text ||= "#{type_material_name}: #{type_accession_text}" if type?
   end
 
   def possible_type_materials
