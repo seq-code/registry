@@ -70,11 +70,15 @@ class Genome < ApplicationRecord
   end
 
   def kind_hash
-    self.class.kinds[kind.to_sym]
+    kind ? self.class.kinds[kind.to_sym] : nil
   end
 
   def kind_name
-    kind_hash[:name]
+    (kind_hash || {})[:name]
+  end
+
+  def kind_miga
+    (kind_hash || {})[:miga]
   end
 
   %w[mag sag enrichment isolate].each do |i|

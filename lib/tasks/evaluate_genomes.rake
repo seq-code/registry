@@ -20,7 +20,9 @@ namespace :genomes do
       $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
       MiGA::Cli.new([
         'get', '--project', p_path, '--dataset', genome.miga_name,
-        '--universe', 'ncbi', '--db', genome.database, '--ids', genome.accession
+        '--universe', 'ncbi', '--db', genome.database,
+        '--ids', genome.accession,
+        '--type', (genome.kind_miga || 'popgenome')
       ]).launch(false)
 
       md = File.join(p_path, 'metadata', "#{genome.miga_name}.json")
