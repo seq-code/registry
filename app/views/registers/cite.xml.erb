@@ -12,7 +12,7 @@
       <familyName><%= @register.user.family %></familyName>
       <% end %>
       <% if @register.user.orcid? %>
-      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org">https://orcid.org/<%= @register.user.orcid %></nameIdentifier>
+      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org"><%= @register.user.orcid_url %></nameIdentifier>
       <% else %>
       <nameIdentifier nameIdentifierScheme="" schemeURI=""/>
       <% end %>

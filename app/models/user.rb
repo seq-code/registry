@@ -64,6 +64,10 @@ class User < ApplicationRecord
     given? ? given : username
   end
 
+  def orcid_url
+    orcid? ? "https://orcid.org/#{orcid}" : nil
+  end
+
   def academic_email?
     uni_dom = Rails.root.join('lib', 'uni-domains.txt')
     File.open(uni_dom, 'r') do |fh|

@@ -2,15 +2,29 @@
   <%= adaptable_value(entry, 'Name') do %>
     <%= user.full_name %>
   <% end %>
+
   <%= adaptable_value(entry, 'Email') do %>
     <%= user.email %>
   <% end %>
-  <%= adaptable_value(entry, 'Affiliation') do %>
-    <%= user.affiliation %>
+
+  <% if user.orcid? %>
+    <%= adaptable_value(entry, 'ORCID') do %>
+      <%= link_to(user.orcid_url, user.orcid, target: '_blank') %>
+    <% end %>
   <% end %>
+
+  <%= adaptable_value(entry, 'Affiliation') do %>
+    <% if user.affiliation_ror? %>
+      <%= link_to(user.affiliation, user.affiliation_ror, target: '_blank') %>
+    <% else %>
+      <%= user.affiliation %>
+    <% end %>
+  <% end %>
+
   <%= adaptable_value(entry, 'Roles') do %>
     <%= user.roles.to_sentence %>
   <% end %>
+
   <%= adaptable_value(entry, 'Registered') do %>
     <u class="hover-help"
        title="<%= user.created_at %>"
