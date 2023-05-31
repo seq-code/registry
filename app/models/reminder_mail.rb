@@ -9,8 +9,10 @@ class ReminderMail < ApplicationRecord
       users.each do |user|
         registers =
           user.registers.select do |register|
-            (!register.notified? && register.all_approved?) ||
-              (!register.submitted? && register.updated_at < 1.month.ago)
+            !register.validated? && (register.updated_at < 1.month.ago) && (
+              !register.submitted? ||
+              (!register.notified? && register.all_approved?)
+            )
           end
 
         unless registers.empty?
