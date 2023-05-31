@@ -7,7 +7,7 @@
     <% if @pending_registers.empty? %>
       None pending
     <% else %>
-      <ul class="flex-column">
+      <ol class="flex-column">
         <% @pending_registers.each do |r| %>
           <li class="">
             <%= link_to(r.acc_url, r) %>:
@@ -19,7 +19,7 @@
             [<%= time_ago_in_words(r.updated_at) %> ago]
           </li>
         <% end %>
-      </ul>
+      </ol>
     <% end %>
     <ul class="nav flex-column">
       <li class="nav-item mt-3"><h4>Review Register Lists</h4></li>
