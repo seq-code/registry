@@ -21,6 +21,7 @@ namespace :names do
       pathosystems? into shares names? across do incorporate? represents?
       predominantly enrichment found members? includes? chromosomes? can with
       contains? distinct will at inhabiting living after to resulted remained
+      appears?
     ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
