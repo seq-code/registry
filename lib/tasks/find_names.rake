@@ -35,11 +35,15 @@ namespace :names do
         map{ |i| i.remove '.' }.compact.sort.uniq
       ca.each do |name|
         next if name == 'Candidatus'
+
         $stderr.puts "  - #{name}"
-        unless pub.names.pluck(:name).include? name
+        pub_names = pub.names.pluck(:name)
+        unless pub_names.include? name
           n = Name.find_by_variants(name)
           n ||= Name.new(name: name).tap{ |i| i.save }
-          PublicationName.new(publication: pub, name: n).save
+          unless pub_names.include? n.name
+            PublicationName.new(publication: pub, name: n).save
+          end
         end
       end
       pub.update(scanned: true)
