@@ -43,7 +43,8 @@ module Name::QualityChecks
         message: 'The name has a Candidatus modifier that should be removed'
       }.merge(@@link_to_edit_spelling),
       inconsistent_syllabification: {
-        message: 'The syllabification does not correspond to the proposed spelling'
+        message: 'The syllabification does not correspond to the proposed ' \
+                 'spelling'
       }.merge(@@link_to_edit_etymology),
       too_many_amino_acids: {
         message: 'The genome is reported to encode tRNAs for too many ' \
@@ -172,7 +173,7 @@ module Name::QualityChecks
         recommendations: %w[9.1]
       }.merge(@@link_to_edit_spelling),
       # - Recommendation 9.1 covered in § Rule 9b
-      # - Recommendation 9.2 [TODO, see issue #6]:
+      # - Recommendation 9.2 [TODO: issue #6]:
       #   Names should differ by at least three characters from existing names
       #   of genera or species within the same genus.
       # - Recommendation 9.3 [Checklist-N]
@@ -184,7 +185,7 @@ module Name::QualityChecks
       # - Recommendation 9.4 [Checklist-N]
       inapt_personal_name: {
         checklist: :nomenclature,
-        message: 'Consider revising the personal name dedication',
+        message: 'Personal name dedication should be appropriately formed',
         recommendations: %w[9.4]
       }.merge(@@link_to_edit_etymology),
       # - Recommendation 9.5 [Checklist-N]
@@ -237,7 +238,8 @@ module Name::QualityChecks
       # - Recommendation 12.1 [Checklist-N]
       unspecific_epithet: {
         checklist: :nomenclature,
-        message: 'Species epithet should reflect distinct features in the genus',
+        message: 'Species epithet should reflect distinct features ' \
+                 'in the genus',
         recommendations: %w[12.1]
       }.merge(@@link_to_edit_spelling),
       # - Recommendation 12.2
@@ -344,14 +346,19 @@ module Name::QualityChecks
                  'in the INSDC databases',
         rules: %w[18a 26.3]
       }.merge(@@link_to_edit_type),
-      # - Rule 18b [Checklist, TODO, see issue #98]:
+      # - Rule 18b [Checklist-G, TODO: issue #98]:
       #   The type of a species or subspecies must allow the unambiguous
       #   identification of the taxon. Names based on types that later prove to
       #   be ambiguous are not legitimate unless a neotype is proposed.
+      ambiguous_type_genome: {
+        checklist: :genomics,
+        message: 'The type material must identify the taxon unambiguously',
+        rules: %w[18b]
+      }.merge(@@link_to_edit_type),
       # - Rule 18c requires the implementation of neotype designations
-      #   [TODO, see issue #12] no checks are to be implemented
+      #   [TODO: issue #12] no checks are to be implemented
       # - Rule 19 is implied by the SeqCode Registry structure
-      # - Recommendation 19 [Checklist, TODO, see issue #28]:
+      # - Recommendation 19 [TODO: Checklist, TODO: issue #28]:
       #   When a strain belonging to a taxon named under the SeqCode is
       #   isolated, a reference strain should be designated and submitted to two
       #   culture collections in different countries. Reference strains have no
@@ -362,29 +369,35 @@ module Name::QualityChecks
         rules: %w[20],
         can_approve: true
       }.merge(@@link_to_edit_type),
-      # - Rule 21a [Checklist]:
-      #   The nomenclatural type of a genus is the type species that was
-      #   designated when the genus name was originally validly published.
-      # - Rule 21b [Checklist]:
-      #   The valid publication of a new genus name as a deliberate substitute
-      #   for an earlier name found to be illegitimate does not change the type
-      #   species of the genus.
-      # - Rule 22 [Checklist]:
-      #   When more than one subordinate taxa are available to serve as type,
-      #   the earliest legitimately named taxon available at the time must be
-      #   chosen, except where the type is neither a strain nor sequence data
-      #   (i.e., taxa described from illustrations under the ICNP).
+      # - Rule 21a [Checklist-N]
+      later_species_as_genus_type: {
+        checklist: :nomenclature,
+        message: 'The type of a genus must be the original type species',
+        rules: %w[21a]
+      }.merge(@@link_to_edit_type),
+      # - Rule 21b [Checklist-N]
+      different_type_after_genus_substitution: {
+        checklist: :nomenclature,
+        message: 'The type of a substituted genus name must remain unchanged',
+        rules: %w[21b 22]
+      }.merge(@@link_to_edit_type),
+      # - Rule 22 [Checklist-N]
+      later_taxon_as_type: {
+        checklist: :nomenclature,
+        message: 'The nomenclatural type must be the earliest legitimate taxon',
+        rules: %w[22]
+      }.merge(@@link_to_edit_type),
 
       # Section 5. Priority and Valid Publication of Names
-      # - Rule 23a [Checklist]:
+      # - Rule 23a [TODO: Checklist]:
       #   Any taxon with a given circumscription, position, and rank can bear
       #   only one correct name, the earliest name that is in accordance with
       #   the rules of SeqCode. {Includes two notes}
       # - Rules 23b and 23c are automatically enforced by the SeqCode Registry
       #   or require no additional checks
-      # - Rule 23d [TODO, see issue #97]
+      # - Rule 23d [TODO: issue #97]
       # - Rule 23e is implied by the SeqCode Registry, but a comprehensive list
-      #   of names should be automatically imported [TODO, e.g., see issue #90]
+      #   of names should be automatically imported [TODO: issue #90]
       # - Rule 24a
       missing_effective_publication: {
         message: 'The publication proposing this name has not been identified',
@@ -393,10 +406,13 @@ module Name::QualityChecks
         rules: %w[24a],
         can_approve: true
       },
-      # - Rule 24b [Checklist]:
-      #   When a name of a new taxon is published in a work written in a
-      #   language other than English, the author(s) should include a
-      #   description in English in the publication.
+      # - Rule 24b [Checklist-N]
+      unavailable_english_description: {
+        checklist: :nomenclature,
+        message: 'An English description is required for works in other ' \
+                 'languages',
+        rules: %w[24b]
+      },
       # - Rule 24c
       invalid_effective_publication: {
         message: 'The publication proposing this name is a preprint or some ' \
@@ -442,39 +458,45 @@ module Name::QualityChecks
         message: 'The etymology of the name has not been provided',
         rules: %w[26.5]
       }.merge(@@link_to_edit_etymology),
-      # - Rule 26.5 [Checklist, in addition to the above]:
-      #   The derivation (etymology) of a new name (and if necessary of a new
-      #   combination) is given wherein one or more distinguishable roots are
-      #   identified. Roots can originate from any language in use or extinct
-      #   (see also Recommendation 9).
-      # - Recommendation 26 [Checklist]:
-      #   It is recommended that the name, etymology, type information, and
-      #   diagnosis of the novel taxon should be clearly identifiable in a
-      #   designated section of the effective publication (i.e., the section
-      #   termed the ‘protologue’ by some microbial taxonomists). Authors are
-      #   encouraged to provide additional information describing the taxon such
-      #   as predicted or known physiological characteristics, ecological data,
-      #   location, and additional metadata. Authors are also encouraged to
-      #   submit metadata with the type sequence in one of the INSDC databases.
-      # - Rule 27 requires addressing new combinations [TODO, see issue #30],
+      # - Rule 26.5 [Checklist-N, in addition to the above]
+      missing_roots_from_existing_languages: {
+        checklist: :nomenclature,
+        message: 'Distinguishable roots from existing languages must be ' \
+                 'identified',
+        rules: %w[26.5]
+      }.merge(@@link_to_edit_etymology),
+      # - Recommendation 26 [Checklist-N]
+      missing_description_in_publication: {
+        checklist: :nomenclature,
+        message: 'A clear description and/or protologue should be available' \
+                 'in the effective publication',
+        recommendations: %w[26]
+      },
+      missing_metadata_in_databases: {
+        checklist: :genomics,
+        message: 'Descriptive metadata should be available in INSDC databases',
+        recommendations: %w[26]
+      }.merge(@@link_to_edit_genome),
+      # - Rule 27 requires addressing new combinations [TODO: issue #30],
       #   but it would not require additional checks
 
       # Section 6. Citation of Authors and Names
       # - Recommendation 28 is followed by SeqCode Registry structure
-      # - Rule 29 [TODO, see issue #30]
-      # - Recommendation 30 [Checklist]:
-      #   If an alteration of a taxon modifies its circumscription, the author
-      #   responsible may be indicated by the addition to the author citation of
-      #   the abbreviation ‘‘emend.’’ (emendavit) followed by the name of the
-      #   author responsible for the change. Only alterations that cause
-      #   significant changes in the circumscription warrant description as an
-      #   emendation.
+      # - Rule 29 [TODO: issue #30]
+      # - Recommendation 30 [Checklist-N]
+      missing_publication_of_emendation: {
+        checklist: :nomenclature,
+        message: 'Significant emendations should be properly cited',
+        recommendations: %w[30],
+        link_text: 'Register publication',
+        link_to: lambda { |w| [:new_publication, { link_name: w.name.id }] }
+      },
 
       # Section 7. Changes in Names of Taxa as a Result of Transference, Union,
       # or Change in Rank
       # 
       # This complete section is yet to be supported by SeqCode Registry
-      # actions [TODO, issue #30]
+      # actions [TODO: issue #30]
       # - Rule 31
       # - Rule 32
       # - Rule 33
@@ -506,18 +528,19 @@ module Name::QualityChecks
 
       # Section 9. Orthography
       # - Rule 46 covered in § Rule 8
-      # - Rule 47 [Checklist]:
-      #   Any name or epithet should be written in conformity with the spelling
-      #   of the word from which it is derived and in accordance with the rules
-      #   of Latin grammar. Exceptions are provided for typographic and
-      #   orthographic errors and orthographic variants. {includes 2 notes}
+      # - Rule 47 [Checklist-N]
+      incorrect_spelling: {
+        checklist: :nomenclature,
+        message: 'Name should conform original spelling and Latin grammar',
+        rules: %w[47]
+      }.merge(@@link_to_edit_spelling),
       # - Rule 48 is followed by the SeqCode Registry, and also:
       corrigendum_affecting_initials: {
         message: 'A corrigendum should be issued with reserve when affecting ' \
                  'the first letter of a name',
         rule_notes: %w[48]
       }.merge(@@link_to_edit_spelling),
-      # - Rule 49 [Checklist, but see also § Recommendation 9.2 and issue #6]:
+      # - Rule 49 [TODO: Checklist, see also § Recommendation 9.2 and issue #6]:
       #   The genitive and adjectival forms of a personal name are treated as
       #   different epithets and not as orthographic variants unless they are so
       #   similar as to cause confusion.
@@ -526,11 +549,12 @@ module Name::QualityChecks
         message: 'Authors must give the gender of any proposed genus name',
         rules: %w[50.1 50.3]
       }.merge(@@link_to_edit_etymology),
-      # - Rule 50.1 [Checklist, in addition to the above]:
-      #   A Latin or Latinized genus name retains the gender of its language
-      #   of origin. Authors must give the gender of any proposed genus name.
-      #   In cases where the classical gender varies, the author has the
-      #   right of choice between the alternatives.
+      # - Rule 50.1 [Checklist-N, in addition to the above]:
+      grammatical_gender_varies_from_source: {
+        checklist: :nomenclature,
+        message: 'A Latinized genus name should retain the original gender',
+        rules: %w[50.1]
+      }.merge(@@link_to_edit_etymology),
       # - Rule 50.2
       inconsistent_grammatical_gender: {
         message: 'A genus name formed by two or more Latin words should take ' \
@@ -585,6 +609,11 @@ module Name::QualityChecks
 
     def defaults
       @@defaults[type] || {}
+    end
+
+    def title
+      type.to_s.gsub(/_/, ' ').capitalize
+          .gsub('english', &:capitalize)
     end
 
     def is_error?
@@ -666,6 +695,12 @@ module Name::QualityChecks
     @qc_warnings.add(:missing_description) unless description?
     @qc_warnings.add(:missing_effective_publication) if proposed_by.nil?
     @qc_warnings.add(:invalid_effective_publication) if proposed_by&.prepub?
+    @qc_warnings.add(:missing_publication_of_emendation) # check
+
+    if proposed_by
+      @qc_warnings.add(:missing_description_in_publication) # check
+      @qc_warnings.add(:unavailable_english_description) # check
+    end
 
     unless base_name =~ /\A[A-Z][a-z ]+( subsp\. )?[a-z ]+\z/
       @qc_warnings.add(:inconsistent_format)
@@ -685,10 +720,13 @@ module Name::QualityChecks
     end
 
     if type_is_genome?
+      @qc_warnings.add(:ambiguous_type_genome) # check
       @qc_warnings.add(:missing_genome_kind) unless type_genome.kind.present?
       @qc_warnings.add(:sequence_not_found) if type_genome.auto_failed.present?
 
-      unless type_genome.source?
+      if type_genome.source?
+        @qc_warnings.add(:missing_metadata_in_databases) # check
+      else
         if !proposed_by.nil? && proposed_by.journal_date.year < 2023
           # Only a warning for publications before 1st January 2023
           @qc_warnings.add(
@@ -790,6 +828,8 @@ module Name::QualityChecks
         if self.class.rank_regexps.any? { |_, i| name =~ i }
           @qc_warnings.add(:reserved_suffix)
         end
+        @qc_warnings.add(:later_species_as_genus_type) if type? # check
+        @qc_warnings.add(:different_type_after_genus_substitution) # check
       end
     end
 
@@ -827,6 +867,10 @@ module Name::QualityChecks
       end
     end
 
+    if rank? && above_rank?(:family)
+      @qc_warnings.add(:later_taxon_as_type) if type? # check
+    end
+
     if etymology?
       if etymology(:p1, :grammar) && !etymology(:xx, :grammar)
         @qc_warnings.add(:missing_full_epithet_etymology)
@@ -840,10 +884,15 @@ module Name::QualityChecks
       if %w[species subspecies].include?(inferred_rank)
         @qc_warnings.add(:inconsistent_epithet_relationship_to_genus) # check
       end
+      if rank? && rank == 'genus'
+        @qc_warnings.add(:grammatical_gender_varies_from_source) # check
+      end
 
       @qc_warnings.add(:inapt_personal_name) # check
       @qc_warnings.add(:contentious_name) # check
       @qc_warnings.add(:lacking_mnemonic_cues) # check
+      @qc_warnings.add(:incorrect_spelling) # check
+      @qc_warnings.add(:missing_roots_from_existing_languages) # check
     else
       @qc_warnings.add(:missing_etymology)
     end
