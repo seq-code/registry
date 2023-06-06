@@ -346,7 +346,7 @@ class Name < ApplicationRecord
 
     @citations ||= [
       proposed_by, corrigendum_by, emended_by.to_a
-    ].flatten.compact
+    ].flatten.compact.uniq
   end
 
   # ============ --- STATUS --- ============
