@@ -23,36 +23,15 @@
           <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
             <div class="text-muted">
               <b>§ Contravenes SeqCode</b>:
-              <% unless warn[:rules].blank? %>
-                Rule<%= 's' unless warn[:rules].size == 1 %>
-                <%=
-                  warn[:rules]
-                    .map { |i| link_to_rule(i) }.to_sentence.html_safe
-                %>
-                <%=
-                  warn[:recommendations] && warn[:rule_notes] ?
-                    ',' : warn[:recommendations] || warn[:rule_notes] ?
-                    'and' : ''
-                %>
-              <% end %>
-              <% unless warn[:rule_notes].blank? %>
-                Note to Rule<%= 's' unless warn[:rule_notes].size == 1 %>
-                <%=
-                  warn[:rule_notes]
-                    .map { |i| link_to_rule(i) }.to_sentence.html_safe
-                %>
-                <%= 'and' if warn[:recommendations] %>
-              <% end %>
-              <% unless warn[:recommendations].blank? %>
-                Recommendation<%= 's' unless warn[:recommendations].size == 1 %>
-                <%=
-                  warn[:recommendations]
-                    .map { |i| link_to_recommendation(i) }.to_sentence.html_safe
-                %>
-              <% end %>
-              <% unless warn[:can_approve].blank? || @name.validated? %>
-                but <u>it can be safely ignored</u> before validation
-              <% end %>
+                <% comma = false %>
+                <% %w[rule rule_note recommendation].each do |section| %>
+                  <% warn[:"#{section}s"]&.each do |i| %>
+                    <% text = name_of_seqcode_section(section, i) %>
+                    <%= ' • ' if comma %>
+                    <%= link_to_seqcode_excerpt(section, i, text) %>
+                    <% comma = true %>
+                  <% end %>
+                <% end %>
             </div>
           <% end %>
         </dd>
