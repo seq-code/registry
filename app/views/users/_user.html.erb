@@ -9,7 +9,7 @@
 
   <% if user.orcid? %>
     <%= adaptable_value(entry, 'ORCID') do %>
-      <%= link_to(user.orcid_url, user.orcid, target: '_blank') %>
+      <%= link_to(user.orcid, user.orcid_url, target: '_blank') %>
     <% end %>
   <% end %>
 
