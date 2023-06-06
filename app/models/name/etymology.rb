@@ -135,6 +135,13 @@ module Name::Etymology
   end
 
   ##
+  # Check if any of the components (or the full epithet) is in a language
+  # other than Latin (or Neo Latin)
+  def any_non_latin?
+    self.class.etymology_particles.any? { |i| latin?(i) == false }
+  end
+
+  ##
   # Remove all the individual etymology fields from the current instance
   # *without* saving the changes to the database
   def clean_etymology

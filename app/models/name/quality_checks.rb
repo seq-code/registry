@@ -6,7 +6,7 @@ module Name::QualityChecks
     # Attributes supported for warnings
     @@attributes = %i[
       message link_text link_to rules recommendations can_approve
-      link_public rule_notes
+      link_public rule_notes checklist
     ]
 
     # Preformed links to common targets
@@ -175,25 +175,36 @@ module Name::QualityChecks
       # - Recommendation 9.2 [TODO, see issue #6]:
       #   Names should differ by at least three characters from existing names
       #   of genera or species within the same genus.
-      # - Recommendation 9.3 [Checklist]:
-      #   Languages other than Latin should be avoided when Latin equivalents
-      #   exist or can be constructed by combining Latin word elements.
-      #   Exceptions include names derived from local items such as foods,
-      #   drinks, geographic localities, and other names for which no Latin
-      #   words exist.
-      # - Recommendation 9.4 [Checklist]:
-      #   Authors should not name organisms after themselves. If names are
-      #   formed from personal names, they should contain only the name of one
-      #   person. They may contain the untruncated family and/or first names.
-      # - Recommendation 9.5 [Checklist]:
-      #   All personal genus names should be feminine regardless of the gender
-      #   identity of the person they commemorate.
-      # - Recommendation 9.6 [Checklist]:
-      #   Names should not be deliberately contentious or abusive of any person,
-      #   race, religion, political belief, or ideology.
-      # - Recommendation 9.7 [Checklist]:
-      #   Names that include mnemonic cues are preferred because they promote
-      #   learning and memory.
+      # - Recommendation 9.3 [Checklist-N]
+      latin_should_be_preferred: {
+        checklist: :nomenclature,
+        message: 'Languages other than Latin should be avoided when possible',
+        recommendations: %w[9.3]
+      }.merge(@@link_to_edit_etymology),
+      # - Recommendation 9.4 [Checklist-N]
+      inapt_personal_name: {
+        checklist: :nomenclature,
+        message: 'Consider revising the personal name dedication',
+        recommendations: %w[9.4]
+      }.merge(@@link_to_edit_etymology),
+      # - Recommendation 9.5 [Checklist-N]
+      personal_genus_must_be_feminine: {
+        checklist: :nomenclature,
+        message: 'Personal genus names should be feminine',
+        recommendations: %w[9.4]
+      }.merge(@@link_to_edit_etymology),
+      # - Recommendation 9.6 [Checklist-N]
+      contentious_name: {
+        checklist: :nomenclature,
+        message: 'Names should not be contentious or abusive',
+        recommendations: %w[9.6]
+      }.merge(@@link_to_edit_etymology),
+      # - Recommendation 9.7 [Checklist-N]
+      lacking_mnemonic_cues: {
+        checklist: :nomenclature,
+        message: 'Names with mnemonic cues are preferred',
+        recommendations: %w[9.7]
+      }.merge(@@link_to_edit_etymology),
       # - Rule 10
       inconsistent_genus_grammatical_number_or_gender: {
         message: 'A genus must be a noun or an adjective used as a noun, ' \
@@ -211,22 +222,24 @@ module Name::QualityChecks
         message: 'A species name must be an adjective or a noun',
         rules: %w[12]
       }.merge(@@link_to_edit_etymology),
-      # - Rule 12 [Checklist, also applies to subspecies by Rule 13b]:
-      #   A species epithet must be related to the genus name in one of three
-      #   ways.
-      #   1. As an adjective. Example: aureus in Staphylococcus aureus.
-      #   2. As a substantive (noun) in apposition in the nominative case.
-      #      Example: Desulfovibrio gigas or other names cited in Trüper and
-      #      De’Clari (1997).
-      #   3. As a noun in the genitive case. Example: coli in Escherichia coli.
+      # - Rule 12 [Checklist-N]
+      inconsistent_epithet_relationship_to_genus: {
+        checklist: :nomenclature,
+        message: 'The epithet must relate grammatically to the genus name',
+        rules: lambda { |w|
+          w.name.inferred_rank == 'subspecies' ? %w[12 13b] : %w[12]
+        }
+      }.merge(@@link_to_edit_etymology),
       inconsistent_grammar_for_subspecies_name: {
         message: 'A subspecies name must be an adjective or a noun',
         rules: %w[12 13b]
       }.merge(@@link_to_edit_etymology),
-      # - Recommendation 12.1 [Checklist]
-      #   When a species epithet is chosen to indicate a property or source of
-      #   the species, epithets should not express a character common to all,
-      #   or nearly all, the species of a genus.
+      # - Recommendation 12.1 [Checklist-N]
+      unspecific_epithet: {
+        checklist: :nomenclature,
+        message: 'Species epithet should reflect distinct features in the genus',
+        recommendations: %w[12.1]
+      }.merge(@@link_to_edit_spelling),
       # - Recommendation 12.2
       inconsistent_species_grammatical_number_or_gender: {
         message: 'A specific epithet formed by an adjective ' \
@@ -582,6 +595,10 @@ module Name::QualityChecks
       is_error? ? :error : :warn
     end
 
+    def check
+      name.check(type) if checklist
+    end
+
     def to_hash
       Hash[
         @@attributes.map do |k|
@@ -598,15 +615,18 @@ module Name::QualityChecks
   end # QcWarning
 
   class QcWarningSet
-    attr_accessor :name, :set
+    attr_accessor :name, :set, :checks
 
     def initialize(name)
       @name = name
       @set = []
+      @checks = []
     end
 
     def add(type, opts = {})
-      @set << QcWarning.new(type, opts.merge(name: name))
+      qc = QcWarning.new(type, opts.merge(name: name))
+      @checks << qc if qc.checklist
+      @set << qc if !qc.checklist || (qc.check && !qc.check.pass?)
     end
 
     def map(&blk)
@@ -811,9 +831,24 @@ module Name::QualityChecks
       if etymology(:p1, :grammar) && !etymology(:xx, :grammar)
         @qc_warnings.add(:missing_full_epithet_etymology)
       end
+      if any_non_latin?
+        @qc_warnings.add(:latin_should_be_preferred) # check
+      end
+      if inferred_rank == 'genus' && !feminine?
+        @qc_warnings.add(:personal_genus_must_be_feminine) # check
+      end
+      if %w[species subspecies].include?(inferred_rank)
+        @qc_warnings.add(:inconsistent_epithet_relationship_to_genus) # check
+      end
+
+      @qc_warnings.add(:inapt_personal_name) # check
+      @qc_warnings.add(:contentious_name) # check
+      @qc_warnings.add(:lacking_mnemonic_cues) # check
     else
       @qc_warnings.add(:missing_etymology)
     end
+
+    @qc_warnings.add(:unspecific_epithet) if inferred_rank == 'species' # check
 
     unless consistent_genus_gender?
       if feminine? || masculine? || neuter?
