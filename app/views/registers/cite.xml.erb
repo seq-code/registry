@@ -17,7 +17,7 @@
       <nameIdentifier nameIdentifierScheme="" schemeURI=""/>
       <% end %>
       <% if @register.user.affiliation_ror? %>
-      <affiliation affiliationIdentifier="https://ror.org/<%= @register.user.affiliation_ror %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= @register.user.affiliation %></affiliation>
+      <affiliation affiliationIdentifier="<%= @register.user.ror_url %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= @register.user.affiliation %></affiliation>
       <% elsif @register.user.affiliation? %>
       <affiliation><%= @register.user.affiliation %></affiliation>
       <% end %>

@@ -15,7 +15,7 @@
 
   <%= adaptable_value(entry, 'Affiliation') do %>
     <% if user.affiliation_ror? %>
-      <%= link_to(user.affiliation, user.affiliation_ror, target: '_blank') %>
+      <%= link_to(user.affiliation, user.ror_url, target: '_blank') %>
     <% else %>
       <%= user.affiliation %>
     <% end %>
