@@ -67,7 +67,7 @@ module PageHelper
     if number =~ /\.(\d+)/
       k = $1.to_i
       content = content.map do |i|
-        i.dup.tap { |y| y.xpath("li[#{k}]").set(:style, 'background:#ffeeaa;') }
+        i.dup.tap { |y| y.xpath("li[#{k}]").set(:class, 'highlight') }
       end
     end
     @sq_noko.xpath("//#{sel}[1]").to_s.html_safe +
