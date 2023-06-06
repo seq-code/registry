@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_06_105324) do
+ActiveRecord::Schema.define(version: 2023_06_06_205701) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -63,7 +63,6 @@ ActiveRecord::Schema.define(version: 2023_06_06_105324) do
     t.integer "user_id", null: false
     t.text "kind", null: false
     t.boolean "pass"
-    t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name_id", "kind"], name: "index_checks_on_name_id_and_kind", unique: true
     t.index ["name_id"], name: "index_checks_on_name_id"

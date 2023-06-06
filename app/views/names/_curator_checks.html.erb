@@ -1,47 +1,90 @@
 <% if current_curator? && !@name.validated? %>
   <% if !@name.qc_warnings.checks.empty? %>
-    <dl class="main-section name-details">
-      <h2>Manual Curation Checklist</h2>
+    <div>
+      <%= link_to('#curator-checklist',
+                  class: 'btn btn-primary btn-curator-checklist',
+                  aria: { expanded: 'false', controls: 'curator-checklist' },
+                  role: 'button', data: { toggle: 'collapse' }) do %>
+        <h2 class="ml-4 my-1">
+          <%= fa_icon('tasks') %>
+          Manual Curation Checklist
+        </h2>
+      <% end %>
+    </div>
+    <dl class="main-section name-details curator-checklist collapse border-primary"
+        id="curator-checklist" style="border-left: 1em solid;">
       <% @name.qc_warnings.checks.each do |warn| %>
-        <dt>
-          <% if !warn.check %>
-            <%= fa_icon('circle') %>
-          <% elsif warn.pass %>
-            <%= fa_icon('check-circle', class: 'text-success') %>
-          <% else %>
-            <%= fa_icon('exclamation-circle', class: 'text-danger') %>
-          <% end %>
-          <%= warn[:checklist].to_s.capitalize %> &raquo;
-          <%= warn.type.to_s.gsub(/_/, ' ').capitalize %>
+        <%
+          warn_class =
+            if !warn.check
+              'check-skip'
+            elsif warn.check.pass
+              'check-pass'
+            else
+              'check-fail'
+            end
+        %>
+        <dt class="<%= warn_class %>">
+          <span class="check-links">
+            <%= link_to('#', title: 'Skip',
+                        data: { do: 'skip', kind: warn.type }) do %>
+              <%= fa_icon('minus-circle') %>
+            <% end %>
+            <%= link_to('#', title: 'Pass',
+                        data: { do: 'pass', kind: warn.type }) do %>
+              <%= fa_icon('check-circle') %>
+            <% end %>
+            <%= link_to('#', title: 'Fail',
+                        data: { do: 'fail', kind: warn.type }) do %>
+              <%= fa_icon('exclamation-circle') %>
+            <% end %>
+          </span>
+          <span>
+            <%= warn[:checklist].to_s.capitalize %> &raquo;
+            <%= warn.title %>
+          </span>
         </dt>
-        <dd class="pt-2">
-          <%= warn[:message] %>
+        <dd class="pb-2">
           <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
+            <%= warn[:message] %>
             <div class="text-muted">
-              <b>§ Relevant SeqCode Section(s)</b>:
-              <ul>
+              <b>§ SeqCode</b>:
                 <% %w[rule rule_note recommendation].each do |section| %>
                   <% warn[:"#{section}s"]&.each do |i| %>
+                    •
                     <% text = name_of_seqcode_section(section, i) %>
-                    <li><%= link_to_seqcode_excerpt(section, i, text) %></li>
+                    <%= link_to_seqcode_excerpt(section, i, text) %>
                   <% end %>
                 <% end %>
-              </ul>
             </div>
           <% end %>
-          <div class="my-1">
-            <%= link_to('#', class: 'btn btn-success btn-sm') do %>
-              <%= fa_icon('check-circle') %>
-              The name passes this check
-            <% end %>
-            <%= link_to('#', class: 'btn btn-danger btn-sm') do %>
-              <%= fa_icon('exclamation-circle') %>
-              The name fails this check
-            <% end %>
-          </div>
         </dd>
       <% end %>
       </dd>
     </dl>
+    <script>
+      $('.curator-checklist .check-links a[data-do]').on("click",
+        function() {
+          var path = "<%= check_path(@name) %>";
+          var data = $(this).data();
+          var dt = $(this).parent().parent();
+          dt.addClass("bg-warning");
+
+          $.post(path, data, function(res) {
+            dt.removeClass();
+            dt.addClass("check-" + data["do"]);
+          })
+          .fail(function(res) {
+            alert(res["responseText"]);
+          })
+          .always(function() {
+            dt.removeClass("bg-warning");
+          });
+
+          return(false);
+        }
+      );
+    </script>
+    <br/>
   <% end %>
 <% end %>

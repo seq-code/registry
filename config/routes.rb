@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :checks
   resources :tutorials
   # Static pages
   get  'page/publications', as: :page_publications
@@ -13,6 +12,8 @@ Rails.application.routes.draw do
 
   resources(:genomes)
   root(to: 'application#main')
+
+  post 'check/:name_id.json' => 'checks#update', as: :check
 
   resources(:registers, param: :accession)
   devise_for(:users, controllers: { registrations: 'users/registrations' })

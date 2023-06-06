@@ -153,6 +153,50 @@ nav.navbar-dark {
 }
 
 .highlight {
-  background-color: #ffeeaa; // #ff6db7;
+  background-color: #ffeeaa;
+}
+
+.btn-curator-checklist {
+  width: 100%;
+  text-align: left !important;
+  &[aria-expanded="true"] {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+}
+
+.curator-checklist {
+  dt {
+    &.check-skip .check-links {
+      & + *, a[data-do="skip"] { cursor: default; color: $black;   }
+    }
+    &.check-pass .check-links {
+      & + *, a[data-do="pass"] { cursor: default; color: $success; }
+    }
+    &.check-fail .check-links {
+      & + *, a[data-do="fail"] { cursor: default; color: $danger;  }
+    }
+    .check-links {
+      width: 4rem;
+      display: inline-block;
+      a {
+        * { width: 1rem; }
+        &:hover { text-decoration: none; }
+        &[data-do="skip"]:hover { color: $black; }
+        &[data-do="pass"]:hover { color: $success; }
+        &[data-do="fail"]:hover { color: $danger; }
+      }
+    }
+  }
+  dd {
+    padding-left: 4rem;
+    margin-left: 0.2rem;
+  }
+  dt.check-pass, dt.check-fail, dd.check-pass {
+    &, & + dd { opacity: 0.6; }
+  }
+  dt:hover + dd, dd:hover, dt:hover, dt:has(+ dd:hover) {
+    opacity: 1.0 !important;
+  }
 }
 
