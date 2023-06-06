@@ -1,0 +1,47 @@
+<% if current_curator? && !@name.validated? %>
+  <% if !@name.qc_warnings.checks.empty? %>
+    <dl class="main-section name-details">
+      <h2>Manual Curation Checklist</h2>
+      <% @name.qc_warnings.checks.each do |warn| %>
+        <dt>
+          <% if !warn.check %>
+            <%= fa_icon('circle') %>
+          <% elsif warn.pass %>
+            <%= fa_icon('check-circle', class: 'text-success') %>
+          <% else %>
+            <%= fa_icon('exclamation-circle', class: 'text-danger') %>
+          <% end %>
+          <%= warn[:checklist].to_s.capitalize %> &raquo;
+          <%= warn.type.to_s.gsub(/_/, ' ').capitalize %>
+        </dt>
+        <dd class="pt-2">
+          <%= warn[:message] %>
+          <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
+            <div class="text-muted">
+              <b>§ Relevant SeqCode Section(s)</b>:
+              <ul>
+                <% %w[rule rule_note recommendation].each do |section| %>
+                  <% warn[:"#{section}s"]&.each do |i| %>
+                    <% text = name_of_seqcode_section(section, i) %>
+                    <li><%= link_to_seqcode_excerpt(section, i, text) %></li>
+                  <% end %>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+          <div class="my-1">
+            <%= link_to('#', class: 'btn btn-success btn-sm') do %>
+              <%= fa_icon('check-circle') %>
+              The name passes this check
+            <% end %>
+            <%= link_to('#', class: 'btn btn-danger btn-sm') do %>
+              <%= fa_icon('exclamation-circle') %>
+              The name fails this check
+            <% end %>
+          </div>
+        </dd>
+      <% end %>
+      </dd>
+    </dl>
+  <% end %>
+<% end %>
