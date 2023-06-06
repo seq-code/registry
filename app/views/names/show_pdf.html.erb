@@ -2,4 +2,15 @@
 
 <div id="content">
   <%= render partial: 'name_pdf', locals: { name: @name } %>
+
+  <% if @name.citations.any? %>
+    <div class="pdf-abstract m-4 px-2">
+      <h2>References</h2>
+      <ol>
+        <% @name.citations.each do |publication| %>
+          <li><%= publication.long_citation_html %></li>
+        <% end %>
+      </ol>
+    </div>
+  <% end %>
 </div>
