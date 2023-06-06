@@ -56,6 +56,7 @@ module PageHelper
       # Fix in-page links
       @sq_noko.xpath("//*[contains(@href, '#')]").each do |i|
         i[:href] = "#{page_seqcode_path}#{i[:href]}" if i[:href] =~ /^#/
+        i[:target] = '_blank'
       end
     end
     
@@ -93,8 +94,12 @@ module PageHelper
       content_tag(:div, seqcode_excerpt(section, number), class: 'px-4 py-2') +
         content_tag(:hr) +
         fa_icon('hand-point-right', class: 'ml-4 mr-2') +
-        link_to_rule_or_recommendation(section, number, 'See in context')
+        link_to('See in context',
+          page_seqcode_path(anchor: anchor), target: '_blank')
     end
-    modal_button(id, class: '', type: '', tag: :a, href: '#') { text }
+
+    modal_button(id, class: '', type: '', tag: :a, href: '#') do
+      content_tag(:u, text)
+    end
   end
 end
