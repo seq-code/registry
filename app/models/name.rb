@@ -10,6 +10,7 @@ class Name < ApplicationRecord
     dependent: :nullify
   )
   alias :correspondences :name_correspondences
+  has_many(:checks)
   belongs_to(
     :proposed_by, optional: true,
     class_name: 'Publication', foreign_key: 'proposed_by'
@@ -757,6 +758,13 @@ class Name < ApplicationRecord
   end
 
   # ============ --- INTERNAL CHECKS --- ============
+
+  ##
+  # Return the manual check of type +type+ if set (or nil)
+  def check(type)
+    # Using +find+ instead of +where().first+ to avoid N+1 queries
+    checks.find { |check| check.kind == type.to_s }
+  end
 
   private
 

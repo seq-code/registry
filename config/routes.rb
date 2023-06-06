@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :checks
   resources :tutorials
   # Static pages
   get  'page/publications', as: :page_publications
