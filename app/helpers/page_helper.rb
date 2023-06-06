@@ -60,18 +60,29 @@ module PageHelper
     end
     
     id = anchor_to_seqcode_section(section, number)
-    sel = "*[@id='#{id}']"
+    xp = "*[@id='#{id}']"
 
-    content = @sq_noko.xpath("//#{sel}/following-sibling::*")
-                      .take_while { |i| !i['id'] }
+    content =
+      @sq_noko.xpath("//#{xp}/following-sibling::*").take_while { |i| !i['id'] }
+
     if number =~ /\.(\d+)/
       k = $1.to_i
       content = content.map do |i|
         i.dup.tap { |y| y.xpath("li[#{k}]").set(:class, 'highlight') }
       end
     end
-    @sq_noko.xpath("//#{sel}[1]").to_s.html_safe +
-        content.map(&:to_s).join.html_safe
+
+    if section =~ /_note$/
+      content = content.map do |i|
+        i.dup.tap do |y|
+          y.xpath("strong[contains(text(), 'Note')]/..")
+           .set(:class, 'highlight')
+        end
+      end
+    end
+
+    @sq_noko.xpath("//#{xp}[1]").to_s.html_safe +
+      content.map(&:to_s).join.html_safe
   end
 
   def link_to_seqcode_excerpt(section, number, text = nil)
