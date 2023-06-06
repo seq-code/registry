@@ -21,7 +21,7 @@
       <dd>
         <% if name.type_is_name? %>
           <%= name.type_name.rank.capitalize %>
-          <% if @register.names.include? name.type_name %>
+          <% if @register&.names&.include?(name.type_name) %>
             <%= name.type_name.name_html(nil, true) %>
           <% else %>
             <%= name.type_name.name_html %>

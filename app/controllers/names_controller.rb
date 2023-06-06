@@ -138,6 +138,7 @@ class NamesController < ApplicationController
            .paginate(page: params[:page], per_page: 10)
     @oldest_publication = @name.publications.last
     @crumbs = [['Names', names_path], @name.abbr_name]
+    @register ||= @name.register
     respond_to do |format|
       format.html
       format.json
