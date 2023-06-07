@@ -122,7 +122,7 @@ class Genome < ApplicationRecord
 
     case source_database
     when 'sra'
-      "https://www.ncbi.nlm.nih.gov/sra/#{acc}"
+      "https://www.ncbi.nlm.nih.gov/sra/#{acc}[accn]"
     when 'biosample'
       "https://www.ncbi.nlm.nih.gov/biosample/#{acc}"
     end
