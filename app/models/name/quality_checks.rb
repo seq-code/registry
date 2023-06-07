@@ -579,6 +579,11 @@ module Name::QualityChecks
         message: 'The contamination of the type genome should be below 5%',
         rules: %w[18a appendix-i]
       }.merge(@@link_to_edit_genome),
+      inconsistent_16s_assignment: {
+        checklist: :genomics,
+        message: 'The 16S rRNA genes should agree with the genome taxonomy',
+        rules: %w[18a appendix-i]
+      }.merge(@@link_to_edit_genome),
       low_genome_16s_count: {
         message: 'At least one 16S rRNA gene should be identified',
         recommendations: %w[appendix-i]
@@ -787,6 +792,11 @@ module Name::QualityChecks
           @qc_warnings.add(:high_genome_contamination)
         end
       end # type_genome.mag_or_sag?
+
+      if type_genome.number_of_16s_any? &&
+         !type_genome.number_of_16s_any.zero?
+        @qc_warnings.add(:inconsistent_16s_assignment) # check
+      end
 
       if type_genome.number_of_16s_any? &&
          type_genome.number_of_16s_any.zero?
