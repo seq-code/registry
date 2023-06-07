@@ -10,6 +10,8 @@ class Register < ApplicationRecord
   has_one_attached(:certificate_pdf)
   has_many(:names, -> { order('updated_at') })
   has_many(:register_correspondences, dependent: :destroy)
+  has_many(:checks, through: :names)
+  has_many(:check_users, -> { distinct }, through: :checks, source: :user)
   alias :correspondences :register_correspondences
   has_rich_text(:notes)
   has_rich_text(:abstract)
@@ -274,12 +276,18 @@ class Register < ApplicationRecord
     names.all?(&:after_approval?)
   end
 
+  def reviewer_ids
+    @reviewer_ids ||=
+      names.pluck(:validated_by, :approved_by, :nomenclature_reviewer)
+           .flatten.compact.uniq
+  end
+
+  def reviewers
+    @reviewers ||= User.where(id: reviewer_ids)
+  end
+
   def curators
-    @curators ||=
-      User.where(
-        id: names.pluck(:validated_by, :approved_by, :nomenclature_reviewer)
-                 .flatten.compact.uniq
-      )
+    @curators ||= (check_users + reviewers).uniq
   end
 
   private

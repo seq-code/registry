@@ -13,10 +13,12 @@ class User < ApplicationRecord
     :nomenclature_reviewed_for_names,
     class_name: 'Name', foreign_key: 'nomenclature_reviewer'
   )
-  has_many(:registers)
-  has_many(:name_correspondences)
-  has_many(:register_correspondences)
-  has_many(:tutorials)
+  has_many(:registers, dependent: :nullify)
+  has_many(:name_correspondences, dependent: :nullify)
+  has_many(:register_correspondences, dependent: :nullify)
+  has_many(:tutorials, dependent: :nullify)
+  has_many(:checks, dependent: :nullify)
+  has_many(:checked_names, -> { distinct }, through: :checks, source: :name)
 
   validates(
     :username,
@@ -81,5 +83,17 @@ class User < ApplicationRecord
     end
 
     false
+  end
+
+  def reviewed_names
+    @reviewed_names ||=
+      Name.where(
+        'validated_by = ? OR approved_by = ? OR nomenclature_reviewer = ?',
+        id, id, id
+      )
+  end
+
+  def curated_names
+    @curated_names ||= (checked_names + reviewed_names).uniq
   end
 end

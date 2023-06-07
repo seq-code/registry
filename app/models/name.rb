@@ -10,7 +10,8 @@ class Name < ApplicationRecord
     dependent: :nullify
   )
   alias :correspondences :name_correspondences
-  has_many(:checks)
+  has_many(:checks, dependent: :destroy)
+  has_many(:check_users, -> { distinct }, through: :checks, source: :user)
   belongs_to(
     :proposed_by, optional: true,
     class_name: 'Publication', foreign_key: 'proposed_by'
@@ -542,6 +543,18 @@ class Name < ApplicationRecord
     return false unless user
 
     correspondences.any? { |msg| msg.user == user }
+  end
+
+  def reviewer_ids
+    [validated_by, approved_by, nomenclature_reviewer].compact.uniq
+  end
+
+  def reviewers
+    @reviewers ||= User.where(id: reviewer_ids)
+  end
+
+  def curators
+    @curators ||= (check_users + reviewers).uniq
   end
 
   # ============ --- TAXONOMY --- ============
