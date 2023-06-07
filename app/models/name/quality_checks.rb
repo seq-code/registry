@@ -3,6 +3,8 @@ module Name::QualityChecks
   # Model QC Warnings as objects
   class QcWarning
 
+    mattr_accessor :defaults
+
     # Attributes supported for warnings
     @@attributes = %i[
       message link_text link_to rules recommendations can_approve
@@ -648,14 +650,33 @@ module Name::QualityChecks
 
     def initialize(name)
       @name = name
-      @set = []
-      @checks = []
+      @set_h = {}
+      @checks_h = {}
     end
 
     def add(type, opts = {})
       qc = QcWarning.new(type, opts.merge(name: name))
-      @checks << qc if qc.checklist
-      @set << qc if !qc.checklist || (qc.check && !qc.check.pass?)
+      @checks_h[qc.type] = qc if qc.checklist
+      @set_h[qc.type] = qc if !qc.checklist || (qc.check && !qc.check.pass?)
+    end
+
+    def set
+      @set_h.values
+    end
+
+    def checks
+      @checks_h.values
+    end
+
+    def resort!
+      new_set_h = @set_h
+      new_checks_h = @checks_h
+      @set_h = {}
+      @checks_h = {}
+      QcWarning.defaults.each_key do |k|
+        @set_h[k]   = new_set_h[k]     if new_set_h[k]
+        @checks_h[k] = new_checks_h[k] if new_checks_h[k]
+      end
     end
 
     def map(&blk)
@@ -918,6 +939,7 @@ module Name::QualityChecks
       @qc_warnings.add(:corrigendum_affecting_initials)
     end
 
+    @qc_warnings.resort!
     @qc_warnings
   end
 
