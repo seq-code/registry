@@ -673,6 +673,10 @@ module Name::QualityChecks
       @checks_h.values
     end
 
+    def checked_checks
+      @checks_h.values.select(&:check)
+    end
+
     def resort!
       new_set_h = @set_h
       new_checks_h = @checks_h

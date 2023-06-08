@@ -53,13 +53,44 @@
                 <div class="text-warning"><%= pluralize(wrn, 'warning') %></div>
               <% end %>
             <% end %>
+
+            <% w = name.qc_warnings %>
+            <% id = modal('Expert curation advance') do %>
+              <% %i[nomenclature genomics].each do |i| %>
+                <h3><%= i.to_s.capitalize %> checks</h3>
+                <div class="m-3">
+                  <% checks_i = w.checks.select { |j| j.checklist == i } %>
+                  <% if checks_i.empty? %>
+                    No expert checks for this name
+                  <% else %>
+                    <%= pluralize(checks_i.count, 'total check') %><br/>
+
+                    <% checks_i_k = checks_i.select { |j| j.check&.pass? } %>
+                    <%= pluralize(checks_i_k.count, 'passed check') %><br/>
+
+                    <% checks_i_k = checks_i.select { |j| j.check&.fail? } %>
+                    <%= pluralize(checks_i_k.count, 'failed check') %><br/>
+
+                    <% checks_i_k = checks_i.select { |j| !j.check } %>
+                    <%= pluralize(checks_i_k.count, 'pending check') %><br/>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+            <% wp = 100 * w.checked_checks.count / w.checks.count %>
+            <%= modal_button(id, class: 'text-primary', role: '') do %>
+              (<%= wp.round %>%)
+            <% end %>
           </td>
         <% end %>
         <% if @register.can_edit?(current_user) %>
           <td><%= name.correspondences.count %></td>
           <td>
             <%= link_to(
-                  name_url(name, name: { register: nil }, return_to: url_for(@register)), method: :patch,
+                  name_url(
+                    name, name: { register: nil },
+                    return_to: url_for(@register)
+                  ), method: :patch,
                   class: 'btn text-danger',
                   title: 'Remove from register list',
                   data: { confirm: 'Are you sure?' }
