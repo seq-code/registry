@@ -7,7 +7,22 @@
                   role: 'button', data: { toggle: 'collapse' }) do %>
         <h2 class="ml-4 my-1">
           <%= fa_icon('tasks') %>
-          Manual Curation Checklist
+          Expert Curation
+          <%
+            cur_c = @name.qc_warnings.checked_checks.count
+            cur_t = @name.qc_warnings.checks.count
+            cur_p = (100 * cur_c / cur_t).round
+          %>
+          (<span id="manual-curation-percent"
+                 data-total="<%= cur_t %>"><%= cur_p %></span>%)
+          <div style="display:inline-block; width:20rem;">
+            <div class="progress mx-2">
+              <div class="progress-bar bg-info" role="progressbar"
+                   id="manual-curation-progressbar"
+                   style="width: <%= cur_p %>%;" aria-valuenow="<%= cur_p %>"
+                   aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
         </h2>
       <% end %>
     </div>
@@ -73,6 +88,14 @@
           $.post(path, data, function(res) {
             dt.removeClass();
             dt.addClass("check-" + data["do"]);
+            var mcp = $('#manual-curation-percent');
+            var unchecked = $('#curator-checklist .check-skip').length;
+            var total = mcp.data("total");
+            var perc = Math.round(100 * (total - unchecked) / total);
+            var mcb = $('#manual-curation-progressbar');
+            mcp.html(perc);
+            mcb.css("width", "" + perc + "%");
+            mcb.attr("aria-valuenow", perc);
           })
           .fail(function(res) {
             alert(res["responseText"]);
