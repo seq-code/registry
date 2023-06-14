@@ -1,3 +1,5 @@
+student.karazin.ua
+karazin.ua
 usm.cl
 ieseg.fr
 mail2.sysu.edu.cn
@@ -10118,3 +10120,4 @@ icbm.de
 fcien.edu.uy
 liverpool.ac.uk
 wur.nl
+caas.cn
