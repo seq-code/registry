@@ -3,7 +3,7 @@ class ChecksController < ApplicationController
 
   # POST /checks/123.json
   def update
-    unless Name.exists?(params[:name_id])
+    unless Name.exists?(params[:name_id].to_i)
       return render(json: { error: 'unknown name' }, status: :not_found)
     end
 
