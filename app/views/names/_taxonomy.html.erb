@@ -63,6 +63,21 @@
       </dd>
     <% end %>
 
+    <% if @name.assigned_by %>
+      <dt><%= fa_icon('arrow-alt-circle-up') %> Assigned by</dt>
+      <dd>
+        <%= link_to(@name.assigned_by.short_citation, @name.assigned_by) %>
+        <% if @name.can_edit?(current_user) %>
+          <%= link_to assigned_by_name_url(@name, @name.assigned_by, not: true),
+                method: :post, class: 'badge badge-pill badge-info',
+                title: 'Did not assign this name taxonomically',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon('unlink') %> Unlink
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
+
     <% unless @name.children.empty? %>
       <dt><%= fa_icon('sort-amount-down-alt') %> Children
           <span class="text-muted">(<%= @name.children.count %>)</span><dt>

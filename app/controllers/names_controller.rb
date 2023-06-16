@@ -3,7 +3,8 @@ class NamesController < ApplicationController
   before_action(
     :set_name,
     only: %i[
-      show edit update destroy proposed_by corrigendum_by corrigendum emended_by
+      show edit update destroy
+      proposed_by corrigendum_by corrigendum emended_by assigned_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
       return validate approve claim unclaim new_correspondence
@@ -12,7 +13,8 @@ class NamesController < ApplicationController
   before_action(
     :authenticate_can_edit!,
     only: %i[
-      edit update destroy proposed_by corrigendum_by corrigendum emended_by
+      edit update destroy
+      proposed_by corrigendum_by corrigendum emended_by assigned_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit new_correspondence
     ]
@@ -263,22 +265,34 @@ class NamesController < ApplicationController
     @names = @names.paginate(page: params[:page], per_page: 30)
   end
 
-  # POST /names/1/proposed_by?publication_id=2
+  # POST /names/1/proposed_by/2
+  # POST /names/1/proposed_by/2?not=true
   def proposed_by
-    publication = Publication.where(id: params[:publication_id]).first
-    @name.update(proposed_by: publication)
+    @publication =
+      params[:not] ? nil : Publication.where(id: params[:publication_id]).first
+    @name.update(proposed_by: @publication)
     redirect_back(fallback_location: @name)
   end
 
-  # GET /names/1/corrigendum_by?publication_id=2
+  # GET /names/1/corrigendum_by/2
   def corrigendum_by
-    @publication = Publication.where(id: params[:publication_id]).first
+    @publication =
+      params[:not] ? nil : Publication.where(id: params[:publication_id]).first
     if @publication.nil?
       @name.update(corrigendum_by: nil, corrigendum_from: nil)
       redirect_back(fallback_location: @name)
     else
       @name.corrigendum_by = @publication
     end
+  end
+
+  # POST /names/1/assigned_by/2
+  # POST /names/1/assigned_by/2?not=true
+  def assigned_by
+    @publication =
+      params[:not] ? nil : Publication.where(id: params[:publication_id]).first
+    @name.update(assigned_by: @publication)
+    redirect_back(fallback_location: @name)
   end
 
   # POST /names/1/corrigendum

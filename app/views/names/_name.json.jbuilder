@@ -27,6 +27,13 @@ if name.corrigendum_by
   )
   json.(name, :corrigendum_from)
 end
+if name.assigned_by
+  json.assigned_by(
+    id: name.assigned_by.id,
+    citation: name.assigned_by.citation,
+    url: publication_url(name.assigned_by, format: :json)
+  )
+end
 
 # Taxonomy
 if name.parent

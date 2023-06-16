@@ -20,6 +20,10 @@ class Name < ApplicationRecord
     :corrigendum_by, optional: true,
     class_name: 'Publication', foreign_key: 'corrigendum_by'
   )
+  belongs_to(
+    :assigned_by, optional: true,
+    class_name: 'Publication', foreign_key: 'assigned_by'
+  )
   belongs_to(:parent, optional: true, class_name: 'Name')
   belongs_to(:correct_name, optional: true, class_name: 'Name')
   belongs_to(
@@ -347,7 +351,7 @@ class Name < ApplicationRecord
     return @citations unless (@citations ||= nil).nil?
 
     @citations ||= [
-      proposed_by, corrigendum_by, emended_by.to_a
+      proposed_by, corrigendum_by, assigned_by, emended_by.to_a
     ].flatten.compact.uniq
   end
 
@@ -460,6 +464,10 @@ class Name < ApplicationRecord
 
   def corrigendum_by?(publication)
     publication == corrigendum_by
+  end
+
+  def assigned_by?(publication)
+    publication == assigned_by
   end
 
   def emended_by

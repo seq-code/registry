@@ -31,11 +31,14 @@
             <% if @name.emended_by? publication %>
               <div class="badge"><%= fa_icon('asterisk') %> Emended this name</div>
             <% end %>
+            <% if @name.assigned_by? publication %>
+              <div class="badge"><%= fa_icon('arrow-alt-circle-up') %> Assigned this taxon</div>
+            <% end %>
           </td>
           <td>
             <% if @name.can_edit?(current_user) %>
               <% unless publication_name.proposes? %>
-                <%= link_to proposed_by_name_url(@name, publication_id: publication),
+                <%= link_to proposed_by_name_url(@name, publication),
                       class: 'badge badge-pill badge-info',
                       method: :post, title: 'Proposed this name',
                       data: { confirm: 'Are you sure?' } do %>
@@ -45,7 +48,7 @@
 
               <% unless publication_name.corrigendum? %>
                 <%= link_to(
-                      corrigendum_by_name_url(@name, publication_id: publication),
+                      corrigendum_by_name_url(@name, publication),
                       class: 'badge badge-pill badge-info',
                       title: 'Corrigendum'
                     ) do %>
@@ -61,6 +64,17 @@
                       data: { confirm: 'Are you sure?' }
                     ) do %>
                   <%= fa_icon('asterisk') %>
+                <% end %>
+              <% end %>
+
+              <% unless publication_name.assigns? %>
+                <%= link_to(
+                      assigned_by_name_url(@name, publication),
+                      class: 'badge badge-pill badge-info',
+                      method: :post, title: 'Taxonomically assigned this name',
+                      data: { confirm: 'Are you sure?' }
+                    ) do %>
+                  <%= fa_icon('arrow-alt-circle-up') %>
                 <% end %>
               <% end %>
 

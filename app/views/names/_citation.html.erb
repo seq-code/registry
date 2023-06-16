@@ -10,7 +10,7 @@
       <%= link_to(@name.proposed_by.short_citation, @name.proposed_by) %>
       <% if @name.can_edit?(current_user) %>
         <%= link_to(
-              proposed_by_name_url(@name, publication_id: nil),
+              proposed_by_name_url(@name, @name.proposed_by, not: true),
               class: 'badge badge-pill badge-info',
               method: :post, title: 'Did not propose this name',
               data: { confirm: 'Are you sure?' }
@@ -34,12 +34,12 @@
         from &#8220;<%= @name.corrigendum_from %>&#8221;
       <% end %>
       <% if @name.can_edit?(current_user) %>
-        <%= link_to corrigendum_by_name_url(@name, publication_id: @name.corrigendum_by),
+        <%= link_to corrigendum_by_name_url(@name, @name.corrigendum_by),
               class: 'badge badge-pill badge-info',
               title: 'Edit original name' do %>
           <%= fa_icon('edit') %> Edit
         <% end %>
-        <%= link_to corrigendum_by_name_url(@name, publication_id: nil),
+        <%= link_to corrigendum_by_name_url(@name, @name.corrigendum_by, not: true),
               class: 'badge badge-pill badge-info',
               title: 'Did not correct this name',
               data: { confirm: 'Are you sure?' } do %>

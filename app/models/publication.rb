@@ -22,6 +22,11 @@ class Publication < ApplicationRecord
     foreign_key: 'corrigendum_by', inverse_of: :corrigendum_by,
     dependent: :nullify
   )
+  has_many(
+    :assigned_names, class_name: 'Name',
+    foreign_key: 'assigned_by', inverse_of: :assigned_by,
+    dependent: :nullify
+  )
 
   class << self
 

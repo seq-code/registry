@@ -58,6 +58,9 @@ class PublicationsController < ApplicationController
           redirect_to(
             corrigendum_by_name_url(@name, publication_id: @publication.id)
           )
+        when 'assign'
+          @name.update(assigned_by: @publication)
+          redirect_to(@name, notice: 'Taxonomic assignment publication registered')
         when 'emend'
           pn.update(emends: true)
           redirect_to(@name, notice: 'Emending publication registered')

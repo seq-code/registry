@@ -9,4 +9,8 @@ class PublicationName < ApplicationRecord
   def corrigendum?
     name.corrigendum_by? publication
   end
+
+  def assigns?
+    name.assigned_by? publication
+  end
 end

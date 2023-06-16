@@ -25,6 +25,9 @@ class PublicationNamesController < ApplicationController
       if name.corrigendum_by == publication
         name.update(corrigendum_by: nil, corrigendum_from: nil)
       end
+      if name.assigned_by == publication
+        name.update(assigned_by: nil)
+      end
       @publication_name.destroy
     end
 

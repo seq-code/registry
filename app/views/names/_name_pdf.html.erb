@@ -69,11 +69,13 @@
             <br/>
           <% end %>
           <% if name.emended_by.any? %>
-             <i>Emendavit</i>:
-             <%= name.emended_by.map(&:short_citation).to_sentence %>
-             <br/>
+            <i>Emendavit</i>:
+            <%= name.emended_by.map(&:short_citation).to_sentence %>
+            <br/>
           <% end %>
-        </dd>
+          <% if name.assigned_by %>
+            Assigned taxonomically: <%= name.assigned_by.short_citation %>
+          <% end %>
       </div>
     <% end %>
     <div class="avoid-page-break">
