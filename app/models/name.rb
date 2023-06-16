@@ -571,6 +571,8 @@ class Name < ApplicationRecord
     rank.to_s == self.class.ranks.first
   end
 
+  ##
+  # The current name has a taxonomic rank equal or above +rank+
   def above_rank?(rank)
     self.class.ranks.index(inferred_rank) <= self.class.ranks.index(rank.to_s)
   end
@@ -772,7 +774,11 @@ class Name < ApplicationRecord
   def priority_date
     @priority_date ||= attribute(:priority_date)
     if !@priority_date && seqcode?
-      @priority_date = register.try(:priority_date)
+      if above_rank?(:family)
+        @priority_date = type_name.try(:priority_date)
+      else
+        @priority_date = register.try(:priority_date)
+      end
       update_column(:priority_date, @priority_date)
     end
     @priority_date
