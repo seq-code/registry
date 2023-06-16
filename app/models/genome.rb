@@ -137,7 +137,9 @@ class Genome < ApplicationRecord
 
   def link
     case database
-    when 'assembly', 'nuccore'
+    when 'assembly'
+      "https://www.ncbi.nlm.nih.gov/datasets/genome/#{accession}"
+    when 'nuccore'
       "https://www.ncbi.nlm.nih.gov/#{database}/#{accession}"
     end
   end
