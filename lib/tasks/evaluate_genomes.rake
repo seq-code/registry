@@ -6,7 +6,7 @@ namespace :genomes do
   desc 'Registers all genomes in a MiGA project to be evaluated'
   task :download => :environment do |t, args|
     def usage(t)
-      puts "Usage: rake genomes:register #{t}"
+      puts "Usage: rake #{t}"
       exit 0
     end
 
@@ -37,15 +37,21 @@ namespace :genomes do
   end
 
   desc 'Retrieves all genome data from a MiGA project'
-  task :save => :environment do |t, args|
+  task :save, [:which] => :environment do |t, args|
     def usage(t)
-      puts "Usage: rake genomes:register #{t}"
+      puts "Usage: rake #{t} or rake #{t}[all]"
       exit 0
     end
     
     p_path = File.join(Rails.root, '..', 'miga_check')
     p = MiGA::Project.load(p_path)
-    genomes = Genome.where(auto_check: false).where.not(auto_scheduled_at: nil)
+    genomes =
+      case args[:which]
+      when 'all'
+        Genome.where.not(auto_scheduled_at: nil)
+      else
+        Genome.where(auto_check: false).where.not(auto_scheduled_at: nil)
+      end
 
     $stderr.puts "Save genomes:"
     genomes.each do |genome|
