@@ -49,6 +49,8 @@ namespace :genomes do
       case args[:which]
       when 'all'
         Genome.where.not(auto_scheduled_at: nil)
+      when /^genome_(\d+)/
+        Genome.where(id: $1)
       else
         Genome.where(auto_check: false).where.not(auto_scheduled_at: nil)
       end
