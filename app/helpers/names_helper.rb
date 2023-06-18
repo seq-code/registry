@@ -28,6 +28,8 @@ module NamesHelper
               'detail.jsp?collection=nctc&refId=NCTC+',
         CIP:  'https://catalogue-crbip.pasteur.fr/' \
               'fiche_catalogue.xhtml?crbip=CIP%20',
+        PCC:  'https://catalogue-crbip.pasteur.fr/' \
+              'fiche_catalogue.xhtml?crbip=PCC%20',
         CCUG: 'https://www.ccug.se/strain?id=',
         NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
               'report.html?nrrlcodes='
