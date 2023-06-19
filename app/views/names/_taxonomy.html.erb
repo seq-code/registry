@@ -89,7 +89,15 @@
           <ul>
             <% @name.alt_placements.each do |placement| %>
               <li>
-                <%= link_to_name(placement.parent) %>
+                <% if placement.incertae_sedis? %>
+                  <div class="border-left px-3">
+                    <b><%= placement.incertae_sedis_html %>:</b>
+                    <%= placement.incertae_sedis_text %>
+                  </div>
+                <% elsif placement.parent %>
+                  <%= link_to_name(placement.parent) %>
+                <% end %>
+
                 <% if placement.publication %>
                   assigned by
                   <%= link_to(
