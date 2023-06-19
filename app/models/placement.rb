@@ -17,4 +17,10 @@ class Placement < ApplicationRecord
   )
 
   validates(:preferred, uniqueness: { scope: :name_id, if: :preferred? })
+
+  def incertae_sedis_html
+    return '' unless incertae_sedis?
+
+    incertae_sedis.gsub(/(incertae sedis)/i, '<i>\\1</i>').html_safe
+  end
 end
