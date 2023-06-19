@@ -3,7 +3,8 @@ class Name < ApplicationRecord
   has_many(:publications, through: :publication_names)
   has_many(:name_correspondences, dependent: :destroy)
   has_many(
-    :children, class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
+    :children, -> { order(:name) },
+    class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
   )
   has_many(
     :synonyms, class_name: 'Name', foreign_key: 'correct_name_id',
