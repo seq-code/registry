@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   post 'placements'     => 'placements#create', as: :create_placement
   get  'placements/:id' => 'placements#edit', as: :edit_placement
   post 'placements/:id' => 'placements#update', as: :update_placement
+  post 'placements/:id/prefer' => 'placements#prefer', as: :prefer_placement
   delete 'placements/:id' => 'placements#destroy', as: :destroy_placement
 
   post 'registers/:accession/submit' => 'registers#submit', as: :submit_register

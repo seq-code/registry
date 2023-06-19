@@ -51,6 +51,11 @@
           <%= link_to_name(@name.parent) %>
         <% end %>
 
+        <% if @name.assigned_by %>
+          assigned by
+          <%= link_to(@name.assigned_by.short_citation, @name.assigned_by) %>
+        <% end %>
+
         <% if @name.can_edit?(current_user) %>
           <%= link_to(
                 @name.placement ?
@@ -75,16 +80,60 @@
       </dd>
     <% end %>
 
-    <% if @name.assigned_by %>
-      <dt><%= fa_icon('arrow-alt-circle-up') %> Assigned by</dt>
+
+    <% if @name.alt_placements.any? ||
+          (@name.can_edit?(current_user) && @name.parent) %>
+      <dt><%= fa_icon('level-up-alt') %> Alternative placements</dt>
       <dd>
-        <%= link_to(@name.assigned_by.short_citation, @name.assigned_by) %>
+        <% if @name.alt_placements.any? %>
+          <ul>
+            <% @name.alt_placements.each do |placement| %>
+              <li>
+                <%= link_to_name(placement.parent) %>
+                <% if placement.publication %>
+                  assigned by
+                  <%= link_to(
+                        placement.publication.short_citation,
+                        placement.publication) %>
+                <% end %>
+                <% if @name.can_edit?(current_user) %>
+                  <%= link_to(
+                        edit_placement_path(placement),
+                        class: 'badge badge-pill badge-info',
+                        title: 'edit parent'
+                      ) do %>
+                    <%= fa_icon('edit') %> Edit
+                  <% end %>
+                  <%= link_to(
+                        destroy_placement_path(placement),
+                        method: :delete,
+                        class: 'badge badge-pill badge-info',
+                        title: 'unlink placement'
+                      ) do %>
+                    <%= fa_icon('unlink') %> Unlink
+                  <% end %>
+                  <% if current_curator? %>
+                    <%= link_to(
+                          prefer_placement_path(placement),
+                          method: :post,
+                          class: 'badge badge-pill badge-info',
+                          title: 'prefer placement'
+                        ) do %>
+                      <%= fa_icon('star') %> Prefer
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
         <% if @name.can_edit?(current_user) %>
-          <%= link_to assigned_by_name_url(@name, @name.assigned_by, not: true),
-                method: :post, class: 'badge badge-pill badge-info',
-                title: 'Did not assign this name taxonomically',
-                data: { confirm: 'Are you sure?' } do %>
-            <%= fa_icon('unlink') %> Unlink
+          <%= link_to(
+                new_placement_path(@name, alt: true),
+                class: 'badge badge-pill badge-info',
+                title: 'add placement'
+              ) do %>
+            <%= fa_icon('plus-square') %> Report alternative placement
           <% end %>
         <% end %>
       </dd>

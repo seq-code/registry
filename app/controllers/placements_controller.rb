@@ -1,5 +1,5 @@
 class PlacementsController < ApplicationController
-  before_action(:set_placement, only: %i[edit update destroy])
+  before_action(:set_placement, only: %i[edit update destroy prefer])
   before_action(:set_name)
   before_action(:authenticate_can_edit!)
 
@@ -8,6 +8,16 @@ class PlacementsController < ApplicationController
     @placement = Placement.new(name_id: params[:name_id])
     @name = @placement.name or
       redirect_to(root_url, warning: 'Cannot create orphan placements')
+
+    if params[:alt] && !@name.placement
+      Placement.new(
+        name: @name, preferred: true, parent: @name.parent,
+        publication: @name.assigned_by,
+        incertae_sedis: @name.incertae_sedis,
+        incertae_sedis_text: @name.incertae_sedis_text
+      ).save!
+    end
+
     unless @name.placement
       @placement.parent = @name.parent
       @placement.publication = @name.assigned_by
@@ -85,16 +95,13 @@ class PlacementsController < ApplicationController
     if ok
       Placement.transaction do
         @placement.save!
-        @name.placements
-          .where(preferred: false)
-          .where.not(id: @placement.id)
-          .map { |p| p.update!(preferred: false) }
-        @placement.update!(preferred: true)
+        if @placement.publication &&
+             !@name.publications.include?(@placement.publication)
+          @name.publications << @placement.publication
+        end
         if @placement.preferred
-          if @placement.publication &&
-               !@name.publications.include?(@placement.publication)
-            @name.publications << @placement.publication
-          end
+          @name.placement.try(:update!, preferred: false)
+          @placement.update!(preferred: true)
           @name.update!(
             parent: @placement.parent, assigned_by: @placement.publication,
             incertae_sedis: nil, incertae_sedis_text: nil
@@ -110,6 +117,31 @@ class PlacementsController < ApplicationController
     else
       render(back_action, status: :unprocessable_entity)
     end
+  end
+
+  # POST /placements/1/prefer
+  def prefer
+    ok = false
+    Placement.transaction do
+      @name.placement.try(:update!, preferred: false)
+      @placement.update!(preferred: true)
+      @name.update!(
+        parent: @placement.parent, assigned_by: @placement.publication,
+        incertae_sedis: nil, incertae_sedis_text: nil
+      )
+      ok = true
+    end
+
+    if ok
+      flash[:notice] = 'Preferred placement updated'
+    elsif @placement.errors.any?
+      flash[:warning] = 'Placement preference could not be updated: ' +
+        @placement.errors.map { |k, v| "#{k} #{v}" }.join('; ')
+    else
+      flash[:warning] = 'Placement preference could not be updated'
+    end
+
+    redirect_to(@name)
   end
 
   # DELETE /placements/1
