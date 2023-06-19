@@ -292,6 +292,7 @@ class NamesController < ApplicationController
     @publication =
       params[:not] ? nil : Publication.where(id: params[:publication_id]).first
     @name.update(assigned_by: @publication)
+    @name.placement.try(:update, publication: @publication)
     redirect_back(fallback_location: @name)
   end
 

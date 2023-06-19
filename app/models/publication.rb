@@ -27,6 +27,7 @@ class Publication < ApplicationRecord
     foreign_key: 'assigned_by', inverse_of: :assigned_by,
     dependent: :nullify
   )
+  has_many(:placements, dependent: :nullify)
 
   class << self
 
@@ -36,11 +37,13 @@ class Publication < ApplicationRecord
       end
       p = Publication.find_by(doi: doi)
       return p if p && !force_update
+
       begin
         works = Serrano.works(ids: doi)
       rescue Serrano::NotFound
         return Publication.new.tap { |i| i.errors.add(:doi, 'not in CrossRef') }
       end
+
       work = works[0].fetch('message', {})
       by_serrano_work(work) if work['DOI']
     end
@@ -163,6 +166,10 @@ class Publication < ApplicationRecord
 
   def link
     "https://doi.org/#{doi}"
+  end
+
+  def doi_title
+    "#{doi}: #{title}"
   end
 
   def include_term?(term)

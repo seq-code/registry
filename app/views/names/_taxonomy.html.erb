@@ -45,7 +45,7 @@
         <% if @name.incertae_sedis? %>
           <div class="border-left px-3">
             <b><%= @name.incertae_sedis_html %>:</b>
-            <%= @name.incertae_sedis_text %>
+            <%= @name.incertae_sedis_explain %>
           </div>
         <% elsif @name.parent %>
           <%= link_to_name(@name.parent) %>
@@ -53,11 +53,23 @@
 
         <% if @name.can_edit?(current_user) %>
           <%= link_to(
-                link_parent_name_path(@name),
+                @name.placement ?
+                  edit_placement_path(@name.placement) :
+                  new_placement_path(@name),
                 class: 'badge badge-pill badge-info',
                 title: 'edit parent'
               ) do %>
-            <%= fa_icon 'edit' %> Edit
+            <%= fa_icon('edit') %> Edit
+          <% end %>
+          <% if @name.placement %>
+            <%= link_to(
+                  destroy_placement_path(@name.placement),
+                  method: :delete,
+                  class: 'badge badge-pill badge-info',
+                  title: 'unlink placement'
+                ) do %>
+              <%= fa_icon('unlink') %> Unlink
+            <% end %>
           <% end %>
         <% end %>
       </dd>

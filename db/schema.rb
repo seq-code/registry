@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_16_163616) do
+ActiveRecord::Schema.define(version: 2023_06_18_220352) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -190,6 +190,18 @@ ActiveRecord::Schema.define(version: 2023_06_16_163616) do
     t.index ["tutorial_id"], name: "index_names_on_tutorial_id"
   end
 
+  create_table "placements", force: :cascade do |t|
+    t.integer "name_id", null: false
+    t.integer "parent_id"
+    t.integer "publication_id"
+    t.boolean "preferred", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "incertae_sedis"
+    t.index ["name_id"], name: "index_placements_on_name_id"
+    t.index ["publication_id"], name: "index_placements_on_publication_id"
+  end
+
   create_table "publication_authors", force: :cascade do |t|
     t.integer "publication_id"
     t.integer "author_id"
@@ -344,6 +356,8 @@ ActiveRecord::Schema.define(version: 2023_06_16_163616) do
   add_foreign_key "names", "genomes"
   add_foreign_key "names", "registers"
   add_foreign_key "names", "tutorials"
+  add_foreign_key "placements", "names"
+  add_foreign_key "placements", "publications"
   add_foreign_key "register_correspondences", "registers"
   add_foreign_key "register_correspondences", "users"
   add_foreign_key "registers", "publications"

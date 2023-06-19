@@ -12,6 +12,12 @@ class Name < ApplicationRecord
   alias :correspondences :name_correspondences
   has_many(:checks, dependent: :destroy)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
+  has_many(:placements, dependent: :destroy)
+  has_many(
+    :child_placements, class_name: 'Name', foreign_key: 'parent_id',
+    dependent: :destroy
+  )
+
   belongs_to(
     :proposed_by, optional: true,
     class_name: 'Publication', foreign_key: 'proposed_by'
@@ -56,7 +62,7 @@ class Name < ApplicationRecord
   has_rich_text(:description)
   has_rich_text(:notes)
   has_rich_text(:etymology_text)
-  has_rich_text(:incertae_sedis_text)
+  has_rich_text(:incertae_sedis_text) # deprecated, but values still in DB
 
   validates(:name, presence: true, uniqueness: true)
   validates(
@@ -66,7 +72,6 @@ class Name < ApplicationRecord
       message: 'Only letters, dashes, dots, and apostrophe are allowed'
     }
   )
-  validates(:incertae_sedis_text, presence: true, if: :incertae_sedis?)
   validates(
     :incertae_sedis, absence: {
       if: :parent,
@@ -739,9 +744,33 @@ class Name < ApplicationRecord
     end
   end
 
+  def incertae_sedis_explain
+    (placement || self).incertae_sedis_text
+  end
+
+  def incertae_sedis
+    placement ? placement.incertae_sedis : self[:incertae_sedis]
+  end
+
+  def incertae_sedis?
+    incertae_sedis.present?
+  end
+
   def taxonomic_data?
     description? || notes? || parent || incertae_sedis? ||
       !children.empty? || taxonomic_status?
+  end
+
+  def alt_placements
+    @alt_placements ||= placements.where(preferred: false)
+  end
+
+  def alt_child_placements
+    @alt_child_placements ||= child_placements.where(preferred: false)
+  end
+
+  def placement
+    @placement ||= placements.where(preferred: true).first
   end
 
   # ============ --- GENOMICS --- ============
@@ -772,7 +801,7 @@ class Name < ApplicationRecord
   end
 
   def priority_date
-    @priority_date ||= attribute(:priority_date)
+    @priority_date ||= self[:priority_date]
     if !@priority_date && seqcode?
       if above_rank?(:family)
         @priority_date = type_name.try(:priority_date)

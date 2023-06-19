@@ -1,6 +1,12 @@
 class PublicationsController < ApplicationController
-  before_action :set_publication, only: [:show, :edit, :update, :destroy, :link_names, :link_names_commit]
-  before_action :authenticate_contributor!, only: [:new, :edit, :create, :update, :destroy, :link_names, :link_names_commit]
+  before_action(
+    :set_publication,
+    only: %i[show edit update destroy link_names link_names_commit]
+  )
+  before_action(
+    :authenticate_contributor!,
+    only: %i[new edit create update destroy link_names link_names_commit]
+  )
 
   # GET /publications
   # GET /publications.json
@@ -60,7 +66,9 @@ class PublicationsController < ApplicationController
           )
         when 'assign'
           @name.update(assigned_by: @publication)
-          redirect_to(@name, notice: 'Taxonomic assignment publication registered')
+          redirect_to(
+            @name, notice: 'Taxonomic assignment publication registered'
+          )
         when 'emend'
           pn.update(emends: true)
           redirect_to(@name, notice: 'Emending publication registered')
@@ -97,6 +105,14 @@ class PublicationsController < ApplicationController
     end
   end
 
+  # GET /autocomplete_publications.json?q=List
+  def autocomplete
+    publication = params[:q].downcase
+    @publications =
+      Publication.where('LOWER(title) LIKE ?', "%#{publication}%")
+          .or(Publication.where('LOWER(doi) LIKE ?', publication))
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_publication
@@ -106,6 +122,10 @@ class PublicationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def publication_params
-      params.require(:publication).permit(:title, :journal, :journal_loc, :journal_date, :doi, :url, :pub_type, :crossref_json, :abstract)
+      params.require(:publication)
+        .permit(*%i[
+          title journal journal_loc journal_date doi url pub_type
+          crossref_json abstract
+        ])
     end
 end

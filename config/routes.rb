@@ -64,6 +64,13 @@ Rails.application.routes.draw do
   post 'names/:id/claim' => 'names#claim', as: :claim_name
   post 'names/:id/unclaim' => 'names#unclaim', as: :unclaim_name
   post 'names/:id/new_correspondence' => 'names#new_correspondence', as: :new_correspondence_name
+
+  get  'placements/new/:name_id' => 'placements#new', as: :new_placement
+  post 'placements'     => 'placements#create', as: :create_placement
+  get  'placements/:id' => 'placements#edit', as: :edit_placement
+  post 'placements/:id' => 'placements#update', as: :update_placement
+  delete 'placements/:id' => 'placements#destroy', as: :destroy_placement
+
   post 'registers/:accession/submit' => 'registers#submit', as: :submit_register
   get  'registers/:accession/return' => 'registers#return', as: :return_register
   post 'registers/:accession/return' => 'registers#return_commit', as: :post_return_register
@@ -76,9 +83,10 @@ Rails.application.routes.draw do
   post 'registers/:accession/validate' => 'registers#validate', as: :validate_register
   post 'registers/:accession/publish' => 'registers#publish', as: :publish_register
   post 'registers/:accession/new_correspondence' => 'registers#new_correspondence', as: :new_correspondence_register
-  resources :publications
-  resources :subjects
+  resources(:publications)
+  resources(:subjects)
 
   # Helpers
   get  'autocomplete_names.json' => 'names#autocomplete', as: :autocomplete_names
+  get  'autocomplete_publications.json' => 'publications#autocomplete', as: :autocomplete_publications
 end
