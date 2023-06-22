@@ -31,7 +31,7 @@
     <dd>
       <%= link_to(@name.corrigendum_by.short_citation, @name.corrigendum_by) %>
       <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
-        from &#8220;<%= @name.corrigendum_from %>&#8221;
+        from &#8220;<%= @name.corrigendum_from %>&#8221; (sic)
       <% end %>
       <% if @name.can_edit?(current_user) %>
         <%= link_to corrigendum_by_name_url(@name, @name.corrigendum_by),
