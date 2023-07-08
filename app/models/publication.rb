@@ -135,6 +135,10 @@ class Publication < ApplicationRecord
     end
   end
 
+  def authors_et_al_html
+    ERB::Util.h(authors_et_al)
+  end
+
   def clean_abstract
     abstract.gsub(/<([^>]+>|script[^>]+>?)/, '') if abstract
   end
@@ -147,13 +151,22 @@ class Publication < ApplicationRecord
     "#{short_citation}, #{journal || pub_type.tr('-', ' ')}"
   end
 
+  def journal_html
+    ERB::Util.h(journal || pub_type.tr('-', ' '))
+  end
+
   def long_citation_html
     <<~HTML.html_safe
-      #{ERB::Util.h(authors_et_al)} (#{journal_date.year}).
-      #{ERB::Util.h(title).gsub(/\.$/, '')}. 
-      <i>#{ERB::Util.h(journal || pub_type.tr('-', ' '))}</i>. 
-      <a href="#{link}" target="_blank">DOI:#{doi}</a>
+      #{authors_et_al_html} (#{journal_date.year}). #{title_html}. 
+      <i>#{journal_html}</i>. <a href="#{link}" target="_blank">DOI:#{doi}</a>
     HTML
+  end
+
+  def title_html
+    ERB::Util.h(title)
+      .gsub(/&lt;(\/?(?:i|em))&gt;/, '<\1>')
+      .gsub(/\.$/, '')
+      .html_safe
   end
 
   def emended_names

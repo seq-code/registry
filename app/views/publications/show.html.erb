@@ -1,7 +1,7 @@
 <% provide(:title, @publication.title) %>
 <%= download_buttons(
       [[publication_url(@publication, format: :json), 'file-code', 'JSON']]) %>
-<h1><%= @publication.title %></h1>
+<h1><%= @publication.title_html %></h1>
 <hr/>
 
 <dl class='main-section'>

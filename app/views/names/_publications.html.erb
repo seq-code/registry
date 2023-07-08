@@ -20,7 +20,7 @@
         <% publication = publication_name.publication %>
         <tr>
           <td><%= link_to(publication.citation, publication) %></td>
-          <td><%= publication.title %></td>
+          <td><%= publication.title_html %></td>
           <td>
             <% if @name.proposed_by? publication %>
               <div class="badge"><%= fa_icon('star') %> Proposed this name</div>
