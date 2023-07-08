@@ -54,7 +54,12 @@ module Tutorial::Lineage
         return false
       end
 
-      names.where.not(id: name.id).update!(tutorial_id: nil)
+      # TODO
+      # Revise the implications of the following two lines (or their removal)
+      # Can this affect previously-registered names?
+      # E.g., names in a separate tutorial?
+      other_names = names.where.not(id: name.id)
+      other_names.update!(tutorial_id: nil) unless other_names.empty?
       name.update!(tutorial_id: id)
       update!(
         step: step + 1,
