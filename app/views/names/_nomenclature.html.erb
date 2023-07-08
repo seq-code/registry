@@ -60,7 +60,7 @@
 
   <% if @name.nomenclatural_status? || @name.seqcode? %>
     <dt><%= fa_icon('clipboard-check') %> Nomenclatural status</dt>
-    <dd><%= @name.nomenclatural_status.upcase_first ||
+    <dd><%= @name.nomenclatural_status&.upcase_first ||
               'Validly published under the SeqCode' %></dd>
   <% end %>
 </dl>
