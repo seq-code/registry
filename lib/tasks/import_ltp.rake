@@ -1,5 +1,5 @@
 
-namespace :icnp do
+namespace :ltp do
   desc 'Imports ICNP names from an LTP-formatted TSV'
   task :import, [:tsv] => :environment do |t, args|
     def usage(t)
