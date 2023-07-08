@@ -48,6 +48,10 @@ namespace :lpsn do
 
       # Save data
       name = Name.find_or_create_by(name: pars[:name])
+      if name.status > 5 && name.status < 20
+        warn "- Name in SeqCode, bypassing: #{name.name}"
+        next
+      end
       name.update!(pars)
       parsed_names[row['record_no']] = {
         name: name, parent: parent, correct_name: row['record_lnk'],
