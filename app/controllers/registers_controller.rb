@@ -5,6 +5,7 @@ class RegistersController < ApplicationController
       show table list cite edit update destroy
       submit return return_commit approve notification notify
       validate publish new_correspondence
+      nomenclature_review genomics_review
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -13,7 +14,10 @@ class RegistersController < ApplicationController
     :authenticate_contributor!, only: %i[new create edit update destroy]
   )
   before_action(
-    :authenticate_curator!, only: %i[return return_commit approve validate]
+    :authenticate_curator!,
+    only: %i[
+      return return_commit approve validate nomenclature_review genomics_review
+    ]
   )
   before_action(
     :authenticate_editor!, only: %i[publish]
@@ -316,6 +320,20 @@ class RegistersController < ApplicationController
       end
     end
     redirect_to @register
+  end
+
+  # POST /registers/r:abc/nomenclature_review
+  def nomenclature_review
+    @register.update_column(
+      :nomenclature_review, !@register.nomenclature_review
+    )
+    redirect_back(fallback_location: @register)
+  end
+
+  # POST /registers/r:abc/genomics_review
+  def genomics_review
+    @register.update_column(:genomics_review, !@register.genomics_review)
+    redirect_back(fallback_location: @register)
   end
 
   private

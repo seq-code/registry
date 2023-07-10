@@ -11,12 +11,32 @@
         <% @pending_registers.each do |r| %>
           <li class="">
             <%= link_to(r.acc_url, r) %>:
+            [<%= time_ago_in_words(r.updated_at) %> ago]
+            <br/>
             <% if r.title? %>
               <%= r.title %>
             <% else %>
               <span class="text-muted"><%= r.propose_title %></span>
             <% end %>
-            [<%= time_ago_in_words(r.updated_at) %> ago]
+            <br/>
+            <%= link_to(nomenclature_review_register_path(r),
+                        method: :post, class: 'btn') do %>
+              <% if r.nomenclature_review? %>
+                <%= fa_icon('check-square', type: 'far') %>
+              <% else %>
+                <%= fa_icon('square', type: 'far') %>
+              <% end %>
+              Nomenclature review
+            <% end %>
+            <%= link_to(genomics_review_register_path(r),
+                        method: :post, class: 'btn') do %>
+              <% if r.genomics_review? %>
+                <%= fa_icon('check-square', type: 'far') %>
+              <% else %>
+                <%= fa_icon('square', type: 'far') %>
+              <% end %>
+              Genomics Review
+            <% end %>
           </li>
         <% end %>
       </ol>
