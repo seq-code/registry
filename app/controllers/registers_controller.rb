@@ -5,7 +5,7 @@ class RegistersController < ApplicationController
       show table list cite edit update destroy
       submit return return_commit approve notification notify
       validate publish new_correspondence
-      nomenclature_review genomics_review
+      internal_notes nomenclature_review genomics_review
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -16,7 +16,8 @@ class RegistersController < ApplicationController
   before_action(
     :authenticate_curator!,
     only: %i[
-      return return_commit approve validate nomenclature_review genomics_review
+      return return_commit approve validate
+      internal_notes nomenclature_review genomics_review
     ]
   )
   before_action(
@@ -320,6 +321,14 @@ class RegistersController < ApplicationController
       end
     end
     redirect_to @register
+  end
+
+  # POST /registers/r:abc/internal_notes
+  def internal_notes
+    @register.update_column(
+      :internal_notes, params[:register][:internal_notes]
+    )
+    redirect_back(fallback_location: @register)
   end
 
   # POST /registers/r:abc/nomenclature_review

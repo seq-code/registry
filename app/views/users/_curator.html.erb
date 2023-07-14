@@ -3,46 +3,9 @@
     <h1>Curator Dashboard</h1>
   </div>
   <div class="card-body">
-    <h2>Pending submissions</h2>
-    <% if @pending_registers.empty? %>
-      None pending
-    <% else %>
-      <ol class="flex-column">
-        <% @pending_registers.each do |r| %>
-          <li class="">
-            <%= link_to(r.acc_url, r) %>:
-            [<%= time_ago_in_words(r.updated_at) %> ago]
-            <br/>
-            <% if r.title? %>
-              <%= r.title %>
-            <% else %>
-              <span class="text-muted"><%= r.propose_title %></span>
-            <% end %>
-            <br/>
-            <%= link_to(nomenclature_review_register_path(r),
-                        method: :post, class: 'btn') do %>
-              <% if r.nomenclature_review? %>
-                <%= fa_icon('check-square', type: 'far') %>
-              <% else %>
-                <%= fa_icon('square', type: 'far') %>
-              <% end %>
-              Nomenclature review
-            <% end %>
-            <%= link_to(genomics_review_register_path(r),
-                        method: :post, class: 'btn') do %>
-              <% if r.genomics_review? %>
-                <%= fa_icon('check-square', type: 'far') %>
-              <% else %>
-                <%= fa_icon('square', type: 'far') %>
-              <% end %>
-              Genomics Review
-            <% end %>
-          </li>
-        <% end %>
-      </ol>
-    <% end %>
+    <%= render(partial: 'pending_registers') %>
     <ul class="nav flex-column">
-      <li class="nav-item mt-3"><h4>Review Register Lists</h4></li>
+      <li class="nav-item mt-3"><h2>Review Register Lists</h2></li>
       <li class="nav-item">
         <%= link_to(registers_path(status: :notified)) do %>
           <%= fa_icon('check-circle') %>
@@ -59,7 +22,7 @@
           <%= fa_icon('pencil-ruler') %> Draft lists
         <% end %>
       </li>
-      <li class="nav-item mt-3"><h4>Review Names</h4></li>
+      <li class="nav-item mt-3"><h2>Review Names</h2></li>
       <li class="nav-item">
         <%= link_to(submitted_names_path) do %>
           <%= fa_icon('check-circle') %>
@@ -73,7 +36,7 @@
         <% end %>
       </li>
 
-      <li class="nav-item mt-3"><h4>Other Tasks</h4></li>
+      <li class="nav-item mt-3"><h2>Other Tasks</h2></li>
       <li class="nav-item">
         <%= link_to(check_ranks_path) do %>
           <%= fa_icon('check-circle') %>

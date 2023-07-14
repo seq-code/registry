@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   post 'registers/:accession/validate' => 'registers#validate', as: :validate_register
   post 'registers/:accession/publish' => 'registers#publish', as: :publish_register
   post 'registers/:accession/new_correspondence' => 'registers#new_correspondence', as: :new_correspondence_register
+  patch 'registers/:accession/internal_notes' => 'registers#internal_notes', as: :internal_notes_register
   post 'registers/:accession/nomenclature_review' => 'registers#nomenclature_review', as: :nomenclature_review_register
   post 'registers/:accession/genomics_review' => 'registers#genomics_review', as: :genomics_review_register
   resources(:publications)

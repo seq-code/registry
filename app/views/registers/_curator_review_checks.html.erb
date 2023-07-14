@@ -1,0 +1,15 @@
+<% register ||= @register %>
+<% %i[nomenclature genomics].each do |what| %>
+  <% rev = register.send("#{what}_review?") %>
+  <%= link_to(
+        send("#{what}_review_register_path", register),
+        method: :post, class: "btn text-#{rev ? 'success' : 'secondary'}"
+      ) do %>
+    <% if rev %>
+      <%= fa_icon('check-square', type: 'far') %>
+    <% else %>
+      <%= fa_icon('square', type: 'far') %>
+    <% end %>
+    <%= what.to_s.capitalize %> review
+  <% end %>
+<% end %>

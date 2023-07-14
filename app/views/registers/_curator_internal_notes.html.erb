@@ -1,0 +1,15 @@
+<% register ||= @register %>
+<%= simple_form_for(register,
+                    url: internal_notes_register_path(register)) do |f| %>
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Internal<br/>Notes</span>
+    </div>
+    <textarea class="form-control text optional"
+      name="register[internal_notes]"
+      id="register_internal_notes"><%= register.internal_notes %></textarea>
+    <div class="input-group-append">
+      <%= f.submit('Save', class: 'btn btn-outline-secondary') %>
+    </div>
+  </div>
+<% end %>
