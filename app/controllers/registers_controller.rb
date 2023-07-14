@@ -372,20 +372,20 @@ class RegistersController < ApplicationController
     end
 
     def authenticate_can_view!
-      unless @register.can_view?(current_user)
+      unless @register&.can_view?(current_user)
         flash[:alert] = 'User cannot access register list'
         redirect_to(root_path)
       end
     end
 
     def authenticate_can_edit!
-      unless @register.can_edit?(current_user)
+      unless @register&.can_edit?(current_user)
         flash[:alert] = 'User cannot edit register list'
         redirect_to(root_path)
       end
     end
 
     def ensure_valid!
-      @register.validated?
+      @register&.validated?
     end
 end
