@@ -1,4 +1,13 @@
 module Name::Inferences
+  def stem
+    @stem ||=
+      if inferred_rank == 'genus'
+        genus_root(base_name)
+      elsif type_is_name?
+        type_name.stem
+      end
+  end
+
   def genus_root(base)
     case base # Genus name
     when /aeum$/

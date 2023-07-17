@@ -63,4 +63,18 @@
     <dd><%= @name.nomenclatural_status&.upcase_first ||
               'Validly published under the SeqCode' %></dd>
   <% end %>
+
+  <% if @name.stem %>
+    <dt><%= fa_icon('wave-square') %> Inferred stem</dt>
+    <dd>
+      <%= @name.stem %>-
+      <% if @name.above_rank?('family') &&
+            @name.base_name != "#{@name.stem}#{@name.rank_suffix}" %>
+        <span class="text-muted">
+          (unexpected name formation,
+          expected: <i><%= "#{@name.stem}#{@name.rank_suffix}" %></i>)
+        </span>
+      <% end %>
+    </dd>
+  <% end %>
 </dl>
