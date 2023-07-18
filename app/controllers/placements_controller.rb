@@ -23,6 +23,7 @@ class PlacementsController < ApplicationController
       @placement.publication = @name.assigned_by
       @placement.incertae_sedis = @name.incertae_sedis
       @placement.incertae_sedis_text = @name.incertae_sedis_text
+      @placement.preferred = true
     end
   end
 
@@ -100,8 +101,10 @@ class PlacementsController < ApplicationController
           @name.publications << @placement.publication
         end
         if @placement.preferred
-          @name.placement.try(:update!, preferred: false)
-          @placement.update!(preferred: true)
+          old_placement = @name.placement
+          if old_placement && @placement.id && old_placement.id != @placement.id
+            old_placement.update!(preferred: false)
+          end
           @name.update!(
             parent: @placement.parent, assigned_by: @placement.publication,
             incertae_sedis: nil, incertae_sedis_text: nil
