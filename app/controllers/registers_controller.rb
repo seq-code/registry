@@ -34,6 +34,7 @@ class RegistersController < ApplicationController
 
   # GET /registers or /registers.json
   def index(status = :validated)
+    @extra_title = ''
     @crumbs = ['Register Lists']
     @status = params[:status]
     @status ||= status
@@ -42,7 +43,14 @@ class RegistersController < ApplicationController
       case @status.to_sym
       when :user
         authenticate_contributor! && return
-        current_user.registers
+        if params[:user]
+          authenticate_curator! && return
+          user = User.find_by(username: params[:user])
+          @extra_title = "by #{user.display_name}"
+          user.registers
+        else
+          current_user.registers
+        end
       when :draft
         authenticate_curator! && return
         Register.where(validated: false, notified: false, submitted: false)

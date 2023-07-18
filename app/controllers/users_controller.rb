@@ -22,6 +22,8 @@ class UsersController < ApplicationController
 
   def show
     @names = Name.where(created_by: @user)
+    @registers = Register.where(user: @user)
+    @tutorials = Tutorial.where(user: @user)
   end
 
   def dashboard

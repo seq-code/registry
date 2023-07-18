@@ -12,27 +12,39 @@
     <ul>
       <li>
         <%= link_to(
-              pluralize(@names.count, 'Registered name'),
+              pluralize(@names.count, 'registered name'),
               user_names_url(user: @user)
             ) %>
-       </li>
-       <li>
-         <% if @user.last_sign_in_at? %>
-           Last signed in <%= time_ago_in_words(@user.last_sign_in_at) %> ago
-         <% else %>
-           Never signed in
-         <% end %>
-       </li>
-       <li>
-         <b>Status:</b>
-         <% if !@user.confirmed? %>
-           Unconfirmed email
-         <% elsif @user.locked_at? %>
-           Locked
-         <% else %>
-           Active
-         <% end %>
-       </li>
+      </li>
+      <li>
+        <%= link_to(
+              pluralize(@registers.count, 'register list'),
+              registers_url(status: :user, user: @user)
+            ) %>
+      </li>
+      <li>
+        <%= link_to(
+              pluralize(@tutorials.count, 'guided registration'),
+              tutorials_url(user: @user)
+            ) %>
+      </li>
+      <li>
+        <% if @user.last_sign_in_at? %>
+          Last signed in <%= time_ago_in_words(@user.last_sign_in_at) %> ago
+        <% else %>
+          Never signed in
+        <% end %>
+      </li>
+      <li>
+        <b>Status:</b>
+        <% if !@user.confirmed? %>
+          Unconfirmed email
+        <% elsif @user.locked_at? %>
+          Locked
+        <% else %>
+          Active
+        <% end %>
+      </li>
     </ul>
 
     <% if @user.contributor_statement? %>

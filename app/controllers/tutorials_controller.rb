@@ -5,7 +5,17 @@ class TutorialsController < ApplicationController
 
   # GET /tutorials
   def index
-    @tutorials = current_user.tutorials.order(created_at: :desc)
+    @extra_title = ''
+    @tutorials =
+      if params[:user]
+        authenticate_curator! && return
+        user = User.find_by(username: params[:user])
+        @extra_title = "by #{user.display_name}"
+        user.tutorials
+      else
+        current_user.tutorials
+      end
+        .order(created_at: :desc)
   end
 
   # GET /tutorials/1
