@@ -1,0 +1,216 @@
+<% @genome ||= @name.genome %>
+
+<% @auto_modal = modal('Automated Estimates') do %>
+  This genome was automatically retrieved and processed using MiGA
+  (The Microbial Genomes Atlas) <sup>[1]</sup>, and the estimate has not been
+  overridden by the submitter.
+  <hr/>
+  <ol class="text-muted">
+    <li>
+      Rodriguez-R et al, 2018, NAR.
+      <%= link_to('DOI: 10.1093/nar/gky467',
+            'https://doi.org/10.1093/nar/gky467', target: '_blank') %>
+    </li>
+  </ol>
+<% end %>
+
+<%
+def report_value(value)
+  if !value.is_a? Numeric
+    value
+  elsif value.abs < 1.0 && !value.zero?
+    ('%.2g' % value).to_f
+  else
+    number_with_delimiter(value.round(2))
+  end
+end
+
+def report_any(field, units = nil)
+  "#{report_value(@genome.send("#{field}_any"))}#{units}"
+end
+
+def report_auto(field, units = nil)
+  return unless @genome.send(:"#{field}_any?")
+
+  if @genome.send(:"#{field}?")
+    if @genome.can_edit?(current_user) && @genome.send(:"#{field}_auto?")
+      content_tag(:span, class: 'text-info small') do
+        value = report_value(@genome.send(:"#{field}_auto"))
+        "(automated estimate: #{value}#{units})"
+      end
+    end
+  else
+    modal_button(@auto_modal, class: 'ml-1 small', title: 'Automated estimate') do
+      fa_icon('robot', class: 'hover-help small')
+    end
+  end
+end
+%>
+
+<% if @genome.present? %>
+  <dl name="genomics" class="main-section name-details">
+    <h2>Genomics</h2>
+
+    <% if @genome.multiple_names? %>
+      <div class="alert alert-danger">
+        This genome has been associated as type material for multiple names:
+        <ul>
+          <% @genome.names.each do |name| %>
+            <li><%= link_to(name) { %><%= name.name_html %><% } %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <dt><%= fa_icon('dna') %> Accession</dt>
+    <dd>
+      <%= link_to(@genome.link, target: '_blank') do %>
+        <%= @genome.text %>
+        <%= fa_icon('external-link-alt', class: 'ml-1') %>
+      <% end %>
+      <% if current_curator? %>
+        <br/>
+        <% miga_url = 'https://disc-genomics.uibk.ac.at/miga/projects/3/reference_datasets/genome_%i' % @genome.id %>
+        <%= link_to(miga_url, target: '_blank') do %>
+          View in MiGA (only visible to curators, requires separate login)
+          <%= fa_icon('external-link-alt', class: 'ml-1') %>
+        <% end %>
+      <% end %>
+    </dd>
+
+    <% if @genome.kind.present? %>
+      <dt><%= fa_icon('microscope') %> Type</dt>
+      <dd><%= @genome.kind_name %></dd>
+    <% end %>
+
+    <% if @genome.completeness_any.present? || @genome.contamination_any.present? %>
+      <dt><%= fa_icon('star-half-alt') %> Estimated Quality Metrics</dt>
+      <dd>
+        <ul>
+          <%
+            fields = {
+              completeness: ['Completeness', '%'],
+              contamination: ['Contamination', '%'],
+              quality: ['Quality', '']
+            }
+          %>
+          <% fields.each do |field, v| %>
+            <% if @genome.send("#{field}_any?") %>
+              <li>
+                <b><%= v[0] %>:</b>
+                <%= report_any(field, v[1]) %> <%= report_auto(field, v[1]) %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @genome.rrnas_or_trnas? %>
+      <dt><%= fa_icon('splotch') %> Ribosomal and transfer RNA genes</dt>
+      <dd>
+        <ul>
+          <% if @genome.number_of_16s_any.present? %>
+            <li>
+              <%= pluralize(@genome.number_of_16s_any, '16S rRNA') %>
+              <%= @genome.number_of_16s_any.zero? ? '' :
+                    @genome.most_complete_16s_any.present? ?
+                    "(up to #{@genome.most_complete_16s_any}%)" :
+                    '(unknown length)'  %>
+              <%= report_auto(:number_of_16s) %>
+            </li>
+          <% end %>
+          <% if @genome.number_of_23s_any.present? %>
+            <li>
+              <%= pluralize(@genome.number_of_23s_any, '23S rRNA') %>
+              <%= @genome.number_of_23s_any.zero? ? '' :
+                    @genome.most_complete_23s_any.present? ?
+                    "(up to #{@genome.most_complete_23s_any}%)" :
+                    '(unknown length)'  %>
+              <%= report_auto(:number_of_23s) %>
+            </li>
+          <% end %>
+          <% if @genome.number_of_trnas_any.present? %>
+            <li>
+              tRNAs for
+              <%= pluralize(@genome.number_of_trnas_any, 'amino acid') %>
+              <%= report_auto(:number_of_trnas) %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @genome.seq_depth.present? %>
+      <dt><%= fa_icon('align-center') %> Sequencing depth</dt>
+      <dd><%= @genome.seq_depth %> &times;</dd>
+    <% end %>
+
+    <% if @genome.source? %>
+      <dt><%= fa_icon('flask') %> Source</dt>
+      <dd>
+        <ul>
+          <% @genome.source_links.each do |link| %>
+            <li>
+              <%= link_to(link[0], target: '_blank', title: link[2]) do %>
+                <%= link[1] %> <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @genome.gc_content_any? || @genome.auto_check %>
+      <dt><%= fa_icon('table') %> Other features</dt>
+      <dd>
+        <ul>
+          <%
+            fields = {
+              gc_content: ['G+C Content', '%'],
+              coding_density: ['Coding Density', '%'],
+              codon_table: ['Codon Table', ''],
+              n50: ['N50', ' bp'],
+              contigs: ['Contigs', ''],
+              assembly_length: ['Assembly Length', ' bp'],
+              ambiguous_fraction: ['Ambiguous Assembly Fraction', '%']
+            }
+          %>
+          <% fields.each do |k, v| %>
+            <% if @genome.send("#{k}_any?") %>
+              <li>
+                <b><%= v[0] %>:</b>
+                <%= report_any(k, v[1]) %>
+                <%= report_auto(k, v[1]) %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @genome.submitter_comments? %>
+      <dt><%= fa_icon('comment-alt') %> Submitter comments</dt>
+      <dd><%= @genome.submitter_comments %></dd>
+    <% end %>
+
+    <dt><%= fa_icon('robot') %> Automated checks</dt>
+    <dd><%=
+      @genome.auto_check ? 'Complete' :
+        !@genome.kind? ? 'Missing information' :
+        @genome.auto_failed.present? ? "Failed: #{@genome.auto_failed}" :
+        'Scheduled'
+    %></dd>
+
+    <% if @name.can_edit?(current_user) %>
+      <dd class="mt-4">
+        <%= link_to(
+              edit_genome_path(@genome, name: @name.id),
+              class: 'btn btn-info'
+            ) do %>
+          <%= fa_icon('edit') %> Edit genome data
+        <% end %>
+      </dd>
+    <% end %>
+  </dl>
+<% end %>

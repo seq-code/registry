@@ -474,7 +474,7 @@ module Name::QualityChecks
       # - Recommendation 26 [Checklist-N]
       missing_description_in_publication: {
         checklist: :nomenclature,
-        message: 'A clear description and/or protologue should be available' \
+        message: 'A clear description and/or protologue should be available ' \
                  'in the effective publication',
         recommendations: %w[26]
       },

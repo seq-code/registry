@@ -6,7 +6,11 @@ module NamesHelper
       else
         content_tag(:span, "Illegal name: #{name.type_accession}", class: 'text-danger')
       end
+    elsif name.type_genome
+      link_to(name.type_genome.text, name.type_genome)
     elsif name.type_link
+      # This section is currently not being used, it was meant for direct
+      # external links in genomes, but now genomes have dedicated pages
       link_to(name.type_link, target: '_blank') do
         content_tag(:span, name.type_text) +
           fa_icon('external-link-alt', class: 'ml-1')
