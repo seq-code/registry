@@ -367,7 +367,8 @@ module Name::QualityChecks
       #   standing in nomenclature.
       # - Rule 20
       non_valid_name_as_type: {
-        message: 'Only a valid name can be used as nomenclatural type',
+        message: 'Only a validly published name can be used as nomenclatural ' \
+                 'type',
         rules: %w[20],
         can_approve: true
       }.merge(@@link_to_edit_type),
