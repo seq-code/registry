@@ -202,7 +202,7 @@ end
         'Scheduled'
     %></dd>
 
-    <% if @name.can_edit?(current_user) %>
+    <% if @name.try(:can_edit?, current_user) %>
       <dd class="mt-4">
         <%= link_to(
               edit_genome_path(@genome, name: @name.id),
