@@ -1,6 +1,8 @@
 module NamesHelper
-  def strain_html(str)
-    ext  = '<sup class="fas fa-external-link-alt "> </sup>'
+  def strain_html(str, opts = {})
+    opts[:ext] = true if opts[:ext].nil?
+
+    ext  = opts[:ext] ? '<sup class="fas fa-external-link-alt "> </sup>' : ''
     collections = {
       DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-',
       JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=',

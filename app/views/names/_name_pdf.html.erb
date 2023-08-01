@@ -35,6 +35,14 @@
         <% end %>
       </dd>
     </div>
+    <% if name.genome_strain? %>
+      <div class="avoid-page-break">
+        <dt>Reference Strain</dt>
+        <dd>
+          <%= strain_html(name.genome_strain, ext: false) %>
+        </dd>
+      </div>
+    <% end %>
     <% if name.description? %>
       <div class="avoid-page-break">
         <dt>Description</dt>
