@@ -1,4 +1,37 @@
 module NamesHelper
+  def strain_html(str)
+    ext  = '<sup class="fas fa-external-link-alt "> </sup>'
+    collections = {
+      DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-',
+      JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=',
+      KCTC: 'https://kctc.kribb.re.kr/collection/view?sn=',
+      ATCC: 'https://www.atcc.org/products/',
+      BCRC: 'https://catalog.bcrc.firdi.org.tw/BcrcContent?bid=',
+      LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=',
+      NBRC: 'https://www.nite.go.jp/nbrc/catalogue/' \
+            'NBRCCatalogueDetailServlet?ID=IFO&CAT=',
+      IFO:  'https://www.nite.go.jp/nbrc/catalogue/' \
+            'NBRCCatalogueDetailServlet?ID=IFO&CAT=',
+      NCTC: 'https://www.culturecollections.org.uk/products/bacteria/' \
+            'detail.jsp?collection=nctc&refId=NCTC+',
+      CIP:  'https://catalogue-crbip.pasteur.fr/' \
+            'fiche_catalogue.xhtml?crbip=CIP%20',
+      PCC:  'https://catalogue-crbip.pasteur.fr/' \
+            'fiche_catalogue.xhtml?crbip=PCC%20',
+      CCUG: 'https://www.ccug.se/strain?id=',
+      NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
+            'report.html?nrrlcodes='
+    }
+    o = sanitize(str).gsub(/\s*=\s*/, ' = ')
+    collections.each do |k, v|
+      o = o.gsub(
+        /(?<=Strain: | = |^)(#{k})[ -]([\d\-A-Za-z]+)(?= = |$)/,
+        "<a href='#{v}\\2' target='_blank'>\\1 \\2 #{ext}</a>"
+      )
+    end
+    o.html_safe
+  end
+
   def link_to_name_type(name)
     if name.type_is_name?
       if name.type_name
@@ -16,36 +49,7 @@ module NamesHelper
           fa_icon('external-link-alt', class: 'ml-1')
       end
     elsif name.type_is_strain?
-      ext  = '<sup class="fas fa-external-link-alt "> </sup>'
-      collections = {
-        DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-',
-        JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=',
-        KCTC: 'https://kctc.kribb.re.kr/collection/view?sn=',
-        ATCC: 'https://www.atcc.org/products/',
-        BCRC: 'https://catalog.bcrc.firdi.org.tw/BcrcContent?bid=',
-        LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=',
-        NBRC: 'https://www.nite.go.jp/nbrc/catalogue/' \
-              'NBRCCatalogueDetailServlet?ID=IFO&CAT=',
-        IFO:  'https://www.nite.go.jp/nbrc/catalogue/' \
-              'NBRCCatalogueDetailServlet?ID=IFO&CAT=',
-        NCTC: 'https://www.culturecollections.org.uk/products/bacteria/' \
-              'detail.jsp?collection=nctc&refId=NCTC+',
-        CIP:  'https://catalogue-crbip.pasteur.fr/' \
-              'fiche_catalogue.xhtml?crbip=CIP%20',
-        PCC:  'https://catalogue-crbip.pasteur.fr/' \
-              'fiche_catalogue.xhtml?crbip=PCC%20',
-        CCUG: 'https://www.ccug.se/strain?id=',
-        NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
-              'report.html?nrrlcodes='
-      }
-      o = sanitize(name.type_text)
-      collections.each do |k, v|
-        o = o.gsub(
-          /(?<=Strain: | = )(#{k})[ -]([\d\-A-Za-z]+)(?= = |$)/,
-          "<a href='#{v}\\2' target='_blank'>\\1 \\2 #{ext}</a>"
-        )
-      end
-      o.html_safe
+      strain_html(name.type_text)
     else
       name.type_text
     end

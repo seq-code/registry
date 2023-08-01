@@ -72,6 +72,20 @@
     </dd>
   <% end %>
 
+  <% if @name.genome_strain? %>
+    <dt>
+      <%= fa_icon('flask') %> Reference strain
+      <%= help_message('Reference Strain') do %>
+        This strain indicates the source of the genome used as type
+        material. However, the strain itself is not considered
+        type material and does not have standing in nomenclature.
+      <% end %>
+    </dt>
+    <dd>
+      <%= strain_html(@name.genome_strain) %>
+    </dd>
+  <% end %>
+
   <% if @name.nomenclatural_status? || @name.seqcode? %>
     <dt><%= fa_icon('clipboard-check') %> Nomenclatural status</dt>
     <dd><%= @name.nomenclatural_status&.upcase_first ||

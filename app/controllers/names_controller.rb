@@ -216,6 +216,7 @@ class NamesController < ApplicationController
     params[:name][:register] = nil if name_params[:register]&.==('')
 
     if name_params[:type_material]&.==('name')
+      name_params[:genome_strain] = nil
       acc = name_params[:type_accession]
       type_name =
         if acc.empty?
@@ -488,17 +489,20 @@ class NamesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def name_params
-      etymology_pars =
-        Name.etymology_particles.map do |i|
-          Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
-        end.flatten
+      @name_params ||=
+        params.require(:name)
+          .permit(
+            :name, :rank, :description, :notes, :ncbi_taxonomy,
+            :syllabication, :syllabication_reviewed,
+            :type_material, :type_accession, :etymology_text, :register,
+            :genome_strain,
+            *etymology_pars
+          )
+    end
 
-      params.require(:name)
-        .permit(
-          :name, :rank, :description, :notes, :ncbi_taxonomy,
-          :syllabication, :syllabication_reviewed,
-          :type_material, :type_accession, :etymology_text, :register,
-           *etymology_pars
-        )
+    def etymology_pars
+      Name.etymology_particles.map do |i|
+        Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
+      end.flatten
     end
 end

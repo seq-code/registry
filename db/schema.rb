@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_14_133549) do
+ActiveRecord::Schema.define(version: 2023_08_01_091443) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(version: 2023_07_14_133549) do
     t.string "lpsn_url"
     t.integer "correct_name_id"
     t.integer "assigned_by"
+    t.string "genome_strain"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"

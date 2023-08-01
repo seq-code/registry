@@ -21,11 +21,46 @@
   <% else %>
     <%=
       f.input(
-        :type_material, label: 'Type material database',
+        :type_material, label: 'Type material',
         collection: @name.possible_type_materials.map { |k, v| [v[:name], k] }
       )
     %>
-    <%= f.input(:type_accession, as: :string, label: 'Sequence accession') %>
+    <%=
+      f.input(
+        :type_accession, as: :string, label: 'Sequence accession',
+        hint: 'Type accession'
+      )
+    %>
+    <div id="name_genome_strain_container">
+      <%=
+        f.input(
+          :genome_strain,
+          hint: 'Strain associated to the type genome. ' \
+                'Use "=" to separate multiple equivalent strain accessions.'
+        )
+      %>
+    </div>
+    <script>
+      $('#name_type_material').change(function() {
+        var container = $('#name_genome_strain_container');
+        var selected  = $(this).val();
+        var is_genome = selected != "strain" && selected != "";
+        var acc_label = $('label[for=name_type_accession]');
+        var acc_hint  = $('.name_type_accession small.form-text')
+        if (is_genome) {
+          container.show();
+          acc_label.html('Sequence accession');
+          acc_hint.html('Use "," to separate multiple accessions.');
+        } else {
+          container.hide();
+          $('#name_genome_strain').val('');
+          acc_label.html('Accession');
+          acc_hint.html('Use "=" to separate multiple equivalent accessions.');
+        }
+        if (selected == "" || selected == "other") acc_hint.html('');
+      });
+      $('#name_type_material').change();
+    </script>
   <% end %>
   <br/>
 
