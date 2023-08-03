@@ -11,7 +11,7 @@ every 1.day do
   rake 'works:update names:find parents:infer'
 end
 
-every 6.hours do
+every 1.hour do
   rake 'genomes:save genomes:download'
 end
 
