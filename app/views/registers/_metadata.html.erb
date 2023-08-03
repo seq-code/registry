@@ -85,35 +85,35 @@
     </dl>
     <!-- Right column -->
     <dl class="col-md-5 border-left border-secondary">
-      <dt><%= fa_icon('table') %>&nbsp; Table &raquo;</dt>
+      <dt><%= fa_icon('table') %>&nbsp; Download Table &raquo;</dt>
       <dd>
         Download:
         <%= link_to(
               download_register_table_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-light'
+              class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-pdf') %> PDF
         <% end %>
         <%= link_to(
               download_register_table_url(@register),
-              class: 'btn btn-sm btn-light'
+              class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-code') %> HTML
         <% end %>
       </dd>
 
-      <dt><%= fa_icon('list-ul') %>&nbsp; List &raquo;</dt>
+      <dt><%= fa_icon('list-ul') %>&nbsp; Download List &raquo;</dt>
       <dd>
         Download:
         <%= link_to(
               download_register_list_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-light'
+              class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-pdf') %> PDF
         <% end %>
         <%= link_to(
               download_register_list_url(@register),
-              class: 'btn btn-sm btn-light'
+              class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-code') %> HTML
         <% end %>
@@ -136,7 +136,7 @@
               <% if as.attached? %>
                 <%= link_to(
                       rails_blob_path(as, disposition: 'attachment'),
-                      class: 'btn btn-light btn-sm'
+                      class: 'btn btn-secondary btn-sm'
                     ) do %>
                   <%= fa_icon('file-pdf') %>
                   <%= attach.to_s.sub(/_.*/, '') %>
