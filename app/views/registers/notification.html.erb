@@ -71,10 +71,14 @@
   <% end %>
   <br/>
 
-  <%= f.input(
-        :publication_pdf, label: 'Publication PDF', required: true,
-        hint: 'Published manuscript in PDF'
-      ) %>
+  <%=
+    f.input(
+      :publication_pdf, label: 'Publication PDF', required: true,
+      hint: 'Published manuscript in PDF: the preferred PDF is the final ' \
+            'typeset version, but the author accepted manuscript version ' \
+            'is also acceptable'
+    )
+  %>
 
   <%= f.input(
         :supplementary_pdf, label: 'Supplementary Material in PDF (optional)',
