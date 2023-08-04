@@ -18,7 +18,9 @@
 </dd>
 
 <% if current_contributor? || !publication.names.empty? %>
-  <dt>Names</dt>
+  <dt>
+    Names <span class="text-muted">(<%= publication.names.count %>)</span>
+  </dt>
   <dd>
     <% publication.publication_names.each do |publication_name| %>
       <% name = publication_name.name %>
