@@ -38,6 +38,15 @@
         <hr/>
         <% if @register.notified? %>
           <%= link_to(
+                notification_register_url(@register),
+                class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('file-upload') %> Edit notification
+          <% end %>
+          &raquo; Edit the notification form, including minor changes in title
+          and abstract
+          <hr/>
+          <%= link_to(
                 validate_register_url(@register), method: :post,
                 class: 'btn btn-primary btn-sm',
                 data: { confirm: 'Are you sure? This cannot be undone' }
