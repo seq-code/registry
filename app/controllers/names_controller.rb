@@ -212,8 +212,8 @@ class NamesController < ApplicationController
   # PATCH/PUT /names/1
   # PATCH/PUT /names/1.json
   def update
-    params[:name][:syllabication_reviewed] = true if name_params[:syllabication]
-    params[:name][:register] = nil if name_params[:register]&.==('')
+    name_params[:syllabication_reviewed] = true if name_params[:syllabication]
+    name_params[:register] = nil if name_params[:register]&.==('')
 
     if name_params[:type_material]&.==('name')
       name_params[:genome_strain] = nil
@@ -226,7 +226,7 @@ class NamesController < ApplicationController
         else
           Name.where(name: acc).first
         end
-      params[:name][:type_accession] = type_name&.id
+      name_params[:type_accession] = type_name.try(:id)
 
       if !acc.empty? && type_name.nil?
         flash[:alert] = 'Type name does not exist'
@@ -487,7 +487,8 @@ class NamesController < ApplicationController
       end
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Never trust parameters from the scary internet, only allow the white list
+    # through
     def name_params
       @name_params ||=
         params.require(:name)
