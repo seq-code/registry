@@ -34,7 +34,8 @@ Rails.application.routes.draw do
   get  'check_ranks' => 'names#check_ranks', as: :check_ranks
   get  'unknown_proposal' => 'names#unknown_proposal', as: :unknown_proposal
   get  'submitted' => 'names#submitted', as: :submitted_names
-  get  'drafts' => 'names#drafts', as: :draft_names
+  get  'endorsed'  => 'names#endorsed',  as: :endorsed_names
+  get  'drafts'    => 'names#drafts',    as: :draft_names
   get  'user-names' => 'names#user_names', as: :user_names
   get  'search' => 'application#search', as: :search
   get  'type-genomes(.:format)' => 'names#type_genomes', as: :name_type_genomes

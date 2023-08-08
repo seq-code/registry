@@ -24,7 +24,8 @@ class NamesController < ApplicationController
   before_action(
     :authenticate_curator!,
     only: %i[
-      check_ranks unknown_proposal submitted drafts return validate endorse
+      check_ranks unknown_proposal submitted endorsed drafts
+      return validate endorse
     ]
   )
 
@@ -44,17 +45,11 @@ class NamesController < ApplicationController
   def index(opts = {})
     return user_names if params[:status] == 'user' && opts == {}
     @submitted ||= false
+    @endorsed  ||= false
     @drafts    ||= false
     @sort      ||= params[:sort] || 'date'
     @status    ||= params[:status] || 'public'
-    @title     ||=
-      if @submitted
-        'Review Submitted'
-      elsif @drafts
-        'Review Drafts'
-      else
-        "#{@status.gsub(/^\S/, &:upcase)} Names"
-      end
+    @title     ||= "#{@status.gsub(/^\S/, &:upcase)} Names"
 
     opts[:status] ||=
       case @status
@@ -120,6 +115,14 @@ class NamesController < ApplicationController
     @submitted = true
     @status = 'submitted'
     index(status: 10)
+    render(:index)
+  end
+
+  # GET /endorsed
+  def endorsed
+    @endorsed = true
+    @status = 'endorsed'
+    index(status: 12)
     render(:index)
   end
 
