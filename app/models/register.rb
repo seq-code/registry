@@ -132,17 +132,41 @@ class Register < ApplicationRecord
   def propose_title
     return title if title?
 
+    if names_at_rank(:species).size == 1 &&
+       names_at_rank(:subspecies).empty? &&
+       single_lineage?
+      return(
+        case names.size
+        when 1
+          self.class.nom_nov(names.first)
+        when 2
+          <<~TITLE
+            #{names_at_rank(:species).first.name} \
+            gen. nov. sp. nov.
+          TITLE
+        when 3
+          <<~TITLE
+            Register list for \
+            #{names_at_rank(:species).first.name} \
+            gen. nov. sp. nov. and \
+            #{names_at_rank(:family).first.name} fam. nov.
+          TITLE
+        else
+          <<~TITLE
+            Register list for \
+            #{names_at_rank(:species).first.name} \
+            gen. nov. sp. nov. and their lineage
+          TITLE
+        end
+      )
+    end
+
     case names.size
     when 0
       'Empty register List %s' % acc_url
     when 1
       self.class.nom_nov(names.first)
     when 2
-
-      # TODO Handle special (common) case of a species
-      # name proposed with its genus: we can simply
-      # use the species name sp. nov. gen. nov.
-
       <<~TITLE
         #{self.class.nom_nov(names.first)} and \
         #{self.class.nom_nov(names.second)}
@@ -153,6 +177,27 @@ class Register < ApplicationRecord
         including #{self.class.nom_nov(names.first)}
       TITLE
     end
+  end
+
+  ##
+  # The list contains *only* a novel species and (optionally)
+  # their parent taxa. If one or more subspecies within the species
+  # are included, the test is still +true+, unless the total number
+  # of names exceedes 9. It's always true for lists with a single
+  # name.
+  def single_lineage?
+    return true if names.size == 1
+    return false unless (2..9).include? names.size
+    return false if names_at_rank(:species).size != 1
+
+    top = names.filter { |n| !names.include? n.parent }
+    top.size == 1
+  end
+
+  ##
+  # Returns and Array the names in the list with specified +rank+
+  def names_at_rank(rank)
+    names.filter { |n| n.inferred_rank.to_sym == rank.to_sym }
   end
 
   def propose_doi
