@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_01_091443) do
+ActiveRecord::Schema.define(version: 2023_08_08_131521) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -162,8 +162,8 @@ ActiveRecord::Schema.define(version: 2023_08_01_091443) do
     t.datetime "submitted_at"
     t.text "itis_json"
     t.datetime "itis_at"
-    t.integer "approved_by"
-    t.datetime "approved_at"
+    t.integer "endorsed_by"
+    t.datetime "endorsed_at"
     t.integer "register_id"
     t.text "irmng_json"
     t.datetime "irmng_at"

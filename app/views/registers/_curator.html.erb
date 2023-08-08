@@ -14,17 +14,17 @@
         &raquo; Show historic record of communication with curators
         <hr/>
       <% else %>
-        <% unless @register.all_approved? %>
+        <% unless @register.all_endorsed? %>
           <%= link_to(
-                approve_register_url(@register), method: :post,
+                endorse_register_url(@register), method: :post,
                 class: 'btn btn-primary btn-sm',
                 data: {
                   confirm: 'Are you sure? The submitter will be notified'
                 }
               ) do %>
-            <%= fa_icon('check-square') %> Approve all names in the list
+            <%= fa_icon('check-square') %> Endorse all names in the list
           <% end %>
-          &raquo; Mark all names in the list as approved in batch
+          &raquo; Mark all names in the list as endorsed in batch
           <hr/>
         <% end %>
         <%= link_to(

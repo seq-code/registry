@@ -3,7 +3,7 @@ class RegistersController < ApplicationController
     :set_register,
     only: %i[
       show table list cite edit update destroy
-      submit return return_commit approve notification notify
+      submit return return_commit endorse notification notify
       validate publish new_correspondence
       internal_notes nomenclature_review genomics_review
     ]
@@ -16,7 +16,7 @@ class RegistersController < ApplicationController
   before_action(
     :authenticate_curator!,
     only: %i[
-      return return_commit approve validate
+      return return_commit endorse validate
       internal_notes nomenclature_review genomics_review
     ]
   )
@@ -180,12 +180,12 @@ class RegistersController < ApplicationController
     redirect_to(@register)
   end
 
-  # POST /registers/r:abcd/approve
-  def approve
+  # POST /registers/r:abcd/endorse
+  def endorse
     ActiveRecord::Base.transaction do
-      par = { status: 12, approved_by: current_user, approved_at: Time.now }
+      par = { status: 12, endorsed_by: current_user, endorsed_at: Time.now }
       @register.names.each do |name|
-        name.update!(par) unless name.after_approval?
+        name.update!(par) unless name.after_endorsement?
       end
     end
 
@@ -193,7 +193,7 @@ class RegistersController < ApplicationController
     AdminMailer.with(
       user: @register.user,
       register: @register,
-      action: 'approve'
+      action: 'endorse'
     ).register_status_email.deliver_later
 
     redirect_to(@register)
@@ -222,8 +222,8 @@ class RegistersController < ApplicationController
       par[:publication] = publication
       ActiveRecord::Base.transaction do
         @register.names.each do |name|
-          unless name.after_approval?
-            flash[:warning] = 'Some names in the list have not been approved ' +
+          unless name.after_endorsement?
+            flash[:warning] = 'Some names in the list have not been endorsed ' \
               'yet and will require expert review, which could delay validation'
             name.status = 10
             name.submitted_at = Time.now

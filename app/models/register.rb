@@ -56,7 +56,7 @@ class Register < ApplicationRecord
       where(validated: false, notified: true)
         .or(where(validated: false, submitted: true))
         .order(updated_at: :asc)
-        .select { |i| i.notified? || !i.approved? }
+        .select { |i| i.notified? || !i.endorsed? }
     end
   end
 
@@ -67,12 +67,12 @@ class Register < ApplicationRecord
   def status_name
     validated? ? 'validated' :
       notified? ? 'notified' :
-      approved? ? 'approved' :
+      endorsed? ? 'endorsed' :
       submitted? ? 'submitted' : 'draft'
   end
 
-  def approved?
-    submitted? && all_approved?
+  def endorsed?
+    submitted? && all_endorsed?
   end
 
   def draft?
@@ -183,9 +183,9 @@ class Register < ApplicationRecord
       success = false
     end
 
-    # Check that all names have been approved
-    unless names.all?(&:after_approval?)
-      add_note('Some names have not been approved yet')
+    # Check that all names have been endorsed
+    unless names.all?(&:after_endorsement?)
+      add_note('Some names have not been endorsed yet')
       success = false
     end
 
@@ -272,13 +272,13 @@ class Register < ApplicationRecord
     # TODO Notify submitter
   end
 
-  def all_approved?
-    names.all?(&:after_approval?)
+  def all_endorsed?
+    names.all?(&:after_endorsement?)
   end
 
   def reviewer_ids
     @reviewer_ids ||=
-      names.pluck(:validated_by, :approved_by, :nomenclature_reviewer)
+      names.pluck(:validated_by, :endorsed_by, :nomenclature_reviewer)
            .flatten.compact.uniq
   end
 

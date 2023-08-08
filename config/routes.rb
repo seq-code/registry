@@ -60,7 +60,7 @@ Rails.application.routes.draw do
   post 'names/:id/link_parent' => 'names#link_parent_commit', as: :link_parent_commit_name
   post 'names/:id/return' => 'names#return', as: :return_name
   post 'names/:id/validate' => 'names#validate', as: :validate_name
-  post 'names/:id/approve' => 'names#approve', as: :approve_name
+  post 'names/:id/endorse' => 'names#endorse', as: :endorse_name
   post 'names/:id/claim' => 'names#claim', as: :claim_name
   post 'names/:id/unclaim' => 'names#unclaim', as: :unclaim_name
   post 'names/:id/new_correspondence' => 'names#new_correspondence', as: :new_correspondence_name
@@ -75,7 +75,7 @@ Rails.application.routes.draw do
   post 'registers/:accession/submit' => 'registers#submit', as: :submit_register
   get  'registers/:accession/return' => 'registers#return', as: :return_register
   post 'registers/:accession/return' => 'registers#return_commit', as: :post_return_register
-  post 'registers/:accession/approve' => 'registers#approve', as: :approve_register
+  post 'registers/:accession/endorse' => 'registers#endorse', as: :endorse_register
   get  'registers/:accession/notify' => 'registers#notification', as: :notification_register
   post 'registers/:accession/notify' => 'registers#notify', as: :notify_register
   get  'registers/:accession/table(.:format)' => 'registers#table', as: :download_register_table

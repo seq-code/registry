@@ -1,8 +1,8 @@
 <% case @action[1] %>
-<% when 'approve' %>
+<% when 'endorse' %>
   <p>
     Your application as a <%= @action[0] %> of the SeqCode Registry has
-    been approved.
+    been endorsed.
   </p>
   <br/>
   <h2>What does this mean?</h2>
@@ -10,7 +10,7 @@
     <% case @action[0] %>
     <% when 'curator' %>
       You are now authorized to access and edit any pre-validation names,
-      including changing their status (e.g., approving or returning to
+      including changing their status (e.g., endorsing or returning to
       submitters).<br/>
       We appreciate your commitment to the community, and thank you for
       enrolling as a curator.

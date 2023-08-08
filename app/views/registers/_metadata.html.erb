@@ -28,8 +28,8 @@
         <% elsif @register.notified? %>
           The SeqCode has been notified of effective publication and the request
           is currently being evaluated by expert curators
-        <% elsif @register.approved? %>
-          All the names in this register list have been pre-approved by expert
+        <% elsif @register.endorsed? %>
+          All the names in this register list have been endorsed by expert
           curators, and the SeqCode is awaiting notification of publication
         <% elsif @register.submitted? %>
           This register list is currently being evaluated by expert curators

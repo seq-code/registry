@@ -7,7 +7,7 @@ module Name::QualityChecks
 
     # Attributes supported for warnings
     @@attributes = %i[
-      message link_text link_to rules recommendations can_approve
+      message link_text link_to rules recommendations can_endorse
       link_public rule_notes checklist
     ]
 
@@ -370,7 +370,7 @@ module Name::QualityChecks
         message: 'Only a validly published name can be used as nomenclatural ' \
                  'type',
         rules: %w[20],
-        can_approve: true
+        can_endorse: true
       }.merge(@@link_to_edit_type),
       # - Rule 21a [Checklist-N]
       later_species_as_genus_type: {
@@ -411,7 +411,7 @@ module Name::QualityChecks
         link_text: 'Register publication',
         link_to: lambda { |w| [:new_publication, { link_name: w.name.id }] },
         rules: %w[24a],
-        can_approve: true
+        can_endorse: true
       },
       # - Rule 24b [Checklist-N]
       unavailable_english_description: {
@@ -629,7 +629,7 @@ module Name::QualityChecks
     end
 
     def is_error?
-      rules.present? && (!can_approve || name.notified?)
+      rules.present? && (!can_endorse || name.notified?)
     end
 
     def fail

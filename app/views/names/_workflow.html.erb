@@ -133,23 +133,23 @@
     <% end %>
   <% end %>
 
-  <!-- 05: Name approved -->
-  <%= workflow_step('Name approval', :after_approval?) do |pass| %>
+  <!-- 05: Name Endorsed -->
+  <%= workflow_step('Name endorsement', :after_endorsement?) do |pass| %>
     <% if pass %>
-      <% if @name.approved_by %>
-        This name was approved
-        <% if @name.approved_by %>
-          by <%= link_to(@name.approved_by.username, @name.approved_by) %>
+      <% if @name.endorsed_by %>
+        This name was endorsed
+        <% if @name.endorsed_by %>
+          by <%= link_to(@name.endorsed_by.username, @name.endorsed_by) %>
         <% end %>
-        <% if @name.approved_at %>
-          on <%= time_tag(@name.approved_at, format: '%F') %>
+        <% if @name.endorsed_at %>
+          on <%= time_tag(@name.endorsed_at, format: '%F') %>
         <% end %>
         after manual review.
       <% else %>
-        This name was marked as approved.
+        This name was marked as endorsed.
       <% end %>
     <% else %>
-      This name is yet to be approved.
+      This name is yet to be endorsed.
       <h5 class="mt-2 text-info">Next step:</h5>
       <ul>
         <li>

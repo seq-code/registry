@@ -7,7 +7,7 @@ class User < ApplicationRecord
 
   has_many(:created_names, class_name: 'Name', foreign_key: 'created_by')
   has_many(:submitted_names, class_name: 'Name', foreign_key: 'submitted_by')
-  has_many(:approved_names, class_name: 'Name', foreign_key: 'approved_by')
+  has_many(:endorsed_names, class_name: 'Name', foreign_key: 'endorsed_by')
   has_many(:validated_names, class_name: 'Name', foreign_key: 'validated_by')
   has_many(
     :nomenclature_reviewed_for_names,
@@ -88,7 +88,7 @@ class User < ApplicationRecord
   def reviewed_names
     @reviewed_names ||=
       Name.where(
-        'validated_by = ? OR approved_by = ? OR nomenclature_reviewer = ?',
+        'validated_by = ? OR endorsed_by = ? OR nomenclature_reviewer = ?',
         id, id, id
       )
   end

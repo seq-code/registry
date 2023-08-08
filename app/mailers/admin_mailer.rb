@@ -11,9 +11,9 @@ class AdminMailer < ApplicationMailer
     @params = params
     @action =
       if params[:params][:curator]
-        %w[curator approve]
+        %w[curator endorse]
       elsif params[:params][:contributor]
-        %w[contributor approve]
+        %w[contributor endorse]
       elsif params[:params].has_key? :curator_statement
         %w[curator deny]
       elsif params[:params].has_key? :contributor_statement

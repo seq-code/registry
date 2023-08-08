@@ -1,10 +1,10 @@
 <% name_s = @register.names.count == 1 ? 'name' : 'names' %>
 <% case @action %>
-<% when 'approve' %>
+<% when 'endorse' %>
   <p>
     The register list
     <%= link_to(@register.acc_url, @register.acc_url(true)) %>
-    has been approved.
+    has been endorsed.
   </p>
   <br/>
   <h2>What does this mean?</h2>

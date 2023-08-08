@@ -13,14 +13,14 @@
           &raquo; Remove ownership of this name and make it public
           <hr/>
         <% end %>
-        <% unless @name.after_approval? %>
+        <% unless @name.after_endorsement? %>
           <%= link_to(
-                approve_name_url(@name),
+                endorse_name_url(@name),
                 method: :post,
                 class: 'btn btn-primary btn-sm',
                 data: { confirm: 'Are you sure? This action cannot be undone' }
               ) do %>
-            <%= fa_icon('check-square') %> Approve name
+            <%= fa_icon('check-square') %> Endorse name
           <% end %>
           &raquo; Recommend this name as a candidate for validation
           <hr/>

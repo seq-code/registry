@@ -37,7 +37,7 @@
           <% end %>
         </td>
         <% unless @register.validated? %>
-          <% qc = name.qc_warnings.select { |i| !i[:can_approve] } %>
+          <% qc = name.qc_warnings.select { |i| !i[:can_endorse] } %>
           <td>
             <% if qc.empty? %>
               <div class="text-success">Pass</div>

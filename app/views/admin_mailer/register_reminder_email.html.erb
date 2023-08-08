@@ -6,8 +6,8 @@
   <% @registers.each do |register| %>
     <li>
       <b><%= link_to(register.acc_url, register.acc_url(true)) %></b>:
-      <% if register.all_approved? && !register.notified? %>
-        All the names in the register list have been approved but you have
+      <% if register.all_endorsed? && !register.notified? %>
+        All the names in the register list have been endorsed but you have
         not yet notified of effective publication. If the effective
         publication is still under review, please dismiss this reminder,
         otherwise

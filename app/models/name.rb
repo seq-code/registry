@@ -42,8 +42,8 @@ class Name < ApplicationRecord
     class_name: 'User', foreign_key: 'submitted_by'
   )
   belongs_to(
-    :approved_by, optional: true,
-    class_name: 'User', foreign_key: 'approved_by'
+    :endorsed_by, optional: true,
+    class_name: 'User', foreign_key: 'endorsed_by'
   )
   belongs_to(
     :validated_by, optional: true,
@@ -170,10 +170,10 @@ class Name < ApplicationRecord
           TXT
         },
         12 => {
-          symbol: :approval, name: 'Approved',
+          symbol: :endorsement, name: 'Endorsed',
           public: false, valid: false,
           help: <<~TXT
-            This name has been approved by expert curators or thoroughly
+            This name has been endorsed by expert curators or thoroughly
             checked by automated controls but still lacks one or more conditions
             to be valid, typically effective publication
           TXT
@@ -399,7 +399,7 @@ class Name < ApplicationRecord
     status >= 10
   end
 
-  def after_approval?
+  def after_endorsement?
     status >= 12
   end
 
@@ -511,7 +511,7 @@ class Name < ApplicationRecord
     return false unless user.try(:contributor?)
     return true if auto?
     return true if draft? && user?(user)
-    !after_approval? && created_by.nil?
+    !after_endorsement? && created_by.nil?
   end
 
   def claimed?(user)
@@ -560,7 +560,7 @@ class Name < ApplicationRecord
   end
 
   def reviewer_ids
-    [validated_by, approved_by, nomenclature_reviewer].compact.uniq
+    [validated_by, endorsed_by, nomenclature_reviewer].compact.uniq
   end
 
   def reviewers

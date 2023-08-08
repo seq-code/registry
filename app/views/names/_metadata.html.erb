@@ -126,13 +126,13 @@
     </dd>
   <% end %>
 
-  <% if @name.after_approval? && @name.approved_by %>
-    <dt><%= fa_icon('check-square') %> Approved by</dt>
+  <% if @name.after_endorsement? && @name.endorsed_by %>
+    <dt><%= fa_icon('check-square') %> Endorsed by</dt>
     <dd>
-      <%= link_to(@name.approved_by.username, @name.approved_by) %>
+      <%= link_to(@name.endorsed_by.username, @name.endorsed_by) %>
       <u class="hover-help"
-         title="<%= @name.approved_at %>"
-         ><%= time_ago_in_words(@name.approved_at) %> ago</u>
+         title="<%= @name.endorsed_at %>"
+         ><%= time_ago_in_words(@name.endorsed_at) %> ago</u>
     </dd>
   <% end %>
 

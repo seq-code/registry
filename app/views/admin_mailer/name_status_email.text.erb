@@ -1,6 +1,6 @@
 <% case @action %>
-<% when 'approve' %>
-  The name <%= @name.name %> has been approved.
+<% when 'endorse' %>
+  The name <%= @name.name %> has been endorsed.
   
   What does this mean?
   ====================
@@ -65,7 +65,7 @@
   What to do next?
   ================
   You can now complete all the validation requirements and submit the name for
-  approval. To see and edit the name data and metadata, visit:
+  endorsement. To see and edit the name data and metadata, visit:
   <%= name_url(@name) %>
 <% when 'unclaim' %>
   You have unclaimed the name <%= @name.name %>.

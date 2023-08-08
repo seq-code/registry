@@ -1,6 +1,6 @@
 <% case @action %>
-<% when 'approve' %>
-  <p>The name <%= link_to(@name.name_html, @name) %> has been approved.</p>
+<% when 'endorse' %>
+  <p>The name <%= link_to(@name.name_html, @name) %> has been endorsed.</p>
   <br/>
   <h2>What does this mean?</h2>
   <p>
@@ -73,7 +73,7 @@
   <h2>What to do next?</h2>
   <p>
     You can now complete all the validation requirements and submit the
-    name for approval. To see and edit the name data and metadata,
+    name for endorsement. To see and edit the name data and metadata,
     <%= link_to('visit the name page', @name) %>.
   </p>
 <% when 'unclaim' %>

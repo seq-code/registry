@@ -7,7 +7,7 @@ class NamesController < ApplicationController
       proposed_by corrigendum_by corrigendum emended_by assigned_by
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
-      return validate approve claim unclaim new_correspondence
+      return validate endorse claim unclaim new_correspondence
     ]
   )
   before_action(
@@ -24,7 +24,7 @@ class NamesController < ApplicationController
   before_action(
     :authenticate_curator!,
     only: %i[
-      check_ranks unknown_proposal submitted drafts return validate approve
+      check_ranks unknown_proposal submitted drafts return validate endorse
     ]
   )
 
@@ -395,19 +395,19 @@ class NamesController < ApplicationController
     redirect_to(@name)
   end
 
-  # POST /names/1/approve
-  def approve
-    par = { status: 12, approved_by: current_user, approved_at: Time.now }
-    if @name.after_approval?
-      flash[:alert] = 'Name status is incompatible with approval'
+  # POST /names/1/endorse
+  def endorse
+    par = { status: 12, endorsed_by: current_user, endorsed_at: Time.now }
+    if @name.after_endorsement?
+      flash[:alert] = 'Name status is incompatible with endorsement'
     elsif @name.update(par)
       # Email notification
       AdminMailer.with(
         user: @name.created_by,
         name: @name,
-        action: 'approve'
+        action: 'endorse'
       ).name_status_email.deliver_later
-      flash[:notice] = 'Name successfully approved'
+      flash[:notice] = 'Name successfully endorsed'
     else
       flash[:alert] = 'An unexpected error occurred'
     end

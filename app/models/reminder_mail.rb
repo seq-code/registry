@@ -11,7 +11,7 @@ class ReminderMail < ApplicationRecord
           user.registers.select do |register|
             !register.validated? && (register.updated_at < 1.month.ago) && (
               !register.submitted? ||
-              (!register.notified? && register.all_approved?)
+              (!register.notified? && register.all_endorsed?)
             )
           end
 
