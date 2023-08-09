@@ -8,47 +8,61 @@
       url: genome_url(@genome, name: params[:name]), method: :patch
     ) do |f| %>
   <%= f.error_notification %>
-  <%= f.error_notification(message: f.object.errors[:base].to_sentence) if f.object.errors[:base].present? %>
+  <% if f.object.errors[:base].present? %>
+    <%= f.error_notification(message: f.object.errors[:base].to_sentence) %>
+  <% end %>
 
   <div class="form-inputs">
     <h2 class="mt-5">Genome information</h2>
     <p class="lead">
       General information about the sequenced genome
     </p>
-    <%= f.input(:kind, collection: Genome.kinds_opt, label: 'Type of genome', required: true) %>
-    <%= f.input(:seq_depth, label: 'Sequencing depth (X)') %>
+    <%= f.input(
+          :kind, collection: Genome.kinds_opt, label: 'Type of genome',
+          required: true) %>
+    <%= f.input(
+          :seq_depth, label: 'Sequencing depth (X)',
+          hint: 'Required for isolate genomes, optional (but recommended) ' \
+                'for all other types') %>
 
     <h2 class="mt-5">Source material</h2>
     <p class="lead">
       Database entry describing the source material from which the genome was
       derived
     </p>
-    <%= f.input(:source_database, collection: Genome.source_databases_opt, label: 'Database', required: true) %>
-    <%= f.input(:source_accession, label: 'Accession', required: true) %>
+    <%= f.input(
+          :source_database, collection: Genome.source_databases_opt,
+          label: 'Database', required: true) %>
+    <%= f.input(
+          :source_accession, label: 'Accession', required: true,
+          hint: 'Multiple accessions in the same database can be reported ' \
+                'separated by comma (,)') %>
 
     <h2 class="mt-5">Quality assessment</h2>
     <p class="lead">
-      Quality metrics assessed by the submitter
+      Quality metrics assessed by the submitter. If left empty, automated
+      assesment will be used to fill-up all the information below.
     </p>
     <%= f.input(:gc_content, label: 'G+C content (%)') %>
-    <%= f.input(:completeness, label: 'Estimated completeness (%)', required: true) %>
-    <%= f.input(:contamination, label: 'Estimated contamination (%)', required: true) %>
-    <%= f.input(:most_complete_16s, label: 'Fraction of the most complete 16S rRNA gene fragment (%)', required: true) %>
-    <%= f.input(:number_of_16s, label: 'Number of 16S rRNA gene fragments', required: true) %>
-    <%= f.input(:most_complete_23s, label: 'Fraction of the most complete 23S rRNA gene fragment (%)') %>
+    <%= f.input(:completeness, label: 'Estimated completeness (%)') %>
+    <%= f.input(:contamination, label: 'Estimated contamination (%)') %>
+    <%= f.input(
+          :most_complete_16s,
+          label: 'Fraction of the most complete 16S rRNA gene fragment (%)') %>
+    <%= f.input(:number_of_16s, label: 'Number of 16S rRNA gene fragments') %>
+    <%= f.input(
+          :most_complete_23s,
+          label: 'Fraction of the most complete 23S rRNA gene fragment (%)') %>
     <%= f.input(:number_of_23s, label: 'Number of 23S rRNA gene fragments') %>
-    <%=
-      f.input(
-        :number_of_trnas,
-        label: 'Number of standard amino acids for which tRNA elements ' \
-               'were detected',
-        hint:  'Please indicate the number of distinct amino acids, not the ' \
-               'total number of tRNA elements',
-        required: true
-      )
-    %>
+    <%= f.input(
+          :number_of_trnas,
+          label: 'Number of standard amino acids for which tRNA elements ' \
+                 'were detected',
+          hint:  'Please indicate the number of distinct amino acids, not ' \
+                 'the total number of tRNA elements',
+          required: true) %>
 
-    <h2 class="mt-5">Comments</h2>
+    <h2 class="mt-5">Methods and Comments</h2>
     <p class="lead">
       Describe in detail the methods used to assess the quality metrics above,
       and comment on any potential issues related to this genome
@@ -60,7 +74,9 @@
     <% if @tutorial %>
       <%= hidden_field_tag(:return_to, tutorial_path(@tutorial, next: true)) %>
     <% end %>
-    <%= link_to('Cancel', @tutorial || @name || @genome, class: 'btn btn-secondary') %>
+    <%= link_to(
+          'Cancel', @tutorial || @name || @genome,
+          class: 'btn btn-secondary') %>
     <%= f.button(:submit) %>
   </div>
 <% end %>
