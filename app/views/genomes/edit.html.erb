@@ -59,15 +59,17 @@
           label: 'Number of standard amino acids for which tRNA elements ' \
                  'were detected',
           hint:  'Please indicate the number of distinct amino acids, not ' \
-                 'the total number of tRNA elements',
-          required: true) %>
+                 'the total number of tRNA elements') %>
 
     <h2 class="mt-5">Methods and Comments</h2>
     <p class="lead">
       Describe in detail the methods used to assess the quality metrics above,
       and comment on any potential issues related to this genome
     </p>
-    <%= f.input(:submitter_comments, as: :rich_text_area) %>
+    <%= f.input(
+          :submitter_comments, as: :rich_text_area,
+          hint: 'This text will be a publicly visible component of the record'
+          ) %>
   </div>
 
   <div class="form-actions mt-5">
