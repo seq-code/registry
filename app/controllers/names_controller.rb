@@ -8,6 +8,7 @@ class NamesController < ApplicationController
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
       return validate endorse claim unclaim new_correspondence
+      observe unobserve
     ]
   )
   before_action(
@@ -28,6 +29,7 @@ class NamesController < ApplicationController
       return validate endorse
     ]
   )
+  before_action(:authenticate_user!, only: %i[observe unobserve])
 
   # GET /autocomplete_names.json?q=Maco
   # GET /autocomplete_names.json?q=Allo&rank=genus
@@ -457,6 +459,26 @@ class NamesController < ApplicationController
       end
     end
     redirect_to(@tutorial || @name)
+  end
+
+  # GET /names/1/observe
+  def observe
+    @name.observers << current_user
+    if params[:from] && RedirectSafely.safe?(params[:from])
+      redirect_to(params[:from])
+    else
+      redirect_back(fallback_location: @name)
+    end
+  end
+
+  # GET /names/1/unobserve
+  def unobserve
+    @name.observers.delete(current_user)
+    if params[:from] && RedirectSafely.safe?(params[:from])
+      redirect_to(params[:from])
+    else
+      redirect_back(fallback_location: @name)
+    end
   end
 
   private

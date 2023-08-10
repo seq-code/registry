@@ -1,9 +1,20 @@
 <% provide(:title, @name.abbr_name_raw) %>
+<%
+  observe = nil
+  if user_signed_in?
+    from = name_path(@name)
+    observe = @name.observing?(current_user) ?
+      [unobserve_name_url(@name, from: from), 'eye-slash', 'Unobserve'] :
+      [observe_name_url(@name, from: from), 'eye', 'Observe']
+    observe += [{ class: 'ml-3' }]
+  end
+%>
 <%=
   download_buttons([
     [name_url(@name, format: :json), 'file-code', 'JSON'],
-    [name_url(@name, format: :pdf), 'file-pdf', 'PDF']
-  ])
+    [name_url(@name, format: :pdf), 'file-pdf', 'PDF'],
+    observe
+  ].compact)
 %>
 <h1>
   <%= @name.name_html %>

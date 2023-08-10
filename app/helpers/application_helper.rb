@@ -187,8 +187,11 @@ module ApplicationHelper
     end
   end
 
-  def download_button(url, icon, text)
-    link_to(url, class: 'btn btn-light btn-sm text-muted') do
+  def download_button(url, icon, text, opts = {})
+    opts[:color] ||= 'light'
+    opts[:class] ||= ''
+    opts[:class]  += " btn btn-#{opts[:color]} btn-sm text-muted"
+    link_to(url, class: opts[:class]) do
       fa_icon(icon) + text
     end
   end

@@ -65,6 +65,8 @@ Rails.application.routes.draw do
   post 'names/:id/claim' => 'names#claim', as: :claim_name
   post 'names/:id/unclaim' => 'names#unclaim', as: :unclaim_name
   post 'names/:id/new_correspondence' => 'names#new_correspondence', as: :new_correspondence_name
+  get  'names/:id/observe' => 'names#observe', as: :observe_name
+  get  'names/:id/unobserve' => 'names#unobserve', as: :unobserve_name
 
   get  'placements/new/:name_id' => 'placements#new', as: :new_placement
   post 'placements'     => 'placements#create', as: :create_placement

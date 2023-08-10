@@ -18,6 +18,8 @@ class Name < ApplicationRecord
     :child_placements, class_name: 'Name', foreign_key: 'parent_id',
     dependent: :destroy
   )
+  has_many(:observe_names, dependent: :destroy)
+  has_many(:observers, through: :observe_names, source: :user)
 
   belongs_to(
     :proposed_by, optional: true,
@@ -569,6 +571,10 @@ class Name < ApplicationRecord
 
   def curators
     @curators ||= (check_users + reviewers).uniq
+  end
+
+  def observing?(user)
+    observe_names.where(user: user).present?
   end
 
   # ============ --- TAXONOMY --- ============
