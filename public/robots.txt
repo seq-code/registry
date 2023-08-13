@@ -2,3 +2,6 @@
 User-agent: *
 Disallow:
 
+User-agent: ChatGPT-User
+Disallow: /
+
