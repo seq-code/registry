@@ -1,13 +1,19 @@
 <% provide(:title, 'About') %>
-<h1>About the SeqCode Registry</h1>
-<hr/>
+<div class="d-flex flex-row mb-4">
+  <div class="">
+    <h1>About the SeqCode Registry</h1>
+    <hr/>
 
-<p class="lead">
-  The SeqCode Registry is the central repository for names of prokaryotes
-  proposed under the SeqCode
-</p>
+    <p class="lead mb-1">
+      The SeqCode Registry is the central repository for names of prokaryotes
+      proposed under the SeqCode
+    </p>
+  </div>
+  <div class="col-3">
+    <%= image_tag('logo-full.svg', size: '180x80', class: 'my-3') %>
+  </div>
+</div>
 
-<br/><br/>
 <h3>The Team Behind the SeqCode Registry</h3>
     <ul>
       <li>
