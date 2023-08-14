@@ -22,9 +22,10 @@ module Name::Inferences
     when /glans$/
       # - Desulfatiglans -- Desulfatiglan-d-aceae
       base.gsub!(/ns$/, 'nd')
-    when /(ta|vive)ns$/
-      # - Jatrophihabitans -- Jatrophihabitantaceae
+    when /(ta|vive|vora)ns$/
+      # - Jatrophihabitans -- Jatrophihabitan-t-aceae
       # - Aquivivens -- Aquiviven-t-aceae
+      # - Hopanoidivorans -- Hopanoidivoran-t-aceae
       base.gsub!(/ns$/, 'nt')
     when /[stl]is$/
       # - Nocardiopsis -- Nocardiops-aceae
