@@ -1,0 +1,26 @@
+<% unless params[:content].present? %>
+  <% provide(:title, 'Help: Etymology') %>
+  <h1>Help: <%= @topic %></h1>
+  <hr/>
+<% end %>
+
+<div id="seqcode-down">
+  <%= @markdown.render(@document).html_safe %>
+</div>
+<br/>
+
+<script>
+  var sqdown = $('#seqcode-down')
+  // Tables
+  sqdown.find('table')
+    .addClass('table table-hover mt-3 mb-5 table-responsive-lg');
+  sqdown.find('table tr:has(td span.active)').addClass('table-active');
+  
+  // Out-links
+  var ext_link = $('<i class="fas fa-external-link-alt ml-2"> </i>');
+  var out_links = sqdown
+    .find('a[href^="http:"]:not(:has(.fas)), a[href^="https:"]:not(:has(.fas))');
+  out_links.attr("target", "_blank");
+  out_links.append(ext_link);
+</script>
+

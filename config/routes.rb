@@ -8,7 +8,8 @@ Rails.application.routes.draw do
   get  'page/join',         as: :page_join
   get  'page/about',        as: :page_about
   get  'page/committee'
-  get  'help/etymology' => 'page#etymology_help', as: :help_etymology
+  get  'help' => 'page#help_index', as: :help_index
+  get  'help/:topic' => 'page#help', as: :help
 
   resources(:genomes)
   root(to: 'application#main')

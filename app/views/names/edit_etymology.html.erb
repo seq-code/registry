@@ -13,7 +13,7 @@
   <% end %>
 
   <% help_id = modal('How to Fill the Etymology Table', size: 'xl') do %>
-    <%= render(partial: 'etymology_help') %>
+    <%= render(partial: 'page/help_inline', locals: { topic: 'etymology' }) %>
   <% end %>
   <%= modal_button(help_id, class: 'btn btn-info') do %>
     <%= fa_icon('question-circle') %>&nbsp;
