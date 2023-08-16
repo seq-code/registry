@@ -26,7 +26,8 @@ class PageController < ApplicationController
   # GET /page/connect
   def connect
     # Generated June 15 2022 (never expires)
-    redirect_to 'https://join.slack.com/t/seqcode-public/shared_invite/zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
+    redirect_to 'https://join.slack.com/t/seqcode-public/shared_invite/' \
+                'zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
   end
 
   # GET /page/join
@@ -39,9 +40,48 @@ class PageController < ApplicationController
   def committee
   end
 
-  # GET /help/etymology
-  def etymology_help
+  # GET /help
+  def help_index
+    @topics = help_topics
   end
+
+  # GET /help/topic
+  def help(topic = nil)
+    topic ||= params[:topic]
+    topic = topic.gsub(/[^A-Za-z0-9_]/, '').to_sym
+    category = help_topic_categories[topic]
+    unless category
+      flash[:danger] = 'Documentation topic not found'
+      redirect_to(root_path)
+      return
+    end
+
+    render    = SeqCodeDown.new
+    @topic    = help_topics[category][topic]
+    @markdown = Redcarpet::Markdown.new(render, autolink: true, tables: true)
+    docs_path = Rails.root.join('documentation')
+    file_path = docs_path.join(category.to_s, '%s.md' % topic)
+    @document = File.read(file_path)
+
+    render('help', layout: !params[:content].present?)
+  end
+
+  private
+
+    def help_topics
+      {
+        guide: {
+          etymology: 'How do I Fill the Etymology Table?'
+        },
+        explanation: {
+          register: 'What are Register Lists?'
+        }
+      }
+    end
+
+    def help_topic_categories
+      Hash[help_topics.map { |k,v| v.keys.map { |topic| [topic, k] }.flatten }]
+    end
 end
 
 class SeqCodeDown < Redcarpet::Render::HTML

@@ -1,0 +1,13 @@
+<% provide(:title, 'Help Central') %>
+<h1>Frequently Asked Questions</h1>
+<hr/>
+<ul>
+  <% @topics.each do |cat, topics| %>
+    <% topics.each do |k, topic| %>
+      <li>
+        <%= link_to(topic, help_path(k)) %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+<br/>

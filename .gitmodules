@@ -1,3 +1,6 @@
 [submodule "seqcode"]
 	path = seqcode
 	url = https://github.com/seq-code/seqcode.git
+[submodule "documentation"]
+	path = documentation
+	url = https://github.com/seq-code/documentation.git

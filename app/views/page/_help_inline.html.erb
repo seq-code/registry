@@ -1,0 +1,7 @@
+
+<% id = "help-#{SecureRandom.hex(5)}" %>
+<div id="<%= id %>" class="m-4"></div>
+<script>
+  $('#<%= id %>').load('<%= help_path(topic, content: true) %>')
+</script>
+

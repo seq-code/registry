@@ -1,5 +1,5 @@
 <% provide(:title, 'About') %>
-<div class="d-flex flex-row mb-4">
+<div class="d-flex flex-row mb-5">
   <div class="">
     <h1>About the SeqCode Registry</h1>
     <hr/>
@@ -14,41 +14,45 @@
   </div>
 </div>
 
-<h3>The Team Behind the SeqCode Registry</h3>
-    <ul>
-      <li>
-        <%= link_to('Luis M Rodriguez-R', 'https://rodriguez-r.com/',
-                    target: '_blank') %>
-        (Universität Innsbruck, Innsbruck, Austria)
-      </li>
-      <li>
-        Marike Palmer
-        (University of Nevada, Las Vegas, Las Vegas NV, USA)
-      </li>
-      <li>
-        Maria Chuvochina
-        (The University of Queensland, Brisbane, Australia)
-      </li>
-      <li>
-        Fang Yuan
-        (Georgia Institute of Technology, Atlanta GA, USA)
-      </li>
-      <li>
-        With contributions from the members of the
-        <%= link_to('SeqCode Steering Committee',
-                    'https://www.isme-microbes.org/governance',
-                    target: '_blank') %>
-        and the
-        <%= link_to('SeqCode Committee', page_committee_url) %>
-      </li>
-    </ul>
-  </dd>
-  <dt></dt>
-</dl>
 
-<br/><br/>
+<h3>Using the SeqCode Registry</h3>
+<ul class="mb-5">
+  <li>
+    <%= link_to('Frequently Asked Questions', help_index_path) %>
+  </li>
+</ul>
+
+<h3>The Team Behind the SeqCode Registry</h3>
+<ul class="mb-5">
+  <li>
+    <%= link_to('Luis M Rodriguez-R', 'https://rodriguez-r.com/',
+                target: '_blank') %>
+    (Universität Innsbruck, Innsbruck, Austria)
+  </li>
+  <li>
+    Marike Palmer
+    (University of Nevada, Las Vegas, Las Vegas NV, USA)
+  </li>
+  <li>
+    Maria Chuvochina
+    (The University of Queensland, Brisbane, Australia)
+  </li>
+  <li>
+    Fang Yuan
+    (Georgia Institute of Technology, Atlanta GA, USA)
+  </li>
+  <li>
+    With contributions from the members of the
+    <%= link_to('SeqCode Steering Committee',
+                'https://www.isme-microbes.org/governance',
+                target: '_blank') %>
+    and the
+    <%= link_to('SeqCode Committee', page_committee_url) %>
+  </li>
+</ul>
+
 <h3>Additional SeqCode Materials</h3>
-<ul>
+<ul class="mb-5">
   <li>
     <%= link_to('SeqCode Initiative', page_initiative_url, target: '_blank') %>:
     Learn more about the broader initiative, our community, and recent news
