@@ -40,6 +40,10 @@ class PageController < ApplicationController
   def committee
   end
 
+  # GET /page/prize
+  def prize
+  end
+
   # GET /help
   def help_index
     @topics = help_topics
