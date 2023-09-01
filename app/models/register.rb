@@ -18,10 +18,12 @@ class Register < ApplicationRecord
   has_rich_text(:submitter_authorship_explanation)
 
   before_create(:assign_accession)
+  before_validation(:propose_and_save_title, if: :submitted?)
 
   validates(:publication_id, presence: true, if: :validated?)
   validates(:publication_pdf, presence: true, if: :validated?)
   validates(:title, presence: true, if: :validated?)
+  validate(:title_different_from_effective_publication)
 
   def to_param
     accession
@@ -339,5 +341,18 @@ class Register < ApplicationRecord
 
   def assign_accession
     self.accession ||= self.class.unique_accession
+  end
+
+  def title_different_from_effective_publication
+    if title && publication && title == publication.title
+      errors.add(
+        :title, 'can\'t be the same as the title of the effective publication'
+      )
+      return true
+    end
+  end
+
+  def propose_and_save_title
+    self.title = propose_title unless title?
   end
 end
