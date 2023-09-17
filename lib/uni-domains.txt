@@ -10179,6 +10179,13 @@ nu.edu.kz
 stgc.uwa.edu.au
 u-bourgogne.fr
 miva.university
+esmad.ipp.pt
+www.esmad.ipp.pt
+univesp.br
+ac-bordeaux.fr
+insead.edu
+thk.edu.tr
+if-pan.krakow.pl
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10202,3 +10209,5 @@ liverpool.ac.uk
 wur.nl
 caas.cn
 lnu.se
+nioz.nl
+biengi.ac.ru
