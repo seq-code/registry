@@ -37,7 +37,8 @@
               <% end %>
               <%= name.name_html %>
               <span class="text-muted">
-                - <%= name.rank %> of <%= name.parent.name_html %>
+                - <%= name.rank %> of
+                  <%= name.parent.try(:name_html) || 'unknown' %>
               </span>
             </button>
           </h2>
