@@ -11,6 +11,7 @@ myport.ac.uk
 myport.port.ac.uk
 ac-paris.fr
 ac-aix-marseille.fr
+ac-creteil.fr
 marywood.edu
 upes.ac.in
 cstj.qc.ca
@@ -1713,14 +1714,12 @@ brsu.brest.by
 bru.mogilev.by
 bseu.by
 bsmu.by
-bspa.unibel.by
 bspu.unibel.by
 bstu.by
 bstu.unibel.by
 bsu.by
 bsuir.by
 buk.by
-data.minsk.by
 grsmu.by
 grsu.by
 gstu.gomel.by
@@ -10211,3 +10210,4 @@ caas.cn
 lnu.se
 nioz.nl
 biengi.ac.ru
+medunigraz.at
