@@ -103,13 +103,13 @@ module Tutorial::Batch
       # Is the information complete?
       Tutorial::Batch.name_keys_base.each do |i|
         unless name.send(i).present?
-          name.errors.add(i, :missing, 'is missing')
+          name.errors.add(i, :missing, message: 'is missing')
         end
       end
 
       # Is the etymology present?
       unless name.etymology?
-        name.errors.add(:etymology_xx_description, :missing, 'is missing')
+        name.errors.add(:etymology_xx_description, :missing, message: 'is missing')
       end
 
       # Is the name already registered?
