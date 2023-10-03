@@ -67,17 +67,14 @@
         <%= link_to('Request contributor status',
             contributor_request_path) %>
       <% else %>
-        <!--
-        <%= link_to(tutorials_url) do %>
-          <%= fa_icon('shoe-prints') %>
-          Follow our step-by-step registration of novel names
-        <% end %> or <br/>
-        -->
-        We are developing a step-by-step registration system, but you can
-        already<br/>
         <%= link_to(new_name_url) do %>
-          <%= fa_icon('plus-circle') %>
-          Register new names in our expert mode
+          <%= fa_icon('plus-circle', class: 'mr-2') %>
+          Register individual new names in our standard mode
+        <% end %>
+        or <br/>
+        <%= link_to(tutorials_url) do %>
+          <%= fa_icon('shoe-prints', class: 'mr-2') %>
+          Follow a guided registration for multiple novel names
         <% end %>
       <% end %>
     </div>
