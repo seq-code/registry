@@ -326,6 +326,9 @@ module Tutorial::Batch
       # If all is good, go to next step
       update!(step: step + 1)
     end # Tutorial.transaction
+  rescue ActiveRecord::RecordInvalid => e
+    self.invalid_record = e
+    return false
   end
 
   ##

@@ -56,9 +56,9 @@ class Name < ApplicationRecord
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
 
-  before_save(:standardize_etymology)
-  before_save(:prevent_self_parent)
-  before_save(:monitor_name_changes)
+  before_validation(:standardize_etymology)
+  before_validation(:prevent_self_parent)
+  before_validation(:monitor_name_changes)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -70,7 +70,7 @@ class Name < ApplicationRecord
     :syllabication,
     format: {
       with: /\A[A-Z\.'-]*\z/i,
-      message: 'Only letters, dashes, dots, and apostrophe are allowed'
+      message: 'can only contain letters, dashes, dots, and apostrophe'
     }
   )
   validates(
