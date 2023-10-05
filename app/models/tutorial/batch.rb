@@ -291,6 +291,7 @@ module Tutorial::Batch
           name.update!(par)
         else
           name = Name.create!(par)
+          name.claim(user)
         end
       end
 
