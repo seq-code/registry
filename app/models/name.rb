@@ -455,7 +455,7 @@ class Name < ApplicationRecord
   def ncbi_genomes_url
     return unless ncbi_taxonomy?
 
-    'https://www.ncbi.nlm.nih.gov/datasets/genomes/?txid=%i' % ncbi_taxonomy
+    'https://www.ncbi.nlm.nih.gov/datasets/taxonomy/%i/' % ncbi_taxonomy
   end
 
   def seqcode_url(protocol = true)
