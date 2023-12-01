@@ -193,6 +193,14 @@ class Name < ApplicationRecord
             This name has been validly published under the rules of the ICNP
             and has priority in the scientific record
           TXT
+        },
+        25 => {
+          symbol: :icn, name: 'Valid (ICN)',
+          public: true, valid: true,
+          help: <<~TXT
+            This name has been validly published under the rules of the ICN
+            and has priority in the scientific record
+          TXT
         }
       }
     end
@@ -244,7 +252,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          " <sup>T#{'s' unless icnp?}</sup>".html_safe
+          " <sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
         else
           ''
         end
@@ -262,7 +270,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "#{name}" +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          " (T#{'s' unless icnp?})"
+          " (T#{'s' unless icnp? || icn?})"
         else
           ''
         end
@@ -280,7 +288,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          "<sup>T#{'s' unless icnp?}</sup>".html_safe
+          "<sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
         end
     else
       "&#8220;#{name}&#8221;".html_safe

@@ -36,6 +36,17 @@
         &raquo; Indicate that this name has already been validly published under
         the ICNP
         <hr/>
+        <%= link_to(
+              validate_name_url(@name, code: :icn),
+              method: :post,
+              class: 'btn btn-primary btn-sm',
+              data: { confirm: 'Are you sure? This action cannot be undone' }
+            ) do %>
+          <%= fa_icon('stamp') %> Report valid under ICN
+        <% end %>
+        &raquo; Indicate that this name has been validly published under
+        the ICN (Botanical Code)
+        <hr/>
         <% if @name.after_submission? %>
           <%= link_to(
                 return_name_url(@name),

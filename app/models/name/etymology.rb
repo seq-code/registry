@@ -66,7 +66,9 @@ module Name::Etymology
   end
 
   def partial_etymology(component, html = false)
-    pre = [etymology(component, :lang), etymology(component, :grammar)].compact.join(' ')
+    pre = [
+      etymology(component, :lang), etymology(component, :grammar)
+    ].compact.join(' ')
     pre = nil if pre.empty?
     par = etymology(component, :particle)
     des = etymology(component, :description)
