@@ -730,7 +730,8 @@ module Name::QualityChecks
     @qc_warnings.add(:missing_description) unless description?
     @qc_warnings.add(:invalid_effective_publication) if proposed_by&.prepub?
     @qc_warnings.add(:missing_publication_of_emendation) # check
-    if proposed_by.nil? && (register.nil? || register.before_notification?)
+    if proposed_by.nil? &&
+        (register.nil? || register.notified? || register.validated?)
       @qc_warnings.add(:missing_effective_publication)
     end
 
