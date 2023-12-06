@@ -75,6 +75,10 @@ class Register < ApplicationRecord
       submitted? ? 'submitted' : 'draft'
   end
 
+  def before_notification?
+    !validated? && !notified?
+  end
+
   def endorsed?
     submitted? && all_endorsed?
   end

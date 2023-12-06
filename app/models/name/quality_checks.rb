@@ -728,9 +728,11 @@ module Name::QualityChecks
     @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
     @qc_warnings.add(:identical_external_name) unless external_homonyms.empty?
     @qc_warnings.add(:missing_description) unless description?
-    @qc_warnings.add(:missing_effective_publication) if proposed_by.nil?
     @qc_warnings.add(:invalid_effective_publication) if proposed_by&.prepub?
     @qc_warnings.add(:missing_publication_of_emendation) # check
+    if proposed_by.nil? && (register.nil? || register.before_notification?)
+      @qc_warnings.add(:missing_effective_publication)
+    end
 
     if proposed_by
       @qc_warnings.add(:missing_description_in_publication) # check
