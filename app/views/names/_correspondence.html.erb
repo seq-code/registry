@@ -3,7 +3,15 @@
     <h2>Correspondence with curators</h2>
     <% @name.correspondences.each do |correspondence| %>
       <dt>
-        <%= link_to(correspondence.user.username, correspondence.user) %>,
+        <%= fa_icon('comment', class: 'text-primary') %>
+        <%= link_to(correspondence.user) do %>
+          <%= correspondence.user.username %>
+          <% if correspondence.user.curator? %>
+            <span class="badge rounded-pill bg-primary text-light">
+              curator
+            </span>
+          <% end %>
+        <% end %>
         <%= time_ago_in_words(correspondence.created_at) %> ago:
       </dt>
       <dd><%= correspondence.message %></dd>
