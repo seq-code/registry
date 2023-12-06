@@ -6,7 +6,7 @@
     <% end %>
     <% @register.correspondences.each do |correspondence| %>
       <dt>
-        <%= fa_icon('comment', class: 'text-primary') %>
+        <%= fa_icon('comment') %>
         <%= link_to(correspondence.user) do %>
           <%= correspondence.user.username %>
           <% if correspondence.user.curator? %>
