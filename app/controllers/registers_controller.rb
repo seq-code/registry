@@ -374,10 +374,12 @@ class RegistersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def register_params
-      params.require(:register)
-            .permit(
-              :publication_id, :publication_pdf, :supplementary_pdf, :record_pdf
-            )
+      params
+        .require(:register)
+        .permit(
+          :publication_id, :publication_pdf, :supplementary_pdf, :record_pdf,
+          :title, :abstract
+        )
     end
 
     def register_notify_params

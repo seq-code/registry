@@ -27,6 +27,8 @@ class Register < ApplicationRecord
   validates(:title, presence: true, if: :validated?)
   validate(:title_different_from_effective_publication)
 
+  attr_accessor :modal_form_id
+
   def to_param
     accession
   end
