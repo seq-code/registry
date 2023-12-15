@@ -1,6 +1,17 @@
 <% if @register.title? %>
   <% provide(:title, @register.title) %>
 <% end %>
+
+<% if @register.can_edit? current_user %>
+  <% @register.modal_form_id = modal('Edit Register List', size: 'lg') do %>
+    <%= simple_form_for(@register) do |f| %>
+      <%= render(partial: 'edit_title_abstract', locals: { f: f }) %>
+      <hr/>
+      <%= f.submit(class: 'btn btn-primary') %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <%
   links = [
     [register_url(@register, format: :json), 'file-code', 'JSON'],
@@ -26,6 +37,7 @@
 
 <%= render(partial: 'alert_messages') %>
 <%= render(partial: 'metadata') %>
+<%= render(partial: 'abstract') %>
 <%= render(partial: 'names') %>
 <%= render(partial: 'correspondence') %>
 <%= render(partial: 'contributor') %>

@@ -12,6 +12,8 @@ class Tutorial < ApplicationRecord
 
   @@tutorials_hash = {}
 
+  attr_accessor :invalid_record
+
   [Lineage, Batch, Subspecies, Parent, Neotype].each do |i|
     include i
     @@tutorials_hash[i.to_s.gsub(/.*::/, '').downcase.to_sym] = i.hash

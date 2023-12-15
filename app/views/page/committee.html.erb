@@ -5,7 +5,7 @@
 <hr/>
 
 <% def show_person(id) %> 
-  <% modal_button("modal-#{id}", class: 'text-primary') do %>
+  <% modal_button("modal-person-#{id}", class: 'text-primary') do %>
     <%= fa_icon('caret-right', class: 'ml-2') %>
     <b><%= @persons[id][:name] %></b>,
     <%= @persons[id][:affiliation] %>
@@ -464,18 +464,27 @@
     },
     li: {
       name: 'Cheng Li',
-      affiliation: 'Oregon State University, USA',
+      affiliation: 'James Madison University, USA',
       bio: <<~BIO
-        How awesome conductive materials synthesized by microbes are! Many
-        microbes perform extracellular electron transfer to respire on solid
-        materials, and therefore, they construct conductive materials to
-        facilitate such electron transfer. As an environmental engineer, Dr.
-        Cheng Li studies extracellular electron transfers in microbial consortia
-        and would like to apply this unique feature of microbes to clean the
-        environment and produce renewable energy. His research focuses broadly
-        on biotechnology and specifically on extracellular electron transfer
-        mechanisms of novel marine cable bacteria. Recently, Dr. Li enriched a
-        culture of cable bacteria collected from Yaquina Bay, Newport, OR.
+        Cheng Li is an Assistant Professor at James Madison University and a
+        respected researcher in applying microorganisms that can perform
+        extracellular electron transfer to remediate environments and
+        sequestrate carbon from the atmosphere.
+        His academic journey began at Oregon State University, where he
+        developed a strong foundation in research and a deep passion for his
+        subjects. At James Madison University, Cheng Li has excelled as an
+        educator, inspiring students through engaging lectures and fostering a
+        dynamic learning environment. Cheng’s current research focuses on
+        enriching cable bacteria for engineering applications and using
+        bioelectrochemical systems to remediate sedimentary environments. His
+        collaborative spirit extends to his research, where he has made
+        significant contributions to the understanding of cable bacteria and
+        their applications in engineered systems such as microbial fuel cells.
+        Cheng's work in these areas has earned recognition and respect in
+        academic circles, and his innovative research projects continue to push
+        the boundaries of knowledge. Besides his academic pursuits, Cheng
+        maintains a healthy lifestyle by weightlifting and running,
+        complementing his scholarly endeavors. 
       BIO
     },
     dzunkova: {
@@ -522,17 +531,61 @@
     parks: {
       name: 'Donovan Parks',
       affiliation: 'Microba, Australia',
-      bio: ''
+      bio: <<~BIO
+        Donovan Parks holds a PhD in computer science from Dalhousie University
+        and has developed a number of bioinformatic programs including GTDB-Tk,
+        CheckM, STAMP, and GenGIS. He has expertise in microbial ecology,
+        phylogenetics, and metagenome-assembled genomes. Donovan is a
+        bioinformatic consultant working in the private and public sectors,
+        including for the Australian Centre for Ecogenomics at the University
+        of Queensland where he helps develop and maintain the Genome Taxonomy
+        Database, an initiative to establish a standardized bacterial and
+        archaeal taxonomy based on genome phylogeny.
+      BIO
     },
     rossello_mora: {
       name: 'Ramon Rossello-Mora',
       affiliation: 'IMEDEA; CSIC-UIB, Mallorca, Spain',
-      bio: ''
+      bio: <<~BIO.html_safe
+        Ramon Rossello-Mora is currently Professor of Research at the Spanish
+        Council (CSIC), and working in the research institute IMEDEA (CSIC-UIB)
+        leading the Marine Microbiology Group. He did his PhD at the University
+        of the Balearic Islands and postdocs at the Technical University of
+        Berlin, Technical University of Munich and the Max-Planck Institute for
+        Marine Microbiology in Bremen. Specialized in molecular microbial
+        ecology of marine sediments and hypersaline environments, as well as in
+        theoretical and practical aspects of microbial taxonomy. Has supervised
+        13 PhD and 9 Master theses. As taxonomist he has been granted with the
+        2017 Bergey’s Award, and has served as Vice-Chair of the Judicial
+        Commission of the International Committee for Systematics of Prokaryotes
+        until April 2023. He is executive editor of Systematic and Applied
+        Microbiology since 2006, and Member of the European Academy of
+        Microbiology since 2016.<br/><br/>
+
+        His expertise is on microbial systematics, taxonomy, phylogeny and
+        molecular ecology of (especially) marine and hyperhalophilic
+        prokaryotes. He has been working on genomics and metagenomics of
+        prokaryotes, on the evaluation of the species concept for prokaryotes,
+        developing tools for taxonomic measurements as the
+        <a href="https://jspecies.ribohost.com/jspeciesws/">JSpecies</a> and
+        <a href="https://imedea.uib-csic.es/mmg/ltp/">LTP</a> as well as
+        different aspects of molecular microbial ecology.
+      BIO
     },
     finn: {
       name: 'Robert Finn',
       affiliation: 'European Bioinformatics Institute (EMBL-EBI), UK',
-      bio: ''
+      bio: <<~BIO
+        Rob Finn is the Lead of the Microbiome Informatics team at EMBL's
+        European Bioinformatics Institute. This team produces MGnify, a world
+        leading resource for the functional and taxonomic analysis and archiving
+        of microbiome derived sequence data. He is co-lead of the Ensembl
+        resource, and is specifically involved in producing the microbial
+        divisions. Recent efforts across both resources include the production
+        of biome specific genome catalogues (isolate and metagenome assembled
+        genomes) and harmonising that prokaryotic annotation pipelines.
+
+      BIO
     },
     mchardy: {
       name: 'Alice McHardy',
@@ -548,7 +601,7 @@
 %>
 
 <% @persons.each do |id, person| %>
-  <% modal('SeqCode Committee', id: "modal-#{id}", size: :lg) do %>
+  <% modal('SeqCode Committee', id: "modal-person-#{id}", size: :lg) do %>
     <h3><%= person[:name] %></h3>
     <h5><%= person[:affiliation] %></h5>
     <p><%= person[:bio] %></p>
@@ -577,6 +630,41 @@
 
 <dl class="border-secondary pl-3 my-4" style="border-left: 0.5em solid;">
   <h2 class="text-secondary">Executive Board</h2><hr/>
+  <% id = modal('Functions of the Executive Board', size: :lg) do %>
+    <ol>
+      <li>To maintain a list of the SeqCode Community members.</li>
+      <li>Work with the officers of ISME to encourage recruitment to the
+        SeqCode Community and promote the goals of the SeqCode Committee.</li>
+      <li>To consider exceptional applications for membership of the SeqCode
+        Community from non-members of ISME.</li>
+      <li>To organise plenary meetings of the SeqCode Committee, in physical
+        or online formats, as deemed necessary and not less than once per
+        term</li>
+      <li>To organise meetings, in physical or online formats, to promote the
+        SeqCode and microbial systematics.</li>
+      <li>To consider proposals for subcommittees on taxonomy and to establish
+        <i>ad hoc</i> ‘Task &amp; Finish’ Working Groups as deemed
+        necessary</li>
+      <li>To organise elections of officers of the SeqCode Committee
+        administrative components, including its own Chair, Vice Chair, and
+        Secretary</li>
+      <li>To maintain the Statutes of the SeqCode Committee as a publicly
+        accessible ‘living document’ and consider any requests to amend the
+        Statutes following the process outlined in Article 16 of the SeqCode
+        Committee Statutes.</li>
+      <li>To receive and disseminate biennial written reports from the
+        administrative components.</li>
+      <li>To report annually and as requested to the ISME Executive
+        Board.</li>
+    </ol>
+  <% end %>
+  <p class="lead">
+    The Executive Board manages the constituent components of the SeqCode
+    Committee.
+    <%= modal_button(id, class: 'text-primary') do %>
+      Functions of the Executive Board
+    <% end %>.
+  </p>
   <dt>Chair</dt>
   <dd><%= show_person(:whitman) %></dd>
   <dt>Vice-Chair</dt>
@@ -599,6 +687,23 @@
 
 <dl class="border-secondary pl-3 my-4" style="border-left: 0.5em solid;">
   <h2 class="text-secondary">Legislative Commission</h2><hr/>
+  <% id = modal('Functions of Legislative Commission', size: :lg) do %>
+    <ol>
+      <li>To formulate proposals to amend the SeqCode as deemed necessary or as
+        requested by the SeqCode Community.</li>
+      <li>To receive and arrange discussion of proposals to amend the
+        SeqCode.</li>
+      <li>To maintain the SeqCode as a publicly accessible ‘living document’ and
+        arrange issuance of new editions at timely intervals.</li>
+    </ol>
+  <% end %>
+  <p class="lead">
+    The Legislative Commission is the only body authorized to amend the
+    SeqCode.
+    <%= modal_button(id, class: 'text-primary') do %>
+      Functions of the Legislative Commission
+    <% end %>.
+  </p>
   <dt>Chair</dt>
   <dd><%= show_person(:sutcliffe) %></dd>
   <dt>Vice-Chair</dt>
@@ -609,6 +714,35 @@
 
 <dl class="border-secondary pl-3 my-4" style="border-left: 0.5em solid;">
   <h2 class="text-secondary">Reconciliation Commission</h2><hr/>
+  <% id = modal('Functions of Reconciliation Commission', size: :lg) do %>
+    Examples of matters on which the Reconciliation Commission ought to render
+    decisions include:
+    <ol>
+      <li>cases in which the consequences or interpretation of a rule are
+        uncertain.</li>
+      <li>cases in which the application of a name is likely to endanger health
+        or have serious economic consequences.</li>
+      <li>cases where the application of a rule is likely to lead to
+        confusion.</li>
+      <li>proposals of neotype sequences (see SeqCode
+        <%= link_to_rule('18c') %>).</li>
+      <li>situations where the priority of names is unclear (see also SeqCode
+        <%= link_to_rule('23c') %>).</li>
+      <li>consideration of names proposed to be contrary to the General
+        Considerations or Principles of the SeqCode
+        (<%= link_to_rule('45') %>).</li>
+      <li>other matters referred to it by the administrative components of the
+        SeqCode Committee.</li>
+    </ol>
+  <% end %>
+  <p class="lead">
+    The Reconciliation Commission is the judicial branch of the SeqCode
+    Committee and is the only body authorized to render decisions on the
+    application of the SeqCode.
+    <%= modal_button(id, class: 'text-primary') do %>
+      Functions of the Reconciliation Commission
+    <% end %>.
+  </p>
   <dt>Chair</dt>
   <dd><%= show_person(:chuvochina) %></dd>
   <dt>Vice-Chair</dt>
@@ -623,7 +757,25 @@
 </dl>
 
 <dl class="border-secondary pl-3 my-4" style="border-left: 0.5em solid;">
-  <h2 class="text-secondary">Registry & Nomenclature Working Group</h2><hr/>
+  <h2 class="text-secondary">Registry &amp; Nomenclature Working Group</h2><hr/>
+  <% id = modal('Functions of Registry & Nomenclature Working Group',
+                size: :lg) do %>
+    <ol>
+      <li>To maintain and develop the functionality of the SeqCode
+        Registry.</li>
+      <li>To provide the nomenclatural expertise needed for curation of the
+        SeqCode Registry.</li>
+      <li>To provide the nomenclatural advice for those needing assistance in
+        forming Latin names for novel taxa.</li>
+    </ol>
+  <% end %>
+  <p class="lead">
+    The SeqCode Registry has been established to record and maintain names that
+    are formed or recognized under the SeqCode (<%= link_to_rule('4') %>).
+    <%= modal_button(id, class: 'text-primary') do %>
+      Functions of the Registry &amp; Nomenclature Working Group
+    <% end %>.
+  </p>
   <dt>Chair</dt>
   <dd><%= show_person(:rodriguez_r) %></dd>
   <dt>Secretary</dt>
@@ -639,6 +791,12 @@
 
 <dl class="border-secondary pl-3 my-4" style="border-left: 0.5em solid;">
   <h2 class="text-secondary">Standards Working Group</h2><hr/>
+  <p class="lead">
+    The Standards Working Group will monitor technical developments in the
+    generation and quality control of sequence data and will advise the SeqCode
+    Community on recommendations for the minimum standards required by SeqCode
+    <%= link_to_rule('18a') %>.
+  </p>
   <dt>Chair</dt>
   <dd><%= show_person(:konstantinidis) %></dd>
   <dt>Secretary</dt>

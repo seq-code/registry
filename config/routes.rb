@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get  'page/connect',      as: :page_connect
   get  'page/join',         as: :page_join
   get  'page/about',        as: :page_about
+  get  'page/prize',        as: :page_prize
   get  'page/committee'
   get  'help' => 'page#help_index', as: :help_index
   get  'help/:topic' => 'page#help', as: :help

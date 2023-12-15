@@ -30,20 +30,7 @@
     ) do |f| %>
   <br/>
   <h2>Register List</h2>
-  <%=
-    f.input(
-      :title, required: true,
-      hint: 'Title of the Register List, not the title of the ' \
-            'effective publication'
-    )
-  %>
-  <%=
-    f.input(
-      :abstract, as: :rich_text_area, label: 'Abstract (optional)',
-      hint: 'Abstract of the Register List, not the abstract of the ' \
-            'effective publication'
-    )
-  %>
+  <%= render(partial: 'edit_title_abstract', locals: { f: f }) %>
 
   <br/>
   <h2>Effective Publication</h2>

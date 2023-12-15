@@ -376,9 +376,10 @@ class NamesController < ApplicationController
 
   # POST /names/1/validate
   def validate
-    if params[:code] == 'icnp'
+    if params[:code] == 'icnp' || params[:code] == 'icn'
       par = {
-        status: 20, validated_by: current_user, validated_at: Time.now
+        status: params[:code] == 'icnp' ? 20 : 25,
+        validated_by: current_user, validated_at: Time.now
       }
       if @name.validated?
         flash[:alert] = 'Name status is incompatible with validation'

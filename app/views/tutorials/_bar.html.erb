@@ -18,3 +18,15 @@
   </div>
 </nav>
 <%= f.input(:id, as: :hidden) %>
+
+<% if @tutorial.invalid_record %>
+  <div class="alert alert-danger">
+    Errors detected for <%= display_link(@tutorial.invalid_record.record) %>:
+    <ul>
+      <% @tutorial.invalid_record.record.errors.full_messages.each do |error| %>
+        <li><%= error %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+

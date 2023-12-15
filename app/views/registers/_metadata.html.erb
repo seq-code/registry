@@ -1,6 +1,15 @@
 <div class="container main-section name-details">
   <% if @register.title? %>
-    <h3 class="mb-4 mx-3 border-bottom pb-1"><%= @register.title %></h3>
+    <h3 class="mb-4 mx-3 border-bottom pb-1">
+      <%= @register.title %>
+      <% if @register.modal_form_id %>
+        <sup style="font-size: 1rem;" class="mx-1">
+        <%= modal_button(@register.modal_form_id, class: 'badge badge-pill badge-info') do %>
+          <%= fa_icon('edit') %> Edit
+        <% end %>
+        </sup>
+      <% end %>
+    </h3>
   <% end %>
 
   <div class="row">

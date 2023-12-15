@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
   # GET /link/Patescibacteria.json
   def short_link
     par = { format: params[:format] }
-    super_pages = %w[initiative seqcode connect join committee]
+    super_pages = %w[initiative seqcode connect join committee prize]
     params[:path] ||= ''
     params[:path].sub!(%r[\A/+], '')
     params[:path].sub!(%r[(?<!/)/+\z], '')

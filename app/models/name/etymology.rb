@@ -66,7 +66,9 @@ module Name::Etymology
   end
 
   def partial_etymology(component, html = false)
-    pre = [etymology(component, :lang), etymology(component, :grammar)].compact.join(' ')
+    pre = [
+      etymology(component, :lang), etymology(component, :grammar)
+    ].compact.join(' ')
     pre = nil if pre.empty?
     par = etymology(component, :particle)
     des = etymology(component, :description)
@@ -261,7 +263,7 @@ module Name::Etymology
   end
 
   def importable_etymology
-    return nil unless %w[species subspecies].include?(rank)
+    return nil unless %w[species subspecies].include?(inferred_rank)
 
     @importable_etymology ||=
       Name.where('name LIKE ?', "% #{last_epithet}")
@@ -274,8 +276,10 @@ module Name::Etymology
   ##
   # Can the etymology be automatically filled on the basis of the type genus?
   def can_autofill_etymology?
-    return false if autofilled_etymology || !rank?
-    (type_is_name? && type_name.rank == 'genus') || !importable_etymology.nil?
+    return false if autofilled_etymology
+
+    (type_is_name? && type_name.inferred_rank == 'genus') ||
+      !importable_etymology.nil?
   end
 
   ##

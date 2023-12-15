@@ -195,6 +195,20 @@ module ApplicationHelper
       fa_icon(icon) + text
     end
   end
+
+  def display_link(obj)
+    field =
+      %i[name_html name accession citation].find { |i| obj.respond_to? i }
+    display =
+      if field
+        obj.send(field)
+      elsif obj.respond_to? :id
+        obj.class.to_s + ' ' + obj.id
+      else
+        obj.to_s
+      end
+    link_to(display, obj)
+  end
 end
 
 class AdaptableList

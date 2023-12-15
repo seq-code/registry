@@ -23,6 +23,8 @@
         <% if current_contributor? %>
           <%= link_to('Register a new name',
                       new_name_path, class: 'btn btn-info btn-sm') %>
+          <%= link_to('Guided registrations',
+                      tutorials_path, class: 'btn btn-info btn-sm') %>
           <%= link_to('My names',
                       user_names_path, class: 'btn btn-info btn-sm') %>
           <%= link_to('My register lists',

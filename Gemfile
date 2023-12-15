@@ -12,7 +12,7 @@ gem 'rails', '~> 6.1'
 gem 'sqlite3'
 gem 'pg'
 # Use Puma as the app server
-gem 'puma', '~> 4.3'
+gem 'puma', '~> 5.6'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -75,5 +75,7 @@ gem 'jquery-rails'
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
 gem 'font_awesome5_rails', '~> 1.5'
-gem 'simple_form'
+# simple_form 5.3.0 introduced a bug that prevents custom inputs from being
+# loaded (see https://github.com/heartcombo/simple_form/issues/1824)
+gem 'simple_form', '~> 5.2.0'
 

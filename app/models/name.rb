@@ -1,7 +1,9 @@
 class Name < ApplicationRecord
   has_many(:publication_names, dependent: :destroy)
   has_many(:publications, through: :publication_names)
-  has_many(:name_correspondences, dependent: :destroy)
+  has_many(
+    :name_correspondences, -> { order(:created_at) }, dependent: :destroy
+  )
   has_many(
     :children, -> { order(:name) },
     class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
@@ -58,9 +60,9 @@ class Name < ApplicationRecord
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
 
-  before_save(:standardize_etymology)
-  before_save(:prevent_self_parent)
-  before_save(:monitor_name_changes)
+  before_validation(:standardize_etymology)
+  before_validation(:prevent_self_parent)
+  before_validation(:monitor_name_changes)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -72,7 +74,7 @@ class Name < ApplicationRecord
     :syllabication,
     format: {
       with: /\A[A-Z\.'-]*\z/i,
-      message: 'Only letters, dashes, dots, and apostrophe are allowed'
+      message: 'can only contain letters, dashes, dots, and apostrophe'
     }
   )
   validates(
@@ -195,6 +197,14 @@ class Name < ApplicationRecord
             This name has been validly published under the rules of the ICNP
             and has priority in the scientific record
           TXT
+        },
+        25 => {
+          symbol: :icn, name: 'Valid (ICN)',
+          public: true, valid: true,
+          help: <<~TXT
+            This name has been validly published under the rules of the ICN
+            and has priority in the scientific record
+          TXT
         }
       }
     end
@@ -246,7 +256,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          " <sup>T#{'s' unless icnp?}</sup>".html_safe
+          " <sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
         else
           ''
         end
@@ -264,7 +274,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "#{name}" +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          " (T#{'s' unless icnp?})"
+          " (T#{'s' unless icnp? || icn?})"
         else
           ''
         end
@@ -282,7 +292,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if rank == 'species' && parent&.type_accession&.==(id.to_s)
-          "<sup>T#{'s' unless icnp?}</sup>".html_safe
+          "<sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
         end
     else
       "&#8220;#{name}&#8221;".html_safe
@@ -457,7 +467,7 @@ class Name < ApplicationRecord
   def ncbi_genomes_url
     return unless ncbi_taxonomy?
 
-    'https://www.ncbi.nlm.nih.gov/datasets/genomes/?txid=%i' % ncbi_taxonomy
+    'https://www.ncbi.nlm.nih.gov/datasets/taxonomy/%i/' % ncbi_taxonomy
   end
 
   def seqcode_url(protocol = true)

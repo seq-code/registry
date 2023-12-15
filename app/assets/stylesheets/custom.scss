@@ -131,6 +131,21 @@ nav.navbar-dark {
   }
 }
 
+.news {
+  dl {
+    font-size: 120%;
+    dt {
+      margin-top: 1em;
+      .date {
+        display: inline-block;
+        position: absolute;
+        right: 1rem;
+        color: #00000066;
+      }
+    }
+  }
+}
+
 .recent-entries-list {
   a {
     &:hover {

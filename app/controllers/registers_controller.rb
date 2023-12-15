@@ -236,8 +236,7 @@ class RegistersController < ApplicationController
           name.proposed_by ||= publication
           name.save!
         end
-        @register.update!(par)
-        all_ok = true
+        all_ok = @register.update(par)
       end
     end
 
@@ -256,11 +255,8 @@ class RegistersController < ApplicationController
   def validate
     success = true
 
-    if @register.validate!(current_user)
-      flash['notice'] = 'Successfully validated the register list'
-    else
-      flash['alert'] = 'An unexpected error occurred while validating the list'
-    end
+    @register.validate!(current_user)
+    flash['notice'] = 'Successfully validated the register list'
 
     # Notify submitter
     AdminMailer.with(
@@ -270,6 +266,11 @@ class RegistersController < ApplicationController
     ).register_status_email.deliver_later
 
     redirect_to(@register)
+  rescue ActiveRecord::RecordInvalid => inv
+    flash['alert'] =
+      'An unexpected error occurred while validating the list: ' +
+      inv.record.errors.map { |e| "#{e.attribute} #{e.message}" }.to_sentence
+    redirect_to(inv.record)
   end
 
   # POST /registers/r:abc/publish
@@ -373,10 +374,12 @@ class RegistersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def register_params
-      params.require(:register)
-            .permit(
-              :publication_id, :publication_pdf, :supplementary_pdf, :record_pdf
-            )
+      params
+        .require(:register)
+        .permit(
+          :publication_id, :publication_pdf, :supplementary_pdf, :record_pdf,
+          :title, :abstract
+        )
     end
 
     def register_notify_params
