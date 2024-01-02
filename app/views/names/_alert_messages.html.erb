@@ -20,18 +20,6 @@
     <% end %>
   </div>
 <% elsif !@name.public? %>
-  <div class="alert alert-warning">
-    This name is undergoing the process of validation, currently in the
-    state of <%= @name.status_name %>. The entry and all of its metadata
-    is currently not public, only visible to the submitter and the system
-    curators.
-    <% unless @name.created_at < 1.year.ago %>
-      <hr/>
-      This name has no standing or validity but it is reserved for up to a
-      year, so no homonyms can be proposed until
-      <%= (@name.created_at + 1.year).strftime('%b %-d / %Y') %>
-    <% end %>
-  </div>
   <% if @name.created_at < 1.year.ago %>
     <div class="alert alert-danger">
       This name was registered over a year ago and it's no longer reserved

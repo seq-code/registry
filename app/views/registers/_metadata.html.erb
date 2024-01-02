@@ -30,22 +30,7 @@
 
       <dt><%= fa_icon('clipboard-check') %> Status</dt>
       <dd>
-        <%= @register.status_name.capitalize %>:
-        <% if @register.validated? %>
-          Valid, all names in this register list have been effectively published
-          and validated
-        <% elsif @register.notified? %>
-          The SeqCode has been notified of effective publication and the request
-          is currently being evaluated by expert curators
-        <% elsif @register.endorsed? %>
-          All the names in this register list have been endorsed by expert
-          curators, and the SeqCode is awaiting notification of publication
-        <% elsif @register.submitted? %>
-          This register list is currently being evaluated by expert curators
-          or awaiting effective publication
-        <% else %>
-          This is a draft register list, currently in preparation
-        <% end %>
+        <%= @register.status_name.capitalize %>: <%= @register.status_help %>
       </dd>
 
       <% if @register.notified? %>

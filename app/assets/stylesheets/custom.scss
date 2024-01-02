@@ -29,6 +29,10 @@
   }
 }
 
+input[type=checkbox] {
+  accent-color: theme-color-level(primary, 0);
+}
+
 #dashboard-actions, .btn {
   .fa, .fas, .far, .fal, .fad, .fab {
     min-width: 1.5em;

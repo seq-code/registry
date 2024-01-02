@@ -1,13 +1,14 @@
-<% case @action[1] %>
+<% case @action[1].to_s %>
 <% when 'endorse' %>
   <p>
     Your application as a <%= @action[0] %> of the SeqCode Registry has
     been endorsed.
   </p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
-    <% case @action[0] %>
+    <% case @action[0].to_s %>
     <% when 'curator' %>
       You are now authorized to access and edit any pre-validation names,
       including changing their status (e.g., endorsing or returning to
@@ -27,9 +28,10 @@
     been denied.
   </p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
-    <% case @action[0] %>
+    <% case @action[0].to_s %>
     <% when 'curator' %>
       You are not authorized to curate other submitter's records in the
       Registry, but you can still submit your own names as a contributor.

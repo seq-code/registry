@@ -1,0 +1,20 @@
+<p>The entry <%= link_to(@object.display,
+      polymorphic_url(@object, anchor: 'correspondence')) %> has changed status.
+</p>
+<br/>
+
+<h2>What does this mean?</h2>
+<p>
+  You have active notifications for <%= link_to(@object.display, @object) %>
+  and this entry has changed status.
+</p>
+<br/>
+
+<h2>What to do next?</h2>
+<p>
+  If you are actively interested in this entry, open the link above and see the
+  new status. Otherwise,
+  <%= link_to('click here to stop notifications for this entry',
+        [@object, :unobserve]) %>.
+</p>
+

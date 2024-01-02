@@ -21,6 +21,8 @@ class User < ApplicationRecord
   has_many(:checked_names, -> { distinct }, through: :checks, source: :name)
   has_many(:observe_names, dependent: :destroy)
   has_many(:observing_names, through: :observe_names, source: :name)
+  has_many(:observe_registers, dependent: :destroy)
+  has_many(:observing_registers, through: :observe_registers, source: :register)
 
   validates(
     :username,

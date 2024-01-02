@@ -7,12 +7,16 @@
 
   <%= f.error_notification %>
 
-  <div class="form-inputs">
+  <div class="form-inputs text-left">
     <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
       <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
     <% end %>
+    <hr/><br/>
 
-    <h4>Personal information</h4>
+    <h4>
+      <%= fa_icon('id-badge', class: 'mr-1') %>
+      Personal information
+    </h4>
     <%= f.input :email, required: true, autofocus: true %>
     <%= f.input :family, label: 'Family name',
                 input_html: { autocomplete: 'lastname' } %>
@@ -20,9 +24,12 @@
                 input_html: { autocomplete: 'firstname' } %>
     <%= f.input :affiliation,
                 input_html: { autocomplete: 'affiliation' } %>
-    <br/>
+    <br/><hr/><br/>
 
-    <h4>Account information</h4>
+    <h4>
+      <%= fa_icon('user-circle', class: 'mr-1') %>
+      Account information
+    </h4>
     <%= f.input :username, disabled: true,
                 input_html: { autocomplete: 'username' } %>
     <%= f.input :password,
@@ -36,11 +43,24 @@
                 hint: 'we need your current password to confirm your changes',
                 required: true,
                 input_html: { autocomplete: 'current-password' } %>
-    <br/>
+    <br/><hr/><br/>
     
-    <h4>Email notifications</h4>
-    <%= f.input(:opt_regular_email, label: 'Receive regular notifications') %>
-    <%= f.input(:opt_notification, label: 'Receive monthly reminders') %>
+    <h4 id="email-notifications" class="mb-3">
+      <%= fa_icon('mail-bulk', class: 'mr-1') %>
+      Email notifications
+    </h4>
+    <%= f.input(
+          :opt_regular_email, label: 'Receive regular notifications',
+          hint: 'Receive emails whenever entries with active notifications ' \
+                'change status') %>
+    <%= f.input(
+          :opt_message_email, label: 'Receive message notifications',
+          hint: 'Receive emails whenever new correspondence is recorded in ' \
+                'entries with active notifications') %>
+    <%= f.input(
+          :opt_notification, label: 'Receive monthly reminders',
+          hint: 'Receive periodic reminders of pending submissions'
+          ) %>
     <br/>
 
   </div>
@@ -50,3 +70,4 @@
   </div>
 <% end %>
 
+<br/><br/><br/><br/>

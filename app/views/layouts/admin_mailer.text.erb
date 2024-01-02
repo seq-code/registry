@@ -2,6 +2,11 @@ Dear <%= @user.informal_name %>,
 
 <%= yield %>
 
-  Best wishes,
-  The SeqCode Registry Team
+Best wishes,
+The SeqCode Registry Team
 
+--------------------------
+
+You are receiving this email from the SeqCode Registry because of your current
+user configuration. Configure Email Notifications at:
+<%= edit_user_registration_url(anchor: 'email-notifications') %>

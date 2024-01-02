@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_10_115026) do
+ActiveRecord::Schema.define(version: 2024_01_02_013502) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -197,6 +197,7 @@ ActiveRecord::Schema.define(version: 2023_08_10_115026) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name_id"], name: "index_observe_names_on_name_id"
+    t.index ["user_id", "name_id"], name: "observe_names_uniqueness", unique: true
     t.index ["user_id"], name: "index_observe_names_on_user_id"
   end
 
@@ -206,6 +207,7 @@ ActiveRecord::Schema.define(version: 2023_08_10_115026) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["register_id"], name: "index_observe_registers_on_register_id"
+    t.index ["user_id", "register_id"], name: "observe_registers_uniqueness", unique: true
     t.index ["user_id"], name: "index_observe_registers_on_user_id"
   end
 
@@ -362,6 +364,7 @@ ActiveRecord::Schema.define(version: 2023_08_10_115026) do
     t.string "affiliation_ror"
     t.boolean "opt_regular_email", default: true
     t.boolean "opt_notification", default: true
+    t.boolean "opt_message_email", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

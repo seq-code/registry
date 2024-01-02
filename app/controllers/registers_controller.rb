@@ -6,6 +6,7 @@ class RegistersController < ApplicationController
       submit return return_commit endorse notification notify
       validate publish new_correspondence
       internal_notes nomenclature_review genomics_review
+      observe unobserve
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -31,6 +32,7 @@ class RegistersController < ApplicationController
     :authenticate_can_edit!,
     only: %i[edit update destroy submit notification notify new_correspondence]
   )
+  before_action(:authenticate_user!, only: %i[observe unobserve])
 
   # GET /registers or /registers.json
   def index(status = :validated)
@@ -50,6 +52,16 @@ class RegistersController < ApplicationController
           user.registers
         else
           current_user.registers
+        end
+      when :observing
+        authenticate_curator! && return
+        if params[:user]
+          authenticate_curator! && return
+          user = User.find_by(username: params[:user])
+          @extra_title = "by #{user.display_name}"
+          user.observing_registers
+        else
+          current_user.observing_registers
         end
       when :draft
         authenticate_curator! && return
@@ -100,6 +112,7 @@ class RegistersController < ApplicationController
     if @register.can_edit?(current_user) && @register.save &&
          (!@name || @name.add_to_register(@register, current_user)) &&
          (!@tutorial || @tutorial.add_to_register(@register, current_user))
+      @register.add_observer(current_user)
       flash[:notice] = 'Register was successfully created'
       if @tutorial
         flash[:notice] += '. Remember to submit register list for evaluation'
@@ -138,19 +151,9 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abcd/submit
   def submit
-    ActiveRecord::Base.transaction do
-      par = { status: 10, submitted_at: Time.now, submitted_by: current_user }
-      @register.names.each do |name|
-        if name.after_submission?
-          flash[:alert] = 'Some names in the list have already been submitted'
-        end
-        name.update!(par)
-      end
-      @register.update!(submitted: true, submitted_at: Time.now)
-      flash[:notice] = 'Register list successfully submitted for review'
-    end
-
-    redirect_to @register
+    change_status(
+      :submit, 'Register list successfully submitted for review', current_user
+    )
   end
 
   # GET /registers/r:abcd/return
@@ -162,41 +165,17 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abcd/return
   def return_commit
-    ActiveRecord::Base.transaction do
-      par = { status: 5 }
-      @register.names.each { |name| name.update!(par) unless name.validated? }
-      @register.update!(
-        submitted: false, notified: false, notes: params[:register][:notes]
-      )
-    end
-
-    # Notify submitter
-    AdminMailer.with(
-      user: @register.user,
-      register: @register,
-      action: 'return'
-    ).register_status_email.deliver_later
-
-    redirect_to(@register)
+    change_status(
+      :return, 'Register list returned to authors',
+      current_user, params[:register][:notes]
+    )
   end
 
   # POST /registers/r:abcd/endorse
   def endorse
-    ActiveRecord::Base.transaction do
-      par = { status: 12, endorsed_by: current_user, endorsed_at: Time.now }
-      @register.names.each do |name|
-        name.update!(par) unless name.after_endorsement?
-      end
-    end
-
-    # Notify submitter
-    AdminMailer.with(
-      user: @register.user,
-      register: @register,
-      action: 'endorse'
-    ).register_status_email.deliver_later
-
-    redirect_to(@register)
+    change_status(
+      :endorse, 'Register list has been endorsed', current_user
+    )
   end
 
   # GET /registers/r:abc/notify
@@ -207,44 +186,14 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abc/notify
   def notify
-    par = register_notify_params.merge(notified: true, notified_at: Time.now)
-    @register.title = par[:title]
-    @register.abstract = par[:abstract]
-
-    all_ok = false
-    publication = Publication.by_doi(params[:doi])
-    par[:publication] = publication
-    if publication.new_record?
-      @register.errors.add(:doi, publication.errors[:doi].join('; '))
-    elsif !par[:publication_pdf] && !@register.publication_pdf.attached?
-      @register.errors.add(:publication_pdf, 'cannot be empty')
-    else
-      par[:publication] = publication
-      ActiveRecord::Base.transaction do
-        @register.names.each do |name|
-          unless name.after_endorsement?
-            flash[:warning] = 'Some names in the list have not been endorsed ' \
-              'yet and will require expert review, which could delay validation'
-            name.status = 10
-            name.submitted_at = Time.now
-            name.submitted_by = current_user
-          end
-
-          unless name.publications.include? publication
-            name.publications << publication
-          end
-          name.proposed_by ||= publication
-          name.save!
-        end
-        all_ok = @register.update(par)
-      end
-    end
-
-    if all_ok
-      HeavyMethodJob.perform_later(:automated_validation, @register)
+    # Note that +notify+ handles errors differently, and is incompatible with
+    # the standard +change_status+ call used in all other status changes
+    if @register.notify(current_user, register_notify_params, params[:doi])
       flash[:notice] = 'The list has been successfully submitted for validation'
       redirect_to(@register)
     else
+      @register.title = par[:title]
+      @register.abstract = par[:abstract]
       flash[:alert] = 'Please review the errors below'
       notification
       render(:notification)
@@ -253,29 +202,14 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abc/validate
   def validate
-    success = true
-
-    @register.validate!(current_user)
-    flash['notice'] = 'Successfully validated the register list'
-
-    # Notify submitter
-    AdminMailer.with(
-      user: @register.user,
-      register: @register,
-      action: 'validate'
-    ).register_status_email.deliver_later
-
-    redirect_to(@register)
-  rescue ActiveRecord::RecordInvalid => inv
-    flash['alert'] =
-      'An unexpected error occurred while validating the list: ' +
-      inv.record.errors.map { |e| "#{e.attribute} #{e.message}" }.to_sentence
-    redirect_to(inv.record)
+    change_status(
+      :validate, 'Successfully validated the register list', current_user
+    )
   end
 
   # POST /registers/r:abc/publish
   def publish
-    # TODO See Register#post_validation
+    # TODO See Register::Status#post_validation
   end
 
   # GET /registers/r:abc/table
@@ -318,18 +252,39 @@ class RegistersController < ApplicationController
   # POST /registers/r:abc/new_correspondence
   def new_correspondence
     @register_correspondence = RegisterCorrespondence.new(
-      params.require(:register_correspondence).permit(:message)
+      params.require(:register_correspondence).permit(:message, :notify)
     )
     unless @register_correspondence.message.empty?
       @register_correspondence.user = current_user
       @register_correspondence.register = @register
       if @register_correspondence.save
+        @register.add_observer(current_user)
         flash[:notice] = 'Correspondence recorded'
       else
         flash[:alert] = 'An unexpected error occurred with the correspondence'
       end
     end
-    redirect_to @register
+    redirect_to(@register)
+  end
+
+  # GET /register/1/observe
+  def observe
+    @register.add_observer(current_user)
+    if params[:from] && RedirectSafely.safe?(params[:from])
+      redirect_to(params[:from])
+    else
+      redirect_back(fallback_location: @register)
+    end
+  end
+
+  # GET /register/1/unobserve
+  def unobserve
+    @register.observers.delete(current_user)
+    if params[:from] && RedirectSafely.safe?(params[:from])
+      redirect_to(params[:from])
+    else
+      redirect_back(fallback_location: @register)
+    end
   end
 
   # POST /registers/r:abc/internal_notes
@@ -407,5 +362,19 @@ class RegistersController < ApplicationController
 
     def ensure_valid!
       @register&.validated?
+    end
+
+    def change_status(fun, success_msg, *extra_opts)
+      if @register.send(fun, *extra_opts)
+        flash[:notice] = success_msg
+      else
+        flash[:alert] = @register.status_alert
+      end
+      redirect_to(@register)
+    rescue ActiveRecord::RecordInvalid => inv
+      flash['alert'] =
+        'An unexpected error occurred while updating the list: ' +
+        inv.record.errors.map { |e| "#{e.attribute} #{e.message}" }.to_sentence
+      redirect_to(inv.record)
     end
 end

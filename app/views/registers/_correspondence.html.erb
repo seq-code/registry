@@ -1,43 +1,9 @@
-<% if @register.can_edit?(current_user) ||
-        correspondence_history ||= false %>
-  <dl name="correspondence" class="main-section name-details">
-    <% unless correspondence_history %>
-      <h2>Correspondence with curators</h2>
-    <% end %>
-    <% @register.correspondences.each do |correspondence| %>
-      <dt>
-        <%= fa_icon('comment') %>
-        <%= link_to(correspondence.user) do %>
-          <%= correspondence.user.username %>
-          <% if correspondence.user.curator? %>
-            <span class="badge rounded-pill bg-primary text-light">
-              curator
-            </span>
-          <% end %>
-        <% end %>
-        <%= time_ago_in_words(correspondence.created_at) %> ago:
-      </dt>
-      <dd><%= correspondence.message %></dd>
-    <% end %>
-    <% if correspondence_history %>
-      <% if @register.correspondences.empty? %>
-        No messages on record
-      <% end %>
-    <% else %>
-      <dt>New message</dt>
-      <dd class="pt-2">
-        <%= simple_form_for(
-              RegisterCorrespondence.new,
-              url:
-                new_correspondence_register_url(accession: @register.accession),
-              method: :post
-            ) do |f| %>
-          <%= f.input(:message, as: :rich_text_area, label: false) %>
-          <%= f.button(:submit, 'Send message') %>
-          &raquo; The messages will be in the permanent record,
-          visible only to submitter and curators
-        <% end %>
-      </dd>
-    <% end %>
-  </dl>
-<% end %>
+<%=
+  render(
+    partial: 'shared/correspondence',
+    locals: {
+      object: @register,
+      correspondence_history: correspondence_history ||= false
+    }
+  )
+%>

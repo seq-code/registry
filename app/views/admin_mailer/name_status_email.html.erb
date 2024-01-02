@@ -1,7 +1,8 @@
-<% case @action %>
+<% case @action.to_s %>
 <% when 'endorse' %>
   <p>The name <%= link_to(@name.name_html, @name) %> has been endorsed.</p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     Our team of curators have marked this name and the associated metadata
@@ -10,6 +11,7 @@
     notified of publication.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     If you are currently writing the manuscript that describes this taxon,
@@ -26,12 +28,14 @@
 <% when 'return' %>
   <p>The name <%= link_to(@name.name_html, @name) %> has been returned.</p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     Our team of curators have found some issues with the name and have returned
     it to you for further inspection.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     Review the correspondance with the curators to determine the following
@@ -45,11 +49,13 @@
 <% when 'validate' %>
   <p>The name <%= link_to(@name.name_html, @name) %> has been validated.</p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     The name is now considered valid under the SeqCode.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     You can cite the name without quotation marks now. The formal recommended
@@ -64,12 +70,14 @@
 <% when 'claim' %>
   <p>You have claimed the name <%= link_to(@name.name_html, @name) %>.</p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     The data and metadata associated to this name are no longer publicly
     available, and you are now able to edit all the associated metadata.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     You can now complete all the validation requirements and submit the
@@ -79,11 +87,13 @@
 <% when 'unclaim' %>
   <p>You have unclaimed the name <%= @name.name_html %>.</p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     You are no longer authorized to modify this name's data and metadata.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     If you were aware and agree with this, you don't need to take any further

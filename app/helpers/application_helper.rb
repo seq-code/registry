@@ -131,7 +131,7 @@ module ApplicationHelper
 
   def modal(title, opts = {})
     @modals ||= []
-    id = opts[:id] || "modal-#{@modals.size}"
+    id = opts[:id] || "modal-#{SecureRandom.uuid}"
     @modals <<
       content_tag(
         :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog'
@@ -190,24 +190,27 @@ module ApplicationHelper
   def download_button(url, icon, text, opts = {})
     opts[:color] ||= 'light'
     opts[:class] ||= ''
-    opts[:class]  += " btn btn-#{opts[:color]} btn-sm text-muted"
-    link_to(url, class: opts[:class]) do
+    opts[:class]  += " btn btn-#{opts[:color]} btn-sm"
+    opts[:class]  += ' text-muted' if opts[:color] == 'light'
+    link_to(url, opts) do
       fa_icon(icon) + text
     end
   end
 
-  def display_link(obj)
+  def display_obj(obj)
     field =
       %i[name_html name accession citation].find { |i| obj.respond_to? i }
-    display =
-      if field
-        obj.send(field)
-      elsif obj.respond_to? :id
-        obj.class.to_s + ' ' + obj.id
-      else
-        obj.to_s
-      end
-    link_to(display, obj)
+    if field
+      obj.send(field)
+    elsif obj.respond_to? :id
+      obj.class.to_s + ' ' + obj.id
+    else
+      obj.to_s
+    end
+  end
+
+  def display_link(obj)
+    link_to(display_obj(obj), obj)
   end
 end
 

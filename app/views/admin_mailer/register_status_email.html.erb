@@ -1,5 +1,38 @@
 <% name_s = @register.names.count == 1 ? 'name' : 'names' %>
-<% case @action %>
+<% case @action.to_s %>
+<% when 'submit' %>
+  <p>
+    You have successfully submitted the register list
+    <%= link_to(@register.acc_url, @register.acc_url(true)) %>.
+  </p>
+  <br/>
+
+  <h2>What does this mean?</h2>
+  <p>
+    Our team of curators have received your submission and will process it as
+    soon as possible.
+  </p>
+  <br/>
+
+  <h2>What to do next?</h2>
+  <p>No actions are needed from your side at the moment.</p>
+<% when 'notify' %>
+  <p>
+    You have successfully notified the SeqCode Registry of effective publication
+    for the register list
+    <%= link_to(@register.acc_url, @register.acc_url(true)) %>.
+  </p>
+  <br/>
+
+  <h2>What does this mean?</h2>
+  <p>
+    Our team of curators have received your notification and will process it as
+    soon as possible.
+  </p>
+  <br/>
+
+  <h2>What to do next?</h2>
+  <p>No actions are needed from your side at the moment.</p>
 <% when 'endorse' %>
   <p>
     The register list
@@ -7,6 +40,7 @@
     has been endorsed.
   </p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     Our team of curators have marked this list and all the included names
@@ -15,6 +49,7 @@
     been published and the Registry is notified of publication.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     If you are currently writing the manuscript that describes these taxa,
@@ -33,6 +68,7 @@
     has been validated.
   </p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     All the names in this list are now considered valid under the SeqCode.
@@ -40,6 +76,7 @@
     <b><%= @register.priority_date %></b>.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     You can now cite the registration list using the assigned DOI:
@@ -61,12 +98,14 @@
     has been returned to you.
   </p>
   <br/>
+
   <h2>What does this mean?</h2>
   <p>
     Our team of curators have identified at least one blocking issue with
     your list, and have returned it to you for inspection.
   </p>
   <br/>
+
   <h2>What to do next?</h2>
   <p>
     Please visit the <%= link_to('register list page', @register) %>, and

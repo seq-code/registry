@@ -98,6 +98,17 @@
           <% end %>
         </li>
       <% end %>
+      <% if @name.validated? %>
+        <li>
+          <% id = modal('Quality Checks', size: 'xl') do %>
+            <%= render(partial: 'quality_checks',
+                       locals: { force_qc_view: true }) %>
+          <% end %>
+          <%= modal_button(id, type: '', class: '', tag: 'a', href: '#') do %>
+            Quality checks before valid publication
+          <% end %>
+        </li>
+      <% end %>
     </ul>
   </dd>
 

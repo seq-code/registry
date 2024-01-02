@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   get  'endorsed'  => 'names#endorsed',  as: :endorsed_names
   get  'drafts'    => 'names#drafts',    as: :draft_names
   get  'user-names' => 'names#user_names', as: :user_names
+  get  'observing-names' => 'names#observing_names', as: :observing_names
   get  'search' => 'application#search', as: :search
   get  'type-genomes(.:format)' => 'names#type_genomes', as: :name_type_genomes
 
@@ -67,8 +68,8 @@ Rails.application.routes.draw do
   post 'names/:id/claim' => 'names#claim', as: :claim_name
   post 'names/:id/unclaim' => 'names#unclaim', as: :unclaim_name
   post 'names/:id/new_correspondence' => 'names#new_correspondence', as: :new_correspondence_name
-  get  'names/:id/observe' => 'names#observe', as: :observe_name
-  get  'names/:id/unobserve' => 'names#unobserve', as: :unobserve_name
+  get  'names/:id/observe' => 'names#observe', as: :name_observe
+  get  'names/:id/unobserve' => 'names#unobserve', as: :name_unobserve
 
   get  'placements/new/:name_id' => 'placements#new', as: :new_placement
   post 'placements'     => 'placements#create', as: :create_placement
@@ -92,6 +93,8 @@ Rails.application.routes.draw do
   patch 'registers/:accession/internal_notes' => 'registers#internal_notes', as: :internal_notes_register
   post 'registers/:accession/nomenclature_review' => 'registers#nomenclature_review', as: :nomenclature_review_register
   post 'registers/:accession/genomics_review' => 'registers#genomics_review', as: :genomics_review_register
+  get  'registers/:accession/observe' => 'registers#observe', as: :register_observe
+  get  'registers/:accession/unobserve' => 'registers#unobserve', as: :register_unobserve
   resources(:publications)
   resources(:subjects)
 

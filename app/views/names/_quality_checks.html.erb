@@ -1,5 +1,6 @@
-<% if @name.can_edit?(current_user) %>
-  <% if !@name.validated? && !@name.qc_warnings.empty? %>
+<% force_qc_view ||= false %>
+<% if force_qc_view || (@name.can_edit?(current_user) && !@name.validated?) %>
+  <% if !@name.qc_warnings.empty? %>
     <dl name="quality-checks"
         class="main-section name-details border-danger"
         style="border-left: 1em solid;">
@@ -46,7 +47,7 @@
       <% end %>
       </dd>
     </dl>
-  <% elsif !@name.validated? %>
+  <% else %>
     <dl class="main-section name-details border-success py-3"
         style="border-left: 1em solid;">
       <h4 class="text-success">
@@ -55,11 +56,11 @@
       </h4>
     </dl>
   <% end %>
+<% end %>
 
-  <% if @name.queued_for_external_resources %>
-    <div class="alert alert-warning">
-      External resources are currently being queried to determine potential
-      homonymies across nomenclatural codes
-    </div>
-  <% end %>
+<% if @name.queued_for_external_resources %>
+  <div class="alert alert-warning">
+    External resources are currently being queried to determine potential
+    homonymies across nomenclatural codes
+  </div>
 <% end %>

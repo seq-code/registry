@@ -1,5 +1,29 @@
 <% name_s = @register.names.count == 1 ? 'name' : 'names' %>
-<% case @action %>
+<% case @action.to_s %>
+<% when 'submit' %>
+  You have successfully submitted the register list
+  <%= @register.acc_url %>
+
+  What does this mean?
+  ====================
+  Our team of curators have received your submission and will process it as
+  soon as possible.
+
+  What to do next?
+  ================
+  No actions are needed from your side at the moment.
+<% when 'notify' %>
+  You have successfully notified the SeqCode Registry of effective publication
+  for the register list <%= @register.acc_url %>
+
+  What does this mean?
+  ====================
+  Our team of curators have received your notification and will process it as
+  soon as possible.
+
+  What to do next?
+  ================
+  No actions are needed from your side at the moment.
 <% when 'endorse' %>
   The register list <%= @register.acc_url %> has been endorsed.
   
