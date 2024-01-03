@@ -199,12 +199,12 @@ module ApplicationHelper
   end
 
   def display_obj(obj)
-    field =
-      %i[name_html name accession citation].find { |i| obj.respond_to? i }
+    preferred_fields = %i[name_html name display_name accession citation]
+    field = preferred_fields.find { |i| obj.respond_to? i }
     if field
       obj.send(field)
     elsif obj.respond_to? :id
-      obj.class.to_s + ' ' + obj.id
+      '%s %i' % [obj.class, obj.id]
     else
       obj.to_s
     end
