@@ -1,6 +1,7 @@
 class ChecksController < ApplicationController
   before_action(:authenticate_curator!)
 
+  # POST /checks/123
   # POST /checks/123.json
   def update
     unless Name.exists?(params[:name_id].to_i)
@@ -27,7 +28,12 @@ class ChecksController < ApplicationController
     end
 
     if success
-      render(json: @check.to_json, status: :ok)
+      respond_to do |format|
+        format.html { redirect_to(@check.name) }
+        format.json do
+          render(json: @check.to_json, status: :ok)
+        end
+      end
     else
       render(
         json: @check.try(:errors) || { error: 'something went wrong' },

@@ -1,5 +1,5 @@
 <% if current_curator? && !@name.validated? %>
-  <% if !@name.qc_warnings.checks.empty? %>
+  <% unless @name.qc_warnings.checks.empty? && @name.qc_warnings.bypass.empty? %>
     <div>
       <%= link_to('#curator-checklist',
                   class: 'btn btn-primary btn-curator-checklist',
@@ -76,11 +76,19 @@
         </dd>
       <% end %>
       </dd>
+
+      <% unless @name.qc_warnings.bypassed.empty? %>
+        <h2>Bypassed checks</h2>
+        <% @name.qc_warnings.bypassed.each do |warn| %>
+          <% warn.link_to = nil %>
+          <%= render(partial: 'checks/check', locals: { warn: warn }) %>
+        <% end %>
+      <% end %>
     </dl>
     <script>
       $('.curator-checklist .check-links a[data-do]').on("click",
         function() {
-          var path = "<%= check_path(@name) %>";
+          var path = "<%= check_path(@name, format: :json) %>";
           var data = $(this).data();
           var dt = $(this).parent().parent();
           dt.addClass("bg-warning");

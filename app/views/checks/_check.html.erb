@@ -1,0 +1,60 @@
+<dt class="qc-title">
+  <%
+    blocking = warn.fail == :error
+    icon_class = blocking ? 'text-danger' : 'text-warning'
+  %>
+  <%= fa_icon('exclamation-triangle', class: icon_class) %>
+  <%= warn.title %>
+</dt>
+<dd class="pt-2 qc-body">
+  <%= warn[:message] %>
+
+  <% if warn.link_to %>
+    <% if warn.link_public || @name.can_edit?(current_user) %>
+      <%= link_to(warn.link_to, class: 'text-danger') do %>
+        [<%= warn.link_text %>]
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
+    <div class="text-muted">
+      <b>§ Contravenes SeqCode</b>:
+        <% comma = false %>
+        <% %w[rule rule_note recommendation].each do |section| %>
+          <% warn[:"#{section}s"]&.each do |i| %>
+            <% text = name_of_seqcode_section(section, i) %>
+            <%= ' • ' if comma %>
+            <%= link_to_seqcode_excerpt(section, i, text) %>
+            <% comma = true %>
+          <% end %>
+        <% end %>
+    </div>
+  <% end %>
+
+  <% if warn.check %>
+    <div class="text-muted">
+      <% if warn.check.pass? %>
+        Bypassed by <%= link_to_user(warn.check.user) %>
+        <%= time_ago_in_words(warn.check.updated_at) %> ago /
+        <%= link_to(
+              check_url(@name, kind: warn.type, do: :skip),
+              method: :post) do %>
+          <%= fa_icon('exclamation-circle') %> reinstate as failed check
+        <% end %>
+      <% else %>
+        Identified by <%= link_to_user(warn.check.user) %>
+        <%= time_ago_in_words(warn.check.updated_at) %> ago
+      <% end %>
+    </div>
+  <% elsif current_curator? %>
+    <div class="text-muted">
+      <b>Curator action</b>:
+      <%= link_to(
+            check_url(@name, kind: warn.type, do: :pass),
+            method: :post) do %>
+        <%= fa_icon('check-circle') %> Bypass check (mark as valid)
+      <% end %>
+    </div>
+  <% end %>
+</dd>

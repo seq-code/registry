@@ -207,7 +207,7 @@ nav.navbar-dark {
       }
     }
   }
-  dd {
+  dd:not(.qc-body) {
     padding-left: 4rem;
     margin-left: 0.2rem;
   }

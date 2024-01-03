@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   resources(:genomes)
   root(to: 'application#main')
 
-  post 'check/:name_id.json' => 'checks#update', as: :check
+  post 'check/:name_id(.:format)' => 'checks#update', as: :check
 
   resources(:registers, param: :accession)
   devise_for(:users, controllers: { registrations: 'users/registrations' })
