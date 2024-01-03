@@ -118,7 +118,7 @@ class NamesController < ApplicationController
     if params[:user] && current_user.admin?
       user = User.find_by(username: params[:user])
     end
-    @title  = 'Names with active notifications'
+    @title  = 'Names with active alerts'
     @status = 'user'
     @names  = user.observing_names.reverse
     index

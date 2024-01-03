@@ -30,13 +30,13 @@
     observe = @register.observing?(current_user) ?
       [
         register_unobserve_url(@register, from: from), 'bell',
-        'Notifications: On',
-        { color: 'secondary', title: 'Disable notifications' }
+        'Alerts: On',
+        { color: 'secondary', title: 'Disable email alerts' }
       ] :
       [
         register_observe_url(@register, from: from), 'bell-slash',
-        'Notifications: Off',
-        { title: 'Enable notifications' }
+        'Alerts: Off',
+        { title: 'Enable email alerts' }
       ]
     observe[3].merge!(
       class: 'ml-3', data: { toggle: 'tooltip', placement: 'bottom' }
