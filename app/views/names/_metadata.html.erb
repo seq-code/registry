@@ -80,16 +80,14 @@
   <dt><%= fa_icon 'calendar' %> Local history</dt>
   <dd>
     <ul>
-      <% if @name.created_at == @name.updated_at %>
-        <li>This name has not been modified since creation</li>
-      <% else %>
-        <li>
-          This name was last modified
-          <u class="hover-help"
-             title="<%= @name.updated_at %>"
-             ><%= time_ago_in_words(@name.updated_at) %> ago</u>
-        </li>
-      <% end %>
+      <li>
+        <% if @name.created_at == @name.updated_at %>
+          This name has not been modified since creation
+        <% else %>
+            This name was last modified
+            <%= time_ago_with_date(@name.updated_at) %>
+        <% end %>
+      </li>
       <% if @workflow_modal_id ||= nil %>
         <li>
           <%= modal_button(@workflow_modal_id, as_anchor: true) do %>
@@ -111,6 +109,9 @@
       <% if current_curator? %>
         <li>
           <% id = modal('Users with active alerts') do %>
+            The following users will receive email alerts whenever this name
+            changes status or when new correspondence is registered:
+            <br/><br/>
             <ul>
               <% @name.observers.each do |user| %>
                 <li><%= display_link(user) %></li>
@@ -127,36 +128,24 @@
 
   <dt><%= fa_icon('user') %> Registered by</dt>
   <dd>
-    <% if @name.created_by %>
-      <%= link_to(@name.created_by.username, @name.created_by) %>
-    <% else %>
-      Excubia Bot
-    <% end %>
-    <u class="hover-help"
-       title="<%= @name.created_at %>"
-       ><%= time_ago_in_words(@name.created_at) %> ago</u>
+    <%= @name.created_by ?
+          display_link(@name.created_by) : 'Excubia bot' %>
+    <%= time_ago_with_date(@name.created_at) %>
   </dd>
 
   <% if @name.submitted_by %>
     <dt><%= fa_icon('paper-plane') %> Submitted by</dt>
     <dd>
-      <%= link_to(@name.submitted_by.username, @name.submitted_by) %>
-      <u class="hover-help"
-         title="<%= @name.submitted_at %>"
-         ><%= time_ago_in_words(@name.submitted_at) %> ago</u>
-       <% unless @name.after_submission? %>
-         (returned by curator)
-       <% end %>
+      <%= display_link(@name.submitted_by) %>
+      <%= time_ago_with_date(@name.submitted_at) %>
     </dd>
   <% end %>
 
   <% if @name.after_endorsement? && @name.endorsed_by %>
     <dt><%= fa_icon('check-square') %> Endorsed by</dt>
     <dd>
-      <%= link_to(@name.endorsed_by.username, @name.endorsed_by) %>
-      <u class="hover-help"
-         title="<%= @name.endorsed_at %>"
-         ><%= time_ago_in_words(@name.endorsed_at) %> ago</u>
+      <%= display_link(@name.endorsed_by) %>
+      <%= time_ago_with_date(@name.endorsed_at) %>
     </dd>
   <% end %>
 
@@ -167,10 +156,8 @@
       <dt><%= fa_icon('stamp') %> Reported valid by</dt>
     <% end %>
     <dd>
-      <%= link_to(@name.validated_by.username, @name.validated_by) %>
-      <u class="hover-help"
-         title="<%= @name.validated_at %>"
-         ><%= time_ago_in_words(@name.validated_at) %> ago</u>
+      <%= display_link(@name.validated_by) %>
+      <%= time_ago_with_date(@name.validated_at) %>
     </dd>
   <% end %>
 </dl>

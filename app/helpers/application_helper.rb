@@ -14,6 +14,12 @@ module ApplicationHelper
     end
   end
 
+  def time_ago_with_date(date)
+    content_tag(:u, class: 'hover-help', title: date.to_s) do
+      time_ago_in_words(date) + ' ago'
+    end
+  end
+
   def pager(object)
     will_paginate(
       object,
