@@ -36,7 +36,7 @@
     <div class="text-muted">
       <% if warn.check.pass? %>
         Bypassed by <%= link_to_user(warn.check.user) %>
-        <%= time_ago_in_words(warn.check.updated_at) %> ago /
+        <%= time_ago_in_words(warn.check.updated_at) %> ago •
         <%= link_to(
               check_url(@name, kind: warn.type, do: :skip),
               method: :post) do %>
