@@ -110,7 +110,7 @@
       <% end %>
       <% if current_curator? %>
         <li>
-          <% id = modal('Users with alerts') do %>
+          <% id = modal('Users with active alerts') do %>
             <ul>
               <% @name.observers.each do |user| %>
                 <li><%= display_link(user) %></li>
