@@ -165,6 +165,7 @@ module ApplicationHelper
     opts[:data][:toggle] = 'modal'
     opts[:data][:target] = "##{id}"
     opts[:tag] ||= :span
+    opts.merge!(type: '', class: '', tag: :a, href: '#') if opts[:as_anchor]
     content_tag(opts.delete(:tag), opts) { yield }
   end
 

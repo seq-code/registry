@@ -39,7 +39,7 @@
             </div>
           <% end %>
           <li>
-            <%= modal_button(id, type: '', class: '', tag: 'a', href: '#') do %>
+            <%= modal_button(id, as_anchor: true) do %>
               Global Biodiversity Information Facility (GBIF)
             <% end %>
           </li>
@@ -92,8 +92,7 @@
       <% end %>
       <% if @workflow_modal_id ||= nil %>
         <li>
-          <%= modal_button(@workflow_modal_id,
-                type: '', class: '', tag: 'a', href: '#') do %>
+          <%= modal_button(@workflow_modal_id, as_anchor: true) do %>
             Current workflow status
           <% end %>
         </li>
@@ -104,8 +103,22 @@
             <%= render(partial: 'quality_checks',
                        locals: { force_qc_view: true }) %>
           <% end %>
-          <%= modal_button(id, type: '', class: '', tag: 'a', href: '#') do %>
+          <%= modal_button(id, as_anchor: true) do %>
             Quality checks before valid publication
+          <% end %>
+        </li>
+      <% end %>
+      <% if current_curator? %>
+        <li>
+          <% id = modal('Users with alerts') do %>
+            <ul>
+              <% @name.observers.each do |user| %>
+                <li><%= display_link(user) %></li>
+              <% end %>
+            </ul>
+          <% end %>
+          <%= modal_button(id, as_anchor: true) do %>
+            Users with active alerts (only visible to curators)
           <% end %>
         </li>
       <% end %>
