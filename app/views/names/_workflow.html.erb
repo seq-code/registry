@@ -253,7 +253,7 @@
 <% end %>
 
 <% if @name.can_see_status?(current_user) %>
-  <div class="text-center border-bottom mb-3 py-3">
+  <div class="text-center border-bottom mb-3 pb-3">
     <%= modal_button(@workflow_modal_id, class: 'card btn btn-light') do %>
       <div class="card-body">
         <h1 class="d-sm-block d-lg-none mb-4">Submission process</h1>
