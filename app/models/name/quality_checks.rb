@@ -360,7 +360,12 @@ module Name::QualityChecks
       # - Rule 18c requires the implementation of neotype designations
       #   [TODO: issue #12] no checks are to be implemented
       # - Rule 19 is implied by the SeqCode Registry structure
-      # - Recommendation 19 [TODO: Checklist, TODO: issue #28]:
+      # - Recommendation 19:
+      unavailable_reference_strain: {
+        message: 'If isolated, reference strains should be submitted to two ' \
+                 'culture collections',
+        recommendations: %w[19]
+      }.merge(@@link_to_edit_type),
       #   When a strain belonging to a taxon named under the SeqCode is
       #   isolated, a reference strain should be designated and submitted to two
       #   culture collections in different countries. Reference strains have no
@@ -772,6 +777,9 @@ module Name::QualityChecks
 
     if type_is_genome?
       @qc_warnings.add(:ambiguous_type_genome) # check
+      if genome_strain? && genome_strain_collections < 2
+        @qc_warnings.add(:unavailable_reference_strain)
+      end
       @qc_warnings.add(:missing_genome_kind) unless type_genome.kind.present?
       @qc_warnings.add(:sequence_not_found) if type_genome.auto_failed.present?
 

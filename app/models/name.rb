@@ -234,6 +234,30 @@ class Name < ApplicationRecord
     def type_material_name(type)
       type_material_hash[type.to_sym]&.[](:name)
     end
+
+    def culture_collections
+      {
+        DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-%s',
+        JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=%s',
+        KCTC: 'https://kctc.kribb.re.kr/collection/view?sn=%s',
+        ATCC: 'https://www.atcc.org/products/%s',
+        BCRC: 'https://catalog.bcrc.firdi.org.tw/BcrcContent?bid=%s',
+        LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=%s',
+        NBRC: 'https://www.nite.go.jp/nbrc/catalogue/' \
+              'NBRCCatalogueDetailServlet?ID=IFO&CAT=%s',
+        IFO:  'https://www.nite.go.jp/nbrc/catalogue/' \
+              'NBRCCatalogueDetailServlet?ID=IFO&CAT=%s',
+        NCTC: 'https://www.culturecollections.org.uk/products/bacteria/' \
+              'detail.jsp?collection=nctc&refId=NCTC+%s',
+        CIP:  'https://catalogue-crbip.pasteur.fr/' \
+              'fiche_catalogue.xhtml?crbip=CIP%%20%s',
+        PCC:  'https://catalogue-crbip.pasteur.fr/' \
+              'fiche_catalogue.xhtml?crbip=PCC%%20%s',
+        CCUG: 'https://www.ccug.se/strain?id=%s',
+        NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
+              'report.html?nrrlcodes=%s'
+      }
+    end
   end
 
   # ============ --- STATUS --- ============
@@ -661,6 +685,41 @@ class Name < ApplicationRecord
     if type_is_genome?
       @type_genome ||= Genome.find_or_create(type_material, type_accession)
     end
+  end
+
+  def type_strain_parsed
+    return {} unless type_is_strain?
+    strain_parsed(type_accession)
+  end
+
+  def genome_strain_parsed
+    return {} unless genome_strain?
+    strain_parsed(genome_strain)
+  end
+
+  def strain_parsed(strain)
+    strain.split(/ *= */).map do |str|
+      parts = str.split(/[ -]+/, 2)
+      coll = parts.count == 2 ? parts[0].upcase.to_sym : nil
+
+      if url_base = self.class.culture_collections[coll]
+        {
+          collection: coll,
+          accession: parts.join(' '),
+          url: url_base % parts[1]
+        }
+      else
+        str
+      end
+    end
+  end
+
+  def genome_strain_collections
+    return unless genome_strain?
+
+    genome_strain_parsed
+      .map { |i| i.is_a?(Hash) ? i[:collection] : nil }
+      .compact.uniq.count
   end
 
   def expected_type_rank
