@@ -144,7 +144,8 @@
   <% end %>
 
   <!-- 05: Name Endorsed -->
-  <%= workflow_step('Name endorsement', :after_endorsement?) do |pass| %>
+  <%= workflow_step(
+        'Name endorsement', :after_endorsement_or_notification?) do |pass| %>
     <% workflow_steps[:endorsed] = pass %>
     <% if pass %>
       <% if @name.endorsed_by %>

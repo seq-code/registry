@@ -43,6 +43,10 @@ module Name::Status
     validated? || register.try(:notified?)
   end
 
+  def after_endorsement_or_notification?
+    after_endorsement? || after_notification?
+  end
+
   def after_validation?
     valid?
   end
