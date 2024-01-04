@@ -361,6 +361,11 @@ module Name::QualityChecks
       #   [TODO: issue #12] no checks are to be implemented
       # - Rule 19 is implied by the SeqCode Registry structure
       # - Recommendation 19:
+      missing_reference_strain: {
+        message: 'A reference strain should be established when the type ' \
+                 'genome is reported as derived from an isolate',
+        recommendations: %w[19]
+      }.merge(@@link_to_edit_type),
       unavailable_reference_strain: {
         message: 'If isolated, reference strains should be submitted to two ' \
                  'culture collections',
@@ -777,6 +782,9 @@ module Name::QualityChecks
 
     if type_is_genome?
       @qc_warnings.add(:ambiguous_type_genome) # check
+      if genome.isolate? && !genome_strain?
+        @qc_warnings.add(:missing_reference_strain)
+      end
       if genome_strain? && genome_strain_collections < 2
         @qc_warnings.add(:unavailable_reference_strain)
       end

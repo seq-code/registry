@@ -59,6 +59,12 @@ class Genome < ApplicationRecord
     @@FIELDS_WITH_AUTO
   end
 
+  Genome.kinds.keys.each do |k, v|
+    define_method("#{k}?") do
+      kind? && kind == k.to_s
+    end
+  end
+
   def names
     @names ||=
       Name.where(type_material: database, type_accession: accession)
