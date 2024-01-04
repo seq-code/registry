@@ -157,6 +157,8 @@
           on <%= time_tag(@name.endorsed_at, format: '%F') %>
         <% end %>
         after manual review.
+      <% elsif !@name.after_endorsement? %>
+        This name bypassed endorsement through notification ("Path 2").
       <% else %>
         This name was marked as endorsed.
       <% end %>
