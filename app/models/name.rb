@@ -255,7 +255,9 @@ class Name < ApplicationRecord
               'fiche_catalogue.xhtml?crbip=PCC%%20%s',
         CCUG: 'https://www.ccug.se/strain?id=%s',
         NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
-              'report.html?nrrlcodes=%s'
+              'report.html?nrrlcodes=%s',
+        CAIM: 'https://www.ciad.mx/caim/busqueda.php?' \
+              'searchtype=caim&criterio=%s'
       }
     end
   end
