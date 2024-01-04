@@ -28,16 +28,31 @@
        ><%= time_ago_in_words(name.created_at) %> ago</u>
   <% end %>
   <% entry.footer do %>
-    <ul class='list-inline' style='margin: 0;'>
-      <!-- TODO: Link genome page instead
-      <li class='list-inline-item'>
-        <%= link_to name.ncbi_search_url, title: 'Search genomes', target: '_blank' do %>
-          <%= fa_icon 'dna' %>
-        <% end %>
-      </li>
-      -->
-      <li class='list-inline-item'>
-        <%= link_to name, title: 'See more' do %>
+    <ul class="list-inline m-0 text-right">
+      <% if name.genome %>
+        <li class="list-inline-item m-0">
+          <%= link_to(name.genome, title: 'Genome page') do %>
+            <%= fa_icon('dna') %>
+          <% end %>
+        </li>
+      <% end %>
+      <% if user_signed_in? %>
+        <li class="list-inline-item m-0">
+          <% if name.observing?(current_user) %>
+            <%= link_to(name_unobserve_url(name),
+                  title: 'Disable notifications') do %>
+              <%= fa_icon('bell-slash') %>
+            <% end %>
+          <% else %>
+            <%= link_to(name_observe_url(name),
+                  title: 'Enable notifications') do %>
+              <%= fa_icon('bell') %>
+            <% end %>
+          <% end %>
+        </li>
+      <% end %>
+      <li class="list-inline-item m-0">
+        <%= link_to(name, title: 'See more') do %>
           <%= fa_icon 'arrow-circle-right' %>
         <% end %>
       </li>

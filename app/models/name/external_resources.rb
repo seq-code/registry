@@ -13,6 +13,8 @@ module Name::ExternalResources
   ##
   # Queue name for +NameExternalResourcesJob+
   def queue_for_external_resources
+    return if Rails.configuration.bypass_external_apis
+
     unless queued_for_external_resources
       NameExternalResourcesJob.perform_later(self)
       update_column(:queued_external, DateTime.now)
@@ -23,6 +25,8 @@ module Name::ExternalResources
   # Generate a request to the external +uri+, and return the reponse body
   # if successful or +nil+ otherwise (fails silently)
   def external_request(uri)
+    return if Rails.configuration.bypass_external_apis
+
     require 'uri'
     require 'net/http'
 

@@ -1,0 +1,49 @@
+<%
+  observe = nil
+  if user_signed_in?
+    from = name_path(@name)
+    observe = @name.observing?(current_user) ?
+      [
+        name_unobserve_url(@name, from: from), 'bell', 'Alerts: On',
+        { color: 'secondary', title: 'Disable email alerts' }
+      ] :
+      [
+        name_observe_url(@name, from: from), 'bell-slash', 'Alerts: Off',
+        { title: 'Enable email alerts' }
+      ]
+    observe[3].merge!(
+      class: 'ml-3', data: { toggle: 'tooltip', placement: 'bottom' }
+    )
+  end
+%>
+<%=
+  download_buttons([
+    [name_url(@name, format: :json), 'file-code', 'JSON'],
+    [name_url(@name, format: :pdf), 'file-pdf', 'PDF'],
+    observe
+  ].compact)
+%>
+<h1>
+  <%= @name.name_html %>
+</h1>
+<% unless @name.public? %>
+  <span class="text-muted">
+    <%= fa_icon('eye-slash') %> Only visible to you and curators
+    <%= help_message('Name not public') do %>
+      <div class="alert alert-warning">
+        This name is undergoing the registration process, currently in the
+        state of <b><%= @name.status_name %></b>.
+        The entry and all of its metadata is currently not public, only visible
+        to the submitter and the system curators.
+        <% unless @name.created_at < 1.year.ago %>
+          <hr/>
+          This name has no standing or validity but it is reserved for up to a
+          year, so no homonyms can be proposed until
+          <%= (@name.created_at + 1.year).strftime('%b %-d / %Y') %>
+        <% end %>
+      </div>
+    <% end %>
+  </span>
+<% end %>
+<hr/>
+

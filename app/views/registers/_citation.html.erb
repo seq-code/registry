@@ -1,0 +1,128 @@
+<div class="container main-section name-details">
+  <% if @register.title? %>
+    <h3 class="mb-4 mx-3 border-bottom pb-1">
+      <%= @register.title %>
+      <% if @register.modal_form_id %>
+        <sup style="font-size: 1rem;" class="mx-1">
+        <%= modal_button(@register.modal_form_id, class: 'badge badge-pill badge-info') do %>
+          <%= fa_icon('edit') %> Edit
+        <% end %>
+        </sup>
+      <% end %>
+    </h3>
+  <% end %>
+
+  <div class="row pl-3">
+    <dl class="col-md-7">
+      <dt><%= fa_icon(:barcode) %> SeqCode Registry Accession</dt>
+      <dd><%= @register.acc_url %></dd>
+
+      <dt><%= fa_icon('clipboard-check') %> Status</dt>
+      <dd>
+        <%= @register.status_name.capitalize %>: <%= @register.status_help %>
+      </dd>
+
+      <% if @register.notified? %>
+        <dt><%= fa_icon('pen-nib') %> Authorship</dt>
+        <dd>
+          <% if @register.submitter_is_author? && @register.authors_approval? %>
+            The submitter has declared authorship and approval of coauthor(s)
+            of the effective publication for submission
+          <% elsif @register.submitter_is_author? %>
+            <%= fa_icon('exclamation-circle', class: 'text-danger') %>
+            The submitter has declared authorship of the effective publication
+            but not coauthor approval for submission
+          <% elsif @register.authors_approval? %>
+            The submitter is not an author of the effective publication but has
+            declared approval for submission from the author(s)
+          <% else %>
+            <%= fa_icon('exclamation-circle', class: 'text-danger') %>
+            The submitter is not an author of the effective publication and has
+            not declared approval for submission from the author(s)
+          <% end %>
+          <% unless @register.submitter_authorship_explanation.empty? %>
+            <br/>
+            <b>Submitter statement:</b>
+            <%= @register.submitter_authorship_explanation %>
+          <% end %>
+        </dd>
+      <% end %>
+
+      <%# TODO Once publication is sorted out, this should be `published?` %>
+      <% if @register.validated? %>
+        <dt><%= fa_icon('book-open') %> How to cite</dt>
+        <dd>
+          <%= @register.user.display_name %>
+          (<%= @register.validated_at.year %>).
+          <%= @register.propose_title %>.
+          <i>The SeqCode Registry</i>
+          <%= @register.accession %>.
+          https://doi.org/<%= @register.propose_doi %>
+        </dd>
+      <% end %>
+    </dl>
+    <!-- Right column -->
+    <dl class="col-md-5 border-left border-secondary">
+      <dt><%= fa_icon('table') %>&nbsp; Download Table &raquo;</dt>
+      <dd>
+        <%= link_to(
+              download_register_table_url(@register, format: :pdf),
+              class: 'btn btn-sm btn-secondary'
+            ) do %>
+          <%= fa_icon('file-pdf') %> PDF
+        <% end %>
+        <%= link_to(
+              download_register_table_url(@register),
+              class: 'btn btn-sm btn-secondary'
+            ) do %>
+          <%= fa_icon('file-code') %> HTML
+        <% end %>
+      </dd>
+
+      <dt><%= fa_icon('list-ul') %>&nbsp; Download List &raquo;</dt>
+      <dd>
+        <%= link_to(
+              download_register_list_url(@register, format: :pdf),
+              class: 'btn btn-sm btn-secondary'
+            ) do %>
+          <%= fa_icon('file-pdf') %> PDF
+        <% end %>
+        <%= link_to(
+              download_register_list_url(@register),
+              class: 'btn btn-sm btn-secondary'
+            ) do %>
+          <%= fa_icon('file-code') %> HTML
+        <% end %>
+      </dd>
+
+      <% if @register.publication %>
+        <dt>
+          <%= fa_icon('file-signature') %>&nbsp;
+          Effective publication &raquo;
+        </dt>
+        <dd>
+          <p>
+            <%= link_to(@register.publication) do %>
+              <%= fa_icon('arrow-circle-right') %><% end %>
+            &nbsp;<%= @register.publication.long_citation_html %>
+          </p>
+          <% if @register.can_view_publication?(current_user) %>
+            <% %i[publication_pdf supplementary_pdf].each do |attach| %>
+              <% as = @register.send(attach) %>
+              <% if as.attached? %>
+                <%= link_to(
+                      rails_blob_path(as, disposition: 'attachment'),
+                      class: 'btn btn-secondary btn-sm'
+                    ) do %>
+                  <%= fa_icon('file-pdf') %>
+                  <%= attach.to_s.sub(/_.*/, '') %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </dd>
+      <% end %>
+    </div>
+  </dl>
+</div>
+

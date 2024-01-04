@@ -70,7 +70,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # Custom gems:
 gem 'serrano', '~> 1.0'
 gem 'devise'
-gem 'bootstrap', '~> 4.3'
+gem 'bootstrap', '~> 4.6'
+#gem 'dartsass-sprockets'
 gem 'jquery-rails'
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'

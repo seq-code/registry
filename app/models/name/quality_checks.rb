@@ -637,7 +637,11 @@ module Name::QualityChecks
     end
 
     def check
-      name.check(type) if checklist
+      name.check(type)
+    end
+
+    def bypassed?
+      !checklist && check&.pass?
     end
 
     def to_hash
@@ -662,12 +666,17 @@ module Name::QualityChecks
       @name = name
       @set_h = {}
       @checks_h = {}
+      @bypassed_h = {}
     end
 
     def add(type, opts = {})
       qc = QcWarning.new(type, opts.merge(name: name))
       @checks_h[qc.type] = qc if qc.checklist
-      @set_h[qc.type] = qc if !qc.checklist || (qc.check && !qc.check.pass?)
+      if (!qc.checklist && !qc.check) || (qc.check && qc.check.fail?)
+        @set_h[qc.type] = qc
+      elsif qc.bypassed?
+        @bypassed_h[qc.type] = qc
+      end
     end
 
     def set
@@ -680,6 +689,10 @@ module Name::QualityChecks
 
     def checked_checks
       @checks_h.values.select(&:check)
+    end
+
+    def bypassed
+      @bypassed_h.values
     end
 
     def resort!

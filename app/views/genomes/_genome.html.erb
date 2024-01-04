@@ -147,17 +147,36 @@ end
     <% end %>
 
     <% if @genome.source? %>
-      <dt><%= fa_icon('flask') %> Source</dt>
-      <dd>
-        <ul>
-          <% @genome.source_links.each do |link| %>
+      <% def show_genome_sources(n = nil) %>
+        <% content_tag(:ul) do %>
+          <% @genome.source_links.each_with_index.map do |link, k| %>
             <li>
               <%= link_to(link[0], target: '_blank', title: link[2]) do %>
                 <%= link[1] %> <%= fa_icon('external-link-alt') %>
               <% end %>
             </li>
+            <% if n && k >= n %>
+              <li>
+                And <%= @genome.source_links.count - n - 1 %> more&hellip;
+              </li>
+              <% break %>
+            <% end %>
           <% end %>
-        </ul>
+        <% end %>
+      <% end %>
+      <dt><%= fa_icon('flask') %> Source</dt>
+      <dd>
+        <% if @genome.source_links.count > 3 %>
+          <%= show_genome_sources(1) %>
+          <% id = modal('Data sources') do %>
+            <%= show_genome_sources %>
+          <% end %>
+          <%= modal_button(id) do %>
+            See all sources
+          <% end %>
+        <% else %>
+          <%= show_genome_sources %>
+        <% end %>
       </dd>
     <% end %>
 

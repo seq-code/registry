@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_08_131521) do
+ActiveRecord::Schema.define(version: 2024_01_02_013502) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -191,6 +191,26 @@ ActiveRecord::Schema.define(version: 2023_08_08_131521) do
     t.index ["tutorial_id"], name: "index_names_on_tutorial_id"
   end
 
+  create_table "observe_names", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "name_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name_id"], name: "index_observe_names_on_name_id"
+    t.index ["user_id", "name_id"], name: "observe_names_uniqueness", unique: true
+    t.index ["user_id"], name: "index_observe_names_on_user_id"
+  end
+
+  create_table "observe_registers", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "register_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["register_id"], name: "index_observe_registers_on_register_id"
+    t.index ["user_id", "register_id"], name: "observe_registers_uniqueness", unique: true
+    t.index ["user_id"], name: "index_observe_registers_on_user_id"
+  end
+
   create_table "placements", force: :cascade do |t|
     t.integer "name_id", null: false
     t.integer "parent_id"
@@ -344,6 +364,7 @@ ActiveRecord::Schema.define(version: 2023_08_08_131521) do
     t.string "affiliation_ror"
     t.boolean "opt_regular_email", default: true
     t.boolean "opt_notification", default: true
+    t.boolean "opt_message_email", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -360,6 +381,10 @@ ActiveRecord::Schema.define(version: 2023_08_08_131521) do
   add_foreign_key "names", "genomes"
   add_foreign_key "names", "registers"
   add_foreign_key "names", "tutorials"
+  add_foreign_key "observe_names", "names"
+  add_foreign_key "observe_names", "users"
+  add_foreign_key "observe_registers", "registers"
+  add_foreign_key "observe_registers", "users"
   add_foreign_key "placements", "names"
   add_foreign_key "placements", "publications"
   add_foreign_key "register_correspondences", "registers"

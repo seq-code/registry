@@ -1,0 +1,66 @@
+<% if @register.can_edit? current_user %>
+  <% @register.modal_form_id = modal('Edit Register List', size: 'lg') do %>
+    <%= simple_form_for(@register) do |f| %>
+      <%= render(partial: 'edit_title_abstract', locals: { f: f }) %>
+      <hr/>
+      <%= f.submit(class: 'btn btn-primary') %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%
+  links = [
+    [register_url(@register, format: :json), 'file-code', 'JSON'],
+    [download_register_list_url(@register, format: :pdf), 'file-pdf', 'PDF'],
+    [
+      download_register_list_url(@register, format: :html),
+      'file-code', 'Plain HTML'
+    ]
+  ]
+  if @register.validated?
+    links << [
+      cite_register_list_url(@register, format: :xml), 'file-code',
+      'DataCite XML'
+    ]
+  end
+%>
+<%
+  if user_signed_in?
+    from = register_path(@register)
+    observe = @register.observing?(current_user) ?
+      [
+        register_unobserve_url(@register, from: from), 'bell',
+        'Alerts: On',
+        { color: 'secondary', title: 'Disable email alerts' }
+      ] :
+      [
+        register_observe_url(@register, from: from), 'bell-slash',
+        'Alerts: Off',
+        { title: 'Enable email alerts' }
+      ]
+    observe[3].merge!(
+      class: 'ml-3', data: { toggle: 'tooltip', placement: 'bottom' }
+    )
+    links << observe
+  end
+%>
+<%= download_buttons(links) %>
+
+<h1>
+  Register List: <%= link_to(@register.acc_url, @register) %>
+</h1>
+<% unless @register.public? %>
+  <span class="text-muted">
+    <%= fa_icon('eye-slash') %> Only visible to you and curators
+    <%= help_message('Register list not public') do %>
+      <div class="alert alert-warning">
+        This list is undergoing the registration process, currently in the
+        state of <b><%= @register.status_name %></b>.
+        The entry and all of its metadata is currently not public, only visible
+        to the submitter and the system curators.
+      </div>
+    <% end %>
+  </span>
+<% end %>
+<hr/>
+

@@ -1,0 +1,22 @@
+<p>There is a new message in correspondence of
+<%= link_to(@object.display,
+      polymorphic_url(@object, anchor: 'correspondence')) %>.</p>
+<br/>
+
+<h2>What does this mean?</h2>
+<p>
+  You have active notifications for
+  <%= link_to(@object.display,
+        polymorphic_url(@object, anchor: 'correspondence')) %>
+  and somebody has posted a message in correspondence with curators.
+</p>
+<br/>
+
+<h2>What to do next?</h2>
+<p>
+  If you are actively interested in this entry, open the link above and see the
+  messages in "Correspondence with curators". Otherwise,
+  <%= link_to('click here to stop notifications for this entry',
+        [@object, :unobserve]) %>.
+</p>
+

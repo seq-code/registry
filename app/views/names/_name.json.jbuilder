@@ -1,5 +1,5 @@
 # Basic data + nomenclature
-json.(name, :id, :name, :rank, :status_name, :syllabification, :priority_date)
+json.(name, :id, :name, :rank, :status_name, :syllabication, :priority_date)
 unless name.description.empty?
   json.description(
     raw: name.description.body.to_plain_text, html: name.description.body

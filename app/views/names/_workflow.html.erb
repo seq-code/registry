@@ -1,26 +1,34 @@
-<% @workflow_modal_id = modal('Workflow status', size: 'xl') do %>
-  <%
-    @downstream = false
-    def workflow_step(title, test_fun)
-      test = @name.send(test_fun)
-      content_tag(:div, class: 'card my-2') do
-        title_class = 'text-' + (
-          @downstream ? 'muted' : test ? 'success' : 'info'
-        )
-        icon = @downstream ? 'circle' : test ? 'check-circle' : 'hand-point-right'
-        content_tag(:div, class: "card-header #{title_class}") do
-          fa_icon(icon, class: 'mr-3') + content_tag(:span, title)
-        end +
-          unless @downstream
-            @downstream ||= !test.present?
-            content_tag(:div, class: 'card-body') do
-              yield(test)
-            end
+<%
+  workflow_steps = {
+    claimed:   nil,
+    submitted: nil,
+    endorsed:  nil,
+    notified:  nil,
+    validated: nil,
+    published: nil
+  }
+  @downstream = false
+  def workflow_step(title, test_fun)
+    test = @name.send(test_fun)
+    content_tag(:div, class: 'card my-2') do
+      title_class = 'text-' + (
+        @downstream ? 'muted' : test ? 'success' : 'info'
+      )
+      icon = @downstream ? 'circle' : test ? 'check-circle' : 'hand-point-right'
+      content_tag(:div, class: "card-header #{title_class}") do
+        fa_icon(icon, class: 'mr-3') + content_tag(:span, title)
+      end +
+        unless @downstream
+          @downstream ||= !test.present?
+          content_tag(:div, class: 'card-body') do
+            yield(test)
           end
-      end
+        end
     end
-  %>
+  end
+%>
 
+<% @workflow_modal_id = modal('Submission process status', size: 'xl') do %>
   <!-- 01: Name exists -->
   <%= workflow_step('Initial registration', :present?) do |pass| %>
     <% if pass %>
@@ -33,6 +41,7 @@
 
   <!-- 02: Name claimed -->
   <%= workflow_step('User claim', :after_claim?) do |pass| %>
+    <% workflow_steps[:claimed] = pass %>
     <% if pass %>
         <% if @name.created_by %>
           This name was successfully claimed by
@@ -87,6 +96,7 @@
 
   <!-- 04: Name submitted -->
   <%= workflow_step('Name submission', :after_submission?) do |pass| %>
+    <% workflow_steps[:submitted] = pass %>
     <% if pass %>
       This name was submitted for evaluation
       <% if @name.submitted_by %>
@@ -135,6 +145,7 @@
 
   <!-- 05: Name Endorsed -->
   <%= workflow_step('Name endorsement', :after_endorsement?) do |pass| %>
+    <% workflow_steps[:endorsed] = pass %>
     <% if pass %>
       <% if @name.endorsed_by %>
         This name was endorsed
@@ -164,6 +175,7 @@
 
   <!-- 06: SeqCode notified -->
   <%= workflow_step('SeqCode notification', :after_notification?) do |pass| %>
+    <% workflow_steps[:notified] = pass %>
     <% if pass %>
       The SeqCode was notified
       <% if @name.register&.notified_at %>
@@ -201,6 +213,7 @@
 
   <!-- 07: Name validated -->
   <%= workflow_step('Name validation', :validated?) do |pass| %>
+    <% workflow_steps[:validated] = pass %>
     <% if pass %>
       This name is validly published
       <% if @name.priority_date %>
@@ -222,11 +235,14 @@
     <% end %>
   <% end %>
 
-  <% unless @name.icnp? %>
+  <% if @name.icnp? %>
+    <% workflow_steps[:published] = true %>
+  <% else %>
     <!-- 08: Registry list published -->
     <%= workflow_step(
           'Register list publication',
           :after_register_publication?) do |pass| %>
+      <% workflow_steps[:published] = pass %>
       <% if pass %>
         The register list including this name was successfully published with
         DOI: <%= link_to(@name.register.doi_url, @name.register.doi_url) %>.
@@ -237,10 +253,28 @@
 <% end %>
 
 <% if @name.can_see_status?(current_user) %>
-  <div class="text-center border-bottom mb-3 py-3">
-    <%= modal_button(@workflow_modal_id) do %>
-      <%= fa_icon('paper-plane') %>
-      See the current workflow status of this name
+  <div class="text-center border-bottom mb-3 pb-3">
+    <%= modal_button(@workflow_modal_id, class: 'card btn btn-light') do %>
+      <div class="card-body">
+        <h1 class="d-sm-block d-lg-none mb-4">Submission process</h1>
+        <div class="row workflow-panel">
+          <% k = 0 %>
+          <% workflow_steps.each do |step, pass| %>
+            <% k += 1 %>
+            <div class="col-2 text-<%= pass.nil? ? 'muted' : pass ? 'success' : 'info' %>">
+              <% if k > 1 %>
+                <%= fa_icon('caret-right', class: 'workflow-arrow h3') %>
+              <% end %>
+              <%= fa_icon(
+                    pass.nil? ? 'circle' : pass ?
+                                'check-circle' : 'hand-point-right',
+                    class: 'h2') %>
+              <h4 class="d-sm-block d-lg-none"><%= '%02i' % k %></h4>
+              <b class="d-none d-lg-block"><%= step.to_s.capitalize %></b>
+            </div>
+          <% end %>
+        </div>
+      </div>
     <% end %>
   </div>
 <% end %>

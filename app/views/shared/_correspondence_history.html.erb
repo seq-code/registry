@@ -1,0 +1,9 @@
+<% object.correspondences.each do |correspondence| %>
+  <%= render(
+        partial: 'shared/correspondence_message',
+        locals: { correspondence: correspondence }) %>
+<% end %>
+<% if object.correspondences.empty? %>
+  No messages on record
+<% end %>
+

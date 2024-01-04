@@ -14,6 +14,12 @@ module ApplicationHelper
     end
   end
 
+  def time_ago_with_date(date)
+    content_tag(:u, class: 'hover-help', title: date.to_s) do
+      time_ago_in_words(date) + ' ago'
+    end
+  end
+
   def pager(object)
     will_paginate(
       object,
@@ -131,7 +137,7 @@ module ApplicationHelper
 
   def modal(title, opts = {})
     @modals ||= []
-    id = opts[:id] || "modal-#{@modals.size}"
+    id = opts[:id] || "modal-#{SecureRandom.uuid}"
     @modals <<
       content_tag(
         :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog'
@@ -165,6 +171,7 @@ module ApplicationHelper
     opts[:data][:toggle] = 'modal'
     opts[:data][:target] = "##{id}"
     opts[:tag] ||= :span
+    opts.merge!(type: '', class: '', tag: :a, href: '#') if opts[:as_anchor]
     content_tag(opts.delete(:tag), opts) { yield }
   end
 
@@ -187,24 +194,30 @@ module ApplicationHelper
     end
   end
 
-  def download_button(url, icon, text)
-    link_to(url, class: 'btn btn-light btn-sm text-muted') do
+  def download_button(url, icon, text, opts = {})
+    opts[:color] ||= 'light'
+    opts[:class] ||= ''
+    opts[:class]  += " btn btn-#{opts[:color]} btn-sm"
+    opts[:class]  += ' text-muted' if opts[:color] == 'light'
+    link_to(url, opts) do
       fa_icon(icon) + text
     end
   end
 
+  def display_obj(obj)
+    preferred_fields = %i[name_html name display_name accession citation]
+    field = preferred_fields.find { |i| obj.respond_to? i }
+    if field
+      obj.send(field)
+    elsif obj.respond_to? :id
+      '%s %i' % [obj.class, obj.id]
+    else
+      obj.to_s
+    end
+  end
+
   def display_link(obj)
-    field =
-      %i[name_html name accession citation].find { |i| obj.respond_to? i }
-    display =
-      if field
-        obj.send(field)
-      elsif obj.respond_to? :id
-        obj.class.to_s + ' ' + obj.id
-      else
-        obj.to_s
-      end
-    link_to(display, obj)
+    link_to(display_obj(obj), obj)
   end
 end
 

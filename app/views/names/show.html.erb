@@ -1,15 +1,5 @@
 <% provide(:title, @name.abbr_name_raw) %>
-<%=
-  download_buttons([
-    [name_url(@name, format: :json), 'file-code', 'JSON'],
-    [name_url(@name, format: :pdf), 'file-pdf', 'PDF']
-  ])
-%>
-<h1>
-  <%= @name.name_html %>
-</h1>
-<hr/>
-
+<%= render(partial: 'title') %>
 <%= render(partial: 'tutorial') %>
 <%= render(partial: 'alert_messages') %>
 <%= render(partial: 'workflow') %>

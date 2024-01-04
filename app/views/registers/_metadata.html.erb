@@ -1,159 +1,59 @@
-<div class="container main-section name-details">
-  <% if @register.title? %>
-    <h3 class="mb-4 mx-3 border-bottom pb-1">
-      <%= @register.title %>
-      <% if @register.modal_form_id %>
-        <sup style="font-size: 1rem;" class="mx-1">
-        <%= modal_button(@register.modal_form_id, class: 'badge badge-pill badge-info') do %>
-          <%= fa_icon('edit') %> Edit
+<dl name="metadata" class="main-section name-details">
+  <h2>Metadata</h3>
+
+  <dt><%= fa_icon(:user) %> Created by</dt>
+  <dd>
+    <%= display_link(@register.created_by) %>
+    <%= time_ago_with_date(@register.created_at) %>
+  </dd>
+
+  <dt><%= fa_icon 'calendar' %> Local history</dt>
+  <dd>
+    <ul>
+      <li>
+        <% if @register.created_at == @register.updated_at %>
+          This list has not been modified since creation
+        <% else %>
+          This list was last modified
+          <%= time_ago_with_date(@register.updated_at) %>
         <% end %>
-        </sup>
+      </li>
+
+      <% if current_curator? %>
+        <li>
+          <% id = modal('Users with active alerts') do %>
+            The following users will receive email alerts whenever this list
+            changes status or when new correspondence is registered:
+            <br/><br/>
+            <ul>
+              <% @register.observers.each do |user| %>
+                <li><%= display_link(user) %></li>
+              <% end %>
+            </ul>
+          <% end %>
+          <%= modal_button(id, as_anchor: true) do %>
+            Users with active alerts (only visible to curators)
+          <% end %>
+        </li>
       <% end %>
-    </h3>
+    </ul>
+  </dd>
+
+  <% unless @register.curators.empty? %>
+    <dt><%= fa_icon('user-check') %> Curators</dt>
+    <dd>
+      <ul>
+        <% @register.curators.each do |user| %>
+          <li><%= display_link(user) %></li>
+        <% end %>
+      </ul>
+    </dd>
   <% end %>
 
-  <div class="row">
-    <dl class="col-md-7">
-      <dt><%= fa_icon(:barcode) %> SeqCode Registry Accession</dt>
-      <dd><%= @register.acc_url %></dd>
+  <% if @register.notes? %>
+    <dt><%= fa_icon('sticky-note') %> Notes</dt>
+    <dd><%= @register.notes %></dd>
+  <% end %>
 
-      <dt><%= fa_icon(:user) %> Created</dt>
-      <dd>
-        <u class="hover-help" title="<%= @register.created_at %>"
-           ><%= time_ago_in_words(@register.created_at).upcase_first %> ago</u>
-        by <%= link_to(@register.user.username, @register.user) %>
-        <% if @register.updated_at != @register.created_at %>
-          (updated <u class="hover-help" title="<%= @register.updated_at %>"
-            ><%= time_ago_in_words(@register.updated_at) %> ago</u>)
-        <% end %>
-      </dd>
-
-      <dt><%= fa_icon('clipboard-check') %> Status</dt>
-      <dd>
-        <%= @register.status_name.capitalize %>:
-        <% if @register.validated? %>
-          Valid, all names in this register list have been effectively published
-          and validated
-        <% elsif @register.notified? %>
-          The SeqCode has been notified of effective publication and the request
-          is currently being evaluated by expert curators
-        <% elsif @register.endorsed? %>
-          All the names in this register list have been endorsed by expert
-          curators, and the SeqCode is awaiting notification of publication
-        <% elsif @register.submitted? %>
-          This register list is currently being evaluated by expert curators
-          or awaiting effective publication
-        <% else %>
-          This is a draft register list, currently in preparation
-        <% end %>
-      </dd>
-
-      <% if @register.notified? %>
-        <dt><%= fa_icon('pen-nib') %> Authorship</dt>
-        <dd>
-          <% if @register.submitter_is_author? && @register.authors_approval? %>
-            The submitter has declared authorship and approval of coauthor(s)
-            of the effective publication for submission
-          <% elsif @register.submitter_is_author? %>
-            <%= fa_icon('exclamation-circle', class: 'text-danger') %>
-            The submitter has declared authorship of the effective publication
-            but not coauthor approval for submission
-          <% elsif @register.authors_approval? %>
-            The submitter is not an author of the effective publication but has
-            declared approval for submission from the author(s)
-          <% else %>
-            <%= fa_icon('exclamation-circle', class: 'text-danger') %>
-            The submitter is not an author of the effective publication and has
-            not declared approval for submission from the author(s)
-          <% end %>
-          <% unless @register.submitter_authorship_explanation.empty? %>
-            <br/>
-            <b>Submitter statement:</b>
-            <%= @register.submitter_authorship_explanation %>
-          <% end %>
-        </dd>
-      <% end %>
-
-      <% if @register.notes? %>
-        <dt><%= fa_icon('sticky-note') %> Notes</dt>
-        <dd><%= @register.notes %></dd>
-      <% end %>
-
-      <%# TODO Once publication is sorted out, this should be `published?` %>
-      <% if @register.validated? %>
-        <dt><%= fa_icon('book-open') %> How to cite</dt>
-        <dd>
-          <%= @register.user.display_name %>
-          (<%= @register.validated_at.year %>).
-          <%= @register.propose_title %>.
-          <i>The SeqCode Registry</i>
-          <%= @register.accession %>.
-          https://doi.org/<%= @register.propose_doi %>
-        </dd>
-      <% end %>
-    </dl>
-    <!-- Right column -->
-    <dl class="col-md-5 border-left border-secondary">
-      <dt><%= fa_icon('table') %>&nbsp; Download Table &raquo;</dt>
-      <dd>
-        <%= link_to(
-              download_register_table_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-pdf') %> PDF
-        <% end %>
-        <%= link_to(
-              download_register_table_url(@register),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-code') %> HTML
-        <% end %>
-      </dd>
-
-      <dt><%= fa_icon('list-ul') %>&nbsp; Download List &raquo;</dt>
-      <dd>
-        <%= link_to(
-              download_register_list_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-pdf') %> PDF
-        <% end %>
-        <%= link_to(
-              download_register_list_url(@register),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-code') %> HTML
-        <% end %>
-      </dd>
-
-      <% if @register.publication %>
-        <dt>
-          <%= fa_icon('file-signature') %>&nbsp;
-          Effective publication &raquo;
-        </dt>
-        <dd>
-          <p>
-            <%= link_to(@register.publication) do %>
-              <%= fa_icon('arrow-circle-right') %><% end %>
-            &nbsp;<%= @register.publication.long_citation_html %>
-          </p>
-          <% if @register.can_view_publication?(current_user) %>
-            <% %i[publication_pdf supplementary_pdf].each do |attach| %>
-              <% as = @register.send(attach) %>
-              <% if as.attached? %>
-                <%= link_to(
-                      rails_blob_path(as, disposition: 'attachment'),
-                      class: 'btn btn-secondary btn-sm'
-                    ) do %>
-                  <%= fa_icon('file-pdf') %>
-                  <%= attach.to_s.sub(/_.*/, '') %>
-                <% end %>
-              <% end %>
-            <% end %>
-          <% end %>
-        </dd>
-      <% end %>
-    </div>
-  </dl>
-</div>
+</dl>
 

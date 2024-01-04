@@ -15,6 +15,9 @@ class Register < ApplicationRecord
   has_many(:checks, through: :names)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
   alias :correspondences :register_correspondences
+  alias :created_by :user
+  has_many(:observe_registers, dependent: :destroy)
+  has_many(:observers, through: :observe_registers, source: :user)
   has_rich_text(:notes)
   has_rich_text(:abstract)
   has_rich_text(:submitter_authorship_explanation)
@@ -26,6 +29,9 @@ class Register < ApplicationRecord
   validates(:publication_pdf, presence: true, if: :validated?)
   validates(:title, presence: true, if: :validated?)
   validate(:title_different_from_effective_publication)
+
+  include HasObservers
+  include Register::Status
 
   attr_accessor :modal_form_id
 
@@ -70,25 +76,6 @@ class Register < ApplicationRecord
     "#{'https://' if protocol}seqco.de/#{accession}"
   end
 
-  def status_name
-    validated? ? 'validated' :
-      notified? ? 'notified' :
-      endorsed? ? 'endorsed' :
-      submitted? ? 'submitted' : 'draft'
-  end
-
-  def before_notification?
-    !validated? && !notified?
-  end
-
-  def endorsed?
-    submitted? && all_endorsed?
-  end
-
-  def draft?
-    status_name == 'draft'
-  end
-
   def names_by_rank
     names.sort do |a, b|
       Name.ranks.index(a.rank) <=> Name.ranks.index(b.rank)
@@ -130,6 +117,10 @@ class Register < ApplicationRecord
     return false unless user && publication_pdf.attached?
 
     user.curator? || user.id == user_id
+  end
+
+  def display
+    'Register List %s' % accession
   end
 
   def proposing_publications
@@ -223,112 +214,12 @@ class Register < ApplicationRecord
       ([publication] + sorted_names.map(&:citations).flatten).compact.uniq
   end
 
-  ##
-  # Automated checks to prepare for validation, adding relevant notes
-  # to the list
-  def automated_validation
-    # Trivial cases (not-yet-notified or already validated)
-    return false unless notified?
-    return true if validated?
-
-    # Minimum requirements
-    success = true
-    unless publication && publication_pdf.attached?
-      add_note('Missing publication or PDF files')
-      success = false
-    end
-
-    # Check that all names have been endorsed
-    unless names.all?(&:after_endorsement?)
-      add_note('Some names have not been endorsed yet')
-      success = false
-    end
-
-    # Check if the list has a PDF that includes the accession
-    has_acc = false
-    bnames = Hash[names.map { |n| [n.base_name, false] }]
-    cnames = Hash[names.map { |n| [n.base_name, n.corrigendum_from] }]
-    [publication_pdf, supplementary_pdf].each do |as|
-      break if has_acc && bnames.values.all?
-      next unless as.attached?
-
-      as.open do |file|
-        render = PDF::Reader.new(file.path)
-        render.pages.each do |page|
-          txt = page.text
-          has_acc = true if txt.index(accession)
-          bnames.each_key do |bn|
-            if txt.index(bn) || (cnames[bn] && txt.index(cnames[bn]))
-              bnames[bn] = true
-            end
-          end
-          break if has_acc && bnames.values.all?
-        end
-      end
-    end
-
-    if has_acc
-      add_note('The effective publication includes the SeqCode accession')
-    else
-      add_note(
-        'The effective publication does not include the accession ' \
-        '(SeqCode, Rule 26, Note 2)'
-      )
-    end
-
-    if bnames.values.all?
-      add_note('The effective publication mentions all names in the list')
-    elsif bnames.values.any?
-      if bnames.values.count(&:!) > 5
-        add_note(
-          "The effective publication mentions" \
-            " #{bnames.values.count(&:itself)} out of" \
-            " #{bnames.count} names in the list"
-        )
-      else
-        add_note(
-          "The effective publication mentions some names in the list," \
-            " but not: #{bnames.select { |_, v| !v }.keys.join(', ')}"
-        )
-      end
-    else
-      add_note(
-        'The effective publication does not mention any names in the list'
-      )
-    end
-
-    save
-  end
-
   def add_note(note, title = 'Auto-check')
     self.notes.body = <<~TXT
       #{notes.body}
       <b>#{title}:</b> #{note}
       <br/>
     TXT
-  end
-
-  def validate!(user)
-    ActiveRecord::Base.transaction do
-      par = { validated_by: user, validated_at: Time.now }
-      names.each { |name| name.update!(par.merge(status: 15)) }
-      update!(par.merge(notes: nil, validated: true))
-    end
-
-    HeavyMethodJob.perform_later(:post_validation, @register)
-    true
-  end
-
-  ##
-  # Production tasks to be executed once a list is validated
-  def post_validation
-    # TODO Produce and attach the certificate in PDF
-    # TODO Distribute the certificate to mirrors
-    # TODO Notify submitter
-  end
-
-  def all_endorsed?
-    names.all?(&:after_endorsement?)
   end
 
   def reviewer_ids
@@ -343,6 +234,30 @@ class Register < ApplicationRecord
 
   def curators
     @curators ||= (check_users + reviewers).uniq
+  end
+
+  def observing?(user)
+    observe_registers.where(user: user).present?
+  end
+
+  ##
+  # Attempts to add an observer while silently ignoring it if the user
+  # already observes the register
+  def add_observer(user)
+    self.observers << user
+  rescue ActiveRecord::RecordNotUnique
+    true
+  end
+
+  def corresponding_users
+    correspondences.map(&:user).uniq
+  end
+
+  def associated_users
+    (
+      [user, validated_by, published_by] +
+      corresponding_users
+    ).compact.uniq
   end
 
   private

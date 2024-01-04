@@ -6,7 +6,7 @@ class AdminMailer < ApplicationMailer
   ##
   # Email notifying of a user status change
   def user_status_email
-    return unless @user.opt_regular_email
+    return unless @user.opt_regular_email?
 
     @params = params
     @action =
@@ -27,19 +27,37 @@ class AdminMailer < ApplicationMailer
   ##
   # Email notifying of a name status change
   def name_status_email
-    return unless @user.opt_regular_email
+    return unless @user.opt_regular_email?
 
-    @name = params[:name]
+    @name = params[:name] || params[:object]
     mail(subject: 'New name status in SeqCode Registry')
   end
 
   ##
   # Email notifying of a register list status change
   def register_status_email
-    return unless @user.opt_regular_email
+    return unless @user.opt_regular_email?
 
-    @register = params[:register]
+    @register = params[:register] || params[:object]
     mail(subject: 'New register list status in SeqCode Registry')
+  end
+
+  ##
+  # Email notifying observers of a new correspondence
+  def correspondence_email
+    return unless @user.opt_message_email?
+
+    @object = params[:object]
+    mail(subject: 'New correspondence message in SeqCode Registry')
+  end
+
+  ##
+  # Email notifying observers of a new status change
+  def observer_status_email
+    return unless @user.opt_regular_email?
+
+    @object = params[:object]
+    mail(subject: 'New status update in SeqCode Registry')
   end
 
   ##

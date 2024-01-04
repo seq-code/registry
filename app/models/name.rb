@@ -20,6 +20,8 @@ class Name < ApplicationRecord
     :child_placements, class_name: 'Name', foreign_key: 'parent_id',
     dependent: :destroy
   )
+  has_many(:observe_names, dependent: :destroy)
+  has_many(:observers, through: :observe_names, source: :user)
 
   belongs_to(
     :proposed_by, optional: true,
@@ -82,6 +84,8 @@ class Name < ApplicationRecord
     }
   )
 
+  include HasObservers
+  include Name::Status
   include Name::QualityChecks
   include Name::Etymology
   include Name::Citations
@@ -232,7 +236,20 @@ class Name < ApplicationRecord
     end
   end
 
+  # ============ --- STATUS --- ============
+
+  def status_hash
+    self.class.status_hash[status]
+  end
+
+  Name.status_hash.each do |k, v|
+    define_method("#{v[:symbol]}?") do
+      status == k
+    end
+  end
+
   # ============ --- NOMENCLATURE --- ============
+
   def sanitize(str)
     ActionView::Base.full_sanitizer.sanitize(str)
   end
@@ -326,6 +343,10 @@ class Name < ApplicationRecord
     sanitize(formal_html.gsub(/&#822[01];/, "'"))
   end
 
+  def display(html: true)
+    html ? name_html : name
+  end
+
   def rank_suffix
     self.class.rank_suffixes[inferred_rank.to_s.to_sym]
   end
@@ -369,66 +390,6 @@ class Name < ApplicationRecord
     @citations ||= [
       proposed_by, corrigendum_by, assigned_by, emended_by.to_a
     ].flatten.compact.uniq
-  end
-
-  # ============ --- STATUS --- ============
-
-  def status_hash
-    self.class.status_hash[status]
-  end
-
-  def status_name
-    status_hash[:name]
-  end
-
-  def status_help
-    status_hash[:help].gsub(/\n/, ' ')
-  end
-
-  def status_symbol
-    status_hash[:symbol]
-  end
-
-  def validated?
-    status_hash[:valid]
-  end
-
-  def public?
-    status_hash[:public]
-  end
-
-  def after_claim?
-    status >= 5
-  end
-
-  def after_register?
-    register.present? || after_submission?
-  end
-
-  def after_submission?
-    status >= 10
-  end
-
-  def after_endorsement?
-    status >= 12
-  end
-
-  def after_notification?
-    validated? || register.try(:notified?)
-  end
-
-  def after_validation?
-    valid?
-  end
-
-  def after_register_publication?
-    register.try(:published?)
-  end
-
-  Name.status_hash.each do |k, v|
-    define_method("#{v[:symbol]}?") do
-      status == k
-    end
   end
 
   # ============ --- OUTLINKS --- ============
@@ -528,39 +489,9 @@ class Name < ApplicationRecord
     draft? && user?(user)
   end
 
-  def claim(user)
-    raise('User cannot claim name') unless can_claim?(user)
-    par = { created_by: user, created_at: Time.now }
-    par[:status] = 5 if auto?
-    return false unless update(par)
-
-    # Email notification
-    AdminMailer.with(
-      user: user,
-      name: self,
-      action: 'claim'
-    ).name_status_email.deliver_later
-
-    true
-  end
-
   def can_unclaim?(user)
     curator_or_owner = user.try(:curator?) || self.user?(user)
     curator_or_owner && draft?
-  end
-
-  def unclaim(user)
-    raise('User cannot unclaim name') unless can_unclaim?(user)
-    return false unless update(status: 0)
-
-    # Email notification
-    AdminMailer.with(
-      user: created_by,
-      name: self,
-      action: 'unclaim'
-    ).name_status_email.deliver_later
-
-    true
   end
 
   def correspondence_by?(user)
@@ -579,6 +510,30 @@ class Name < ApplicationRecord
 
   def curators
     @curators ||= (check_users + reviewers).uniq
+  end
+
+  def corresponding_users
+    correspondences.map(&:user).uniq
+  end
+
+  def associated_users
+    (
+      [created_by, validated_by, submitted_by, endorsed_by] +
+      corresponding_users
+    ).compact.uniq
+  end
+
+  def observing?(user)
+    observe_names.where(user: user).present?
+  end
+
+  ##
+  # Attempts to add an observer while silently ignoring it if the user
+  # already observes the name
+  def add_observer(user)
+    self.observers << user
+  rescue ActiveRecord::RecordNotUnique
+    true
   end
 
   # ============ --- TAXONOMY --- ============

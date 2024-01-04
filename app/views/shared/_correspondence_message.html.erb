@@ -1,0 +1,15 @@
+<dt>
+  <%= fa_icon('comment') %>
+  <%= link_to(correspondence.user) do %>
+    <%= correspondence.user.username %>
+    <% if correspondence.user.curator? %>
+      <span class="badge rounded-pill bg-primary text-light">
+        curator
+      </span>
+    <% end %>
+  <% end %>
+  <span title="<%= correspondence.created_at %>">
+    <%= time_ago_in_words(correspondence.created_at) %> ago:
+  </span>
+</dt>
+<dd><%= correspondence.message %></dd>

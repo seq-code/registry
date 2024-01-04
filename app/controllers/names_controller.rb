@@ -8,6 +8,7 @@ class NamesController < ApplicationController
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
       return validate endorse claim unclaim new_correspondence
+      observe unobserve
     ]
   )
   before_action(
@@ -28,6 +29,7 @@ class NamesController < ApplicationController
       return validate endorse
     ]
   )
+  before_action(:authenticate_user!, only: %i[observe unobserve])
 
   # GET /autocomplete_names.json?q=Maco
   # GET /autocomplete_names.json?q=Allo&rank=genus
@@ -65,7 +67,7 @@ class NamesController < ApplicationController
         Name.valid_status
       end
 
-    @names =
+    @names ||=
       case @sort
       when 'date'
         if opts[:status] == 15
@@ -81,7 +83,7 @@ class NamesController < ApplicationController
         @sort = 'alphabetically'
         Name.order(name: :asc)
       end
-    @names = @names.where(status: opts[:status])
+    @names = @names.where(status: opts[:status]) if opts[:status]
     @names = @names.where(opts[:where]) if opts[:where]
     @names = @names.paginate(page: params[:page], per_page: 30)
 
@@ -104,9 +106,22 @@ class NamesController < ApplicationController
     if params[:user] && current_user.admin?
       user = User.find_by(username: params[:user])
     end
-    @title = "Names by #{user.username}"
+    @title  = "Names by #{user.username}"
     @status = 'user'
-    index(where: { created_by: user }, status: Name.status_hash.keys)
+    index(where: { created_by: user })
+    render(:index)
+  end
+
+  # GET /observing-names
+  def observing_names
+    user = current_user
+    if params[:user] && current_user.admin?
+      user = User.find_by(username: params[:user])
+    end
+    @title  = 'Names with active alerts'
+    @status = 'user'
+    @names  = user.observing_names.reverse
+    index
     render(:index)
   end
 
@@ -203,6 +218,7 @@ class NamesController < ApplicationController
 
     respond_to do |format|
       if @name.save
+        @name.add_observer(current_user)
         format.html { redirect_to @name, notice: 'Name was successfully created' }
         format.json { render :show, status: :created, location: @name }
       else
@@ -346,6 +362,7 @@ class NamesController < ApplicationController
     end
 
     if ok && @name.update(par)
+      par[:parent].add_observer(current_user)
       flash[:notice] = 'Parent successfully updated'
       redirect_to(@name)
     else
@@ -355,109 +372,67 @@ class NamesController < ApplicationController
 
   # POST /names/1/return
   def return
-    par = { status: 5 }
-    if !@name.after_submission?
-      flash[:alert]  = 'Name status is incompatible with return'
-    elsif @name.update(par)
-      # Email notification
-      AdminMailer.with(
-        user: @name.created_by,
-        name: @name,
-        action: 'return'
-      ).name_status_email.deliver_later
-      flash[:notice] = 'Name returned to author'
-    else
-      flash[:alert]  = 'An unexpected error occurred'
-    end
-    redirect_to(@name)
+    change_status(:return, 'Name returned to author', current_user)
   end
 
   # POST /names/1/validate
   def validate
-    if params[:code] == 'icnp' || params[:code] == 'icn'
-      par = {
-        status: params[:code] == 'icnp' ? 20 : 25,
-        validated_by: current_user, validated_at: Time.now
-      }
-      if @name.validated?
-        flash[:alert] = 'Name status is incompatible with validation'
-      elsif @name.update(par)
-        # Email notification
-        AdminMailer.with(
-          user: @name.created_by,
-          name: @name,
-          action: 'validate'
-        ).name_status_email.deliver_later
-        flash[:notice] = 'Name successfully validated'
-      else
-        flash[:alert] = 'An unexpected error occurred'
-      end
-    else
-      flash[:alert] =
-        'Invalid procedure for nomenclatural code ' + params[:code]
-    end
-    redirect_to(@name)
+    change_status(
+      :validate, 'Name successfully validated', current_user, params[:code]
+    )
   end
 
   # POST /names/1/endorse
   def endorse
-    par = { status: 12, endorsed_by: current_user, endorsed_at: Time.now }
-    if @name.after_endorsement?
-      flash[:alert] = 'Name status is incompatible with endorsement'
-    elsif @name.update(par)
-      # Email notification
-      AdminMailer.with(
-        user: @name.created_by,
-        name: @name,
-        action: 'endorse'
-      ).name_status_email.deliver_later
-      flash[:notice] = 'Name successfully endorsed'
-    else
-      flash[:alert] = 'An unexpected error occurred'
-    end
-    redirect_to(@name)
+    change_status(:endorse, 'Name successfully endorsed', current_user)
   end
 
   # POST /names/1/claim
   def claim
-    if !@name.can_claim?(current_user)
-      flash[:alert]  = 'You cannot claim this name'
-    elsif @name.claim(current_user)
-      flash[:notice] = 'Name successfully claimed'
-    else
-      flash[:alert]  = 'An unexpected error occurred'
-    end
-    redirect_to(@name)
+    change_status(:claim, 'Name successfully claimed', current_user)
   end
 
   # POST /names/1/unclaim
   def unclaim
-    par = { status: 0 }
-    if !@name.can_unclaim?(current_user)
-      flash[:alert]  = 'You cannot unclaim this name'
-    elsif @name.unclaim(current_user)
-      flash[:notice] = 'Name successfully returned to the public pool'
-    else
-      flash[:alert]  = 'An unexpected error occurred'
-    end
-    redirect_to(@name)
+    change_status(:unclaim, 'Name successfully claimed', current_user)
   end
 
   # POST /names/1/new_correspondence
   def new_correspondence
     @name_correspondence = NameCorrespondence.new(
-      params.require(:name_correspondence).permit(:message)
+      params.require(:name_correspondence).permit(:message, :notify)
     )
     unless @name_correspondence.message.empty?
       @name_correspondence.user = current_user
       @name_correspondence.name = @name
       if @name_correspondence.save
+        @name.add_observer(current_user)
         flash[:notice] = 'Correspondence recorded'
       else
         flash[:alert] = 'An unexpected error occurred with the correspondence'
       end
     end
     redirect_to(@tutorial || @name)
+  end
+
+  # GET /names/1/observe
+  def observe
+    @name.add_observer(current_user)
+    if params[:from] && RedirectSafely.safe?(params[:from])
+      redirect_to(params[:from])
+    else
+      redirect_back(fallback_location: @name)
+    end
+  end
+
+  # GET /names/1/unobserve
+  def unobserve
+    @name.observers.delete(current_user)
+    if params[:from] && RedirectSafely.safe?(params[:from])
+      redirect_to(params[:from])
+    else
+      redirect_back(fallback_location: @name)
+    end
   end
 
   private
@@ -509,5 +484,19 @@ class NamesController < ApplicationController
       Name.etymology_particles.map do |i|
         Name.etymology_fields.map { |j| :"etymology_#{i}_#{j}" }
       end.flatten
+    end
+
+    def change_status(fun, success_msg, *extra_opts)
+      if @name.send(fun, *extra_opts)
+        flash[:notice] = success_msg
+      else
+        flash[:alert] = @name.status_alert
+      end
+      redirect_to(@name)
+    rescue ActiveRecord::RecordInvalid => inv
+      flash['alert'] =
+        'An unexpected error occurred while updating the name: ' +
+        inv.record.errors.map { |e| "#{e.attribute} #{e.message}" }.to_sentence
+      redirect_to(inv.record)
     end
 end

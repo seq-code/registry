@@ -29,6 +29,10 @@
   }
 }
 
+input[type=checkbox] {
+  accent-color: theme-color-level(primary, 0);
+}
+
 #dashboard-actions, .btn {
   .fa, .fas, .far, .fal, .fad, .fab {
     min-width: 1.5em;
@@ -203,7 +207,7 @@ nav.navbar-dark {
       }
     }
   }
-  dd {
+  dd:not(.qc-body) {
     padding-left: 4rem;
     margin-left: 0.2rem;
   }
@@ -212,6 +216,14 @@ nav.navbar-dark {
   }
   dt:hover + dd, dd:hover, dt:hover, dt:has(+ dd:hover) {
     opacity: 1.0 !important;
+  }
+}
+
+.workflow-panel {
+  .workflow-arrow {
+    position: absolute;
+    left: -1.1rem;
+    top: 0.25rem;
   }
 }
 

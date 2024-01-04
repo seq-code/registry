@@ -1,0 +1,52 @@
+<% if object&.can_edit?(current_user) || correspondence_history ||= false %>
+  <dl id="correspondence" class="main-section name-details">
+    <% if correspondence_history %>
+      <%= render(
+            partial: 'shared/correspondence_history',
+            locals: { object: object }) %>
+    <% else %>
+      <h2>Correspondence with curators</h2>
+      <% if object.correspondences.count > 3 %>
+        <% id = modal('Full correspondence history', size: 'lg') do %>
+          <%= render(
+                partial: 'shared/correspondence_history',
+                locals: { object: object }) %>
+        <% end %>
+        <%= modal_button(id, class: 'my-3 btn btn-secondary') do %>
+          <%= pluralize(object.correspondences.count - 3, 'earlier message') %>
+          &hellip;
+        <% end %>
+      <% end %>
+      <% object.correspondences.last(3).each do |correspondence| %>
+        <%= render(
+              partial: 'shared/correspondence_message',
+              locals: { correspondence: correspondence }) %>
+      <% end %>
+
+      <dt>New message</dt>
+      <dd class="pt-2">
+        <%
+          fpar =
+            if object.is_a? Register
+              [RegisterCorrespondence.new(notify: true),
+                new_correspondence_register_url(accession: object.accession)]
+            elsif object.is_a? Name
+              par = { id: object.id }
+              tutorial ||= nil
+              par[:tutorial] = tutorial if tutorial
+              [NameCorrespondence.new(notify: true),
+                new_correspondence_name_url(par)]
+            end
+        %>
+        <%= simple_form_for(fpar[0], url: fpar[1], method: :post) do |f| %>
+          <%= f.input(:message, as: :rich_text_area, label: false) %>
+          <%= f.input(:notify, as: :boolean, label_html: { class: 'text-dark' },
+                label: 'Notify corresponding users by email') %>
+          <%= f.button(:submit, 'Send message') %>
+          &raquo; The messages will be in the permanent record,
+          visible only to submitter and curators
+        <% end %>
+      </dd>
+    <% end %>
+  </dl>
+<% end %>
