@@ -71,7 +71,8 @@ module Register::Status
         name.update!(par)
       end
       update_status_with_alert(
-        submitted: true, submitted_at: Time.now
+        submitted: true, submitted_at: Time.now,
+        genomics_review: false, nomenclature_review: false
       ) or return false
     end
     notify_status_change(:submit, user)

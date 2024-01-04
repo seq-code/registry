@@ -148,7 +148,7 @@ end
 
     <% if @genome.source? %>
       <% def show_genome_sources(n = nil) %>
-        <% content_tag(:ul) do %>
+        <% content_tag(:ul, class: 'mb-1') do %>
           <% @genome.source_links.each_with_index.map do |link, k| %>
             <li>
               <%= link_to(link[0], target: '_blank', title: link[2]) do %>
@@ -171,7 +171,7 @@ end
           <% id = modal('Data sources') do %>
             <%= show_genome_sources %>
           <% end %>
-          <%= modal_button(id) do %>
+          <%= modal_button(id, class: 'btn btn-secondary') do %>
             See all sources
           <% end %>
         <% else %>

@@ -1,5 +1,7 @@
+<% automatic =
+      correspondence.respond_to?(:automatic) && correspondence.automatic %>
 <dt>
-  <%= fa_icon('comment') %>
+  <%= fa_icon(automatic ? 'robot' : 'comment') %>
   <%= link_to(correspondence.user) do %>
     <%= correspondence.user.username %>
     <% if correspondence.user.curator? %>
@@ -8,8 +10,11 @@
       </span>
     <% end %>
   <% end %>
+  <% if automatic %>
+    <span class="text-muted">(automatic message)</span>
+  <% end %>
   <span title="<%= correspondence.created_at %>">
-    <%= time_ago_in_words(correspondence.created_at) %> ago:
+    <%= time_ago_in_words(correspondence.created_at) %> ago
   </span>
 </dt>
 <dd><%= correspondence.message %></dd>

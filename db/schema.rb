@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_02_013502) do
+ActiveRecord::Schema.define(version: 2024_01_04_204413) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 2024_01_02_013502) do
     t.integer "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "automatic", default: false
     t.index ["name_id"], name: "index_name_correspondences_on_name_id"
     t.index ["user_id"], name: "index_name_correspondences_on_user_id"
   end
@@ -277,6 +278,7 @@ ActiveRecord::Schema.define(version: 2024_01_02_013502) do
     t.integer "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "automatic", default: false
     t.index ["register_id"], name: "index_register_correspondences_on_register_id"
     t.index ["user_id"], name: "index_register_correspondences_on_user_id"
   end

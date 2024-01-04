@@ -154,6 +154,7 @@ class RegistersController < ApplicationController
     change_status(
       :submit, 'Register list successfully submitted for review', current_user
     )
+    add_automatic_correspondence('Register list submitted')
   end
 
   # GET /registers/r:abcd/return
@@ -190,6 +191,7 @@ class RegistersController < ApplicationController
     # the standard +change_status+ call used in all other status changes
     if @register.notify(current_user, register_notify_params, params[:doi])
       flash[:notice] = 'The list has been successfully submitted for validation'
+      add_automatic_correspondence('SeqCode Register notified')
       redirect_to(@register)
     else
       @register.title = par[:title]
@@ -300,12 +302,20 @@ class RegistersController < ApplicationController
     @register.update_column(
       :nomenclature_review, !@register.nomenclature_review
     )
+    if @register.nomenclature_review
+      add_automatic_correspondence('Nomenclature review complete')
+    end
     redirect_back(fallback_location: @register)
   end
 
   # POST /registers/r:abc/genomics_review
   def genomics_review
-    @register.update_column(:genomics_review, !@register.genomics_review)
+    @register.update_column(
+      :genomics_review, !@register.genomics_review
+    )
+    if @register.genomics_review
+      add_automatic_correspondence('Genomics review complete')
+    end
     redirect_back(fallback_location: @register)
   end
 
@@ -362,6 +372,13 @@ class RegistersController < ApplicationController
 
     def ensure_valid!
       @register&.validated?
+    end
+
+    def add_automatic_correspondence(message)
+      RegisterCorrespondence.new(
+        message: message, notify: '0', automatic: true,
+        user: current_user, register: @register
+      ).save
     end
 
     def change_status(fun, success_msg, *extra_opts)
