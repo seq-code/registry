@@ -690,6 +690,15 @@ class Name < ApplicationRecord
     end
   end
 
+  ##
+  # Attempts to update the accession of the type genome reusing the same genome
+  # entry. Please use with caution!
+  def update_type_genome!(new_accession)
+    g = genome
+    g.update! accession: new_accession
+    update! type_accession: new_accession
+  end
+
   def type_strain_parsed
     return {} unless type_is_strain?
     strain_parsed(type_accession)
@@ -702,7 +711,7 @@ class Name < ApplicationRecord
 
   def strain_parsed(strain)
     strain.split(/ *= */).map do |str|
-      parts = str.split(/[ -]+/, 2)
+      parts = str.split(/[ :-]+/, 2)
       coll = parts.count == 2 ? parts[0].upcase.to_sym : nil
 
       if url_base = self.class.culture_collections[coll]
