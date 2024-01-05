@@ -223,6 +223,9 @@ module Name::Etymology
 
         # Multiple or no spaces to one space
         g.gsub!(/\.\s*(\S)/, '. \1')
+
+        # Spaces around slash (/)
+        g.gsub!(/ *(\/) */, ' \1 ')
         g.strip!
       end
 
