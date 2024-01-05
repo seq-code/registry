@@ -60,6 +60,7 @@ class Name < ApplicationRecord
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
 
+  before_save(:harmonize_register_and_status)
   before_validation(:standardize_etymology)
   before_validation(:prevent_self_parent)
   before_validation(:monitor_name_changes)
@@ -869,5 +870,9 @@ class Name < ApplicationRecord
 
     self.name.strip!
     self.name.gsub!(/\s+/, ' ')
+  end
+
+  def harmonize_register_and_status
+    self.status = 5 if !register && in_curation?
   end
 end

@@ -48,11 +48,15 @@ module Name::Status
   end
 
   def after_validation?
-    valid?
+    validated?
   end
 
   def after_register_publication?
     register.try(:published?)
+  end
+
+  def in_curation?
+    after_submission? && !validated?
   end
 
   # ============ --- CHANGE STATUS --- ============

@@ -24,6 +24,7 @@ class Register < ApplicationRecord
 
   before_create(:assign_accession)
   before_validation(:propose_and_save_title, if: :submitted?)
+  before_destroy(:return_names_to_draft)
 
   validates(:publication_id, presence: true, if: :validated?)
   validates(:publication_pdf, presence: true, if: :validated?)
@@ -277,5 +278,9 @@ class Register < ApplicationRecord
 
   def propose_and_save_title
     self.title = propose_title unless title?
+  end
+
+  def return_names_to_draft
+    names.each { |name| name.update(status: 5) if name.in_curation? }
   end
 end
