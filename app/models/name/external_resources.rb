@@ -48,7 +48,7 @@ module Name::ExternalResources
     body = external_request(uri)
 
     if body.present?
-      send("#{service}_json=", body.force_encoding('UTF-8'))
+      send("#{service}_json=", body.encode('utf-8'))
       send("#{service}_at=", Time.now)
     end
   end
