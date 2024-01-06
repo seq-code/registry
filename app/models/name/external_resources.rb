@@ -48,7 +48,21 @@ module Name::ExternalResources
     body = external_request(uri)
 
     if body.present?
-      send("#{service}_json=", body.encode('utf-8'))
+      # Test encodings
+      body.force_encoding('utf-8')
+      %w[iso8859-1 windows-1252 us-ascii ascii-8bit].each do |enc|
+        break if body.valid_encoding?
+        recode = body.force_encoding(enc).encode('utf-8')
+        body = recode if recode.valid_encoding?
+      end
+      # If nothing works, replace offending characters with '?'
+      unless body.valid_encoding?
+        body = body.encode(
+          'utf-8', invalid: :replace, undef: :replace, replace: '?'
+        )
+      end
+      # Store (transiently)
+      send("#{service}_json=", body)
       send("#{service}_at=", Time.now)
     end
   end
