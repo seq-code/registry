@@ -45,7 +45,7 @@
     <% if pass %>
         <% if @name.created_by %>
           This name was successfully claimed by
-          <%= link_to(@name.created_by.username, @name.created_by) %>.
+          <%= display_link(@name.created_by) %>
         <% else %>
           This name was automatically processed by the SeqCode Registry.
         <% end %>
@@ -100,7 +100,7 @@
     <% if pass %>
       This name was submitted for evaluation
       <% if @name.submitted_by %>
-        by <%= link_to(@name.submitted_by.username, @name.submitted_by) %>
+        by <%= display_link(@name.submitted_by) %>
       <% end %>
       <% if @name.submitted_at %>
         on <%= time_tag(@name.submitted_at, format: '%F') %>
@@ -148,14 +148,12 @@
         'Name endorsement', :after_endorsement_or_notification?) do |pass| %>
     <% workflow_steps[:endorsed] = pass %>
     <% if pass %>
-      <% if @name.endorsed_by %>
+      <% if @name.endorsed_at %>
         This name was endorsed
         <% if @name.endorsed_by %>
-          by <%= link_to(@name.endorsed_by.username, @name.endorsed_by) %>
+          by <%= display_link(@name.endorsed_by) %>
         <% end %>
-        <% if @name.endorsed_at %>
-          on <%= time_tag(@name.endorsed_at, format: '%F') %>
-        <% end %>
+        on <%= time_tag(@name.endorsed_at, format: '%F') %>
         after manual review.
       <% elsif !@name.after_endorsement? %>
         This name bypassed endorsement through notification ("Path 2").

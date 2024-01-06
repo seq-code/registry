@@ -39,23 +39,27 @@ class Name < ApplicationRecord
   belongs_to(:correct_name, optional: true, class_name: 'Name')
   belongs_to(
     :created_by, optional: true,
-    class_name: 'User', foreign_key: 'created_by'
+    class_name: 'User', foreign_key: 'created_by_id'
   )
   belongs_to(
     :submitted_by, optional: true,
-    class_name: 'User', foreign_key: 'submitted_by'
+    class_name: 'User', foreign_key: 'submitted_by_id'
   )
   belongs_to(
     :endorsed_by, optional: true,
-    class_name: 'User', foreign_key: 'endorsed_by'
+    class_name: 'User', foreign_key: 'endorsed_by_id'
   )
   belongs_to(
     :validated_by, optional: true,
-    class_name: 'User', foreign_key: 'validated_by'
+    class_name: 'User', foreign_key: 'validated_by_id'
   )
   belongs_to(
-    :nomenclature_reviewer, optional: true,
-    class_name: 'User', foreign_key: 'nomenclature_reviewer'
+    :nomenclature_review_by, optional: true,
+    class_name: 'User', foreign_key: 'nomenclature_review_by_id'
+  )
+  belongs_to(
+    :genomics_review_by, optional: true,
+    class_name: 'User', foreign_key: 'genomics_review_by_id'
   )
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
@@ -528,7 +532,10 @@ class Name < ApplicationRecord
   end
 
   def reviewer_ids
-    [validated_by, endorsed_by, nomenclature_reviewer].compact.uniq
+    [
+      validated_by_id, endorsed_by_id,
+      nomenclature_review_by_id, genomics_review_by_id
+    ].compact.uniq
   end
 
   def reviewers
@@ -545,8 +552,10 @@ class Name < ApplicationRecord
 
   def associated_users
     (
-      [created_by, validated_by, submitted_by, endorsed_by] +
-      corresponding_users
+      [
+        created_by, validated_by, submitted_by, endorsed_by,
+        nomenclature_review_by, genomics_review_by
+      ] + corresponding_users
     ).compact.uniq
   end
 

@@ -1,4 +1,8 @@
 class Genome < ApplicationRecord
+  belongs_to(
+    :updated_by, optional: true,
+    class_name: 'User', foreign_key: 'updated_by_id'
+  )
   validates(:database, presence: true)
   validates(:accession, presence: true)
   validates(
@@ -152,10 +156,6 @@ class Genome < ApplicationRecord
 
   def text
     "#{Name.type_material_name(database)}: #{accession}"
-  end
-
-  def updated_by_user
-    User.find(updated_by) if updated_by?
   end
 
   def quality

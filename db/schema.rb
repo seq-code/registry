@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_04_204413) do
+ActiveRecord::Schema.define(version: 2024_01_06_184832) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 2024_01_04_204413) do
     t.float "most_complete_23s"
     t.integer "number_of_23s"
     t.integer "number_of_trnas"
-    t.integer "updated_by"
+    t.integer "updated_by_id"
     t.boolean "auto_check", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -105,7 +105,7 @@ ActiveRecord::Schema.define(version: 2024_01_04_204413) do
     t.float "ambiguous_fraction_auto"
     t.string "codon_table_auto"
     t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
-    t.index ["updated_by"], name: "index_genomes_on_updated_by"
+    t.index ["updated_by_id"], name: "index_genomes_on_updated_by_id"
   end
 
   create_table "name_correspondences", force: :cascade do |t|
@@ -154,16 +154,16 @@ ActiveRecord::Schema.define(version: 2024_01_04_204413) do
     t.string "rank"
     t.integer "ncbi_taxonomy"
     t.integer "status", default: 0
-    t.integer "created_by"
-    t.integer "validated_by"
+    t.integer "created_by_id"
+    t.integer "validated_by_id"
     t.datetime "validated_at"
     t.string "type_material"
     t.text "type_accession"
-    t.integer "submitted_by"
+    t.integer "submitted_by_id"
     t.datetime "submitted_at"
     t.text "itis_json"
     t.datetime "itis_at"
-    t.integer "endorsed_by"
+    t.integer "endorsed_by_id"
     t.datetime "endorsed_at"
     t.integer "register_id"
     t.text "irmng_json"
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(version: 2024_01_04_204413) do
     t.text "gbif_json"
     t.datetime "gbif_at"
     t.datetime "queued_external"
-    t.integer "nomenclature_reviewer"
+    t.integer "nomenclature_review_by_id"
     t.datetime "priority_date"
     t.string "proposal_kind"
     t.string "nomenclatural_status"
@@ -186,6 +186,7 @@ ActiveRecord::Schema.define(version: 2024_01_04_204413) do
     t.integer "correct_name_id"
     t.integer "assigned_by"
     t.string "genome_strain"
+    t.integer "genomics_review_by_id"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["register_id"], name: "index_names_on_register_id"
@@ -286,7 +287,7 @@ ActiveRecord::Schema.define(version: 2024_01_04_204413) do
   create_table "registers", force: :cascade do |t|
     t.string "accession"
     t.integer "user_id", null: false
-    t.integer "validated_by"
+    t.integer "validated_by_id"
     t.boolean "submitted", default: false
     t.boolean "validated", default: false
     t.integer "publication_id"
@@ -299,7 +300,7 @@ ActiveRecord::Schema.define(version: 2024_01_04_204413) do
     t.boolean "published"
     t.datetime "published_at"
     t.string "published_doi"
-    t.integer "published_by"
+    t.integer "published_by_id"
     t.boolean "submitter_is_author"
     t.boolean "authors_approval"
     t.datetime "submitted_at"

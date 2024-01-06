@@ -18,14 +18,9 @@
     <%= help_message(name.status_name) { name.status_help } %>
   <% end %>
   <%= adaptable_value(entry, 'Registered by') do %>
-    <% if name.created_by %>
-      <%= link_to(name.created_by.username, name.created_by) %>
-    <% else %>
-      Excubia Bot
-    <% end %>
-    <u class="hover-help"
-       title="<%= name.created_at %>"
-       ><%= time_ago_in_words(name.created_at) %> ago</u>
+    <%= name.created_by ?
+          display_link(name.created_by) : 'Excubia bot' %>
+    <%= time_ago_with_date(name.created_at) %>
   <% end %>
   <% entry.footer do %>
     <ul class="list-inline m-0 text-right">

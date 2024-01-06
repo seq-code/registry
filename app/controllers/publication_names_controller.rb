@@ -19,13 +19,13 @@ class PublicationNamesController < ApplicationController
     name = @publication_name.name
     publication = @publication_name.publication
     PublicationName.transaction do
-      if name.proposed_by == publication
+      if name.proposed_by? publication
         name.update(proposed_by: nil)
       end
-      if name.corrigendum_by == publication
+      if name.corrigendum_by? publication
         name.update(corrigendum_by: nil, corrigendum_from: nil)
       end
-      if name.assigned_by == publication
+      if name.assigned_by? publication
         name.update(assigned_by: nil)
       end
       @publication_name.destroy

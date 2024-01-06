@@ -1,8 +1,9 @@
 class GenomesController < ApplicationController
-  before_action(:set_genome, only: %i[ show edit update ])
-  before_action(:set_name, only: %i[ show edit update ])
+  before_action(:set_genome, only: %i[show edit update])
+  before_action(:set_name, only: %i[show edit update])
   before_action(:set_tutorial)
-  before_action(:authenticate_can_edit!, only: %i[ edit update ])
+  before_action(:authenticate_can_edit!, only: %i[edit update])
+  before_action(:authenticate_curator!, only: %i[index])
 
   # GET /genomes or /genomes.json
   def index
@@ -19,7 +20,7 @@ class GenomesController < ApplicationController
 
   # PATCH/PUT /genomes/1
   def update
-    if @genome.update(genome_params.merge(updated_by: current_user.id))
+    if @genome.update(genome_params.merge(updated_by: current_user))
         redirect_to(
           params[:return_to] || @name || @genome,
           notice: 'Genome was successfully updated.'

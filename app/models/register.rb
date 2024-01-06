@@ -3,7 +3,11 @@ class Register < ApplicationRecord
   belongs_to(:publication, optional: true)
   belongs_to(
     :published_by, optional: true,
-    class_name: 'User', foreign_key: 'published_by'
+    class_name: 'User', foreign_key: 'published_by_id'
+  )
+  belongs_to(
+    :validated_by, optional: true,
+    class_name: 'User', foreign_key: 'validated_by_id'
   )
   has_one_attached(:publication_pdf)
   has_one_attached(:supplementary_pdf)
@@ -225,7 +229,8 @@ class Register < ApplicationRecord
 
   def reviewer_ids
     @reviewer_ids ||=
-      names.pluck(:validated_by, :endorsed_by, :nomenclature_reviewer)
+      names.pluck(:validated_by_id, :endorsed_by_id,
+                  :nomenclature_review_by_id, :genomics_review_by_id)
            .flatten.compact.uniq
   end
 

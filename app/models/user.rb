@@ -5,13 +5,37 @@ class User < ApplicationRecord
     :confirmable, :lockable, :trackable
   )
 
-  has_many(:created_names, class_name: 'Name', foreign_key: 'created_by')
-  has_many(:submitted_names, class_name: 'Name', foreign_key: 'submitted_by')
-  has_many(:endorsed_names, class_name: 'Name', foreign_key: 'endorsed_by')
-  has_many(:validated_names, class_name: 'Name', foreign_key: 'validated_by')
   has_many(
-    :nomenclature_reviewed_for_names,
-    class_name: 'Name', foreign_key: 'nomenclature_reviewer'
+    :created_names, class_name: 'Name', foreign_key: 'created_by_id',
+    dependent: :nullify
+  )
+  has_many(
+    :submitted_names, class_name: 'Name', foreign_key: 'submitted_by_id',
+    dependent: :nullify
+  )
+  has_many(
+    :endorsed_names, class_name: 'Name', foreign_key: 'endorsed_by_id',
+    dependent: :nullify
+  )
+  has_many(
+    :validated_names, class_name: 'Name', foreign_key: 'validated_by_id',
+    dependent: :nullify
+  )
+  has_many(
+    :nomenclature_reviewed_for_names, class_name: 'Name',
+    foreign_key: 'nomenclature_review_by_id', dependent: :nullify
+  )
+  has_many(
+    :genomics_reviewed_for_names, class_name: 'Name',
+    foreign_key: 'genomics_review_by_id', dependent: :nullify
+  )
+  has_many(
+    :validated_registers, class_name: 'Register',
+    foreign_key: 'validated_by_id', dependent: :nullify
+  )
+  has_many(
+    :published_registers, class_name: 'Register',
+    foreign_key: 'published_by_id', dependent: :nullify
   )
   has_many(:registers, dependent: :nullify)
   has_many(:name_correspondences, dependent: :nullify)
@@ -23,6 +47,10 @@ class User < ApplicationRecord
   has_many(:observing_names, through: :observe_names, source: :name)
   has_many(:observe_registers, dependent: :destroy)
   has_many(:observing_registers, through: :observe_registers, source: :register)
+  has_many(
+    :updated_genomes, class_name: 'Genome',
+    foreign_key: 'updated_by_id', dependent: :nullify
+  )
 
   validates(
     :username,
@@ -92,8 +120,9 @@ class User < ApplicationRecord
   def reviewed_names
     @reviewed_names ||=
       Name.where(
-        'validated_by = ? OR endorsed_by = ? OR nomenclature_reviewer = ?',
-        id, id, id
+        'validated_by_id = ? OR endorsed_by_id = ? ' \
+        'OR nomenclature_review_by_id = ? OR genomics_review_by_id = ?',
+        id, id, id, id
       )
   end
 
