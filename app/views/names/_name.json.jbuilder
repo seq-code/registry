@@ -12,26 +12,37 @@ json.type(name.type_is_name? ? name.type_name.name : name.type_text)
 unless name.notes.empty?
   json.notes(raw: name.notes.body.to_plain_text, html: name.notes.body)
 end
-if name.proposed_by
-  json.proposed_by(
-    id: name.proposed_by.id,
-    citation: name.proposed_by.citation,
-    url: publication_url(name.proposed_by, format: :json)
+if name.proposed_in
+  json.proposed_in(
+    id: name.proposed_in.id,
+    citation: name.proposed_in.citation,
+    url: publication_url(name.proposed_in, format: :json)
   )
 end
-if name.corrigendum_by
-  json.corrigendum_by(
-    id: name.corrigendum_by.id,
-    citation: name.corrigendum_by.citation,
-    url: publication_url(name.corrigendum_by, format: :json)
+if name.corrigendum_in
+  json.corrigendum_in(
+    id: name.corrigendum_in.id,
+    citation: name.corrigendum_in.citation,
+    url: publication_url(name.corrigendum_in, format: :json)
   )
   json.(name, :corrigendum_from)
 end
-if name.assigned_by
-  json.assigned_by(
-    id: name.assigned_by.id,
-    citation: name.assigned_by.citation,
-    url: publication_url(name.assigned_by, format: :json)
+if name.assigned_in
+  json.assigned_in(
+    id: name.assigned_in.id,
+    citation: name.assigned_in.citation,
+    url: publication_url(name.assigned_in, format: :json)
+  )
+end
+if name.emended_in.present?
+  json.emended_in(
+    name.emended_in.map do |pub|
+      {
+        id: pub.id,
+        citation: pub.citation,
+        url: publication_url(pub, format: :json)
+      }
+    end
   )
 end
 

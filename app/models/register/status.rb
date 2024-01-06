@@ -136,7 +136,7 @@ module Register::Status
         unless name.publications.include? publication
           name.publications << publication
         end
-        name.proposed_by = publication
+        name.proposed_in = publication
         name.save!
       end
       update_status_with_alert(

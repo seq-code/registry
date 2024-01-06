@@ -49,11 +49,11 @@ Rails.application.routes.draw do
   get  'doi/:doi' => 'publications#show', as: :doi, doi: /.+/
   get  'publications/:id/link_names' => 'publication_names#link_names', as: :link_publication_name
   post 'publications/:id/link_names' => 'publication_names#link_names_commit', as: :link_publication_commit_name
-  post 'names/:id/proposed_by/:publication_id' => 'names#proposed_by', as: :proposed_by_name
-  get  'names/:id/corrigendum_by/:publication_id' => 'names#corrigendum_by', as: :corrigendum_by_name
+  post 'names/:id/proposed_in/:publication_id' => 'names#proposed_in', as: :proposed_in_name
+  get  'names/:id/corrigendum_in/:publication_id' => 'names#corrigendum_in', as: :corrigendum_in_name
   post 'names/:id/corrigendum' => 'names#corrigendum', as: :corrigendum_name
-  post 'names/:id/emended_by/:publication_id' => 'names#emended_by', as: :emended_by_name
-  post 'names/:id/assigned_by/:publication_id' => 'names#assigned_by', as: :assigned_by_name
+  post 'names/:id/emended_in/:publication_id' => 'names#emended_in', as: :emended_in_name
+  post 'names/:id/assigned_in/:publication_id' => 'names#assigned_in', as: :assigned_in_name
   get  'names/:id/edit_etymology' => 'names#edit_etymology', as: :edit_etymology_name
   get  'names/:id/autofill_etymology' => 'names#autofill_etymology', as: :autofill_etymology_name
   get  'names/:id/edit_notes' => 'names#edit_notes', as: :edit_notes_name

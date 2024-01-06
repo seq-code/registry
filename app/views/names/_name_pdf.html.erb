@@ -65,24 +65,24 @@
       <div class="avoid-page-break">
         <dt>References</dt>
         <dd>
-          <% if name.proposed_by %>
-            Proposed: <%= name.proposed_by.short_citation %>
+          <% if name.proposed_in %>
+            Proposed: <%= name.proposed_in.short_citation %>
             <br/>
           <% end %>
-          <% if name.corrigendum_by %>
-            <i>Corrigendum</i>: <%= name.corrigendum_by.short_citation %>
+          <% if name.corrigendum_in %>
+            <i>Corrigendum</i>: <%= name.corrigendum_in.short_citation %>
             <% unless name.corrigendum_from.blank? %>
               (from &#8220;<%= name.corrigendum_from %>&#8221;)
             <% end %>
             <br/>
           <% end %>
-          <% if name.emended_by.any? %>
+          <% if name.emended_in.any? %>
             <i>Emendavit</i>:
-            <%= name.emended_by.map(&:short_citation).to_sentence %>
+            <%= name.emended_in.map(&:short_citation).to_sentence %>
             <br/>
           <% end %>
-          <% if name.assigned_by %>
-            Assigned taxonomically: <%= name.assigned_by.short_citation %>
+          <% if name.assigned_in %>
+            Assigned taxonomically: <%= name.assigned_in.short_citation %>
           <% end %>
       </div>
     <% end %>

@@ -4,7 +4,7 @@ class NamesController < ApplicationController
     :set_name,
     only: %i[
       show edit update destroy
-      proposed_by corrigendum_by corrigendum emended_by assigned_by
+      proposed_in corrigendum_in corrigendum emended_in assigned_in
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit
       return validate endorse claim unclaim new_correspondence
@@ -15,7 +15,7 @@ class NamesController < ApplicationController
     :authenticate_can_edit!,
     only: %i[
       edit update destroy
-      proposed_by corrigendum_by corrigendum emended_by assigned_by
+      proposed_in corrigendum_in corrigendum emended_in assigned_in
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology link_parent link_parent_commit new_correspondence
     ]
@@ -281,52 +281,51 @@ class NamesController < ApplicationController
 
   # GET /unknown_proposal
   def unknown_proposal
-    @names = Name.where(proposed_by: nil).where('name LIKE ?', 'Candidatus %').order(created_at: :asc)
+    @names = Name.where(proposed_in: nil).where('name LIKE ?', 'Candidatus %').order(created_at: :asc)
     @names = @names.paginate(page: params[:page], per_page: 30)
   end
 
-  # POST /names/1/proposed_by/2
-  # POST /names/1/proposed_by/2?not=true
-  def proposed_by
+  # POST /names/1/proposed_in/2
+  # POST /names/1/proposed_in/2?not=true
+  def proposed_in
     @publication =
       params[:not] ? nil : Publication.where(id: params[:publication_id]).first
-    @name.update(proposed_by: @publication)
+    @name.update(proposed_in: @publication)
     redirect_back(fallback_location: @name)
   end
 
-  # GET /names/1/corrigendum_by/2
-  def corrigendum_by
+  # GET /names/1/corrigendum_in/2
+  def corrigendum_in
     @publication =
       params[:not] ? nil : Publication.where(id: params[:publication_id]).first
     if @publication.nil?
-      @name.update(corrigendum_by: nil, corrigendum_from: nil)
+      @name.update(corrigendum_in: nil, corrigendum_from: nil)
       redirect_back(fallback_location: @name)
     else
-      @name.corrigendum_by = @publication
+      @name.corrigendum_in = @publication
     end
   end
 
-  # POST /names/1/assigned_by/2
-  # POST /names/1/assigned_by/2?not=true
-  def assigned_by
+  # POST /names/1/assigned_in/2
+  # POST /names/1/assigned_in/2?not=true
+  def assigned_in
     @publication =
       params[:not] ? nil : Publication.where(id: params[:publication_id]).first
-    @name.update(assigned_by: @publication)
+    @name.update(assigned_in: @publication)
     @name.placement.try(:update, publication: @publication)
     redirect_back(fallback_location: @name)
   end
 
   # POST /names/1/corrigendum
   def corrigendum
-    par = params.require(:name).permit(:corrigendum_by, :corrigendum_from)
-    par[:corrigendum_by] = Publication.find(par[:corrigendum_by])
+    par = params.require(:name).permit(:corrigendum_in_id, :corrigendum_from)
     @name.update(par)
     redirect_to(@name)
   end
 
-  # POST /names/1/emended_by/2
-  # POST /names/1/emended_by/2?not=true
-  def emended_by
+  # POST /names/1/emended_in/2
+  # POST /names/1/emended_in/2?not=true
+  def emended_in
     @name.publication_names
       .where(publication_id: params[:publication_id])
       .update(emends: !params[:not])

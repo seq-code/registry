@@ -751,14 +751,14 @@ module Name::QualityChecks
     @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
     @qc_warnings.add(:identical_external_name) unless external_homonyms.empty?
     @qc_warnings.add(:missing_description) unless description?
-    @qc_warnings.add(:invalid_effective_publication) if proposed_by&.prepub?
+    @qc_warnings.add(:invalid_effective_publication) if proposed_in&.prepub?
     @qc_warnings.add(:missing_publication_of_emendation) # check
-    if proposed_by.nil? &&
+    if proposed_in.nil? &&
         (register.nil? || register.notified? || register.validated?)
       @qc_warnings.add(:missing_effective_publication)
     end
 
-    if proposed_by
+    if proposed_in
       @qc_warnings.add(:missing_description_in_publication) # check
       @qc_warnings.add(:unavailable_english_description) # check
     end
@@ -794,7 +794,7 @@ module Name::QualityChecks
       if type_genome.source?
         @qc_warnings.add(:missing_metadata_in_databases) # check
       else
-        if !proposed_by.nil? && proposed_by.journal_date.year < 2023
+        if proposed_in && proposed_in.journal_date.year < 2023
           # Only a warning for publications before 1st January 2023
           @qc_warnings.add(
             :missing_genome_source,

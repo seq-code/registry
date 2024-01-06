@@ -58,14 +58,14 @@ class PublicationsController < ApplicationController
 
         case params[:link_name][:as]
         when 'propose'
-          @name.update(proposed_by: @publication)
+          @name.update(proposed_in: @publication)
           redirect_to(@name, notice: 'Effective publication registered')
         when 'corrig'
           redirect_to(
-            corrigendum_by_name_url(@name, publication_id: @publication.id)
+            corrigendum_in_name_url(@name, publication_id: @publication.id)
           )
         when 'assign'
-          @name.update(assigned_by: @publication)
+          @name.update(assigned_in: @publication)
           redirect_to(
             @name, notice: 'Taxonomic assignment publication registered'
           )

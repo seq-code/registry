@@ -4,13 +4,13 @@
   <dt><%= fa_icon('signature') %> Formal styling</dt>
   <dd><%= @name.formal_html %></dd>
 
-  <% if @name.proposed_by %>
-    <dt><%= fa_icon('star') %> Proposed by</dt>
+  <% if @name.proposed_in %>
+    <dt><%= fa_icon('star') %> Proposed in</dt>
     <dd>
-      <%= link_to(@name.proposed_by.short_citation, @name.proposed_by) %>
+      <%= display_link(@name.proposed_in, :short_citation) %>
       <% if @name.can_edit?(current_user) %>
         <%= link_to(
-              proposed_by_name_url(@name, @name.proposed_by, not: true),
+              proposed_in_name_url(@name, @name.proposed_in, not: true),
               class: 'badge badge-pill badge-info',
               method: :post, title: 'Did not propose this name',
               data: { confirm: 'Are you sure?' }
@@ -26,36 +26,40 @@
     </dd>
   <% end %>
 
-  <% if @name.corrigendum_by %>
+  <% if @name.corrigendum_in %>
     <dt><%= fa_icon('pen-fancy') %> Corrigendum</dt>
     <dd>
-      <%= link_to(@name.corrigendum_by.short_citation, @name.corrigendum_by) %>
+      <%= display_link(@name.corrigendum_in, :short_citation) %>
       <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
         from &#8220;<%= @name.corrigendum_from %>&#8221; (sic)
       <% end %>
       <% if @name.can_edit?(current_user) %>
-        <%= link_to corrigendum_by_name_url(@name, @name.corrigendum_by),
+        <%= link_to(
+              corrigendum_in_name_url(@name, @name.corrigendum_in),
               class: 'badge badge-pill badge-info',
-              title: 'Edit original name' do %>
+              title: 'Edit original name'
+            ) do %>
           <%= fa_icon('edit') %> Edit
         <% end %>
-        <%= link_to corrigendum_by_name_url(@name, @name.corrigendum_by, not: true),
+        <%= link_to(
+              corrigendum_in_name_url(@name, @name.corrigendum_in, not: true),
               class: 'badge badge-pill badge-info',
               title: 'Did not correct this name',
-              data: { confirm: 'Are you sure?' } do %>
+              data: { confirm: 'Are you sure?' }
+            ) do %>
           <%= fa_icon('unlink') %> Unlink
         <% end %>
       <% end %>
     </dd>
   <% end %>
 
-  <% unless @name.emended_by.empty? %>
-    <dt><%= fa_icon 'asterisk' %> Emended by</dt>
+  <% if @name.emended_in.present? %>
+    <dt><%= fa_icon 'asterisk' %> Emended in</dt>
     <dd>
-      <% @name.emended_by.each do |emended| %>
+      <% @name.emended_in.each do |emended| %>
         <%= link_to emended.short_citation, emended %>
         <% if @name.can_edit?(current_user) %>
-          <%= link_to emended_by_name_url(@name, emended, not: true),
+          <%= link_to emended_in_name_url(@name, emended, not: true),
                 class: 'badge badge-pill badge-info',
                 method: :post, title: 'Did not emend this name',
                 data: { confirm: 'Are you sure?' } do %>

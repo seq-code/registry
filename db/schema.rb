@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_06_184832) do
+ActiveRecord::Schema.define(version: 2024_01_06_222132) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -122,7 +122,7 @@ ActiveRecord::Schema.define(version: 2024_01_06_184832) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "proposed_by"
+    t.integer "proposed_in_id"
     t.string "syllabication"
     t.boolean "syllabication_reviewed"
     t.string "etymology_xx_lang"
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(version: 2024_01_06_184832) do
     t.string "etymology_p5_particle"
     t.string "etymology_p5_description"
     t.integer "parent_id"
-    t.integer "corrigendum_by"
+    t.integer "corrigendum_in_id"
     t.string "corrigendum_from"
     t.string "rank"
     t.integer "ncbi_taxonomy"
@@ -184,7 +184,7 @@ ActiveRecord::Schema.define(version: 2024_01_06_184832) do
     t.string "authority"
     t.string "lpsn_url"
     t.integer "correct_name_id"
-    t.integer "assigned_by"
+    t.integer "assigned_in_id"
     t.string "genome_strain"
     t.integer "genomics_review_by_id"
     t.index ["genome_id"], name: "index_names_on_genome_id"

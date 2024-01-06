@@ -51,9 +51,9 @@
           <%= link_to_name(@name.parent) %>
         <% end %>
 
-        <% if @name.assigned_by %>
-          assigned by
-          <%= link_to(@name.assigned_by.short_citation, @name.assigned_by) %>
+        <% if @name.assigned_in %>
+          assigned in
+          <%= link_to(@name.assigned_in.short_citation, @name.assigned_in) %>
         <% end %>
 
         <% if @name.can_edit?(current_user) %>
@@ -99,7 +99,7 @@
                 <% end %>
 
                 <% if placement.publication %>
-                  assigned by
+                  assigned in
                   <%= link_to(
                         placement.publication.short_citation,
                         placement.publication) %>

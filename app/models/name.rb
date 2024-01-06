@@ -24,16 +24,16 @@ class Name < ApplicationRecord
   has_many(:observers, through: :observe_names, source: :user)
 
   belongs_to(
-    :proposed_by, optional: true,
-    class_name: 'Publication', foreign_key: 'proposed_by'
+    :proposed_in, optional: true,
+    class_name: 'Publication', foreign_key: 'proposed_in_id'
   )
   belongs_to(
-    :corrigendum_by, optional: true,
-    class_name: 'Publication', foreign_key: 'corrigendum_by'
+    :corrigendum_in, optional: true,
+    class_name: 'Publication', foreign_key: 'corrigendum_in_id'
   )
   belongs_to(
-    :assigned_by, optional: true,
-    class_name: 'Publication', foreign_key: 'assigned_by'
+    :assigned_in, optional: true,
+    class_name: 'Publication', foreign_key: 'assigned_in_id'
   )
   belongs_to(:parent, optional: true, class_name: 'Name')
   belongs_to(:correct_name, optional: true, class_name: 'Name')
@@ -356,15 +356,15 @@ class Name < ApplicationRecord
   def formal_html
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
-    y += " <i>corrig.</i>".html_safe if corrigendum_by
-    if authority || proposed_by
-      y += " #{sanitize(authority || proposed_by.short_citation)}"
+    y += " <i>corrig.</i>".html_safe if corrigendum_in
+    if authority || proposed_in
+      y += " #{sanitize(authority || proposed_in.short_citation)}"
     end
-    if priority_date && priority_date.year != proposed_by&.journal_date&.year
+    if priority_date && priority_date.year != proposed_in&.journal_date&.year
       y += " (valid #{priority_date.year})"
     end
-    if emended_by.any?
-      cit = emended_by.map(&:short_citation).join('; ')
+    if emended_in.any?
+      cit = emended_in.map(&:short_citation).join('; ')
       y += " <i>emend.</i> #{cit}".html_safe
     end
     y.html_safe
@@ -419,7 +419,7 @@ class Name < ApplicationRecord
     return @citations unless (@citations ||= nil).nil?
 
     @citations ||= [
-      proposed_by, corrigendum_by, assigned_by, emended_by.to_a
+      proposed_in, corrigendum_in, assigned_in, emended_in.to_a
     ].flatten.compact.uniq
   end
 
@@ -466,24 +466,24 @@ class Name < ApplicationRecord
 
   # ============ --- USERS --- ============
 
-  def proposed_by?(publication)
-    publication == proposed_by
+  def proposed_in?(publication)
+    publication.id == proposed_in_id
   end
 
-  def corrigendum_by?(publication)
-    publication == corrigendum_by
+  def corrigendum_in?(publication)
+    publication.id == corrigendum_in_id
   end
 
-  def assigned_by?(publication)
-    publication == assigned_by
+  def assigned_in?(publication)
+    publication.id == assigned_in_id
   end
 
-  def emended_by
+  def emended_in
     publication_names.where(emends: true).map(&:publication)
   end
 
-  def emended_by?(publication)
-    emended_by.include? publication
+  def emended_in?(publication)
+    emended_in.include? publication
   end
 
   def user?(user)

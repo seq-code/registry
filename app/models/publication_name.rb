@@ -3,14 +3,14 @@ class PublicationName < ApplicationRecord
   belongs_to(:name)
 
   def proposes?
-    name.proposed_by? publication
+    name.proposed_in? publication
   end
 
   def corrigendum?
-    name.corrigendum_by? publication
+    name.corrigendum_in? publication
   end
 
   def assigns?
-    name.assigned_by? publication
+    name.assigned_in? publication
   end
 end

@@ -130,7 +130,7 @@ class Register < ApplicationRecord
 
   def proposing_publications
     @proposing_publications ||=
-      Publication.where(id: names.pluck(:proposed_by))
+      Publication.where(id: names.pluck(:proposed_in_id))
                  .where('journal IS NOT NULL')
                  .where.not(pub_type: 'posted-content')
   end

@@ -14,17 +14,17 @@ class Publication < ApplicationRecord
   has_many(:names, through: :publication_names)
   has_many(
     :proposed_names, class_name: 'Name',
-    foreign_key: 'proposed_by', inverse_of: :proposed_by,
+    foreign_key: 'proposed_in_id', inverse_of: :proposed_in,
     dependent: :nullify
   )
   has_many(
     :corrigendum_names, class_name: 'Name',
-    foreign_key: 'corrigendum_by', inverse_of: :corrigendum_by,
+    foreign_key: 'corrigendum_in_id', inverse_of: :corrigendum_in,
     dependent: :nullify
   )
   has_many(
     :assigned_names, class_name: 'Name',
-    foreign_key: 'assigned_by', inverse_of: :assigned_by,
+    foreign_key: 'assigned_in_id', inverse_of: :assigned_in,
     dependent: :nullify
   )
   has_many(:placements, dependent: :nullify)

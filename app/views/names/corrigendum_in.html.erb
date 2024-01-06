@@ -3,9 +3,9 @@
 
 <%= simple_form_for(@name, url: corrigendum_name_path(@name), html: { method: :post }) do |f| %>
   <h4>
-    Corrigendum by <%= link_to(@publication.short_citation, @publication) %>
+    Corrigendum in <%= link_to(@publication.short_citation, @publication) %>
   </h4>
-  <%= f.hidden_field(:corrigendum_by) %>
+  <%= f.hidden_field(:corrigendum_in_id) %>
   <%=
     f.input(
       :corrigendum_from, required: true, autofocus: true,

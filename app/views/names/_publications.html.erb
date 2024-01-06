@@ -22,33 +22,35 @@
           <td><%= link_to(publication.citation, publication) %></td>
           <td><%= publication.title_html %></td>
           <td>
-            <% if @name.proposed_by? publication %>
+            <% if @name.proposed_in? publication %>
               <div class="badge"><%= fa_icon('star') %> Proposed this name</div>
             <% end %>
-            <% if @name.corrigendum_by? publication %>
+            <% if @name.corrigendum_in? publication %>
               <div class="badge"><%= fa_icon('pen-fancy') %> Corrigendum</div>
             <% end %>
-            <% if @name.emended_by? publication %>
+            <% if @name.emended_in? publication %>
               <div class="badge"><%= fa_icon('asterisk') %> Emended this name</div>
             <% end %>
-            <% if @name.assigned_by? publication %>
+            <% if @name.assigned_in? publication %>
               <div class="badge"><%= fa_icon('arrow-alt-circle-up') %> Assigned this taxon</div>
             <% end %>
           </td>
           <td>
             <% if @name.can_edit?(current_user) %>
               <% unless publication_name.proposes? %>
-                <%= link_to proposed_by_name_url(@name, publication),
+                <%= link_to(
+                      proposed_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-info',
                       method: :post, title: 'Proposed this name',
-                      data: { confirm: 'Are you sure?' } do %>
+                      data: { confirm: 'Are you sure?' }
+                    ) do %>
                   <%= fa_icon('star') %>
                 <% end %>
               <% end %>
 
               <% unless publication_name.corrigendum? %>
                 <%= link_to(
-                      corrigendum_by_name_url(@name, publication),
+                      corrigendum_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-info',
                       title: 'Corrigendum'
                     ) do %>
@@ -58,7 +60,7 @@
 
               <% unless publication_name.emends? %>
                 <%= link_to(
-                      emended_by_name_url(@name, publication),
+                      emended_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-info',
                       method: :post, title: 'Emended this name',
                       data: { confirm: 'Are you sure?' }
@@ -69,7 +71,7 @@
 
               <% unless publication_name.assigns? %>
                 <%= link_to(
-                      assigned_by_name_url(@name, publication),
+                      assigned_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-info',
                       method: :post, title: 'Taxonomically assigned this name',
                       data: { confirm: 'Are you sure?' }

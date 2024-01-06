@@ -7,34 +7,36 @@ class User < ApplicationRecord
 
   has_many(
     :created_names, class_name: 'Name', foreign_key: 'created_by_id',
-    dependent: :nullify
+    inverse_of: :created_by, dependent: :nullify
   )
   has_many(
     :submitted_names, class_name: 'Name', foreign_key: 'submitted_by_id',
-    dependent: :nullify
+    inverse_of: :submitted_by, dependent: :nullify
   )
   has_many(
     :endorsed_names, class_name: 'Name', foreign_key: 'endorsed_by_id',
-    dependent: :nullify
+    inverse_of: :endorsed_by, dependent: :nullify
   )
   has_many(
     :validated_names, class_name: 'Name', foreign_key: 'validated_by_id',
-    dependent: :nullify
+    inverse_of: :validated_by, dependent: :nullify
   )
   has_many(
     :nomenclature_reviewed_for_names, class_name: 'Name',
+    inverse_of: :nomenclature_reviewed_by,
     foreign_key: 'nomenclature_review_by_id', dependent: :nullify
   )
   has_many(
     :genomics_reviewed_for_names, class_name: 'Name',
+    inverse_of: :genomics_reviewed_by,
     foreign_key: 'genomics_review_by_id', dependent: :nullify
   )
   has_many(
-    :validated_registers, class_name: 'Register',
+    :validated_registers, class_name: 'Register', inverse_of: :validated_by,
     foreign_key: 'validated_by_id', dependent: :nullify
   )
   has_many(
-    :published_registers, class_name: 'Register',
+    :published_registers, class_name: 'Register', inverse_of: :published_by,
     foreign_key: 'published_by_id', dependent: :nullify
   )
   has_many(:registers, dependent: :nullify)
@@ -48,7 +50,7 @@ class User < ApplicationRecord
   has_many(:observe_registers, dependent: :destroy)
   has_many(:observing_registers, through: :observe_registers, source: :register)
   has_many(
-    :updated_genomes, class_name: 'Genome',
+    :updated_genomes, class_name: 'Genome', inverse_of: :validated_by,
     foreign_key: 'updated_by_id', dependent: :nullify
   )
 

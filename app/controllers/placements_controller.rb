@@ -12,7 +12,7 @@ class PlacementsController < ApplicationController
     if params[:alt] && !@name.placement
       Placement.new(
         name: @name, preferred: true, parent: @name.parent,
-        publication: @name.assigned_by,
+        publication: @name.assigned_in,
         incertae_sedis: @name.incertae_sedis,
         incertae_sedis_text: @name.incertae_sedis_text
       ).save!
@@ -20,7 +20,7 @@ class PlacementsController < ApplicationController
 
     unless @name.placement
       @placement.parent = @name.parent
-      @placement.publication = @name.assigned_by
+      @placement.publication = @name.assigned_in
       @placement.incertae_sedis = @name.incertae_sedis
       @placement.incertae_sedis_text = @name.incertae_sedis_text
       @placement.preferred = true
@@ -106,7 +106,7 @@ class PlacementsController < ApplicationController
             old_placement.update!(preferred: false)
           end
           @name.update!(
-            parent: @placement.parent, assigned_by: @placement.publication,
+            parent: @placement.parent, assigned_in: @placement.publication,
             incertae_sedis: nil, incertae_sedis_text: nil
           )
         end
@@ -129,7 +129,7 @@ class PlacementsController < ApplicationController
       @name.placement.try(:update!, preferred: false)
       @placement.update!(preferred: true)
       @name.update!(
-        parent: @placement.parent, assigned_by: @placement.publication,
+        parent: @placement.parent, assigned_in: @placement.publication,
         incertae_sedis: nil, incertae_sedis_text: nil
       )
       ok = true
@@ -150,7 +150,7 @@ class PlacementsController < ApplicationController
   # DELETE /placements/1
   def destroy
     Placement.transaction do
-      @name.update(parent: nil, assigned_by: nil)
+      @name.update(parent: nil, assigned_in: nil)
       @placement.destroy
     end
     redirect_to(@name, notice: 'Name placement was removed')

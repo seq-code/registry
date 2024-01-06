@@ -204,8 +204,11 @@ module ApplicationHelper
     end
   end
 
-  def display_obj(obj)
-    preferred_fields = %i[name_html name display_name accession citation]
+  def display_obj(obj, display_method = nil)
+    preferred_fields =
+      display_method ? [display_method] :
+      %i[name_html name display_name accession citation]
+
     field = preferred_fields.find { |i| obj.respond_to? i }
     if field
       obj.send(field)
@@ -216,8 +219,8 @@ module ApplicationHelper
     end
   end
 
-  def display_link(obj)
-    link_to(display_obj(obj), obj)
+  def display_link(obj, display_method = nil)
+    link_to(display_obj(obj, display_method), obj)
   end
 end
 
