@@ -189,7 +189,8 @@ class RegistersController < ApplicationController
   def notify
     # Note that +notify+ handles errors differently, and is incompatible with
     # the standard +change_status+ call used in all other status changes
-    if @register.notify(current_user, register_notify_params, params[:doi])
+    par = register_notify_params
+    if @register.notify(current_user, par, params[:doi])
       flash[:notice] = 'The list has been successfully submitted for validation'
       add_automatic_correspondence('SeqCode Register notified')
       redirect_to(@register)
