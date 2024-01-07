@@ -5,7 +5,7 @@ class Genome < ApplicationRecord
   )
 
   before_validation(:standardize_source)
-  around_save(:monitor_source_changes)
+  after_save(:monitor_source_changes)
 
   validates(:database, presence: true)
   validates(:accession, presence: true)
@@ -20,6 +20,8 @@ class Genome < ApplicationRecord
 
   include HasExternalResources
   include Genome::ExternalResources
+
+  attr_accessor :queue_for_source_update
 
   class << self
     def find_or_create(database, accession)
@@ -281,11 +283,11 @@ class Genome < ApplicationRecord
     self.source_accession.gsub!(/,? and /, ',')
     self.source_accession.gsub!(/( *, *)+/, ', ')
     self.source_json = nil unless source?
+    self.queue_for_source_update =
+      source_database_changed? || source_accession_changed?
   end
 
   def monitor_source_changes
-    changed = source_database_changed? || source_accession_changed?
-    yield
-    queue_for_external_resources if changed
+    queue_for_external_resources if queue_for_source_update
   end
 end
