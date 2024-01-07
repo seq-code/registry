@@ -10,9 +10,9 @@
       <th>Name</th>
       <th>Rank</th>
       <th>Status</th>
-      <th>Type</th>
+      <th>Type Material</th>
       <% unless @register.validated? %>
-        <th>Quality Checks</th>
+        <th>Curation</th>
       <% end %>
       <% if @register.can_edit?(current_user) %>
         <th>Messages</th>
@@ -24,7 +24,7 @@
     <% @names.each do |name| %>
       <tr>
         <td><%= link_to(name.name_html, name) %></td>
-        <td><%= name.rank %></td>
+        <td><%= name.rank.capitalize %></td>
         <td>
           <%= name.status_name %>
           <%= help_message(name.status_name) { name.status_help } %>
@@ -100,7 +100,12 @@
           </td>
         <% end %>
         <% if @register.can_edit?(current_user) %>
-          <td><%= name.correspondences.count %></td>
+          <td>
+            <%= link_to(name_url(name, anchor: 'correspondence'), class: 'btn text-primary') do %>
+              <%= fa_icon('comments', class: 'mr-1') %>
+              <%= name.correspondences.count %>
+            <% end %>
+          </td>
           <td>
             <%= link_to(
                   name_url(
@@ -108,8 +113,8 @@
                     return_to: url_for(@register)
                   ), method: :patch,
                   class: 'btn text-danger',
-                  title: 'Remove from register list',
-                  data: { confirm: 'Are you sure?' }
+                  title: 'Unlink from register list',
+                  data: { confirm: 'Are you sure?', toggle: 'tooltip' }
                 ) do %>
               <%= fa_icon('eraser') %>
             <% end %>
