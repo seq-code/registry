@@ -65,7 +65,10 @@
       <div class="text-muted">
         <hr/>
         Metadata retrieved
-        <%= time_ago_with_date(@genome.source_hash[:retrieved_at]) %>.
+        <%= time_ago_with_date(@genome.source_hash[:retrieved_at]) %>
+        <% if @genome.queued_for_external_resources %>
+          (queued for update <%= time_ago_with_date(@genome.queued_external) %>)
+        <% end %>
       </div>
     <% end %>
   </dl>
