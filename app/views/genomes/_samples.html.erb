@@ -87,7 +87,7 @@
                 <% sample[:attributes].each do |k, v| %>
                   <dt><%= k %></dt>
                   <dd><%= v %></dd>
-                <% end %>
+                <% end if sample[:attributes].present? %>
               </dl>
             <% end %>
 
