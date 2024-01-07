@@ -66,10 +66,11 @@ class Genome < ApplicationRecord
       {
         date: %i[collection_date],
         location: %i[lat_lon lat lon],
-        toponym: %i[geo_loc_name],
+        toponym: %i[geo_loc_name geographic_location_country_and_or_sea],
         environment: %i[
           env_material sample_type env_biome isolation_source
           env_broad_scale env_local_scale env_medium
+          environment_biome environment_feature
         ],
         other: %i[host ph depth temp temperature rel_to_oxygen]
       }
@@ -208,8 +209,9 @@ class Genome < ApplicationRecord
     @source_attributes = {}
     source_hash[:samples].each_value do |sample|
       sample[:attributes].each do |key, value|
-        nice_key = key.to_s.downcase.gsub(/[- ]/, '_').to_sym
         value.strip!
+        nice_key = key.to_s.downcase.gsub(/[^A-Za-z0-9]/, '_')
+                      .gsub(/_+/, '_').gsub(/^_|_$/, '').to_sym
         if value.present?
           @source_attributes[nice_key] ||= []
           @source_attributes[nice_key] << value
