@@ -172,7 +172,7 @@ class Genome < ApplicationRecord
     return @source_extra_biosamples if @source_extra_biosamples
 
     @source_extra_biosamples = []
-    %i[derived_from].each do |attribute|
+    %i[derived_from sample_derived_from].each do |attribute|
       next unless attr = source_attributes[attribute]
 
       attr.each do |i|
