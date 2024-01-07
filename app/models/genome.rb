@@ -207,6 +207,7 @@ class Genome < ApplicationRecord
 
     @source_attributes = {}
     source_hash[:samples].each_value do |sample|
+      next unless sample[:attributes].present?
       sample[:attributes].each do |key, value|
         nice_key = key.to_s.downcase.gsub(/[- ]/, '_').to_sym
         value.strip!
