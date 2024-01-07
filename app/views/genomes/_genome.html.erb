@@ -1,4 +1,7 @@
-<% @genome ||= @name.genome %>
+<%
+  @genome ||= @name.genome
+  inline  ||= false
+%>
 
 <% @auto_modal = modal('Automated Estimates') do %>
   This genome was automatically retrieved and processed using MiGA
@@ -70,8 +73,7 @@ end
       <% end %>
       <% if current_curator? %>
         <br/>
-        <% miga_url = 'https://disc-genomics.uibk.ac.at/miga/projects/3/reference_datasets/genome_%i' % @genome.id %>
-        <%= link_to(miga_url, target: '_blank') do %>
+        <%= link_to(@genome.miga_url, target: '_blank') do %>
           View in MiGA (only visible to curators, requires separate login)
           <%= fa_icon('external-link-alt', class: 'ml-1') %>
         <% end %>
@@ -221,13 +223,21 @@ end
         'Scheduled'
     %></dd>
 
-    <% if @name.try(:can_edit?, current_user) %>
+    <% if @name.try(:can_edit?, current_user) || !inline %>
       <dd class="mt-4">
-        <%= link_to(
-              edit_genome_path(@genome, name: @name.id),
-              class: 'btn btn-info'
-            ) do %>
-          <%= fa_icon('edit') %> Edit genome data
+        <% if !inline %>
+          <%= link_to(@genome, class: 'btn btn-secondary') do %>
+            <%= fa_icon('search-plus') %> See additional details
+          <% end %>
+        <% end %>
+
+        <% if @name.try(:can_edit?, current_user) %>
+          <%= link_to(
+                edit_genome_path(@genome, name: @name.id),
+                class: 'btn btn-info'
+              ) do %>
+            <%= fa_icon('edit') %> Edit genome data
+          <% end %>
         <% end %>
       </dd>
     <% end %>

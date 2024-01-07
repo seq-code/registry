@@ -3,6 +3,10 @@ class Genome < ApplicationRecord
     :updated_by, optional: true,
     class_name: 'User', foreign_key: 'updated_by_id'
   )
+
+  before_validation(:standardize_source)
+  around_save(:monitor_source_changes)
+
   validates(:database, presence: true)
   validates(:accession, presence: true)
   validates(
@@ -13,6 +17,9 @@ class Genome < ApplicationRecord
   validates(:source_database, presence: true, if: :source?)
 
   has_rich_text(:submitter_comments)
+
+  include HasExternalResources
+  include Genome::ExternalResources
 
   class << self
     def find_or_create(database, accession)
@@ -51,6 +58,19 @@ class Genome < ApplicationRecord
         completeness_any contamination_any most_complete_16s_any
         number_of_16s_any number_of_trnas_any
       ]
+    end
+
+    def important_sample_attributes
+      {
+        date: %i[collection_date],
+        location: %i[lat_lon lat lon],
+        toponym: %i[geo_loc_name],
+        environment: %i[
+          env_material sample_type env_biome isolation_source
+          env_broad_scale env_local_scale env_medium
+        ],
+        other: %i[host ph depth temp temperature]
+      }
     end
   end
   
@@ -145,6 +165,40 @@ class Genome < ApplicationRecord
     end
   end
 
+  def source_attribute_groups
+    return {} unless source_hash && !source_hash[:samples].empty?
+    return @source_attribute_groups if @source_attribute_groups
+
+    @source_attribute_groups = {}
+    self.class.important_sample_attributes.each do |group, attributes|
+      @source_attribute_groups[group] = {}
+      attributes.each do |attribute|
+        next unless attr = source_attributes[attribute]
+        @source_attribute_groups[group][attribute] = attr
+      end
+    end
+    @source_attribute_groups
+  end
+
+  def source_attributes
+    return unless source_hash
+    return @source_attributes if @source_attributes
+
+    @source_attributes = {}
+    source_hash[:samples].each_value do |sample|
+      sample[:attributes].each do |key, value|
+        nice_key = key.to_s.downcase.gsub(/[- ]/, '_').to_sym
+        value.strip!
+        if value.present?
+          @source_attributes[nice_key] ||= []
+          @source_attributes[nice_key] << value
+        end
+      end
+    end
+    @source_attributes.each_value(&:uniq!)
+    @source_attributes
+  end
+
   def link
     case database
     when 'assembly'
@@ -156,6 +210,10 @@ class Genome < ApplicationRecord
 
   def text
     "#{Name.type_material_name(database)}: #{accession}"
+  end
+
+  def title
+    'Genome sc|%07i' % id
   end
 
   def quality
@@ -209,5 +267,25 @@ class Genome < ApplicationRecord
 
   def miga_name
     "genome_#{id}"
+  end
+
+  def miga_url
+    miga_project = 'https://disc-genomics.uibk.ac.at/miga/projects/3'
+    '%s/reference_datasets/genome_%i' % [miga_project, id]
+  end
+
+  private
+
+  def standardize_source
+    self.source_accession.strip!
+    self.source_accession.gsub!(/,? and /, ',')
+    self.source_accession.gsub!(/( *, *)+/, ', ')
+    self.source_json = nil unless source?
+  end
+
+  def monitor_source_changes
+    changed = source_database_changed? || source_accession_changed?
+    yield
+    queue_for_external_resources if changed
   end
 end

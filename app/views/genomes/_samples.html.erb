@@ -1,0 +1,72 @@
+<% if @genome.try(:source_hash).present? %>
+  <dl name="samples" class="main-section name-details">
+    <h2>Sample Metadata</h2>
+
+    <%
+      attributes_icon = {
+        date: 'calendar', location: 'map-marked', toponym: 'map-signs',
+        environment: 'leaf', other: 'binoculars'
+      }
+    %>
+    <% attributes_icon.each do |group, icon| %>
+      <dt><%= fa_icon(icon) %> <%= group.to_s.capitalize %></dt>
+      <dd>
+        <% if @genome.source_attribute_groups[group].present? %>
+          <% @genome.source_attribute_groups[group].each do |k, v| %>
+            <div>
+              <b><%= k.to_s.tr('_', ' ').titleize %>:</b>
+              <%= v.join(' • ') %>
+            </div>
+          <% end %>
+        <% else %>
+          <%= fa_icon('exclamation-triangle', class: 'text-warning mr-1') %>
+          Not detected
+        <% end %>
+      </dd>
+    <% end%>
+
+    <dt><%= fa_icon('flask') %> All retrieved samples</dt>
+    <dd>
+      <% if @genome.source_hash[:samples].empty? %>
+        <div class="alert alert-warning">
+          No BioSample metadata was found associated to this genome.
+        </div>
+      <% else %>
+        <ul>
+          <% @genome.source_hash[:samples].each do |acc, sample| %>
+            <% id = modal(acc, size: 'lg') do %>
+              <% if sample[:from_sra] %>
+                <div class="alert alert-info">
+                  Retrieved via <%= to_sentence(sample[:from_sra]) %>
+                </div>
+              <% end %>
+              <p class="lead mx-2">
+                <%= sample[:description] %>
+              </p>
+              <dl class="main-section">
+                <% sample[:attributes].each do |k, v| %>
+                  <dt><%= k %></dt>
+                  <dd><%= v %></dd>
+                <% end %>
+              </dl>
+            <% end %>
+
+            <li>
+              <%= modal_button(id, as_anchor: true) do %>
+                <b><%= acc %></b>: <%= sample[:title] %>
+               <% end %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </dd>
+
+    <% if @genome.source_hash[:retrieved_at] %>
+      <div class="text-muted">
+        <hr/>
+        Metadata retrieved
+        <%= time_ago_with_date(@genome.source_hash[:retrieved_at]) %>.
+      </div>
+    <% end %>
+  </dl>
+<% end %>

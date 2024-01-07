@@ -28,57 +28,86 @@
     </div>
     <dl class="main-section name-details curator-checklist collapse border-primary"
         id="curator-checklist" style="border-left: 1em solid;">
-      <% @name.qc_warnings.checks.each do |warn| %>
+      <% first = true %>
+      <% %i[nomenclature genomics].each do |section| %>
         <%
-          warn_class =
-            if !warn.check
-              'check-skip'
-            elsif warn.check.pass
-              'check-pass'
-            else
-              'check-fail'
-            end
+          unless @name.qc_warnings.checks.map(&:checklist).uniq.include? section
+            next
+          end
         %>
-        <dt class="<%= warn_class %>">
-          <span class="check-links">
-            <%= link_to('#', title: 'Skip',
-                        data: { do: 'skip', kind: warn.type }) do %>
-              <%= fa_icon('minus-circle') %>
+        <h2 class="<%= 'mt-4' unless first %>">
+          <%= section.to_s.capitalize %>
+        </h2>
+        <div class="alert alert-secondary">
+          <% case section %>
+          <% when :nomenclature %>
+            <%= @name.full_etymology(true) %>
+          <% when :genomics %>
+            <% if @name.genome %>
+              <%= display_link(@name.genome, :title) %> •
+              <%= link_to(@name.genome.link, target: '_blank') do %>
+                <%= @name.genome.text %>
+                <%= fa_icon('external-link-alt', class: 'ml-1') %>
+              <% end %> •
+              <%= link_to(@name.genome.miga_url, target: '_blank') do %>
+                MiGA <%= fa_icon('external-link-alt', class: 'ml-1') %>
+              <% end %>
+            <% else %>
+              <%= fa_icon('exclamation-triangle', class: 'text-danger') %>
+              No genome associated to this taxon
             <% end %>
-            <%= link_to('#', title: 'Pass',
-                        data: { do: 'pass', kind: warn.type }) do %>
-              <%= fa_icon('check-circle') %>
-            <% end %>
-            <%= link_to('#', title: 'Fail',
-                        data: { do: 'fail', kind: warn.type }) do %>
-              <%= fa_icon('exclamation-circle') %>
-            <% end %>
-          </span>
-          <span>
-            <%= warn[:checklist].to_s.capitalize %> &raquo;
-            <%= warn.title %>
-          </span>
-        </dt>
-        <dd class="pb-2">
-          <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
-            <%= warn[:message] %>
-            <div class="text-muted">
-              <b>§ SeqCode</b>:
-                <% %w[rule rule_note recommendation].each do |section| %>
-                  <% warn[:"#{section}s"]&.each do |i| %>
-                    •
-                    <% text = name_of_seqcode_section(section, i) %>
-                    <%= link_to_seqcode_excerpt(section, i, text) %>
-                  <% end %>
-                <% end %>
-            </div>
           <% end %>
-        </dd>
+        </div>
+        <% first = false %>
+        <% @name.qc_warnings.checks.each do |warn| %>
+          <% next unless warn.checklist == section %>
+          <%
+            warn_class =
+              if !warn.check
+                'check-skip'
+              elsif warn.check.pass
+                'check-pass'
+              else
+                'check-fail'
+              end
+          %>
+          <dt class="<%= warn_class %>">
+            <span class="check-links">
+              <%= link_to('#', title: 'Skip',
+                          data: { do: 'skip', kind: warn.type }) do %>
+                <%= fa_icon('minus-circle') %>
+              <% end %>
+              <%= link_to('#', title: 'Pass',
+                          data: { do: 'pass', kind: warn.type }) do %>
+                <%= fa_icon('check-circle') %>
+              <% end %>
+              <%= link_to('#', title: 'Fail',
+                          data: { do: 'fail', kind: warn.type }) do %>
+                <%= fa_icon('exclamation-circle') %>
+              <% end %>
+            </span>
+            <span><%= warn.title %></span>
+          </dt>
+          <dd class="pb-2">
+            <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
+              <%= warn[:message] %>
+              <div class="text-muted">
+                <b>§ SeqCode</b>:
+                  <% %w[rule rule_note recommendation].each do |section| %>
+                    <% warn[:"#{section}s"]&.each do |i| %>
+                      •
+                      <% text = name_of_seqcode_section(section, i) %>
+                      <%= link_to_seqcode_excerpt(section, i, text) %>
+                    <% end %>
+                  <% end %>
+              </div>
+            <% end %>
+          </dd>
+        <% end %>
       <% end %>
-      </dd>
 
       <% unless @name.qc_warnings.bypassed.empty? %>
-        <h2>Bypassed checks</h2>
+        <h2 class="mt-4">Bypassed checks</h2>
         <% @name.qc_warnings.bypassed.each do |warn| %>
           <% warn.link_to = nil %>
           <%= render(partial: 'checks/check', locals: { warn: warn }) %>

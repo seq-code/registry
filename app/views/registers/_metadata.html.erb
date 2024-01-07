@@ -44,7 +44,15 @@
     <dd>
       <ul>
         <% @register.curators.each do |user| %>
-          <li><%= display_link(user) %></li>
+          <li>
+            <%= display_link(user) %>
+            <% if @register.nomenclature_review_by?(user) %>
+              <span class="text-muted">(nomenclature)</span>
+            <% end %>
+            <% if @register.genomics_review_by?(user) %>
+              <span class="text-muted">(genomics)</span>
+            <% end %>
+          </li>
         <% end %>
       </ul>
     </dd>

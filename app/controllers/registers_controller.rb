@@ -304,6 +304,9 @@ class RegistersController < ApplicationController
       :nomenclature_review, !@register.nomenclature_review
     )
     if @register.nomenclature_review
+      @register.names.each do |name|
+        name.update_column(:nomenclature_review_by_id, current_user.id)
+      end
       add_automatic_correspondence('Nomenclature review complete')
     end
     redirect_back(fallback_location: @register)
@@ -315,6 +318,9 @@ class RegistersController < ApplicationController
       :genomics_review, !@register.genomics_review
     )
     if @register.genomics_review
+      @register.names.each do |name|
+        name.update_column(:genomics_review_by_id, current_user.id)
+      end
       add_automatic_correspondence('Genomics review complete')
     end
     redirect_back(fallback_location: @register)

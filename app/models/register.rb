@@ -242,6 +242,14 @@ class Register < ApplicationRecord
     @curators ||= (check_users + reviewers).uniq
   end
 
+  def nomenclature_review_by?(user)
+    names.pluck(:nomenclature_review_by_id).include? user.id
+  end
+
+  def genomics_review_by?(user)
+    names.pluck(:genomics_review_by_id).include? user.id
+  end
+
   def observing?(user)
     observe_registers.where(user: user).present?
   end

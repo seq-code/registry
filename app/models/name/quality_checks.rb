@@ -225,6 +225,10 @@ module Name::QualityChecks
         message: 'A species name must be an adjective or a noun',
         rules: %w[12]
       }.merge(@@link_to_edit_etymology),
+      inconsistent_grammar_for_subspecies_name: {
+        message: 'A subspecies name must be an adjective or a noun',
+        rules: %w[12 13b]
+      }.merge(@@link_to_edit_etymology),
       # - Rule 12 [Checklist-N]
       inconsistent_epithet_relationship_to_genus: {
         checklist: :nomenclature,
@@ -232,10 +236,6 @@ module Name::QualityChecks
         rules: lambda { |w|
           w.name.inferred_rank == 'subspecies' ? %w[12 13b] : %w[12]
         }
-      }.merge(@@link_to_edit_etymology),
-      inconsistent_grammar_for_subspecies_name: {
-        message: 'A subspecies name must be an adjective or a noun',
-        rules: %w[12 13b]
       }.merge(@@link_to_edit_etymology),
       # - Recommendation 12.1 [Checklist-N]
       unspecific_epithet: {

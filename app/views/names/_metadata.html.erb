@@ -141,6 +141,25 @@
     </dd>
   <% end %>
 
+  <% unless @name.curators.empty? %>
+    <dt><%= fa_icon('user-check') %> Curators</dt>
+    <dd>
+      <ul>
+        <% @name.curators.each do |user| %>
+          <li>
+            <%= display_link(user) %>
+            <% if @name.nomenclature_review_by?(user) %>
+              <span class="text-muted">(nomenclature)</span>
+            <% end %>
+            <% if @name.genomics_review_by?(user) %>
+              <span class="text-muted">(genomics)</span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </dd>
+  <% end %>
+
   <% if @name.after_endorsement? && @name.endorsed_by %>
     <dt><%= fa_icon('check-square') %> Endorsed by</dt>
     <dd>

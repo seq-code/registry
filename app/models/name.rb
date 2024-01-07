@@ -64,7 +64,7 @@ class Name < ApplicationRecord
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
 
-  before_save(:harmonize_register_and_status)
+  before_validation(:harmonize_register_and_status)
   before_validation(:standardize_etymology)
   before_validation(:prevent_self_parent)
   before_validation(:monitor_name_changes)
@@ -90,6 +90,7 @@ class Name < ApplicationRecord
   )
 
   include HasObservers
+  include HasExternalResources
   include Name::Status
   include Name::QualityChecks
   include Name::Etymology
@@ -464,7 +465,7 @@ class Name < ApplicationRecord
     "#{'https://' if protocol}seqco.de/i:#{id}"
   end
 
-  # ============ --- USERS --- ============
+  # ============ --- PUBLICATIONS --- ============
 
   def proposed_in?(publication)
     publication.id == proposed_in_id
@@ -486,9 +487,7 @@ class Name < ApplicationRecord
     emended_in.include? publication
   end
 
-  def user?(user)
-    created_by == user
-  end
+  # ============ --- USERS --- ============
 
   def can_see?(user)
     return true if public?
@@ -544,6 +543,20 @@ class Name < ApplicationRecord
 
   def curators
     @curators ||= (check_users + reviewers).uniq
+  end
+
+  %i[
+    created_by submitted_by
+    validated_by endorsed_by nomenclature_review_by genomics_review_by
+  ].each do |role|
+    define_method("#{role}?") do |user|
+      send(role) == user
+    end
+  end
+  alias :user? :created_by?
+
+  def validated_by?(user)
+    validated_by == user
   end
 
   def corresponding_users

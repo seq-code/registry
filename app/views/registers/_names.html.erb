@@ -40,45 +40,61 @@
           <% qc = name.qc_warnings.select { |i| !i[:can_endorse] } %>
           <td>
             <% if qc.empty? %>
-              <div class="text-success">Pass</div>
+              <div>
+                <%= fa_icon('check-circle', class: 'text-success mr-1') %> Pass
+              </div>
             <% else %>
               <%
                 err = qc.select { |i| i[:fail] == :error }.count
                 wrn = qc.count - err
               %>
               <% unless err.zero? %>
-                <div class="text-danger"><%= pluralize(err, 'error') %></div>
+                <div>
+                  <%= fa_icon('exclamation-triangle', class: 'text-danger mr-1') %>
+                  <%= pluralize(err, 'error') %>
+                </div>
               <% end %>
               <% unless wrn.zero? %>
-                <div class="text-warning"><%= pluralize(wrn, 'warning') %></div>
+                <div>
+                  <%= fa_icon('exclamation-triangle', class: 'text-warning mr-1') %>
+                  <%= pluralize(wrn, 'warning') %>
+                </div>
               <% end %>
             <% end %>
 
             <% w = name.qc_warnings %>
-            <% id = modal('Expert curation advance') do %>
-              <% %i[nomenclature genomics].each do |i| %>
-                <h3><%= i.to_s.capitalize %> checks</h3>
-                <div class="m-3">
-                  <% checks_i = w.checks.select { |j| j.checklist == i } %>
-                  <% if checks_i.empty? %>
-                    No expert checks for this name
-                  <% else %>
-                    <%= pluralize(checks_i.count, 'total check') %><br/>
-
-                    <% checks_i_k = checks_i.select { |j| j.check&.pass? } %>
-                    <%= pluralize(checks_i_k.count, 'passed check') %><br/>
-
-                    <% checks_i_k = checks_i.select { |j| j.check&.fail? } %>
-                    <%= pluralize(checks_i_k.count, 'failed check') %><br/>
-
-                    <% checks_i_k = checks_i.select { |j| !j.check } %>
-                    <%= pluralize(checks_i_k.count, 'pending check') %><br/>
-                  <% end %>
-                </div>
-              <% end %>
+            <% id = modal('Expert Curation Progress') do %>
+              <dl class="main-section name-details p-4 mb-0">
+                <% lists = { nomenclature: 'pen-fancy', genomics: 'dna' } %>
+                <% lists.each do |i, icon| %>
+                  <dt>
+                    <%= fa_icon(icon) %>
+                    <%= i.to_s.capitalize %> checklist
+                  </dt>
+                  <dd>
+                    <% checks_i = w.checks.select { |j| j.checklist == i } %>
+                    <% if checks_i.empty? %>
+                      No expert checks for this name
+                    <% else %>
+                      <%= fa_icon('check-circle', class: 'mr-2') %>
+                      <% checks_ik = checks_i.select { |j| j.check&.pass? } %>
+                      <%= pluralize(checks_ik.count, 'passed check') %>
+                      <br/>
+                      <%= fa_icon('times-circle', class: 'mr-2') %>
+                      <% checks_ik = checks_i.select { |j| j.check&.fail? } %>
+                      <%= pluralize(checks_ik.count, 'failed check') %>
+                      <br/>
+                      <%= fa_icon('circle', class: 'mr-2') %>
+                      <% checks_ik = checks_i.select { |j| !j.check } %>
+                      <%= pluralize(checks_ik.count, 'pending check') %>
+                    <% end %>
+                  </dd>
+                <% end %>
+              </dl>
             <% end %>
             <% wp = 100 * w.checked_checks.count / w.checks.count %>
             <%= modal_button(id, class: 'text-primary', role: '') do %>
+              <%= fa_icon('marker', class: 'mr-1') %>
               (<%= wp.round %>%)
             <% end %>
           </td>

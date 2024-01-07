@@ -1,7 +1,13 @@
-<h1>Genome <%= 'sc|%07i' % @genome.id %></h1>
+<%=
+  download_buttons([
+    [genome_url(@genome, format: :json), 'file-code', 'JSON']
+  ])
+%>
+<h1><%= @genome.title %></h1>
 <hr/>
 
 <%= render(partial: 'name_box') %>
-<%= render(partial: 'genome') %>
+<%= render(partial: 'genome', locals: { inline: true }) %>
+<%= render(partial: 'samples') %>
 <br/><br/>
 <%= render(partial: 'shared/cc') %>
