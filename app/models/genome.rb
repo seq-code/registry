@@ -211,13 +211,14 @@ class Genome < ApplicationRecord
     return unless source_hash
     return @source_attributes if @source_attributes
 
+    not_provided = ['not provided', 'unavailable', 'missing']
     @source_attributes = {}
     source_hash[:samples].each_value do |sample|
       sample[:attributes].each do |key, value|
         value.strip!
         nice_key = key.to_s.downcase.gsub(/[^A-Za-z0-9]/, '_')
                       .gsub(/_+/, '_').gsub(/^_|_$/, '').to_sym
-        if value.present?
+        if value.present? && !not_provided.include?(value.downcase)
           @source_attributes[nice_key] ||= []
           @source_attributes[nice_key] << value
         end
