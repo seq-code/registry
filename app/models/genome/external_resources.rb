@@ -17,7 +17,7 @@ module Genome::ExternalResources
   ##
   # Execute a programmatic search of the genome sample(s)
   def reload_source_json!
-    sleep(5) # To avoid racing against a recent DB save
+    reload # To make sure I use the current persistent version
     data = {}
     case source_database.to_sym
     when :sra
