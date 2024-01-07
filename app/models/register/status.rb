@@ -140,7 +140,8 @@ module Register::Status
         name.save!
       end
       update_status_with_alert(
-        params.merge(notified: true, notified_at: Time.now)
+        params.merge(notified: true, notified_at: Time.now),
+        genomics_review: false, nomenclature_review: false
       ) or return false
     end
 
