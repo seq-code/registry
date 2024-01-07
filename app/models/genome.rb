@@ -71,7 +71,7 @@ class Genome < ApplicationRecord
           env_material sample_type env_biome isolation_source
           env_broad_scale env_local_scale env_medium
         ],
-        other: %i[host ph depth temp temperature]
+        other: %i[host ph depth temp temperature rel_to_oxygen]
       }
     end
   end
@@ -182,6 +182,8 @@ class Genome < ApplicationRecord
     end
     @source_extra_biosamples.uniq!
     @source_extra_biosamples -= source_hash[:samples].keys.map(&:to_s)
+    @source_extra_biosamples -= source_accession.split(/, /)
+    @source_extra_biosamples
   end
 
   def source_attribute_groups

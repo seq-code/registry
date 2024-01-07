@@ -43,8 +43,26 @@
     <% end%>
 
     <% if @genome.source_extra_biosamples.present? %>
-      <dt><%= fa_icon('link') %> Additional BioSamples</dt>
-      <dd><%= @genome.source_extra_biosamples.join(', ') %></dd>
+      <dt><%= fa_icon('link') %> Additional Accessions</dt>
+      <dd>
+        <%= @genome.source_extra_biosamples.join(', ') %>
+        <% if @genome.can_edit?(current_user) &&
+              @genome.source_database == 'biosample' %>
+          <%
+            par = { genome: {}, return_to: genome_path(@genome) }
+            par[:genome][:source_accession] =
+              @genome.source_accession + ', ' +
+              @genome.source_extra_biosamples.join(', ')
+          %>
+          <%= link_to(
+                genome_url(@genome, par),
+                method: :patch,
+                class: 'badge badge-pill badge-info'
+              ) do %>
+            <%= fa_icon('plus-square') %> Append as BioSamples
+          <% end %>
+        <% end %>
+      </dd>
     <% end %>
 
     <dt><%= fa_icon('flask') %> All retrieved samples</dt>
