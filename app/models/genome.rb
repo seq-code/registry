@@ -183,7 +183,7 @@ class Genome < ApplicationRecord
 
       attr.each do |i|
         @source_extra_biosamples +=
-          i.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *, (?:and)? */)
+          i.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *,(?: and)? */)
       end
     end
     @source_extra_biosamples.uniq!
