@@ -15,7 +15,24 @@
           <% @genome.source_attribute_groups[group].each do |k, v| %>
             <div>
               <b><%= k.to_s.tr('_', ' ').titleize %>:</b>
-              <%= v.join(' • ') %>
+              <% case group %>
+              <% when :environment %>
+                <%
+                  osl4 = 'https://www.ebi.ac.uk/ols4/ontologies/envo/classes/'
+                  purl = 'http://purl.obolibrary.org/obo/ENVO_'
+                  envo = osl4 + ERB::Util.u(purl) + '\\1'
+
+                  v.map! do |i|
+                    i.gsub(
+                      /ENVO:(\d{8})/,
+                      "<a href='#{envo}' target='_blank'>ENVO:\\1</a>"
+                    )
+                  end
+                %>
+              <% else %>
+                <% v.map! { |i| sanitize(i) } %>
+              <% end %>
+              <%= v.join(' • ').html_safe %>
             </div>
           <% end %>
         <% else %>
@@ -24,6 +41,11 @@
         <% end %>
       </dd>
     <% end%>
+
+    <% if @genome.source_extra_biosamples.present? %>
+      <dt><%= fa_icon('link') %> Additional BioSamples</dt>
+      <dd><%= @genome.source_extra_biosamples.join(', ') %></dd>
+    <% end %>
 
     <dt><%= fa_icon('flask') %> All retrieved samples</dt>
     <dd>

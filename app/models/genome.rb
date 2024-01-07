@@ -167,8 +167,22 @@ class Genome < ApplicationRecord
     end
   end
 
+  def source_extra_biosamples
+    return [] unless source_hash
+    return @source_extra_biosamples if @source_extra_biosamples
+
+    @source_extra_biosamples = []
+    %i[derived_from].each do |attribute|
+      next unless attr = source_attributes[attribute]
+      @source_extra_biosamples +=
+        attr.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *, (?:and)? */)
+    end
+    @source_extra_biosamples.uniq!
+    @source_extra_biosamples -= source_hash[:samples].keys.map(&:to_s)
+  end
+
   def source_attribute_groups
-    return {} unless source_hash && !source_hash[:samples].empty?
+    return {} unless source_hash
     return @source_attribute_groups if @source_attribute_groups
 
     @source_attribute_groups = {}
