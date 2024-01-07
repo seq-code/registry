@@ -174,8 +174,11 @@ class Genome < ApplicationRecord
     @source_extra_biosamples = []
     %i[derived_from].each do |attribute|
       next unless attr = source_attributes[attribute]
-      @source_extra_biosamples +=
-        attr.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *, (?:and)? */)
+
+      attr.each do |i|
+        @source_extra_biosamples +=
+          i.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *, (?:and)? */)
+      end
     end
     @source_extra_biosamples.uniq!
     @source_extra_biosamples -= source_hash[:samples].keys.map(&:to_s)
@@ -189,8 +192,8 @@ class Genome < ApplicationRecord
     self.class.important_sample_attributes.each do |group, attributes|
       @source_attribute_groups[group] = {}
       attributes.each do |attribute|
-        next unless attr = source_attributes[attribute]
-        @source_attribute_groups[group][attribute] = attr
+        attr = source_attributes[attribute]
+        @source_attribute_groups[group][attribute] = attr if attr.present?
       end
     end
     @source_attribute_groups
