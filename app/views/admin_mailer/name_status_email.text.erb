@@ -17,7 +17,7 @@
   <% if @name.register %>
   If the paper has already been published and a DOI has been assigned, notify
   the SeqCode Registry at:
-  <%= notification_register_url(@name.register) %>
+  <%= notify_register_url(@name.register) %>
   <% end %>
   To view the name's entry in the Registry, visit:
   <%= name_url(@name) %>

@@ -4,11 +4,11 @@
     from = name_path(@name)
     observe = @name.observing?(current_user) ?
       [
-        name_unobserve_url(@name, from: from), 'bell', 'Alerts: On',
+        unobserve_name_url(@name, from: from), 'bell', 'Alerts: On',
         { color: 'secondary', title: 'Disable email alerts' }
       ] :
       [
-        name_observe_url(@name, from: from), 'bell-slash', 'Alerts: Off',
+        observe_name_url(@name, from: from), 'bell-slash', 'Alerts: Off',
         { title: 'Enable email alerts' }
       ]
     observe[3].merge!(

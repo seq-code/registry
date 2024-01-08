@@ -1,7 +1,7 @@
 class PublicationNamesController < ApplicationController
   before_action :set_publication_name, only: [:show, :destroy]
-  before_action :set_publication, only: [:link_names, :link_names_commit]
-  before_action :authenticate_contributor!, only: [:destroy, :link_names, :link_names_commit]
+  before_action :set_publication, only: [:link_name, :link_name_commit]
+  before_action :authenticate_contributor!, only: [:destroy, :link_name, :link_name_commit]
 
   # GET /publication_names
   # GET /publication_names.json
@@ -37,14 +37,14 @@ class PublicationNamesController < ApplicationController
     )
   end
 
-  # GET /publications/1/link_names
-  def link_names
+  # GET /publications/1/link_name
+  def link_name
     @crumbs = [['Publications', publications_path], [@publication.short_citation, @publication], 'Link names']
     @publication_name = PublicationName.new(publication: @publication)
   end
 
-  # POST /publications/1/link_names
-  def link_names_commit
+  # POST /publications/1/link_name
+  def link_name_commit
     @crumbs = [['Publications', publications_path], [@publication.short_citation, @publication], 'Link names']
     @name = Name.find_by(name: params[:publication_name][:name])
     @publication_name = PublicationName.new(publication: @publication, name: @name)
@@ -52,7 +52,7 @@ class PublicationNamesController < ApplicationController
       flash[:notice] = 'Name linked to the publication'
       redirect_to @publication
     else
-      render :link_names
+      render :link_name
     end
   end
 

@@ -13,7 +13,7 @@
       f.input(
         :type_accession, as: :string, label: 'Type name', autofocus: true,
         input_html: {
-          data: { behavior: 'autocomplete', autocomplete: 'name' },
+          data: { behavior: 'autocomplete', autocomplete: 'names' },
           value: @name.type_name&.name
         }
       )

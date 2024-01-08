@@ -5,7 +5,7 @@
 <hr/>
 
 <%= simple_form_for(
-      @register, url: post_return_register_url(@register), method: :post
+      @register, url: return_register_url(@register), method: :post
     ) do |f| %>
   <%= f.input :notes, as: :rich_text_area %>
   <br/>

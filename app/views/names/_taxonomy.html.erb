@@ -68,7 +68,7 @@
           <% end %>
           <% if @name.placement %>
             <%= link_to(
-                  destroy_placement_path(@name.placement),
+                  @name.placement,
                   method: :delete,
                   class: 'badge badge-pill badge-info',
                   title: 'unlink placement'
@@ -113,7 +113,7 @@
                     <%= fa_icon('edit') %> Edit
                   <% end %>
                   <%= link_to(
-                        destroy_placement_path(placement),
+                        placement,
                         method: :delete,
                         class: 'badge badge-pill badge-info',
                         title: 'unlink placement'

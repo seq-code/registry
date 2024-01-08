@@ -1,11 +1,11 @@
 class PublicationsController < ApplicationController
   before_action(
     :set_publication,
-    only: %i[show edit update destroy link_names link_names_commit]
+    only: %i[show edit update destroy]
   )
   before_action(
     :authenticate_contributor!,
-    only: %i[new edit create update destroy link_names link_names_commit]
+    only: %i[new edit create update destroy]
   )
 
   # GET /publications
@@ -105,7 +105,7 @@ class PublicationsController < ApplicationController
     end
   end
 
-  # GET /autocomplete_publications.json?q=List
+  # GET /publications/autocomplete.json?q=List
   def autocomplete
     publication = params[:q].downcase
     @publications =

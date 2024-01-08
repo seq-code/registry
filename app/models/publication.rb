@@ -181,8 +181,8 @@ class Publication < ApplicationRecord
     "https://doi.org/#{doi}"
   end
 
-  def doi_title
-    "#{doi}: #{title}"
+  def doi_title(html = true)
+    html ? "#{doi}: #{title_html}" : "#{doi}: #{title}"
   end
 
   def include_term?(term)

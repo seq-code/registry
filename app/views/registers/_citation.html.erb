@@ -66,13 +66,13 @@
       <dt><%= fa_icon('table') %>&nbsp; Download Table &raquo;</dt>
       <dd>
         <%= link_to(
-              download_register_table_url(@register, format: :pdf),
+              table_register_url(@register, format: :pdf),
               class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-pdf') %> PDF
         <% end %>
         <%= link_to(
-              download_register_table_url(@register),
+              table_register_url(@register),
               class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-code') %> HTML
@@ -82,13 +82,13 @@
       <dt><%= fa_icon('list-ul') %>&nbsp; Download List &raquo;</dt>
       <dd>
         <%= link_to(
-              download_register_list_url(@register, format: :pdf),
+              list_register_url(@register, format: :pdf),
               class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-pdf') %> PDF
         <% end %>
         <%= link_to(
-              download_register_list_url(@register),
+              list_register_url(@register),
               class: 'btn btn-sm btn-secondary'
             ) do %>
           <%= fa_icon('file-code') %> HTML

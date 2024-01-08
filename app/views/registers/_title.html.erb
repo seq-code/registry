@@ -11,15 +11,15 @@
 <%
   links = [
     [register_url(@register, format: :json), 'file-code', 'JSON'],
-    [download_register_list_url(@register, format: :pdf), 'file-pdf', 'PDF'],
+    [list_register_url(@register, format: :pdf), 'file-pdf', 'PDF'],
     [
-      download_register_list_url(@register, format: :html),
+      list_register_url(@register, format: :html),
       'file-code', 'Plain HTML'
     ]
   ]
   if @register.validated?
     links << [
-      cite_register_list_url(@register, format: :xml), 'file-code',
+      cite_register_url(@register, format: :xml), 'file-code',
       'DataCite XML'
     ]
   end
@@ -29,12 +29,12 @@
     from = register_path(@register)
     observe = @register.observing?(current_user) ?
       [
-        register_unobserve_url(@register, from: from), 'bell',
+        unobserve_register_url(@register, from: from), 'bell',
         'Alerts: On',
         { color: 'secondary', title: 'Disable email alerts' }
       ] :
       [
-        register_observe_url(@register, from: from), 'bell-slash',
+        observe_register_url(@register, from: from), 'bell-slash',
         'Alerts: Off',
         { title: 'Enable email alerts' }
       ]

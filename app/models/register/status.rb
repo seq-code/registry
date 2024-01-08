@@ -139,10 +139,10 @@ module Register::Status
         name.proposed_in = publication
         name.save!
       end
-      update_status_with_alert(
-        params.merge(notified: true, notified_at: Time.now),
+      update_status_with_alert(params.merge(
+        notified: true, notified_at: Time.now,
         genomics_review: false, nomenclature_review: false
-      ) or return false
+      )) or return false
     end
 
     HeavyMethodJob.perform_later(:automated_validation, self)

@@ -3,7 +3,7 @@ class RegistersController < ApplicationController
     :set_register,
     only: %i[
       show table list cite edit update destroy
-      submit return return_commit endorse notification notify
+      submit return return_commit endorse notify notify_commit
       validate publish new_correspondence
       internal_notes nomenclature_review genomics_review
       observe unobserve
@@ -30,7 +30,7 @@ class RegistersController < ApplicationController
   before_action(:ensure_valid!, only: %i[list])
   before_action(
     :authenticate_can_edit!,
-    only: %i[edit update destroy submit notification notify new_correspondence]
+    only: %i[edit update destroy submit notify notify_commit new_correspondence]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve])
 
@@ -180,13 +180,13 @@ class RegistersController < ApplicationController
   end
 
   # GET /registers/r:abc/notify
-  def notification
+  def notify
     @register.title ||= @register.propose_title
     @publications = @register.proposing_publications
   end
 
   # POST /registers/r:abc/notify
-  def notify
+  def notify_commit
     # Note that +notify+ handles errors differently, and is incompatible with
     # the standard +change_status+ call used in all other status changes
     par = register_notify_params
@@ -198,8 +198,8 @@ class RegistersController < ApplicationController
       @register.title = par[:title]
       @register.abstract = par[:abstract]
       flash[:alert] = 'Please review the errors below'
-      notification
-      render(:notification)
+      notify
+      render(:notify)
     end
   end
 

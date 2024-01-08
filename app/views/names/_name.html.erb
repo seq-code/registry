@@ -34,12 +34,12 @@
       <% if user_signed_in? %>
         <li class="list-inline-item m-0">
           <% if name.observing?(current_user) %>
-            <%= link_to(name_unobserve_url(name),
+            <%= link_to(unobserve_name_url(name),
                   title: 'Disable notifications') do %>
               <%= fa_icon('bell-slash') %>
             <% end %>
           <% else %>
-            <%= link_to(name_observe_url(name),
+            <%= link_to(observe_name_url(name),
                   title: 'Enable notifications') do %>
               <%= fa_icon('bell') %>
             <% end %>

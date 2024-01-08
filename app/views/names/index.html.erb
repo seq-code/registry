@@ -15,7 +15,7 @@
               sort,
               @submitted ?
                 submitted_names_path(sort: sort, status: @status) :
-                @drafts ?
+                @draft ?
                 draft_names_path(sort: sort, status: @status) :
                 names_path(sort: sort, status: @status)
             )

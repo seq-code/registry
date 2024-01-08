@@ -43,13 +43,13 @@
 
       <li class="nav-item mt-3"><h2>Other Tasks</h2></li>
       <li class="nav-item">
-        <%= link_to(check_ranks_path) do %>
+        <%= link_to(unranked_names_path) do %>
           <%= fa_icon('check-circle') %>
           Names with unconfirmed ranks
         <% end %>
       </li>
       <li class="nav-item">
-        <%= link_to(unknown_proposal_path) do %>
+        <%= link_to(unknown_proposal_names_path) do %>
           <%= fa_icon('check-circle') %>
           Names with unknown proposal
         <% end %>

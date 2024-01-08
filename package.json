@@ -2,6 +2,7 @@
   "name": "SeqCodeRegistry",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-private-methods": "^7.18.6",
     "@rails/actiontext": "^6.1",
     "@rails/webpacker": "^5.4",
     "easy-autocomplete": "^1.3",
@@ -9,6 +10,7 @@
     "trix": "^1.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.2",
     "webpack-dev-server": "^3.11"
   }
 }

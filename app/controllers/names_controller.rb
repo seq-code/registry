@@ -6,7 +6,7 @@ class NamesController < ApplicationController
       show edit update destroy
       proposed_in corrigendum_in corrigendum emended_in assigned_in
       edit_rank edit_notes edit_etymology edit_links edit_type
-      autofill_etymology link_parent link_parent_commit
+      autofill_etymology edit_parent
       return validate endorse claim unclaim new_correspondence
       observe unobserve
     ]
@@ -17,7 +17,7 @@ class NamesController < ApplicationController
       edit update destroy
       proposed_in corrigendum_in corrigendum emended_in assigned_in
       edit_rank edit_notes edit_etymology edit_links edit_type
-      autofill_etymology link_parent link_parent_commit new_correspondence
+      autofill_etymology edit_parent new_correspondence
     ]
   )
   before_action(:authenticate_owner_or_curator!, only: %i[unclaim])
@@ -25,14 +25,14 @@ class NamesController < ApplicationController
   before_action(
     :authenticate_curator!,
     only: %i[
-      check_ranks unknown_proposal submitted endorsed drafts
+      unranked unknown_proposal submitted endorsed draft
       return validate endorse
     ]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve])
 
-  # GET /autocomplete_names.json?q=Maco
-  # GET /autocomplete_names.json?q=Allo&rank=genus
+  # GET /names/autocomplete.json?q=Maco
+  # GET /names/autocomplete.json?q=Allo&rank=genus
   def autocomplete
     name = params[:q].downcase
     rank = params[:rank]&.downcase
@@ -45,10 +45,10 @@ class NamesController < ApplicationController
   # GET /names
   # GET /names.json
   def index(opts = {})
-    return user_names if params[:status] == 'user' && opts == {}
+    return user if params[:status] == 'user' && opts == {}
     @submitted ||= false
     @endorsed  ||= false
-    @drafts    ||= false
+    @draft     ||= false
     @sort      ||= params[:sort] || 'date'
     @status    ||= params[:status] || 'public'
     @title     ||= "#{@status.gsub(/^\S/, &:upcase)} Names"
@@ -100,8 +100,8 @@ class NamesController < ApplicationController
                  .paginate(page: params[:page], per_page: 100)
   end
 
-  # GET /user-names
-  def user_names
+  # GET /names/user
+  def user
     user = current_user
     if params[:user] && current_user.admin?
       user = User.find_by(username: params[:user])
@@ -112,7 +112,7 @@ class NamesController < ApplicationController
     render(:index)
   end
 
-  # GET /observing-names
+  # GET /names/observing
   def observing_names
     user = current_user
     if params[:user] && current_user.admin?
@@ -125,7 +125,7 @@ class NamesController < ApplicationController
     render(:index)
   end
 
-  # GET /submitted
+  # GET /names/submitted
   def submitted
     @submitted = true
     @status = 'submitted'
@@ -133,7 +133,7 @@ class NamesController < ApplicationController
     render(:index)
   end
 
-  # GET /endorsed
+  # GET /names/endorsed
   def endorsed
     @endorsed = true
     @status = 'endorsed'
@@ -141,9 +141,9 @@ class NamesController < ApplicationController
     render(:index)
   end
 
-  # GET /drafts
-  def drafts
-    @drafts = true
+  # GET /names/draft
+  def draft
+    @draft = true
     @status = 'draft'
     index(status: 5)
     render(:index)
@@ -213,7 +213,7 @@ class NamesController < ApplicationController
   # POST /names.json
   def create
     @name = Name.new(name_params)
-    @name.status = 5 # All new names begin as drafts
+    @name.status = 5 # All new names begin as draft
     @name.created_by = current_user
 
     respond_to do |format|
@@ -273,13 +273,13 @@ class NamesController < ApplicationController
     end
   end
 
-  # GET /check_ranks
-  def check_ranks
+  # GET /names/unranked
+  def unranked
     @names = Name.where(rank: nil).order(created_at: :asc)
     @names = @names.paginate(page: params[:page], per_page: 30)
   end
 
-  # GET /unknown_proposal
+  # GET /names/unknown_proposal
   def unknown_proposal
     @names = Name.where(proposed_in: nil).where('name LIKE ?', 'Candidatus %').order(created_at: :asc)
     @names = @names.paginate(page: params[:page], per_page: 30)
@@ -332,40 +332,12 @@ class NamesController < ApplicationController
     redirect_back(fallback_location: @name)
   end
 
-  # GET /names/1/link_parent
-  def link_parent
-  end
-
-  # POST /names/1/link_parent
-  def link_parent_commit
-    par = params.require(:name).permit(
-      :parent, :incertae_sedis, :incertae_sedis_text
-    )
-
-    ok = true
-    if par[:parent].present?
-      if parent = Name.find_by(name: par[:parent])
-        par[:parent] = parent
-      else
-        par[:parent] = Name.new(
-          name: par[:parent], status: 5, created_by: current_user
-        )
-        unless par[:parent].save
-          flash[:alert] = 'Parent name could not be registered'
-          @name.errors.add(:parent, par[:parent].errors.values.join(', '))
-          ok = false
-        end
-      end
+  # GET /names/1/edit_parent
+  def edit_parent
+    if @name.placement
+      redirect_to(edit_placement_path(@name.placement))
     else
-      par[:parent] = nil
-    end
-
-    if ok && @name.update(par)
-      par[:parent].add_observer(current_user)
-      flash[:notice] = 'Parent successfully updated'
-      redirect_to(@name)
-    else
-      render(:link_parent)
+      redirect_to(new_placement_path(@name))
     end
   end
 

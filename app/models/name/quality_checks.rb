@@ -26,7 +26,7 @@ module Name::QualityChecks
     }
     @@link_to_edit_parent = {
       link_text: 'Edit parent',
-      link_to: lambda { |w| [:link_parent, w.name] }
+      link_to: lambda { |w| [:edit_parent, w.name] }
     }
     @@link_to_edit_etymology = {
       link_text: 'Edit etymology',
@@ -110,7 +110,7 @@ module Name::QualityChecks
       missing_parent: {
         message: 'The taxon has not been assigned to a higher classification',
         link_text: 'Link parent',
-        link_to: lambda { |w| [:link_parent, w.name] },
+        link_to: lambda { |w| [:edit_parent, w.name] },
         recommendations: %w[7]
       },
 
