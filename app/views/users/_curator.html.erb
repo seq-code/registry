@@ -1,8 +1,13 @@
 <div class="card">
-  <div class="card-header">
-    <h1>Curator Dashboard</h1>
+  <div class="card-header p-0">
+    <%= link_to('#curator-dashboard',
+                class: 'btn btn-light w-100 text-left m-0 px-4 py-2',
+                aria: { expanded: 'false', controls: 'curator-dashboard' },
+                role: 'button', data: { toggle: 'collapse' }) do %>
+      <h1>Curator Dashboard</h1>
+    <% end %>
   </div>
-  <div class="card-body">
+  <div class="card-body collapse show" id="curator-dashboard">
     <%= render(partial: 'pending_registers') %>
     <ul class="nav flex-column">
       <li class="nav-item mt-3"><h2>Review Register Lists</h2></li>

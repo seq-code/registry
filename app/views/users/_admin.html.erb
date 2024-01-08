@@ -1,8 +1,13 @@
 <div class="card">
-  <div class="card-header">
-    <h1>Administrator Dashboard</h1>
+  <div class="card-header p-0">
+    <%= link_to('#admin-dashboard',
+                class: 'btn btn-light w-100 text-left m-0 px-4 py-2',
+                aria: { expanded: 'false', controls: 'admin-dashboard' },
+                role: 'button', data: { toggle: 'collapse' }) do %>
+      <h1>Administrator Dashboard</h1>
+    <% end %>
   </div>
-  <div class="card-body">
+  <div class="card-body collapse show" id="admin-dashboard">
     <h2>Contributor applications</h2>
     <% if @contributor_applications.empty? %>
       None pending
@@ -27,8 +32,8 @@
         <% end %>
       </ul>
     <% end %>
-    <br/><br/>
 
+    <hr/>
     <h2>Curator applications</h2>
     <% if @curator_applications.empty? %>
       None pending
@@ -55,11 +60,12 @@
     <% end %>
 
     <hr/>
+    <h2>Actions</h2>
     <ul class="nav flex-column">
       <li class="nav-item">
         <%= link_to(users_path) do %>
-          <%= fa_icon('list-alt') %>
-          All registered users
+          <%= fa_icon('users') %>
+          See all registered users
         <% end %>
       </li>
     </ul>

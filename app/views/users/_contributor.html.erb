@@ -1,8 +1,13 @@
 <div class="card">
-  <div class="card-header">
-    <h1>Contributor Dashboard</h1>
+  <div class="card-header p-0">
+    <%= link_to('#contributor-dashboard',
+            class: 'btn btn-light w-100 text-left m-0 px-4 py-2',
+            aria: { expanded: 'false', controls: 'contributor-dashboard' },
+            role: 'button', data: { toggle: 'collapse' }) do %>
+      <h1>Contributor Dashboard</h1>
+    <% end %>
   </div>
-  <div class="card-body">
+  <div class="card-body collapse show" id="contributor-dashboard">
     <ul class="nav flex-column">
       <li class="nav-item">
         <%= link_to(user_names_path) do %>
