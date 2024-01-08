@@ -79,7 +79,9 @@ Rails.application.routes.draw do
   get '/placements/new/:name_id', controller: :placements, action: :new, as: :new_placement
 
   # Genomes
-  resources(:genomes)
+  resources(:genomes) do
+    post :update_external, on: :member
+  end
 
   # Checks
   post 'check/:name_id(.:format)' => 'checks#update', as: :check

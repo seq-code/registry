@@ -1,0 +1,15 @@
+<% if current_curator? %>
+  <dl name="curator" class="main-section name-details">
+    <h2>Curator Actions</h2>
+    <dd class="pt-2">
+      <%= link_to(
+            update_external_genome_url(@genome),
+            method: :post, class: 'btn btn-primary btn-sm'
+          ) do %>
+        <%= fa_icon('external-link-square-alt') %> Update external metadata
+      <% end %>
+      &raquo; Queue the genome to retrieve all external metadata
+      <hr/>
+    </dd>
+  </dl>
+<% end %>

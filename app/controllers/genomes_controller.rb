@@ -1,9 +1,9 @@
 class GenomesController < ApplicationController
-  before_action(:set_genome, only: %i[show edit update])
+  before_action(:set_genome, only: %i[show edit update update_external])
   before_action(:set_name, only: %i[show edit update])
   before_action(:set_tutorial)
   before_action(:authenticate_can_edit!, only: %i[edit update])
-  before_action(:authenticate_curator!, only: %i[index])
+  before_action(:authenticate_curator!, only: %i[index update_external])
 
   # GET /genomes or /genomes.json
   def index
@@ -28,6 +28,16 @@ class GenomesController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  # PUT /genomes/1/update_external
+  def update_external
+    if @genome.queue_for_external_resources
+      flash[:notice] = 'Update has been queued, please reload page soon'
+    else
+      flash[:alert] = 'Update was not queued, something failed'
+    end
+    redirect_back(fallback_location: @genome)
   end
 
   private
