@@ -65,6 +65,15 @@ class SubjectsController < ApplicationController
     end
   end
 
+  # GET /subjects/autocomplete.json?q=Name
+  def autocomplete
+    subject = params[:q].downcase
+    @subjects =
+      Subject.where('LOWER(name) LIKE ?', "#{subject}%")
+          .or(Author.where('LOWER(name) LIKE ?', "% #{subject}%"))
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_subject
