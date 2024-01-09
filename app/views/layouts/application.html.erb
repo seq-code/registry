@@ -14,6 +14,11 @@
             'jquery-ui.min.css'
         ) %>
 
+    <% if Rails.configuration.try(:plausible) %>
+      <script defer data-domain="disc-genomics.uibk.ac.at"
+            src="<%= Rails.configuration.plausible %>/js/script.js"></script>
+    <% end %>
+
     <link rel="apple-touch-icon" sizes="180x180"
           href="<%= File.join(root_path, 'apple-touch-icon.png') %>">
     <link rel="icon" type="image/png" sizes="32x32"
