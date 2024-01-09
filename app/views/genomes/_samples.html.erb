@@ -31,8 +31,8 @@
                   # ENA Checklists
                   ena = 'https://www.ebi.ac.uk/ena/browser/view/'
                   v.map! do |i|
-                    sanitize(i).gsub(
-                      /(^\s*|[^A-Z\d])(ERC\d{6})(\s*$|[^A-Z\d])/i,
+                    sanitize(i).sub(
+                      /(^\s*)(ERC\d{6})(\s*$)/i,
                       "\\1<a href='#{ena}\\2' target='_blank'>\\2</a>\\3"
                     )
                   end
@@ -45,8 +45,8 @@
                   ].join('|')})/
                   ver = /(?:\.[\d\.]+)?/
                   v.map! do |i|
-                    i.gsub(
-                      /(^\s*|[,;\s])(#{top}\.[A-Z\.-_]+#{ver})(\s*$|[,;\s])/i,
+                    i.sub(
+                      /(^\s*)(#{top}\.[A-Z\.-_]+#{ver})(\s*$)/i,
                       "\\1<a href='#{ncbi}\\2' target='_blank'>\\2</a>\\3"
                     )
                   end
