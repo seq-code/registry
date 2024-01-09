@@ -23,22 +23,30 @@
                   envo = osl4 + ERB::Util.u(purl)
                   v.map! do |i|
                     sanitize(i).gsub(
-                      /(^\s*|[^A-Z0-9])ENVO:(\d{8})(\s*$|[^A-Z0-9])/i,
+                      /(^\s*|[^A-Z\d])ENVO:(\d{8})(\s*$|[^A-Z\d])/i,
                       "\\1<a href='#{envo}\\2' target='_blank'>ENVO:\\2</a>\\3"
                     )
                   end
                 when :package
+                  # ENA Checklists
                   ena = 'https://www.ebi.ac.uk/ena/browser/view/'
                   v.map! do |i|
                     sanitize(i).gsub(
-                      /(^\s*|[^A-Z0-9])(ERC\d{6})(\s*$|[^A-Z0-9])/i,
+                      /(^\s*|[^A-Z\d])(ERC\d{6})(\s*$|[^A-Z\d])/i,
                       "\\1<a href='#{ena}\\2' target='_blank'>\\2</a>\\3"
                     )
                   end
+                  # BioSample Packages
                   ncbi = 'https://www.ncbi.nlm.nih.gov/biosample/docs/packages/'
+                  top = /(?:#{%w[
+                    OneHealthEnteric Microbe Model\\.organism
+                    Metagenome\\.environmental Invertebrate Human Plant Virus
+                    Beta-lactamase Pathogen MIGS MIMAG MIMARKS MIMS MISAG MIUVIG
+                  ].join('|')})/
+                  ver = /(?:\.[\d\.]+)?/
                   v.map! do |i|
                     i.gsub(
-                      /(^\s*|[^A-Z0-9\.])(MIMAG\.[A-Z0-9\.]+)(\s*$|[^A-Z0-9\.])/i,
+                      /(^\s*|[,;\s])(#{top}\.[A-Z\.-_]+#{ver})(\s*$|[,;\s])/i,
                       "\\1<a href='#{ncbi}\\2' target='_blank'>\\2</a>\\3"
                     )
                   end
