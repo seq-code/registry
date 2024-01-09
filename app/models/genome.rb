@@ -75,7 +75,7 @@ class Genome < ApplicationRecord
         environment: %i[
           env_material sample_type env_biome isolation_source
           env_broad_scale env_local_scale env_medium
-          environment_biome environment_feature
+          environment_biome environment_feature gold_ecosystem_classification
         ],
         other: %i[host ph depth temp temperature rel_to_oxygen],
         package: %i[ena_checklist ncbi_submission_package biosamplemodel]
