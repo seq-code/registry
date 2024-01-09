@@ -10,6 +10,8 @@ namespace :genomes do
       exit 0
     end
 
+    include Rails.application.routes.url_helpers
+
     p_path = File.join(Rails.root, '..', 'miga_check')
     genomes = Genome.where(
       auto_check: false, auto_scheduled_at: nil, auto_failed: nil
@@ -21,6 +23,7 @@ namespace :genomes do
       MiGA::Cli.new([
         'get', '--project', p_path, '--dataset', genome.miga_name,
         '--universe', 'ncbi', '--db', genome.database,
+        '--metadata', "url=#{genome_path(genome)}",
         '--ids', genome.accession,
         '--type', (genome.kind_miga || 'popgenome')
       ]).launch(false)
@@ -59,6 +62,14 @@ namespace :genomes do
     genomes.each do |genome|
       $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
       d = p.dataset(genome.miga_name) or next
+      unless d.active?
+        genome.update(
+          auto_check: true,
+          auto_failed: 'Genome processing bypassed: %s' % d.metadata[:warn]
+        )
+        next
+      end
+
       d.result(:stats) or next # Check if it's complete first
 
       assembly = d.result(:assembly).try(:stats)
