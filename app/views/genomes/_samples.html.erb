@@ -35,6 +35,13 @@
                       "\\1<a href='#{ena}\\2' target='_blank'>\\2</a>\\3"
                     )
                   end
+                  ncbi = 'https://www.ncbi.nlm.nih.gov/biosample/docs/packages/'
+                  v.map! do |i|
+                    i.gsub(
+                      /(^\s*|[^A-Z0-9\.])(MIMAG\.[A-Z0-9\.]+)(\s*$|[^A-Z0-9\.])/i,
+                      "\\1<a href='#{ncbi}\\2' target='_blank'>\\2</a>\\3"
+                    )
+                  end
                 else
                   v.map! { |i| sanitize(i) }
                 end
