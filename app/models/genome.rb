@@ -307,9 +307,11 @@ class Genome < ApplicationRecord
   private
 
   def standardize_source
-    self.source_accession.strip!
-    self.source_accession.gsub!(/,? and /, ',')
-    self.source_accession.gsub!(/( *, *)+/, ', ')
+    if source_accession
+      self.source_accession.strip!
+      self.source_accession.gsub!(/,? and /, ',')
+      self.source_accession.gsub!(/( *, *)+/, ', ')
+    end
     self.source_json = nil unless source?
     self.queue_for_source_update =
       source_database_changed? || source_accession_changed?
