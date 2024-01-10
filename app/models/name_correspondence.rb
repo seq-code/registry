@@ -8,6 +8,10 @@ class NameCorrespondence < ApplicationRecord
 
   after_create(:notify_observers)
 
+  def obj
+    name
+  end
+
   def notify_observers
     return unless notify == '1'
     name.notify_observers(:correspondence, exclude_users: [user])

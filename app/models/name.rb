@@ -551,7 +551,7 @@ class Name < ApplicationRecord
   end
 
   def curators
-    @curators ||= (check_users + reviewers).uniq
+    @curators ||= (check_users + reviewers).uniq - [user]
   end
 
   %i[
@@ -559,10 +559,13 @@ class Name < ApplicationRecord
     validated_by endorsed_by nomenclature_review_by genomics_review_by
   ].each do |role|
     define_method("#{role}?") do |user|
-      send(role) == user
+      user && send("#{role}_id").try(:==, user.id)
     end
   end
   alias :user? :created_by?
+  def user
+    created_by
+  end
 
   def validated_by?(user)
     validated_by == user

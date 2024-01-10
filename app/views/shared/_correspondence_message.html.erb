@@ -4,7 +4,8 @@
   <%= fa_icon(automatic ? 'robot' : 'comment') %>
   <%= link_to(correspondence.user) do %>
     <%= correspondence.user.username %>
-    <% if correspondence.user.curator? %>
+    <% if correspondence.user.curator? &&
+          !correspondence.obj.user?(correspondence.user) %>
       <span class="badge rounded-pill bg-primary text-light">
         curator
       </span>

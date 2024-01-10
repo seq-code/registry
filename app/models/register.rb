@@ -103,25 +103,30 @@ class Register < ApplicationRecord
     [notified_at, submitted_at].compact.max || names.pluck(:submitted_at).max
   end
 
+  def user?(user)
+    user && user_id == user.id
+  end
+  alias :created_by? :user?
+
   def can_edit?(user)
     return false if validated?
     return false unless user
     return true if user.curator?
 
-    user.id == user_id # && !submitted
+    user?(user) # && !submitted
   end
 
   def can_view?(user)
     return true if submitted? || validated? || notified?
     return false unless user
 
-    user.curator? || user.id == user_id
+    user.curator? || user?(user)
   end
 
   def can_view_publication?(user)
     return false unless user && publication_pdf.attached?
 
-    user.curator? || user.id == user_id
+    user.curator? || user?(user)
   end
 
   def display
@@ -239,7 +244,7 @@ class Register < ApplicationRecord
   end
 
   def curators
-    @curators ||= (check_users + reviewers).uniq
+    @curators ||= (check_users + reviewers).uniq - [user]
   end
 
   def nomenclature_review_by?(user)
