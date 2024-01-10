@@ -243,59 +243,60 @@ class Name < ApplicationRecord
 
     def culture_collections
       {
-        DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-%s',
-        JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=%s',
-        KCTC: 'https://kctc.kribb.re.kr/collection/view?sn=%s',
         ATCC: 'https://www.atcc.org/products/%s',
         BCRC: 'https://catalog.bcrc.firdi.org.tw/BcrcContent?bid=%s',
+        DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-%s',
+        IFO:  'https://www.nite.go.jp/nbrc/catalogue/' \
+              'NBRCCatalogueDetailServlet?ID=IFO&CAT=%s',
+        JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=%s',
+        KCTC: 'https://kctc.kribb.re.kr/collection/view?sn=%s',
         LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=%s',
         NBRC: 'https://www.nite.go.jp/nbrc/catalogue/' \
               'NBRCCatalogueDetailServlet?ID=IFO&CAT=%s',
-        IFO:  'https://www.nite.go.jp/nbrc/catalogue/' \
-              'NBRCCatalogueDetailServlet?ID=IFO&CAT=%s',
         NCTC: 'https://www.culturecollections.org.uk/products/bacteria/' \
               'detail.jsp?collection=nctc&refId=NCTC+%s',
+
+        # Collection of Aquatic Important Microorganisms
+        # [MX: CIAD, Centro de Investigación en Alimentación y Desarrollo]
+        CAIM: 'https://www.ciad.mx/caim/busqueda.php?' \
+              'searchtype=caim&criterio=%s',
+        # Czech Collection of Microorganisms
+        # [CZ: Masaryk University]
+        CCM: 'https://www.sci.muni.cz/ccm/bakterie/camb/%s',
+        # NCMA, National Center for Marine Algae and Microbiota,
+        # formerly Culture Collection for Marine Phytoplankton
+        # [US: Bigelow Laboratory for Ocean Sciences]
+        CCMP: 'https://ncma.bigelow.org/CCMP%s',
+        # Culture Collection University of Gothenburg
+        # [SE: University of Gothenburg]
+        CCUG: 'https://www.ccug.se/strain?id=%s',
+        # China Center of Industrial Culture Collection
+        # [CN: China National Research Institute of Food & Fermentation
+        # Industries]
+        CICC: 'http://www.china-cicc.org/search/?classtype=1&keyword=%s',
         # Collection de l'Institut Pasteur
         # [FR: Institut Pasteur]
         CIP:  'https://catalogue-crbip.pasteur.fr/' \
               'fiche_catalogue.xhtml?crbip=CIP%%20%s',
-        # Pasteur Cultures of Cyanobacteria
-        # [FR: Institut Pasteur]
-        PCC:  'https://catalogue-crbip.pasteur.fr/' \
-              'fiche_catalogue.xhtml?crbip=PCC%%20%s',
-        # Culture Collection University of Gothenburg
-        # [SE: University of Gothenburg]
-        CCUG: 'https://www.ccug.se/strain?id=%s',
+        # Korean Agricultural Culture Collection
+        # [KR: National Academy of Agricultural Science]
+        KACC: 'https://genebank.rda.go.kr/eng/mic/cat/MicrobeSearch.do' \
+              '?sSearchWith=no&sTxt1=%s',
+        # Marine Culture Collection of China
+        # [CN: Third Institute of Oceanography]
+        MCCC: 'https://mccc.org.cn/detailRecord3.asp?bcbh=%s',
+        # North East Pacific Culture Collection
+        # [CA: The University of British Columbia]
+        NEPCC: 'https://db.botany.ubc.ca/cccm/mfa/%s',
         # Agricultural Research Service Culture Collection,
         # formerly Northern Regional Research Laboratory
         # [US: National Center for Agricultural Utilization Research]
         NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
               'report.html?nrrlcodes=%s',
-        # Collection of Aquatic Important Microorganisms
-        # [MX: CIAD, Centro de Investigación en Alimentación y Desarrollo]
-        CAIM: 'https://www.ciad.mx/caim/busqueda.php?' \
-              'searchtype=caim&criterio=%s',
-        # NCMA, National Center for Marine Algae and Microbiota,
-        # formerly Culture Collection for Marine Phytoplankton
-        # [US: Bigelow Laboratory for Ocean Sciences]
-        CCMP: 'https://ncma.bigelow.org/CCMP%s',
-        # North East Pacific Culture Collection
-        # [CA: The University of British Columbia]
-        NEPCC: 'https://db.botany.ubc.ca/cccm/mfa/%s',
-        # Marine Culture Collection of China
-        # [CN: Third Institute of Oceanography]
-        MCCC: 'https://mccc.org.cn/detailRecord3.asp?bcbh=%s',
-        # Korean Agricultural Culture Collection
-        # [KR: National Academy of Agricultural Science]
-        KACC: 'https://genebank.rda.go.kr/eng/mic/cat/MicrobeSearch.do' \
-              '?sSearchWith=no&sTxt1=%s',
-        # Czech Collection of Microorganisms
-        # [CZ: Masaryk University]
-        CCM: 'https://www.sci.muni.cz/ccm/bakterie/camb/%s',
-        # China Center of Industrial Culture Collection
-        # [CN: China National Research Institute of Food & Fermentation
-        # Industries]
-        CICC: 'http://www.china-cicc.org/search/?classtype=1&keyword=%s'
+        # Pasteur Cultures of Cyanobacteria
+        # [FR: Institut Pasteur]
+        PCC:  'https://catalogue-crbip.pasteur.fr/' \
+              'fiche_catalogue.xhtml?crbip=PCC%%20%s',
       }
     end
   end
