@@ -13,7 +13,8 @@ namespace :lpsn do
     # First pass, saving or retrieving all names
     $stderr.puts "Parsing CSV: #{args[:csv]}"
     parsed_names = {}
-    CSV.foreach(args[:csv], headers: true).each do |row|
+    CSV.foreach(args[:csv], headers: true).each_with_index do |row, k|
+      $stderr.print "- #{k} \r"
       # Define full name and rank
       pars = { rank: 'genus', name: row['genus_name'] }
       parent = nil
@@ -58,10 +59,12 @@ namespace :lpsn do
         type_name: type_name
       }
     end # CSV.foreach
+    $stderr.puts
 
     # Second pass, linking all names
     $stderr.puts 'Linking names'
-    parsed_names.each_value do |entry|
+    parsed_names.each_value.each_with_index do |entry, k|
+      $stderr.print "- #{k} \r"
       # parent, correct_name, type_name
       pars = {}
       if entry[:parent].present?
