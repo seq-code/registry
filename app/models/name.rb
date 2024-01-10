@@ -288,7 +288,14 @@ class Name < ApplicationRecord
         # Korean Agricultural Culture Collection
         # [KR: National Academy of Agricultural Science]
         KACC: 'https://genebank.rda.go.kr/eng/mic/cat/MicrobeSearch.do' \
-              '?sSearchWith=no&sTxt1=%s'
+              '?sSearchWith=no&sTxt1=%s',
+        # Czech Collection of Microorganisms
+        # [CZ: Masaryk University]
+        CCM: 'https://www.sci.muni.cz/ccm/bakterie/camb/%s',
+        # China Center of Industrial Culture Collection
+        # [CN: China National Research Institute of Food & Fermentation
+        # Industries]
+        CICC: 'http://www.china-cicc.org/search/?classtype=1&keyword=%s'
       }
     end
   end
