@@ -262,8 +262,17 @@ class Name < ApplicationRecord
         CCUG: 'https://www.ccug.se/strain?id=%s',
         NRRL: 'https://nrrl.ncaur.usda.gov/cgi-bin/usda/prokaryote/' \
               'report.html?nrrlcodes=%s',
+        # Collection of Aquatic Important Microorganisms
+        # [Mexico: CIAD, Centro de Investigación en Alimentación y Desarrollo]
         CAIM: 'https://www.ciad.mx/caim/busqueda.php?' \
-              'searchtype=caim&criterio=%s'
+              'searchtype=caim&criterio=%s',
+        # NCMA, National Center for Marine Algae and Microbiota,
+        # formerly Culture Collection for Marine Phytoplankton
+        # [USA: Bigelow Laboratory for Ocean Sciences]
+        CCMP: 'https://ncma.bigelow.org/CCMP%s',
+        # North East Pacific Culture Collection
+        # [Canada: The University of British Columbia]
+        NEPCC: 'https://db.botany.ubc.ca/cccm/mfa/%s'
       }
     end
   end
