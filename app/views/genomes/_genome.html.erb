@@ -216,12 +216,18 @@ end
     <% end %>
 
     <dt><%= fa_icon('robot') %> Automated checks</dt>
-    <dd><%=
-      @genome.auto_check ? 'Complete' :
-        !@genome.kind? ? 'Missing information' :
-        @genome.auto_failed.present? ? "Failed: #{@genome.auto_failed}" :
-        'Scheduled'
-    %></dd>
+    <dd>
+      <%=
+        @genome.auto_check ? 'Complete' :
+          !@genome.kind? ? 'Missing information' :
+          @genome.auto_failed.present? ? 'Partial' : 'Scheduled'
+      %>
+      <% if @genome.auto_failed.present? %>
+        <div class="alert alert-warning">
+          Failed: <%= @genome.auto_failed %>
+        </div>
+      <% end %>
+    </dd>
 
     <% if @name.try(:can_edit?, current_user) || !inline %>
       <dd class="mt-4">
