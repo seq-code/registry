@@ -15,7 +15,7 @@ namespace :genomes do
     p_path = File.join(Rails.root, '..', 'miga_check')
     genomes = Genome.where(
       auto_check: false, auto_scheduled_at: nil, auto_failed: nil
-    )
+    ).where.not(kind: nil)
 
     $stderr.puts "Download genomes:"
     genomes.each do |genome|
