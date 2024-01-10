@@ -17,8 +17,8 @@ namespace :genomes do
       auto_check: false, auto_scheduled_at: nil, auto_failed: nil
     ).where.not(kind: nil)
 
-    $stderr.puts "Download genomes:"
-    genomes.each do |genome|
+    genomes.each_with_index do |genome, k|
+      $stderr.puts "Download genomes:" if k == 0
       $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
       MiGA::Cli.new([
         'get', '--project', p_path, '--dataset', genome.miga_name,
@@ -58,8 +58,8 @@ namespace :genomes do
         Genome.where(auto_check: false).where.not(auto_scheduled_at: nil)
       end
 
-    $stderr.puts "Save genomes:"
-    genomes.each do |genome|
+    genomes.each_with_index do |genome, k|
+      $stderr.puts "Save genomes:" if k == 0
       $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
       d = p.dataset(genome.miga_name) or next
       unless d.active?
