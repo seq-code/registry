@@ -53,7 +53,7 @@ class RegistersController < ApplicationController
         else
           current_user.registers
         end
-      when :alerts
+      when :observing
         authenticate_curator! && return
         if params[:user]
           authenticate_curator! && return
