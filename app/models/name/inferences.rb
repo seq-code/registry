@@ -13,6 +13,13 @@ module Name::Inferences
     when /aeum$/
       # - Methanonatronarchaeum -- Methanonatroarchae-aceae
       base.gsub!(/um$/, '')
+    when /opsis$/
+      # - Coelosphaeriopsis -- 
+      # - Hapalopsis -- 
+      # - Lyngbyopsis --
+      # Note that none of the above form a family name, but
+      # the correct stem for all of them would be as below
+      base.gsub!(/s$/, 'd')
     when /u[ms]$/
       # - Acidaminococcus -- Acidaminococc-aceae
       # - Acidilobus -- Acidilob-aceae
