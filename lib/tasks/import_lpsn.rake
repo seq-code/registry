@@ -53,6 +53,10 @@ namespace :lpsn do
         warn "- Name in SeqCode, bypassing: #{name.name}"
         next
       end
+      if name.status > 20
+        warn "- Name in a different code, bypassing: #{name.name}"
+        next
+      end
       name.update!(pars)
       parsed_names[row['record_no']] = {
         name: name, parent: parent, correct_name: row['record_lnk'],
