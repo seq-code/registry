@@ -157,7 +157,7 @@
         %>
         <% @name.children.each do |child| %>
           <li>
-            <%= link_to(child.name_html, child) %>
+            <%= display_link(child) %>
             <% if set_type && @name.type_accession.to_i != child.id %>
               <%= link_to(
                     name_url(
@@ -174,6 +174,27 @@
           </li>
         <% end %>
       </ul></dd>
+    <% end %>
+
+    <% unless @name.alt_children.empty? %>
+      <dt>
+        <%= fa_icon('sort-amount-down-alt', class: 'text-muted') %>
+        Alternatively placed children
+        <span class="text-muted">(<%= @name.alt_children.count %>)</span>
+      <dt>
+      <dd>
+        <ul>
+          <% @name.alt_child_placements.each do |placement| %>
+            <li>
+              <%= display_link(placement.name) %>
+              <% if placement.name.parent %>
+                (alternatively placed in
+                <%= display_link(placement.name.parent) %>)
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
     <% end %>
 
     <% if @name.taxonomic_status? %>

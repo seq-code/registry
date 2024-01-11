@@ -866,7 +866,7 @@ class Name < ApplicationRecord
 
   def taxonomic_data?
     description? || notes? || parent || incertae_sedis? ||
-      !children.empty? || taxonomic_status?
+      taxonomic_status? || !children.empty? || !alt_child_placements.empty?
   end
 
   def alt_placements
@@ -875,6 +875,10 @@ class Name < ApplicationRecord
 
   def alt_child_placements
     @alt_child_placements ||= child_placements.where(preferred: false)
+  end
+
+  def alt_children
+    alt_child_placements.map(&:name)
   end
 
   def placement
