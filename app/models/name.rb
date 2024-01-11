@@ -17,7 +17,7 @@ class Name < ApplicationRecord
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
   has_many(:placements, dependent: :destroy)
   has_many(
-    :child_placements, class_name: 'Name', foreign_key: 'parent_id',
+    :child_placements, class_name: 'Placement', foreign_key: 'parent_id',
     dependent: :destroy
   )
   has_many(:observe_names, dependent: :destroy)
