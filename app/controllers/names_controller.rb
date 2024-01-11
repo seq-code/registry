@@ -63,6 +63,8 @@ class NamesController < ApplicationController
         15
       when 'ICNP'
         20
+      when 'ICN'
+        25
       when 'valid'
         Name.valid_status
       end
