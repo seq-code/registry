@@ -288,6 +288,9 @@ class Name < ApplicationRecord
         # North East Pacific Culture Collection
         # [CA: The University of British Columbia]
         NEPCC: 'https://db.botany.ubc.ca/cccm/mfa/%s',
+        # National Institute for Environmental Studies Collection
+        # [JP: National Institute for Environmental Studies]
+        NIES: 'https://mcc.nies.go.jp/numberSearch.do?strainNumber=%s',
         # Agricultural Research Service Culture Collection,
         # formerly Northern Regional Research Laboratory
         # [US: National Center for Agricultural Utilization Research]
@@ -297,6 +300,9 @@ class Name < ApplicationRecord
         # [FR: Institut Pasteur]
         PCC:  'https://catalogue-crbip.pasteur.fr/' \
               'fiche_catalogue.xhtml?crbip=PCC%%20%s',
+        # Sammlung von Algenkulturen (Culture Collection of Algae)
+        # [DE: University of Göttingen]
+        SAG: 'https://sagdb.uni-goettingen.de/detailedList.php?str_number=%s'
       }
     end
   end
