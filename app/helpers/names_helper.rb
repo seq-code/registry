@@ -18,7 +18,7 @@ module NamesHelper
     if name.type_is_name?
       if name.type_name
         link_to(name.type_name) { name.type_name.name_html } +
-        if (place = name.type_name.lineage_find(name.rank)) != name
+        if place = name.type_name_alt_placement
           content_tag(:span, '(alternatively placed in ') +
             display_link(place) +
             content_tag(:span, ')')

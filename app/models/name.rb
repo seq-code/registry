@@ -669,6 +669,13 @@ class Name < ApplicationRecord
     end
   end
 
+  def type_name_alt_placement
+    return unless type_is_name? && rank
+
+    place = type_name.lineage_find(rank)
+    place if place != self
+  end
+
   def incertae_sedis_html
     return '' unless incertae_sedis?
 
