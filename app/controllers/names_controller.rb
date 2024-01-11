@@ -29,7 +29,7 @@ class NamesController < ApplicationController
       return validate endorse
     ]
   )
-  before_action(:authenticate_user!, only: %i[observe unobserve])
+  before_action(:authenticate_user!, only: %i[observe unobserve observing])
 
   # GET /names/autocomplete.json?q=Maco
   # GET /names/autocomplete.json?q=Allo&rank=genus
@@ -115,7 +115,7 @@ class NamesController < ApplicationController
   end
 
   # GET /names/observing
-  def observing_names
+  def observing
     user = current_user
     if params[:user] && current_user.admin?
       user = User.find_by(username: params[:user])
