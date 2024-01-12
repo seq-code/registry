@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_08_144350) do
+ActiveRecord::Schema.define(version: 2024_01_12_015146) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -206,6 +206,7 @@ ActiveRecord::Schema.define(version: 2024_01_08_144350) do
     t.string "action"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "title"
     t.index ["linkeable_type", "linkeable_id"], name: "index_notifications_on_linkeable"
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["user_id"], name: "index_notifications_on_user_id"

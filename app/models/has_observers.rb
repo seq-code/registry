@@ -5,7 +5,7 @@ module HasObservers
   def notify_user(action, user, title)
     Notification.create(
       user: user, notifiable: self, linkeable: self,
-      action: action
+      action: action, title: title
     )
   end
 
