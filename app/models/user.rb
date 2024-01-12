@@ -53,6 +53,7 @@ class User < ApplicationRecord
     :updated_genomes, class_name: 'Genome', inverse_of: :validated_by,
     foreign_key: 'updated_by_id', dependent: :nullify
   )
+  has_many(:notifications, dependent: :destroy)
 
   validates(
     :username,

@@ -85,7 +85,10 @@
     <%= link_to('visit the name page', @name) %>.
   </p>
 <% when 'unclaim' %>
-  <p>You have unclaimed the name <%= @name.name_html %>.</p>
+  <p>
+    You have unclaimed the name <%= @name.name_html %> or somebody else
+    made this change for you.
+  </p>
   <br/>
 
   <h2>What does this mean?</h2>

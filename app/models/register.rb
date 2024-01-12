@@ -129,7 +129,7 @@ class Register < ApplicationRecord
     user.curator? || user?(user)
   end
 
-  def display
+  def display(_html = true)
     'Register List %s' % accession
   end
 

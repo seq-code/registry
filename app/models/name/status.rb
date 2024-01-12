@@ -118,8 +118,7 @@ module Name::Status
     update_status_with_alert(par) or return false
 
     add_observer(user)
-    notify_user(:claim, user)
-    notify_observers(:status, exclude_users: [user])
+    notify_status_change(:claim, user)
     true
   end
 
@@ -134,8 +133,7 @@ module Name::Status
     end
 
     update_status_with_alert(status: 0) or return false
-    notify_user(:unclaim, user)
-    notify_observers(:status, exclude_users: [user])
+    notify_status_change(:unclaim, user)
     true
   end
 end
