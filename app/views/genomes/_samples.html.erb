@@ -46,7 +46,7 @@
                   ver = /(?:\.[\d\.]+)?/
                   v.map! do |i|
                     i.sub(
-                      /(^\s*)(#{top}\.[A-Z\.\-_]+#{ver})?(\s*$)/i,
+                      /(^\s*)(#{top}(?:\.[A-Z\.\-_]+)?#{ver})(\s*$)/i,
                       "\\1<a href='#{ncbi}\\2' target='_blank'>\\2</a>\\3"
                     )
                   end
