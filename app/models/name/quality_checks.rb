@@ -878,7 +878,7 @@ module Name::QualityChecks
 
       if type_genome.largest_contig_any? &&
             type_genome.largest_contig_any <= 100_000
-        @qc_warning.add(:short_largest_contig)
+        @qc_warnings.add(:short_largest_contig)
       end
 
       # Measure discrepancy with automated checks
