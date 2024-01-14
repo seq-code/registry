@@ -318,7 +318,7 @@ class Genome < ApplicationRecord
       'rm', '--project', File.join(Rails.root, '..', 'miga_check'),
       '--dataset', miga_name, '--remove'
     ]).launch(false)
-    return false if err.is_a? Exception
+    # return false if err.is_a? Exception
 
     update(auto_scheduled_at: nil, auto_failed: nil, auto_check: false)
   end
