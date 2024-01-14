@@ -316,7 +316,7 @@ class Genome < ApplicationRecord
 
     err = MiGA::Cli.new(
       'rm', '--project', File.join(Rails.root, '..', 'miga_check'),
-      '--dataset', genome.miga_name, '--remove'
+      '--dataset', miga_name, '--remove'
     ).launch(false)
     return false if err.is_a? Exception
 
