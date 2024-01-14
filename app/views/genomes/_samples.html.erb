@@ -39,9 +39,9 @@
                   # BioSample Packages
                   ncbi = 'https://www.ncbi.nlm.nih.gov/biosample/docs/packages/'
                   top = /(?:#{%w[
-                    OneHealthEnteric Microbe Model\\.organism
-                    Metagenome\\.environmental Invertebrate Human Plant Virus
-                    Beta-lactamase Pathogen MIGS MIMAG MIMARKS MIMS MISAG MIUVIG
+                    OneHealthEnteric Microbe Model\\.organism Metagenome
+                    Invertebrate Human Plant Virus Beta-lactamase Pathogen
+                    MIGS MIMAG MIMARKS MIMS MISAG MIUVIG
                   ].join('|')})/
                   ver = /(?:\.[\d\.]+)?/
                   v.map! do |i|
