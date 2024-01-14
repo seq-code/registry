@@ -10,6 +10,14 @@
       <% end %>
       &raquo; Queue the genome to retrieve all external metadata
       <hr/>
+      <%= link_to(
+            recalculate_miga_genome_url(@genome),
+            method: :post, class: 'btn btn-primary btn-sm'
+          ) do %>
+        <%= fa_icon('redo-alt') %> Recalculate MiGA entry
+      <% end %>
+      &raquo; Queue the genome to recalculate all MiGA statistics
+      <hr/>
     </dd>
   </dl>
 <% end %>

@@ -1,9 +1,15 @@
 class GenomesController < ApplicationController
-  before_action(:set_genome, only: %i[show edit update update_external])
+  before_action(
+    :set_genome,
+    only: %i[show edit update update_external recalculate_miga]
+  )
   before_action(:set_name, only: %i[show edit update])
   before_action(:set_tutorial)
   before_action(:authenticate_can_edit!, only: %i[edit update])
-  before_action(:authenticate_curator!, only: %i[index update_external])
+  before_action(
+    :authenticate_curator!,
+    only: %i[index update_external recalculate_miga]
+  )
 
   # GET /genomes or /genomes.json
   def index
@@ -30,12 +36,22 @@ class GenomesController < ApplicationController
     end
   end
 
-  # PUT /genomes/1/update_external
+  # POST /genomes/1/update_external
   def update_external
     if @genome.queue_for_external_resources
       flash[:notice] = 'Update has been queued, please reload page soon'
     else
       flash[:alert] = 'Update was not queued, something failed'
+    end
+    redirect_back(fallback_location: @genome)
+  end
+
+  # POST /genomes/1/recalculate_miga
+  def recalculate_miga
+    if @genome.recalculate_miga!
+      flash[:notice] = 'The genome is now queued for recalculation'
+    else
+      flash[:alert] = 'Genome recalculation was not queued, something failed'
     end
     redirect_back(fallback_location: @genome)
   end

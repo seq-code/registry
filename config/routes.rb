@@ -81,6 +81,7 @@ Rails.application.routes.draw do
   # Genomes
   resources(:genomes) do
     post :update_external, on: :member
+    post :recalculate_miga, on: :member
   end
 
   # Checks

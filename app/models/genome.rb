@@ -310,6 +310,19 @@ class Genome < ApplicationRecord
     '%s/reference_datasets/genome_%i' % [miga_project, id]
   end
 
+  def recalculate_miga!
+    require 'miga'
+    require 'miga/cli'
+
+    err = MiGA::Cli.new(
+      'rm', '--project', File.join(Rails.root, '..', 'miga_check'),
+      '--dataset', genome.miga_name, '--remove'
+    ).launch(false)
+    return false if err.is_a? Exception
+
+    update(auto_scheduled_at: nil, auto_failed: nil, auto_check: false)
+  end
+
   private
 
   def standardize_source
