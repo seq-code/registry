@@ -271,7 +271,7 @@ class Name < ApplicationRecord
         # [CN: National Science and Technology Infrastructure]
         # -- From NCBI Taxonomy (not working):
         # -- 'http://www.cgmcc.net/english/cata.php?stn=CGMCC%%20%s'
-        CGMCC: 'https://cgmcc.net/english/search?stn=%s'
+        CGMCC: 'https://cgmcc.net/english/search?stn=%s',
         # NCMA, National Center for Marine Algae and Microbiota,
         # formerly Culture Collection for Marine Phytoplankton
         # [US: Bigelow Laboratory for Ocean Sciences]
