@@ -414,7 +414,7 @@ class Name < ApplicationRecord
     sanitize(formal_html.gsub(/&#822[01];/, "'"))
   end
 
-  def display(html: true)
+  def display(html = true)
     html ? name_html : name
   end
 
