@@ -21,7 +21,7 @@ module Genome::ExternalResources
     data = {}
     case source_database.to_sym
     when :sra
-      source_accession.split(/, */).each do |acc|
+      source_accessions.each do |acc|
         external_sra_to_biosamples(acc).each do |biosample|
           data[biosample] ||=
             {from_sra: []}.merge(external_biosample_hash(biosample))
@@ -29,7 +29,7 @@ module Genome::ExternalResources
         end
       end
     when :biosample
-      source_accession.split(/, */).each do |acc|
+      source_accessions.each do |acc|
         data[acc] = external_biosample_hash(acc)
       end
     end

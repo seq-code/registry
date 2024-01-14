@@ -611,6 +611,19 @@ module Name::QualityChecks
         message: 'The type genome should contain more than 80% of tRNAs',
         recommendations: %w[appendix-i]
       }.merge(@@link_to_edit_genome),
+      large_contig_count: {
+        message: 'The type genome should be composed of fewer than 100 contigs',
+        recommendations: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+      low_n50: {
+        message: 'The type genome should have an N50 of at least 25 kbp',
+        recommendations: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+      short_largest_contig: {
+        message: 'The longest contig in the type genome should have at least ' \
+                 '100 kbp',
+        recommendations: %w[appendix-i]
+      }.merge(@@link_to_edit_genome)
     }
 
     attr_accessor :type, :name
@@ -853,6 +866,19 @@ module Name::QualityChecks
         elsif type_genome.number_of_trnas_any > 21 # 20 standard + SeC
           @qc_warnings.add(:too_many_amino_acids)
         end
+      end
+
+      if type_genome.contigs_any? && type_genome.contigs_any >= 100
+        @qc_warnings.add(:large_contig_count)
+      end
+
+      if type_genome.n50_any? && type_genome.n50_any <= 25_000
+        @qc_warnings.add(:low_n50)
+      end
+
+      if type_genome.largest_contig_any? &&
+            type_genome.largest_contig <= 100_000
+        @qc_warning.add(:short_largest_contig)
       end
 
       # Measure discrepancy with automated checks

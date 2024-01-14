@@ -86,7 +86,8 @@ class Genome < ApplicationRecord
   @@FIELDS_WITH_AUTO = %i[
     gc_content completeness contamination most_complete_16s number_of_16s
     most_complete_23s number_of_23s number_of_trnas quality
-    coding_density n50 contigs assembly_length ambiguous_fraction codon_table
+    coding_density n50 contigs largest_contig assembly_length
+    ambiguous_fraction codon_table
   ]
   def self.fields_with_auto
     @@FIELDS_WITH_AUTO
@@ -134,6 +135,10 @@ class Genome < ApplicationRecord
     source_accession? && source_database?
   end
 
+  def source_accessions
+    source_accession.try(:split, /, */)
+  end
+
   def rrnas_or_trnas?
     number_of_16s_any.present? ||
       number_of_23s_any.present? ||
@@ -169,7 +174,7 @@ class Genome < ApplicationRecord
 
   def source_links
     return [] unless source?
-    source_accession.split(/, */).map do |acc|
+    source_accessions.map do |acc|
       [source_link(acc), source_text(acc), source_database_name]
     end
   end
@@ -189,7 +194,7 @@ class Genome < ApplicationRecord
     end
     @source_extra_biosamples.uniq!
     @source_extra_biosamples -= source_hash[:samples].keys.map(&:to_s)
-    @source_extra_biosamples -= source_accession.split(/, /)
+    @source_extra_biosamples -= source_accessions
     @source_extra_biosamples
   end
 
@@ -260,7 +265,8 @@ class Genome < ApplicationRecord
 
   # Dummy methods returning +nil+
   attr_accessor *%i[
-    coding_density n50 contigs assembly_length ambiguous_fraction codon_table
+    coding_density n50 contigs largest_contig assembly_length
+    ambiguous_fraction codon_table
   ]
 
   @@FIELDS_WITH_AUTO.each do |i|

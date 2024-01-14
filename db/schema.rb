@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_12_015146) do
+ActiveRecord::Schema.define(version: 2024_01_14_142925) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 2024_01_12_015146) do
     t.string "codon_table_auto"
     t.datetime "queued_external"
     t.text "source_json"
+    t.integer "largest_contig_auto"
     t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
     t.index ["updated_by_id"], name: "index_genomes_on_updated_by_id"
   end

@@ -89,6 +89,7 @@ namespace :genomes do
         coding_density_auto: cds.try(:dig, :coding_density, 0),
         n50_auto: assembly.try(:dig, :n50, 0),
         contigs_auto: assembly.try(:dig, :contigs),
+        largest_contig_auto: assembly.try(:dig, :longest_sequence),
         assembly_length_auto: assembly.try(:dig, :total_length, 0),
         ambiguous_fraction_auto: assembly.try(:dig, :x_content, 0),
         codon_table_auto: cds.try(:dig, :codon_table)
