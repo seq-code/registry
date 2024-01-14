@@ -241,21 +241,25 @@ class Name < ApplicationRecord
       type_material_hash[type.to_sym]&.[](:name)
     end
 
+    ##
+    # Hash of culture collection prefixes and URL rule.
+    # See also: https://ftp.ncbi.nih.gov/pub/taxonomy/Ccode_dump.txt
     def culture_collections
       {
         ATCC: 'https://www.atcc.org/products/%s',
-        BCRC: 'https://catalog.bcrc.firdi.org.tw/BcrcContent?bid=%s',
         DSM:  'https://www.dsmz.de/collection/catalogue/details/culture/DSM-%s',
         IFO:  'https://www.nite.go.jp/nbrc/catalogue/' \
               'NBRCCatalogueDetailServlet?ID=IFO&CAT=%s',
         JCM:  'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=%s',
         KCTC: 'https://kctc.kribb.re.kr/collection/view?sn=%s',
-        LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=%s',
         NBRC: 'https://www.nite.go.jp/nbrc/catalogue/' \
               'NBRCCatalogueDetailServlet?ID=IFO&CAT=%s',
         NCTC: 'https://www.culturecollections.org.uk/products/bacteria/' \
               'detail.jsp?collection=nctc&refId=NCTC+%s',
 
+        # Bioresource Collection and Research Center
+        # [TW: Food Industry Research and Development Insitute]
+        BCRC: 'https://catalog.bcrc.firdi.org.tw/BcrcContent?bid=%s',
         # Collection of Aquatic Important Microorganisms
         # [MX: CIAD, Centro de Investigación en Alimentación y Desarrollo]
         CAIM: 'https://www.ciad.mx/caim/busqueda.php?' \
@@ -263,6 +267,11 @@ class Name < ApplicationRecord
         # Czech Collection of Microorganisms
         # [CZ: Masaryk University]
         CCM: 'https://www.sci.muni.cz/ccm/bakterie/camb/%s',
+        # China General Microbiological Culture Collection Center
+        # [CN: National Science and Technology Infrastructure]
+        # -- From NCBI Taxonomy (not working):
+        # -- 'http://www.cgmcc.net/english/cata.php?stn=CGMCC%%20%s'
+        CGMCC: 'https://cgmcc.net/english/search?stn=%s'
         # NCMA, National Center for Marine Algae and Microbiota,
         # formerly Culture Collection for Marine Phytoplankton
         # [US: Bigelow Laboratory for Ocean Sciences]
@@ -275,13 +284,27 @@ class Name < ApplicationRecord
         # Industries]
         CICC: 'http://www.china-cicc.org/search/?classtype=1&keyword=%s',
         # Collection de l'Institut Pasteur
+        # (Collection of the Institut Pasteur)
         # [FR: Institut Pasteur]
         CIP:  'https://catalogue-crbip.pasteur.fr/' \
               'fiche_catalogue.xhtml?crbip=CIP%%20%s',
+        # BCCM, Belgian Coordinated Collections of Microorganisms /
+        # Institute of Tropical Medicine Antwerp Mycobacteria Collection
+        # [BE: Belgian Science Policy (BELSPO)]
+        ITM:  'https://bccm.belspo.be/catalogues/bm-details?' \
+              'accession_number=ITM%%20%s',
+        # Jena Microbial Resource Collection
+        # [DE: Friedrich Schiller University Jena]
+        JMRC: 'http://www.jmrc.uni-jena.de/data.php?fsu=%s',
         # Korean Agricultural Culture Collection
         # [KR: National Academy of Agricultural Science]
         KACC: 'https://genebank.rda.go.kr/eng/mic/cat/MicrobeSearch.do' \
               '?sSearchWith=no&sTxt1=%s',
+        # BCCM, Belgian Coordinated Collections of Microorganisms /
+        # Bacteria Collection Laboratorium voor Microbiologie Universiteit Gent
+        # (Bacteria Collection Laboratory of Microbiology, University of Ghent)
+        # [BE: Belgian Science Policy (BELSPO)]
+        LMG:  'https://bccm.belspo.be/catalogues/lmg-strain-details?NUM=%s',
         # Marine Culture Collection of China
         # [CN: Third Institute of Oceanography]
         MCCC: 'https://mccc.org.cn/detailRecord3.asp?bcbh=%s',
@@ -300,9 +323,20 @@ class Name < ApplicationRecord
         # [FR: Institut Pasteur]
         PCC:  'https://catalogue-crbip.pasteur.fr/' \
               'fiche_catalogue.xhtml?crbip=PCC%%20%s',
-        # Sammlung von Algenkulturen (Culture Collection of Algae)
+        # Sammlung von Algenkulturen
+        # (Culture Collection of Algae)
         # [DE: University of Göttingen]
-        SAG: 'https://sagdb.uni-goettingen.de/detailedList.php?str_number=%s'
+        SAG: 'https://sagdb.uni-goettingen.de/detailedList.php?str_number=%s',
+        # BCCM, Belgian Coordinated Collections of Microorganisms /
+        # University of of Liège Cyanobacteria Collection
+        # [BE: Belgian Science Policy (BELSPO)]
+        ULC:  'https://bccm.belspo.be/catalogues/bm-details?' \
+              'accession_number=ULC%%20%s',
+        # ВСЕРОССИЙСКАЯ КОЛЛЕКЦИЯ МИКРООРГАНИЗМОВ
+        # (All-Russian Collection of Microorganisms)
+        # [RU: Pushchino Scientific Center for Biological Research of the
+        # Russian Academy of Sciences]
+        VKM: 'http://www.vkm.ru/strains.php?vkm='
       }
     end
   end
