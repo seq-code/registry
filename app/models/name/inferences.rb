@@ -20,6 +20,9 @@ module Name::Inferences
       # - Entophysalis -- Entophysalidaceae
       # - Desulfatiglans -- Desulfatiglan-d-aceae
       base.gsub!(/s$/, 'd')
+    when /glomus$/
+      # - Dictryoglomus -- Dictyoglomeraceae
+      base.gsub!(/us$/, 'er')
     when /u[ms]$/
       # - Acidaminococcus -- Acidaminococc-aceae
       # - Acidilobus -- Acidilob-aceae
