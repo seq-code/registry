@@ -9,7 +9,7 @@
         <% if @name.can_edit?(current_user) %>
           <%= link_to(
                 edit_name_url(@name),
-                class: 'badge badge-pill badge-info',
+                class: 'badge badge-pill badge-primary',
                 title: 'edit description'
               ) do %>
             <%= fa_icon('edit') %> Edit
@@ -25,7 +25,7 @@
         <% if @name.can_edit?(current_user) %>
           <%= link_to(
                 edit_notes_name_url(@name),
-                class: 'badge badge-pill badge-info',
+                class: 'badge badge-pill badge-primary',
                 title: 'edit notes'
               ) do %>
             <%= fa_icon 'edit' %> Edit
@@ -49,6 +49,7 @@
           </div>
         <% elsif @name.parent %>
           <%= link_to_name(@name.parent) %>
+          <%= placement_preference(@name.placement) %>
         <% end %>
 
         <% if @name.assigned_in %>
@@ -61,7 +62,7 @@
                 @name.placement ?
                   edit_placement_path(@name.placement) :
                   new_placement_path(@name),
-                class: 'badge badge-pill badge-info',
+                class: 'badge badge-pill badge-primary',
                 title: 'edit parent'
               ) do %>
             <%= fa_icon('edit') %> Edit
@@ -70,7 +71,7 @@
             <%= link_to(
                   @name.placement,
                   method: :delete,
-                  class: 'badge badge-pill badge-info',
+                  class: 'badge badge-pill badge-primary',
                   title: 'unlink placement'
                 ) do %>
               <%= fa_icon('unlink') %> Unlink
@@ -96,6 +97,7 @@
                   </div>
                 <% elsif placement.parent %>
                   <%= link_to_name(placement.parent) %>
+                  <%= placement_preference(placement) %>
                 <% end %>
 
                 <% if placement.publication %>
@@ -107,7 +109,7 @@
                 <% if @name.can_edit?(current_user) %>
                   <%= link_to(
                         edit_placement_path(placement),
-                        class: 'badge badge-pill badge-info',
+                        class: 'badge badge-pill badge-primary',
                         title: 'edit parent'
                       ) do %>
                     <%= fa_icon('edit') %> Edit
@@ -115,7 +117,7 @@
                   <%= link_to(
                         placement,
                         method: :delete,
-                        class: 'badge badge-pill badge-info',
+                        class: 'badge badge-pill badge-primary',
                         title: 'unlink placement'
                       ) do %>
                     <%= fa_icon('unlink') %> Unlink
@@ -124,7 +126,7 @@
                     <%= link_to(
                           prefer_placement_path(placement),
                           method: :post,
-                          class: 'badge badge-pill badge-info',
+                          class: 'badge badge-pill badge-primary',
                           title: 'prefer placement'
                         ) do %>
                       <%= fa_icon('star') %> Prefer
@@ -138,7 +140,7 @@
         <% if @name.can_edit?(current_user) %>
           <%= link_to(
                 new_placement_path(@name, alt: true),
-                class: 'badge badge-pill badge-info',
+                class: 'badge badge-pill badge-primary',
                 title: 'add placement'
               ) do %>
             <%= fa_icon('plus-square') %>&nbsp; Report alternative placement
@@ -158,6 +160,7 @@
         <% @name.children.each do |child| %>
           <li>
             <%= display_link(child) %>
+            <%= placement_preference(child.placement) %>
             <% if set_type && @name.type_accession.to_i != child.id %>
               <%= link_to(
                     name_url(
@@ -165,7 +168,7 @@
                       name: { type_material: :name, type_accession: child.id }
                     ),
                     method: :patch,
-                    class: 'badge badge-pill badge-info',
+                    class: 'badge badge-pill badge-primary',
                     data: { confirm: 'Are you sure?' }
                   ) do %>
                 <%= fa_icon 'clipboard-check' %> Set as type
@@ -187,6 +190,7 @@
           <% @name.alt_child_placements.each do |placement| %>
             <li>
               <%= display_link(placement.name) %>
+              <%= placement_preference(placement) %>
               <% if placement.name.parent %>
                 (alternatively placed in
                 <%= display_link(placement.name.parent) %>)

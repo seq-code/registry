@@ -4,7 +4,8 @@
       <%= @register.title %>
       <% if @register.modal_form_id %>
         <sup style="font-size: 1rem;" class="mx-1">
-        <%= modal_button(@register.modal_form_id, class: 'badge badge-pill badge-info') do %>
+        <%= modal_button(@register.modal_form_id,
+              class: 'badge badge-pill badge-primary') do %>
           <%= fa_icon('edit') %> Edit
         <% end %>
         </sup>

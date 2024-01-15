@@ -12,7 +12,7 @@
     <% if @name.can_edit?(current_user) %>
       <%= link_to(
             edit_rank_name_url(@name),
-            class: 'badge badge-pill badge-info',
+            class: 'badge badge-pill badge-primary',
             title: 'edit rank'
           ) do %>
         <%= fa_icon 'edit' %> Edit
@@ -46,7 +46,7 @@
       <br/>
       <%= link_to(
             edit_etymology_name_url(@name),
-            class: 'badge badge-pill badge-info',
+            class: 'badge badge-pill badge-primary',
             title: 'edit etymology'
           ) do %>
         <%= fa_icon 'edit' %> Edit
@@ -63,7 +63,7 @@
       <% if @name.can_edit?(current_user) %>
         <%= link_to(
               edit_type_name_url(@name),
-              class: 'badge badge-pill badge-info',
+              class: 'badge badge-pill badge-primary',
               title: 'edit parent'
             ) do %>
           <%= fa_icon 'edit' %> Edit

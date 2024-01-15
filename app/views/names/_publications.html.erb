@@ -40,7 +40,7 @@
               <% unless publication_name.proposes? %>
                 <%= link_to(
                       proposed_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-info',
+                      class: 'badge badge-pill badge-primary',
                       method: :post, title: 'Proposed this name',
                       data: { confirm: 'Are you sure?' }
                     ) do %>
@@ -51,7 +51,7 @@
               <% unless publication_name.corrigendum? %>
                 <%= link_to(
                       corrigendum_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-info',
+                      class: 'badge badge-pill badge-primary',
                       title: 'Corrigendum'
                     ) do %>
                   <%= fa_icon('pen-fancy') %>
@@ -61,7 +61,7 @@
               <% unless publication_name.emends? %>
                 <%= link_to(
                       emended_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-info',
+                      class: 'badge badge-pill badge-primary',
                       method: :post, title: 'Emended this name',
                       data: { confirm: 'Are you sure?' }
                     ) do %>
@@ -72,7 +72,7 @@
               <% unless publication_name.assigns? %>
                 <%= link_to(
                       assigned_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-info',
+                      class: 'badge badge-pill badge-primary',
                       method: :post, title: 'Taxonomically assigned this name',
                       data: { confirm: 'Are you sure?' }
                     ) do %>
@@ -82,7 +82,7 @@
 
               <%= link_to(
                     publication_name_url(publication_name, from_name: true),
-                    class: 'badge badge-pill badge-info',
+                    class: 'badge badge-pill badge-primary',
                     method: :delete, title: 'Unlink this publication',
                     data: { confirm: 'Are you sure?' }
                   ) do %>
@@ -98,7 +98,8 @@
   <br/>
   <% if @name.can_edit?(current_user) %>
     <div class="text-right">
-      <%= link_to(new_publication_url(link_name: @name.id), class: 'btn btn-info') do %>
+      <%= link_to(new_publication_url(link_name: @name.id),
+            class: 'btn btn-primary') do %>
         <%= fa_icon('plus-square') %>
         Link additional publications
       <% end %>

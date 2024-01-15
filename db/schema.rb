@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_14_142925) do
+ActiveRecord::Schema.define(version: 2024_01_14_210327) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -241,6 +241,8 @@ ActiveRecord::Schema.define(version: 2024_01_14_142925) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "incertae_sedis"
+    t.boolean "gtdb_taxonomy"
+    t.boolean "ncbi_taxonomy"
     t.index ["name_id"], name: "index_placements_on_name_id"
     t.index ["publication_id"], name: "index_placements_on_publication_id"
   end

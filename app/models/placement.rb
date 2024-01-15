@@ -15,12 +15,19 @@ class Placement < ApplicationRecord
       message: 'cannot be declared if the parent taxon is set'
     }
   )
-
   validates(:preferred, uniqueness: { scope: :name_id, if: :preferred? })
+
+  after_save(:harmonize_name_parent)
 
   def incertae_sedis_html
     return '' unless incertae_sedis?
 
     incertae_sedis.gsub(/(incertae sedis)/i, '<i>\\1</i>').html_safe
+  end
+
+  private
+
+  def harmonize_name_parent
+    name.update(parent: parent) if preferred
   end
 end
