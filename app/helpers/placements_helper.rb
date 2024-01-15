@@ -42,7 +42,7 @@ module PlacementsHelper
     end
     modal_button(
       @preferred_taxonomy_modals[scheme],
-      class: 'badge badge-pill badge-info'
-    ) { scheme.to_s }
+      class: 'badge badge-pill badge-info mx-1'
+    ) { fa_icon('star', class: 'mr-1 small') + scheme.to_s }
   end
 end
