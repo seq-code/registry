@@ -14,7 +14,7 @@
 <%= simple_form_for(
       @placement,
       url: @placement.persisted? ? @placement : placements_url,
-      html: { method: :post }
+      html: { method: @placement.persisted? ? :patch : :post }
     ) do |f| %>
 
   <%= f.input(:name_id, as: :hidden) %>
