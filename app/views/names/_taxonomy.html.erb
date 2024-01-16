@@ -1,4 +1,5 @@
-<% if @name.taxonomic_data? || @name.can_edit?(current_user) %>
+<% if @name.taxonomic_data? || @name.can_edit?(current_user) ||
+      @name.can_edit_placements?(current_user) %>
   <dl name="taxonomy" class="main-section name-details">
     <h2>Taxonomy</h2>
 
@@ -39,7 +40,8 @@
       <dd><%= name_lineage(@name) %></dd>
     <% end %>
 
-    <% if @name.parent || @name.incertae_sedis? || @name.can_edit?(current_user) %>
+    <% if @name.parent || @name.incertae_sedis? ||
+          @name.can_edit_placements?(current_user) %>
       <dt><%= fa_icon('sort-amount-up-alt') %> Parent</dt>
       <dd>
         <% if @name.incertae_sedis? %>
@@ -57,7 +59,7 @@
           <%= link_to(@name.assigned_in.short_citation, @name.assigned_in) %>
         <% end %>
 
-        <% if @name.can_edit?(current_user) %>
+        <% if @name.can_edit_placements?(current_user) %>
           <%= link_to(
                 @name.placement ?
                   edit_placement_path(@name.placement) :
@@ -83,7 +85,7 @@
 
 
     <% if @name.alt_placements.any? ||
-          (@name.can_edit?(current_user) && @name.parent) %>
+          (@name.can_edit_placements?(current_user) && @name.parent) %>
       <dt><%= fa_icon('level-up-alt') %> Alternative placements</dt>
       <dd>
         <% if @name.alt_placements.any? %>
@@ -106,7 +108,7 @@
                         placement.publication.short_citation,
                         placement.publication) %>
                 <% end %>
-                <% if @name.can_edit?(current_user) %>
+                <% if @name.can_edit_placements?(current_user) %>
                   <%= link_to(
                         edit_placement_path(placement),
                         class: 'badge badge-pill badge-primary',
@@ -137,7 +139,7 @@
             <% end %>
           </ul>
         <% end %>
-        <% if @name.can_edit?(current_user) %>
+        <% if @name.can_edit_placements?(current_user) %>
           <%= link_to(
                 new_placement_path(@name, alt: true),
                 class: 'badge badge-pill badge-primary',
@@ -192,7 +194,7 @@
               <%= display_link(placement.name) %>
               <%= placement_preference(placement) %>
               <% if placement.name.parent %>
-                (alternatively placed in
+                (preferred placement in
                 <%= display_link(placement.name.parent) %>)
               <% end %>
             </li>

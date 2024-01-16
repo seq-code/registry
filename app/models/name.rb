@@ -579,6 +579,10 @@ class Name < ApplicationRecord
     return true if user.curator?
     return true if draft? && user?(user)
     false
+  end 
+
+  def can_edit_placements?(user)
+    can_edit?(user) || user.curator?
   end
 
   def can_claim?(user)

@@ -9,7 +9,6 @@ module PlacementsHelper
   end
 
   def preferred_taxonomy(scheme)
-    @preferred_taxonomy_modals ||= {}
     tax = {
       ncbi: [
         'NCBI Taxonomy', 'https://www.ncbi.nlm.nih.gov/taxonomy',
@@ -17,15 +16,17 @@ module PlacementsHelper
       ],
       gtdb: [
         'Genome Taxonomy Database', 'https://gtdb.ecogenomic.org/',
-        'r214.1 (June / 2023)'
+        'June / 2023 (r214.1)'
       ]
-    }
-    @preferred_taxonomy_modals[scheme] ||= modal(tax[scheme][0]) do
+    }[scheme]
+
+    @preferred_taxonomy_modals ||= {}
+    @preferred_taxonomy_modals[scheme] ||= modal(tax[0]) do
       content_tag(:span, 'This is the preferred assignment in ') +
-      link_to(tax[scheme][1], target: '_blank') do
-        content_tag(:span, tax[scheme][0] + ' ') + fa_icon('external-link-alt')
+      link_to(tax[1], target: '_blank') do
+        content_tag(:span, tax[0] + ' ') + fa_icon('external-link-alt')
       end +
-      content_tag(:span, ', as captured in ' + tax[scheme][2]) +
+      content_tag(:span, ', as captured in ' + tax[2]) +
       content_tag(:sup, 1) +
       content_tag(:hr, nil, class: 'mt-4') +
       content_tag(:span, class: 'text-muted small') do
@@ -43,6 +44,6 @@ module PlacementsHelper
     modal_button(
       @preferred_taxonomy_modals[scheme],
       class: 'badge badge-pill badge-info mx-1'
-    ) { fa_icon('star', class: 'mr-1 small') + scheme.to_s }
+    ) { scheme.to_s }
   end
 end

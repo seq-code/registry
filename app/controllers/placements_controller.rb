@@ -2,6 +2,8 @@ class PlacementsController < ApplicationController
   before_action(:set_placement, only: %i[edit update destroy prefer])
   before_action(:set_name)
   before_action(:authenticate_can_edit!)
+  before_action(:authenticate_curator!, only: %i[prefer])
+
 
   # GET /placements/new/123
   def new
@@ -157,20 +159,21 @@ class PlacementsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_placement
-      @placement = Placement.find(params[:id])
-    end
 
-    def set_name
-      @name = @placement.try(:name) ||
-        Name.find_by(id: params[:name_id] || params.dig(:placement, :name_id))
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_placement
+    @placement = Placement.find(params[:id])
+  end
 
-    def authenticate_can_edit!
-      unless @name.can_edit?(current_user)
-        flash[:alert] = 'User cannot edit name'
-        redirect_to(root_path)
-      end
+  def set_name
+    @name = @placement.try(:name) ||
+      Name.find_by(id: params[:name_id] || params.dig(:placement, :name_id))
+  end
+
+  def authenticate_can_edit!
+    unless @name.can_edit_placements?(current_user)
+      flash[:alert] = 'User cannot edit name placements'
+      redirect_to(@name)
     end
+  end
 end
