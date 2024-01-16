@@ -582,7 +582,7 @@ class Name < ApplicationRecord
   end 
 
   def can_edit_placements?(user)
-    can_edit?(user) || user.curator?
+    can_edit?(user) || user.try(:curator?)
   end
 
   def can_claim?(user)
