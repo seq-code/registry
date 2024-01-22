@@ -1,16 +1,27 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
-<%= simple_form_for(@name, url: corrigendum_name_path(@name), html: { method: :post }) do |f| %>
+<%= simple_form_for(@name,
+      url: corrigendum_name_path(@name), html: { method: :post }) do |f| %>
+  <% if @corrigendum_in_old && @corrigendum_in_old != @publication %>
+    <div class="alert alert-warning">
+      This action will override the previous correction issued by
+      <%= link_to(@corrigendum_in_old.short_citation, @corrigendum_in_old) %>
+      and unlink that corrigedum
+    </div>
+  <% end %>
+
   <h4>
-    Corrigendum in <%= link_to(@publication.short_citation, @publication) %>
+    Corrigendum in
+    <%= @publication ? link_to(@publication.short_citation, @publication)
+                     : 'SeqCode Registry' %>
   </h4>
+
   <%= f.hidden_field(:corrigendum_in_id) %>
-  <%=
-    f.input(
-      :corrigendum_from, required: true, autofocus: true,
-      label: 'Original name'
-    )
-  %>
+  <%= f.input(:corrigendum_from, required: true, label: 'Original name') %>
+  <%= f.input(:name, required: true, autofocus: true, label: 'Correct name') %>
+  <br/>
+  <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
   <%= f.button :submit, 'Submit' %>
 <% end %>
+

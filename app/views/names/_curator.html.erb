@@ -2,66 +2,64 @@
   <dl name="curator" class="main-section name-details">
     <h2>Curator Actions</h2>
     <dd class="pt-2">
-      <% unless @name.validated? %>
-        <% if @name.can_unclaim?(current_user) %>
-          <%= link_to(
-                unclaim_name_url(@name),
-                method: :post, class: 'btn btn-primary btn-sm'
-              ) do %>
-            <%= fa_icon('user-slash') %> Unclaim name
-          <% end %>
-          &raquo; Remove ownership of this name and make it public
-          <hr/>
-        <% end %>
-        <% unless @name.after_endorsement? %>
-          <%= link_to(
-                endorse_name_url(@name),
-                method: :post,
-                class: 'btn btn-primary btn-sm',
-                data: { confirm: 'Are you sure? This action cannot be undone' }
-              ) do %>
-            <%= fa_icon('check-square') %> Endorse name
-          <% end %>
-          &raquo; Recommend this name as a candidate for validation
-          <hr/>
-        <% end %>
+      <% if @name.can_unclaim?(current_user) %>
         <%= link_to(
-              validate_name_url(@name, code: :icnp),
+              unclaim_name_url(@name),
+              method: :post, class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('user-slash') %> Unclaim name
+        <% end %>
+        &raquo; Remove ownership of this name and make it public
+        <hr/>
+      <% end %>
+      <% unless @name.after_endorsement? %>
+        <%= link_to(
+              endorse_name_url(@name),
               method: :post,
               class: 'btn btn-primary btn-sm',
               data: { confirm: 'Are you sure? This action cannot be undone' }
             ) do %>
-          <%= fa_icon('stamp') %> Report valid under ICNP
+          <%= fa_icon('check-square') %> Endorse name
         <% end %>
-        &raquo; Indicate that this name has already been validly published under
-        the ICNP
+        &raquo; Recommend this name as a candidate for validation
         <hr/>
+      <% end %>
+      <%= link_to(
+            validate_name_url(@name, code: :icnp),
+            method: :post,
+            class: 'btn btn-primary btn-sm',
+            data: { confirm: 'Are you sure? This action cannot be undone' }
+          ) do %>
+        <%= fa_icon('stamp') %> Report valid under ICNP
+      <% end %>
+      &raquo; Indicate that this name has already been validly published under
+      the ICNP
+      <hr/>
+      <%= link_to(
+            validate_name_url(@name, code: :icn),
+            method: :post,
+            class: 'btn btn-primary btn-sm',
+            data: { confirm: 'Are you sure? This action cannot be undone' }
+          ) do %>
+        <%= fa_icon('stamp') %> Report valid under ICN
+      <% end %>
+      &raquo; Indicate that this name has been validly published under
+      the ICN (Botanical Code)
+      <hr/>
+      <% if @name.after_submission? %>
         <%= link_to(
-              validate_name_url(@name, code: :icn),
+              return_name_url(@name),
               method: :post,
               class: 'btn btn-primary btn-sm',
-              data: { confirm: 'Are you sure? This action cannot be undone' }
+              data: {
+                confirm: 'Are you sure? The author will regain edit access'
+              }
             ) do %>
-          <%= fa_icon('stamp') %> Report valid under ICN
+          <%= fa_icon('undo-alt') %> Return to submitter
         <% end %>
-        &raquo; Indicate that this name has been validly published under
-        the ICN (Botanical Code)
+        &raquo; Send this name back to the author for additional revisions
         <hr/>
-        <% if @name.after_submission? %>
-          <%= link_to(
-                return_name_url(@name),
-                method: :post,
-                class: 'btn btn-primary btn-sm',
-                data: {
-                  confirm: 'Are you sure? The author will regain edit access'
-                }
-              ) do %>
-            <%= fa_icon('undo-alt') %> Return to submitter
-          <% end %>
-          &raquo; Send this name back to the author for additional revisions
-          <hr/>
-        <% end %>
-      <% end # unless @name.validated? %>
+      <% end %>
     </dd>
   </dl>
 <% end %>

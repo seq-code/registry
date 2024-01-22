@@ -4,7 +4,8 @@ class NamesController < ApplicationController
     :set_name,
     only: %i[
       show edit update destroy
-      proposed_in corrigendum_in corrigendum emended_in assigned_in
+      proposed_in emended_in assigned_in
+      corrigendum_in corrigendum_orphan corrigendum
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology edit_parent
       return validate endorse claim unclaim new_correspondence
@@ -15,7 +16,8 @@ class NamesController < ApplicationController
     :authenticate_can_edit!,
     only: %i[
       edit update destroy
-      proposed_in corrigendum_in corrigendum emended_in assigned_in
+      proposed_in emended_in assigned_in
+      corrigendum_in corrigendum_orphan corrigendum
       edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology edit_parent new_correspondence
     ]
@@ -296,16 +298,12 @@ class NamesController < ApplicationController
     redirect_back(fallback_location: @name)
   end
 
-  # GET /names/1/corrigendum_in/2
+  # GET /names/1/corrigendum_in
+  # GET /names/1/corrigendum_in?publication_id=2
   def corrigendum_in
-    @publication =
-      params[:not] ? nil : Publication.where(id: params[:publication_id]).first
-    if @publication.nil?
-      @name.update(corrigendum_in: nil, corrigendum_from: nil)
-      redirect_back(fallback_location: @name)
-    else
-      @name.corrigendum_in = @publication
-    end
+    @corrigendum_in_old = @name.corrigendum_in
+    @publication = Publication.where(id: params[:publication_id]).first
+    @name.corrigendum_in = @publication
   end
 
   # POST /names/1/assigned_in/2
@@ -320,7 +318,9 @@ class NamesController < ApplicationController
 
   # POST /names/1/corrigendum
   def corrigendum
-    par = params.require(:name).permit(:corrigendum_in_id, :corrigendum_from)
+    par = params[:delete_corrigenda] ?
+      { corrigendum_in_id: nil, corrigendum_from: nil } :
+      params.require(:name).permit(:name, :corrigendum_in_id, :corrigendum_from)
     @name.update(par)
     redirect_to(@name)
   end

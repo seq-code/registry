@@ -2,7 +2,10 @@
 <hr/>
 
 <%= simple_form_for(@name) do |f| %>
-  <%= f.input :ncbi_taxonomy, label: 'NCBI Taxonomy ID' %>
+  <%= f.input(:ncbi_taxonomy, label: 'NCBI Taxonomy ID',
+        hint: 'An integer uniquely identifying this taxon in NCBI Taxonomy') %>
+  <%= f.input(:lpsn_url, label: 'LPSN Cannonical URL',
+        hint: 'The cannonical URL in LPSN corresponding to this name') %>
   <br/>
 
   <% if @tutorial %>

@@ -26,23 +26,32 @@
     </dd>
   <% end %>
 
-  <% if @name.corrigendum_in %>
+  <% if @name.corrigendum_from? || @name.corrigendum_in %>
     <dt><%= fa_icon('pen-fancy') %> Corrigendum</dt>
     <dd>
-      <%= display_link(@name.corrigendum_in, :short_citation) %>
-      <% unless @name.corrigendum_from.nil? || @name.corrigendum_from.empty? %>
+      <% if @name.corrigendum_in %>
+        <%= display_link(@name.corrigendum_in, :short_citation) %>
+      <% else %>
+        In SeqCode Registry
+      <% end %>
+
+      <% if @name.corrigendum_from? %>
         from &#8220;<%= @name.corrigendum_from %>&#8221; (sic)
       <% end %>
+
       <% if @name.can_edit?(current_user) %>
         <%= link_to(
-              corrigendum_in_name_url(@name, @name.corrigendum_in),
+              corrigendum_in_name_url(
+                @name, publication_id: @name.corrigendum_in_id
+              ),
               class: 'badge badge-pill badge-info',
               title: 'Edit original name'
             ) do %>
           <%= fa_icon('edit') %> Edit
         <% end %>
         <%= link_to(
-              corrigendum_in_name_url(@name, @name.corrigendum_in, not: true),
+              corrigendum_name_url(@name, delete_corrigenda: true),
+              method: :post,
               class: 'badge badge-pill badge-info',
               title: 'Did not correct this name',
               data: { confirm: 'Are you sure?' }

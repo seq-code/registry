@@ -65,7 +65,7 @@ Rails.application.routes.draw do
       get  :edit_parent
       post :new_correspondence
       post :proposed_in, path: '/proposed_in/:publication_id'
-      get  :corrigendum_in, path: '/corrigendum_in/:publication_id'
+      get  :corrigendum_in
       post :corrigendum
       post :emended_in, path: '/emended_in/:publication_id'
       post :assigned_in, path: '/assigned_in/:publication_id'

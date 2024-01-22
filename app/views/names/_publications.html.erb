@@ -50,7 +50,9 @@
 
               <% unless publication_name.corrigendum? %>
                 <%= link_to(
-                      corrigendum_in_name_url(@name, publication),
+                      corrigendum_in_name_url(
+                        @name, publication_id: publication.id
+                      ),
                       class: 'badge badge-pill badge-primary',
                       title: 'Corrigendum'
                     ) do %>

@@ -1011,7 +1011,7 @@ module Name::QualityChecks
       )
     end
 
-    if corrigendum_from &&
+    if corrigendum_from? &&
          corrigendum_from.sub(/^Candidatus /, '')[0] != base_name[0]
       @qc_warnings.add(:corrigendum_affecting_initials)
     end

@@ -23,6 +23,14 @@
         <hr/>
       <% end %>
       <% if @name.can_edit?(current_user) %>
+        <%= link_to(
+              corrigendum_in_name_url(@name),
+              class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('pen-fancy') %> Correct spelling
+        <% end %>
+        &raquo; Issue a Registry corrigendum without linking a publication
+        <hr/>
         <%= link_to(edit_name_url(@name), class: 'btn btn-sm btn-primary') do %>
           <%= fa_icon('edit') %> Edit spelling
         <% end %>

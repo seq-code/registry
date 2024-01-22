@@ -430,7 +430,7 @@ class Name < ApplicationRecord
   def formal_html
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
-    y += " <i>corrig.</i>".html_safe if corrigendum_in
+    y += " <i>corrig.</i>".html_safe if corrigendum_from?
     if authority || proposed_in
       y += " #{sanitize(authority || proposed_in.short_citation)}"
     end
@@ -501,9 +501,7 @@ class Name < ApplicationRecord
 
   def ncbi_search_url
     q = "%22#{name}%22"
-    unless corrigendum_from.nil? || corrigendum_from.empty?
-      q += " OR %22#{corrigendum_from}%22"
-    end
+    q += " OR %22#{corrigendum_from}%22" if corrigendum_from?
     "https://www.ncbi.nlm.nih.gov/nuccore/?term=#{q.gsub(' ', '%20')}"
   end
 
