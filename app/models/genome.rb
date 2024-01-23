@@ -234,17 +234,26 @@ class Genome < ApplicationRecord
     @source_attributes
   end
 
-  def link
+  def link(acc = nil)
+    acc ||= accession
     case database
     when 'assembly'
-      "https://www.ncbi.nlm.nih.gov/datasets/genome/#{accession}"
+      "https://www.ncbi.nlm.nih.gov/datasets/genome/#{acc}"
     when 'nuccore'
-      "https://www.ncbi.nlm.nih.gov/#{database}/#{accession}"
+      "https://www.ncbi.nlm.nih.gov/#{database}/#{acc}"
     end
   end
 
+  def links
+    @links ||= Hash[accession.split(/ *, */).map { |i| [i, link(i)] }]
+  end
+
+  def db_text
+    Name.type_material_name(database)
+  end
+
   def text
-    "#{Name.type_material_name(database)}: #{accession}"
+    "#{db_text}: #{accession}"
   end
 
   def title

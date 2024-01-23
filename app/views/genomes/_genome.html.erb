@@ -67,10 +67,7 @@ end
 
     <dt><%= fa_icon('dna') %> Accession</dt>
     <dd>
-      <%= link_to(@genome.link, target: '_blank') do %>
-        <%= @genome.text %>
-        <%= fa_icon('external-link-alt', class: 'ml-1') %>
-      <% end %>
+      <%= genome_accession_links(@genome) %>
       <% if current_curator? %>
         <br/>
         <%= link_to(@genome.miga_url, target: '_blank') do %>

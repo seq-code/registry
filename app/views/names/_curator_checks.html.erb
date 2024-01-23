@@ -44,11 +44,10 @@
             <%= @name.full_etymology(true) %>
           <% when :genomics %>
             <% if @name.genome %>
-              <%= display_link(@name.genome, :title) %> •
-              <%= link_to(@name.genome.link, target: '_blank') do %>
-                <%= @name.genome.text %>
-                <%= fa_icon('external-link-alt', class: 'ml-1') %>
-              <% end %> •
+              <%= display_link(@name.genome, :title) %>
+              <%= fa_icon('ellipsis-h', class: 'mx-2') %>
+              <%= genome_accession_links(@name.genome) %>
+              <%= fa_icon('ellipsis-h', class: 'mx-2') %>
               <%= link_to(@name.genome.miga_url, target: '_blank') do %>
                 MiGA <%= fa_icon('external-link-alt', class: 'ml-1') %>
               <% end %>
