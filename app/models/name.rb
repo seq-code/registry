@@ -523,7 +523,7 @@ class Name < ApplicationRecord
   def ncbi_taxonomy_url
     return unless ncbi_taxonomy?
 
-    'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=%i' % ncbi_taxonomy
+    'https://www.ncbi.nlm.nih.gov/datasets/taxonomy/%i/' % ncbi_taxonomy
   end
 
   def ncbi_genomes_url
