@@ -1,0 +1,33 @@
+<%= adaptable_entry(
+      list, '', notification,
+      full_link: true,
+      container_opts: { class: notification.seen? ? '' : 'unseen-notification' }
+    ) do |entry| %>
+
+  <%= adaptable_value(entry, 'Seen') do %>
+    <%= link_to(toggle_seen_notification_url(notification),
+          method: :post, title: "Mark as #{'un' unless notification.seen?}seen",
+          class: 'btn btn-sm') do %>
+      <%= fa_icon('circle', class: 'text-info',
+            type: notification.seen? ? :regular : :solid) %>
+    <% end %>
+  <% end %>
+
+  <%= adaptable_value(entry, 'Title') do %>
+    <%= notification.title || notification.action %>
+  <% end %>
+
+  <%= adaptable_value(entry, 'Date') do %>
+    <%= time_ago_with_date(notification.created_at) %>
+  <% end %>
+
+  <%= adaptable_value(entry, 'Actions') do %>
+    <%= link_to(notification, method: :delete, class: 'btn btn-sm') do %>
+      <%= fa_icon('trash', class: 'text-danger') %>
+    <% end %>
+    <%= link_to(notification, class: 'btn btn-sm') do %>
+      <%= fa_icon('arrow-circle-right', class: 'text-primary') %>
+    <% end %>
+  <% end %>
+
+<% end %>

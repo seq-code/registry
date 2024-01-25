@@ -80,11 +80,12 @@ module ApplicationHelper
       else
         body = content_tag(:tbody) { blk[list] }
         content_tag(:thead) do
-          content_tag(:tr) do
-            ([nil] + list.value_names)
-              .map { |i| content_tag(:th, i, scope: :col) }
-              .compact
-              .inject(:+)
+          opts[:noheader] ? nil :
+            content_tag(:tr) do
+              ([nil] + list.value_names)
+                .map { |i| content_tag(:th, i, scope: :col) }
+                .compact
+                .inject(:+)
           end
         end + body
       end
@@ -94,9 +95,21 @@ module ApplicationHelper
     o.compact.inject(:+)
   end
 
-  def adaptable_entry(list, title, link)
+  def adaptable_entry(list, title, link, opts = {})
     entry = list.entry
-    content_tag(entry.tag, entry.css) do
+    container_opts = entry.css.merge(opts[:container_opts] ||= {})
+    if opts[:full_link]
+      container_opts.tap do |o|
+        o[:class] ||= ''
+        o[:class]  += ' ' + opts[:class] if opts[:class]
+        o[:class]  += ' clickeable'
+        o[:data]  ||= {}
+        o[:data][:href] = polymorphic_url(link)
+        o[:onclick] = 'location.href=$(this).data("href");'
+      end
+    end
+
+    content_tag(opts[:container_tag] || entry.tag, container_opts) do
       o = []
       if list.type == :cards
         o << link_to(link, entry.link_css) do
@@ -123,6 +136,7 @@ module ApplicationHelper
           end
         end
       end
+
       o.compact.inject(:+)
     end
   end

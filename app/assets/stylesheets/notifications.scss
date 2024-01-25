@@ -1,0 +1,10 @@
+
+@import "custom";
+
+.unseen-notification {
+  background: theme-color-level(info, -10);
+  &:hover {
+    background: theme-color-level(info, -8) !important;
+  }
+}
+

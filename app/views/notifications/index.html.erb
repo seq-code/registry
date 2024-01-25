@@ -1,0 +1,37 @@
+<h1>
+  User Alerts
+  <div class="badge badge-count"><%= @notifications.count %></div>
+</h1>
+<hr/>
+
+<br/>
+<% if @notifications.any? %>
+  <%= adaptable_list(
+        set: @notifications, type: :table, noheader: true
+      ) do |list| %>
+    <% @notifications.each do |notification| %>
+      <%= render(partial: notification, locals: { list: list }) %>
+    <% end %>
+  <% end %>
+
+
+  <div class="text-center m-4">
+    <%= link_to(all_seen_notifications_url, method: :post,
+            class: 'btn btn-primary') do %>
+      Mark all alerts as seen
+    <% end %>
+    <%= link_to(all_destroy_notifications_url, method: :post,
+            class: 'btn btn-danger',
+            data: { confirm: 'Are you sure?' }) do %>
+      Delete all alerts
+    <% end %>
+  </div>
+<% else %>
+  <div class="jumbotron text-center">
+    <h2>
+      No alerts, enjoy the empty inbox!<br/><br/>
+      <%= fa_icon('laugh-beam') %>
+    </h2>
+  </div>
+<% end %>
+

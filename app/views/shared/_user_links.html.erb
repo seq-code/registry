@@ -16,13 +16,25 @@
   </li>
   <% if user_signed_in? %>
     <li class="nav-item">
+      <%= link_to(notifications_path, title: 'Notifications') do %>
+        <% if current_user.unseen_notifications.any? %>
+          <span
+            class="nav-item-text badge badge-pill badge-info py-1 px-2 mr-1">
+            <%= current_user.unseen_notifications.count %>
+          </span>
+        <% end %>
+        <%= fa_icon('bell') %>
+      <% end %>
+    </li>
+    <li class="nav-item">
       <%= link_to(dashboard_path, title: 'Dashboard') do %>
         <span class="nav-item-text">Dashboard</span>
         <%= fa_icon('tachometer-alt') %>
       <% end %>
     </li>
     <li class="nav-item">
-      <%= link_to(destroy_user_session_path, method: :delete, title: 'Logout') do %>
+      <%= link_to(
+            destroy_user_session_path, method: :delete, title: 'Logout') do %>
         <span class="nav-item-text">Logout</span>
         <%= fa_icon('sign-out-alt') %>
       <% end %>

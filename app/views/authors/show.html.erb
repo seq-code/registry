@@ -6,7 +6,7 @@
 
 <h2>
   Publications
-  <small class='text-muted'>(<%= @publications.count %>)</small>
+  <div class="badge badge-count"><%= @publications.count %></div>
 </h2>
 <%= pager @publications %>
 <div class='card-columns card-columns-wide'>

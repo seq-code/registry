@@ -28,6 +28,18 @@ Rails.application.routes.draw do
   post 'curators/deny/:username' => 'users#curator_deny', as: :curator_deny
   devise_for(:users, controllers: { registrations: 'users/registrations' })
 
+  # Alerts (Notifications)
+  resources(:notifications, path: 'alerts',
+        only: %i[index show update destroy]) do
+    collection do
+      post :all_seen
+      post :all_destroy
+    end
+    member do
+      post :toggle_seen
+    end
+  end
+
   # Names
   # --> Index
   get  'type-genomes(.:format)' => 'names#type_genomes', as: :name_type_genomes

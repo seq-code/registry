@@ -330,6 +330,10 @@ class RegistersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_register
       @register = Register.find_by(accession: params[:accession])
+      current_user
+        &.unseen_notifications
+        &.where(notifiable: @register)
+        &.update(seen: true)
     end
 
     # Set tutorial if parameter defined

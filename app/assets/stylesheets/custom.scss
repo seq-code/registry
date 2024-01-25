@@ -11,6 +11,20 @@
   //background-color: theme-color-level(primary, 9) !important;
 }
 
+.clickeable {
+  cursor: pointer;
+}
+
+h1, h2, .h1, .h2 {
+  .badge-count {
+    font-size: 1.2rem;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+    background-color: var(--secondary);
+    color: var(--light);
+  }
+}
+
 .main-section {
   background-color: var(--light);
   padding: 2em;

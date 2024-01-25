@@ -413,6 +413,10 @@ class NamesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions
     def set_name
       @name = Name.find(params[:id])
+      current_user
+        &.unseen_notifications
+        &.where(notifiable: @name)
+        &.update(seen: true)
 
       unless @name.can_see?(current_user)
         flash[:alert] = 'User cannot access name'
