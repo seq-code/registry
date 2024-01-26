@@ -4,7 +4,7 @@ class RegistersController < ApplicationController
     only: %i[
       show table list cite edit update destroy
       submit return return_commit endorse notify notify_commit
-      validate publish new_correspondence
+      validate publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review
       observe unobserve
     ]
@@ -22,7 +22,7 @@ class RegistersController < ApplicationController
     ]
   )
   before_action(
-    :authenticate_editor!, only: %i[publish]
+    :authenticate_editor!, only: %i[publish publish_commit]
   )
   before_action(
     :authenticate_can_view!, only: %i[show table list]
@@ -210,9 +210,15 @@ class RegistersController < ApplicationController
     )
   end
 
-  # POST /registers/r:abc/publish
+  # GET /registers/r:abc/publish
   def publish
-    # TODO See Register::Status#post_validation
+  end
+
+  # POST /registers/r:abc/publish
+  def publish_commit
+    change_status(
+      :publish, 'Successfully published the register list', current_user
+    )
   end
 
   # GET /registers/r:abc/table

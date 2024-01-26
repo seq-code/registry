@@ -159,19 +159,27 @@ module Register::Status
       names.each { |name| name.update!(par.merge(status: 15)) }
       update!(par.merge(notes: nil, validated: true))
     end
-
-    HeavyMethodJob.perform_later(:post_validation, @register)
     notify_status_change(:validate, user)
+  end
+
+  ##
+  # Publish the register list and register it externally
+  #
+  # user: The user publishing the list (the current user, an editor)
+  def publish(user)
+    assert_status_with_alert(validated?, 'publish') or return false
+
+    HeavyMethodJob.perform_later(:post_publication, @register)
+    # No notification for published lists
   end
 
   # ============ --- TASKS ASSOCIATED TO STATUS CHANGE --- ============
 
   ##
-  # Production tasks to be executed once a list is validated
-  def post_validation
+  # Production tasks to be executed once a list is published
+  def post_publication
     # TODO Produce and attach the certificate in PDF
     # TODO Distribute the certificate to mirrors
-    # TODO Notify submitter
   end
 
   ##

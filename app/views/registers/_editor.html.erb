@@ -3,9 +3,8 @@
     <h2>Editor Actions</h2>
     <dd>
       <%= link_to(
-            publish_register_url(@register), method: :post,
-            class: 'btn btn-primary btn-sm',
-            data: { confirm: 'Are you sure? Publication is final' }
+            publish_register_url(@register),
+            class: 'btn btn-primary btn-sm'
           ) do %>
         <%= fa_icon('satellite-dish') %> Publish list
       <% end %>

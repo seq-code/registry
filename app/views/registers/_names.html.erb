@@ -24,7 +24,7 @@
     <% @names.each do |name| %>
       <tr>
         <td><%= link_to(name.name_html, name) %></td>
-        <td><%= name.rank.capitalize %></td>
+        <td><%= name.rank.try(:capitalize) %></td>
         <td>
           <%= name.status_name %>
           <%= help_message(name.status_name) { name.status_help } %>

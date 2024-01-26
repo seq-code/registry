@@ -1,0 +1,189 @@
+<h2 class="mt-4">Editorial Checks</h2>
+<hr/>
+<%
+  users = [[@register.user, :submitter]]
+  users += @register.curators.map { |i| [i, :curator] }
+  required = [
+    ['Given name',  :given?,  :given],
+    ['Family name', :family?, :family],
+    ['ORCID',       :orcid?,  [:orcid, :orcid_url]],
+    ['Affiliation', :affiliation?, :affiliation],
+    ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url]]
+  ]
+%>
+<div class="main-section">
+<% users.each_with_index do |user, k| %>
+  <%= simple_form_for(user[0], method: :post) do |f| %>
+    <h3>
+      <%= user[1].to_s.capitalize %>
+      <%= display_link(user[0]) %>
+    </h3>
+    <hr/>
+    <dl>
+      <% required.each do |req| %>
+        <% good  = user[0].send(req[1])%>
+        <% field = req[2].is_a?(Array) ? req[2][0] : req[2] %>
+        <dt>
+          <%= fa_icon(good ? 'check-circle' : 'times-circle',
+                class: (good ? 'text-success' : 'text-danger') + ' mr-2') %>
+          <%= req[0] %>
+        </dt>
+        <dd>
+          <%= f.input(field, label: false, input_html: { id: "user-#{k}-#{field}" }) %>
+          <%= content_tag(:div, '', id: "user-#{k}-#{field}-orcid") %>
+          <%= content_tag(:div, '', id: "user-#{k}-#{field}-ror") %>
+          <% if good && req[2].is_a?(Array) %>
+            <%= link_to(user[0].send(req[2][0]), user[0].send(req[2][1]),
+                  target: '_blank') %>
+          <% end %>
+        </dd>
+      <% end %>
+      <dd class="mt-4">
+        <%= f.submit(class: 'btn btn-primary') %>
+        <%= fa_icon('dot-circle', class: 'mx-2 text-muted small') %>
+        <% if user[0].orcid? %>
+          <%= link_to('#', class: 'btn btn-primary',
+                data: { user: k, orcid: user[0].orcid, action: 'orcid' }) do %>
+            Verify ORCID data
+          <% end %>
+        <% end %>
+        <% if user[0].affiliation_ror? %>
+          <%= link_to('#', class: 'btn btn-primary',
+                data: { user: k, ror: user[0].affiliation_ror,
+                        action: 'ror' }) do %>
+            Verify ROR affiliation
+          <% end %>
+        <% elsif user[0].affiliation? %>
+          <%= link_to('#', class: 'btn btn-primary',
+                data: { user: k, affiliation: user[0].affiliation,
+                        action: 'ror_search' }) do %>
+            Search affiliation in ROR
+          <% end %>
+        <% end %>
+      </dd>
+    </dl>
+  <% end %>
+<% end %>
+</div>
+
+<script>
+  $('a[data-action="orcid"]').on('click', function(){
+    var submit = $(this);
+    submit.addClass("disabled");
+    var orcid = $(this).data("orcid");
+    var user  = $(this).data("user");
+    var api = "https://pub.orcid.org/v3.0/expanded-search/" +
+      "?start=0&rows=1&q=orcid%3A" + orcid;
+    $.ajax({
+      beforeSend: function(request) {
+        request.setRequestHeader("Accept", "application/json");
+      },
+      dataType: "json",
+      url: api,
+      success: function(data) {
+        if(data["num-found"] == 0) {
+          var o = $("#user-" + user + "-orcid-orcid");
+          o.html("ORCID not found!");
+          o.addClass("text-danger");
+        } else {
+          var r = data["expanded-result"][0];
+          var tag = " <span class=text-muted>(from ORCID)</span>";
+
+          // Report results
+          $("#user-" + user + "-given-orcid").html(r["given-names"] + tag);
+          $("#user-" + user + "-family-orcid").html(r["family-names"] + tag);
+          $("#user-" + user + "-affiliation-orcid").html(
+            r["institution-name"].join(", ") + tag
+          );
+
+          // Highlight inconsistencies
+          if (r["orcid-id"] != $("#user-" + user + "-orcid").val()) {
+            $("#user-" + user + "-orcid-orcid").html(r["orcid-id"] + tag);
+            $("#user-" + user + "-orcid-orcid").addClass("text-danger");
+          }
+          if (r["given-names"] != $("#user-" + user + "-given").val()) {
+            $("#user-" + user + "-given-orcid").addClass("text-danger");
+          }
+          if (r["family-names"] != $("#user-" + user + "-family").val()) {
+            $("#user-" + user + "-family-orcid").addClass("text-danger");
+          }
+        }
+        submit.removeClass("disabled");
+      }
+    });
+    return(false);
+  });
+
+  $('a[data-action="ror_search"]').on('click', function(){
+    var submit = $(this);
+    submit.addClass("disabled");
+    var affiliation = $(this).data("affiliation");
+    var user = $(this).data("user");
+    var api = "https://api.ror.org/organizations?query=" + affiliation;
+    $.ajax({
+      beforeSend: function(request) {
+        request.setRequestHeader("Accept", "application/json");
+      },
+      dataType: "json",
+      url: api,
+      success: function(data) {
+        if(data["number_of_results"] == 0) {
+          var o = $("#user-" + user + "-affiliation-ror");
+          o.html("Organization not found in ROR!");
+          o.addClass("text-danger");
+        } else {
+          var r = data["items"][0];
+          var tag = " <span class=text-muted>(from ROR)</span>"
+
+          // Report results
+          $("#user-" + user + "-affiliation-ror").html(r["name"] + tag);
+          $("#user-" + user + "-affiliation_ror-ror").html(
+            r["id"] + tag + " / " + data["number_of_results"] + " results"
+          );
+        }
+        submit.removeClass("disabled");
+      }
+    });
+    return(false);
+  });
+
+  $('a[data-action="ror"]').on('click', function(){
+    var submit = $(this);
+    submit.addClass("disabled");
+    var ror  = $(this).data("ror");
+    var user = $(this).data("user");
+    var api = "https://api.ror.org/organizations/" + ror;
+    $.ajax({
+      beforeSend: function(request) {
+        request.setRequestHeader("Accept", "application/json");
+      },
+      dataType: "json",
+      url: api,
+      success: function(data) {
+        if(data["id"]) {
+          var r = data;
+          var tag = " <span class=text-muted>(from ROR)</span>"
+
+          // Report results
+          $("#user-" + user + "-affiliation-ror").html(r["name"] + tag);
+
+          // Highlight inconsistencies
+          if (r["name"] != $("#user-" + user + "-affiliation").val()) {
+            $("#user-" + user + "-affiliation-ror").addClass("text-danger");
+          }
+          if (r["id"] != "https://ror.org/" + $("#user-" + user + "-affiliation_ror").val()) {
+            $("#user-" + user + "-affiliation_ror-ror").html(r["id"] + tag);
+            $("#user-" + user + "-affiliation_ror-ror").addClass("text-danger");
+          }
+        } else {
+          var o = $("#user-" + user + "-affiliation_ror-ror");
+          o.html("ROR not found!");
+          o.addClass("text-danger");
+        }
+        submit.removeClass("disabled");
+      }
+    });
+    return(false);
+  });
+</script>
+

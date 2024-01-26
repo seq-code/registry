@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   # Users
   get  'sysusers(.:format)' => 'users#index', as: :users
   get  'sysusers/:username(.:format)' => 'users#show', as: :user
+  post 'sysusers/:username(.:format)' => 'users#update'
   get  'dashboard' => 'users#dashboard', as: :dashboard
   get  'contributors' => 'users#contributor_request', as: :contributor_request
   post 'contributors' => 'users#contributor_apply', as: :contributor_apply
@@ -29,8 +30,10 @@ Rails.application.routes.draw do
   devise_for(:users, controllers: { registrations: 'users/registrations' })
 
   # Alerts (Notifications)
-  resources(:notifications, path: 'alerts',
-        only: %i[index show update destroy]) do
+  resources(
+    :notifications, path: 'alerts',
+    only: %i[index show update destroy]
+  ) do
     collection do
       post :all_seen
       post :all_destroy
@@ -115,7 +118,8 @@ Rails.application.routes.draw do
       get  :notify
       post :notify, action: :notify_commit
       post :validate
-      post :publish
+      get  :publish
+      post :publish, action: :publish_commit
       patch :internal_notes
       post :nomenclature_review
       post :genomics_review

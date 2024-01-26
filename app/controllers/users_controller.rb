@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   before_action(:authenticate_user!)
   before_action(
-    :authenticate_admin_or_curator!,
-    only: %i[show]
+    :authenticate_admin_curator_or_editor!,
+    only: %i[show update]
   )
   before_action(
     :authenticate_admin!,
@@ -12,7 +12,9 @@ class UsersController < ApplicationController
   )
   before_action(
     :set_user,
-    only: %i[show contributor_grant contributor_deny curator_grant curator_deny]
+    only: %i[
+      show update contributor_grant contributor_deny curator_grant curator_deny
+    ]
   )
 
   def index
@@ -24,6 +26,19 @@ class UsersController < ApplicationController
     @names = Name.where(created_by: @user)
     @registers = Register.where(user: @user)
     @tutorials = Tutorial.where(user: @user)
+  end
+
+  # POST /sysusers/:username
+  def update
+    par = params.require(:user).permit(
+      :given, :family, :orcid, :affiliation, :affiliation_ror
+    )
+    if @user.update(par)
+      flash[:notice] = 'User updated successfully'
+    else
+      flash[:alert] = 'An error occurred while updating the user data'
+    end
+    redirect_back(fallback_location: @user)
   end
 
   def dashboard

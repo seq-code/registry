@@ -1,6 +1,7 @@
 class NotificationsController < ApplicationController
   before_action(:authenticate_user!)
   before_action(:set_notification, only: %i[update show toggle_seen destroy])
+  before_action(:authenticate_owner!, only: %i[update show toggle_seen destroy])
 
   # GET /alerts or /alerts.json
   def index
@@ -65,6 +66,13 @@ class NotificationsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def notification_params
     params.require(:notification).permit(*%i[seen])
+  end
+
+  def authenticate_owner!
+    unless @notification.user == current_user
+      flash[:alert] = 'User cannot access notification'
+      redirect_to(root_path)
+    end
   end
 
 end
