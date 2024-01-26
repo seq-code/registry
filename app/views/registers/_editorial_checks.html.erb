@@ -11,60 +11,62 @@
     ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url]]
   ]
 %>
-<div class="main-section">
 <% users.each_with_index do |user, k| %>
-  <%= simple_form_for(user[0], method: :post) do |f| %>
-    <h3>
-      <%= user[1].to_s.capitalize %>
-      <%= display_link(user[0]) %>
-    </h3>
-    <hr/>
-    <dl>
-      <% required.each do |req| %>
-        <% good  = user[0].send(req[1])%>
-        <% field = req[2].is_a?(Array) ? req[2][0] : req[2] %>
-        <dt>
-          <%= fa_icon(good ? 'check-circle' : 'times-circle',
-                class: (good ? 'text-success' : 'text-danger') + ' mr-2') %>
-          <%= req[0] %>
-        </dt>
-        <dd>
-          <%= f.input(field, label: false, input_html: { id: "user-#{k}-#{field}" }) %>
-          <%= content_tag(:div, '', id: "user-#{k}-#{field}-orcid") %>
-          <%= content_tag(:div, '', id: "user-#{k}-#{field}-ror") %>
-          <% if good && req[2].is_a?(Array) %>
-            <%= link_to(user[0].send(req[2][0]), user[0].send(req[2][1]),
-                  target: '_blank') %>
+  <div class="main-section">
+    <%= simple_form_for(user[0], method: :post) do |f| %>
+      <h3>
+        <%= user[1].to_s.capitalize %>
+        <%= display_link(user[0]) %>
+      </h3>
+      <hr/>
+      <dl>
+        <% required.each do |req| %>
+          <% good  = user[0].send(req[1])%>
+          <% field = req[2].is_a?(Array) ? req[2][0] : req[2] %>
+          <dt>
+            <%= fa_icon(good ? 'check-circle' : 'times-circle',
+                  class: (good ? 'text-success' : 'text-danger') + ' mr-2') %>
+            <%= req[0] %>
+          </dt>
+          <dd>
+            <%= f.input(field, label: false,
+                  input_html: { id: "user-#{k}-#{field}" }) %>
+            <%= content_tag(:div, '', id: "user-#{k}-#{field}-orcid") %>
+            <%= content_tag(:div, '', id: "user-#{k}-#{field}-ror") %>
+            <% if good && req[2].is_a?(Array) %>
+              <%= link_to(user[0].send(req[2][0]), user[0].send(req[2][1]),
+                    target: '_blank') %>
+            <% end %>
+          </dd>
+        <% end %>
+        <dd class="mt-4">
+          <%= f.submit(class: 'btn btn-primary') %>
+          <%= fa_icon('dot-circle', class: 'mx-2 text-muted small') %>
+          <% if user[0].orcid? %>
+            <%= link_to('#', class: 'btn btn-primary',
+                  data: { user: k, orcid: user[0].orcid,
+                          action: 'orcid' }) do %>
+              Verify ORCID data
+            <% end %>
+          <% end %>
+          <% if user[0].affiliation_ror? %>
+            <%= link_to('#', class: 'btn btn-primary',
+                  data: { user: k, ror: user[0].affiliation_ror,
+                          action: 'ror' }) do %>
+              Verify ROR affiliation
+            <% end %>
+          <% elsif user[0].affiliation? %>
+            <%= link_to('#', class: 'btn btn-primary',
+                  data: { user: k, affiliation: user[0].affiliation,
+                          action: 'ror_search' }) do %>
+              Search affiliation in ROR
+            <% end %>
           <% end %>
         </dd>
-      <% end %>
-      <dd class="mt-4">
-        <%= f.submit(class: 'btn btn-primary') %>
-        <%= fa_icon('dot-circle', class: 'mx-2 text-muted small') %>
-        <% if user[0].orcid? %>
-          <%= link_to('#', class: 'btn btn-primary',
-                data: { user: k, orcid: user[0].orcid, action: 'orcid' }) do %>
-            Verify ORCID data
-          <% end %>
-        <% end %>
-        <% if user[0].affiliation_ror? %>
-          <%= link_to('#', class: 'btn btn-primary',
-                data: { user: k, ror: user[0].affiliation_ror,
-                        action: 'ror' }) do %>
-            Verify ROR affiliation
-          <% end %>
-        <% elsif user[0].affiliation? %>
-          <%= link_to('#', class: 'btn btn-primary',
-                data: { user: k, affiliation: user[0].affiliation,
-                        action: 'ror_search' }) do %>
-            Search affiliation in ROR
-          <% end %>
-        <% end %>
-      </dd>
-    </dl>
-  <% end %>
+      </dl>
+    <% end %>
+  </div>
 <% end %>
-</div>
 
 <script>
   $('a[data-action="orcid"]').on('click', function(){
