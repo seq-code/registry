@@ -12,7 +12,7 @@
   ]
 %>
 <% users.each_with_index do |user, k| %>
-  <div class="main-section">
+  <div class="main-section mb-4">
     <%= simple_form_for(user[0], method: :post) do |f| %>
       <h3>
         <%= user[1].to_s.capitalize %>
