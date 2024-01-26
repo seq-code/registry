@@ -128,7 +128,9 @@ class Publication < ApplicationRecord
 
   def authors_et_al
     family = authors.pluck(:family) # To reduce SQL requests
-    if family.count < 3
+    if family.empty?
+      'Anonymous'
+    elsif family.count < 3
       family.join(', ')
     else
       family.first + ' et al.'
