@@ -20,6 +20,10 @@
   <%= f.hidden_field(:corrigendum_in_id) %>
   <%= f.input(:corrigendum_from, required: true, label: 'Original name') %>
   <%= f.input(:name, required: true, autofocus: true, label: 'Correct name') %>
+  <% unless @publication %>
+    <%= f.input(:corrigendum_kind, label: 'Source of the corrigendum',
+          collection: Name.corrigendum_kinds_opt) %>
+  <% end %>
   <br/>
   <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
   <%= f.button :submit, 'Submit' %>

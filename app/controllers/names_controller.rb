@@ -320,7 +320,9 @@ class NamesController < ApplicationController
   def corrigendum
     par = params[:delete_corrigenda] ?
       { corrigendum_in_id: nil, corrigendum_from: nil } :
-      params.require(:name).permit(:name, :corrigendum_in_id, :corrigendum_from)
+      params.require(:name).permit(
+        :name, :corrigendum_in_id, :corrigendum_from, :corrigendum_kind
+      )
     @name.update(par)
     redirect_to(@name)
   end

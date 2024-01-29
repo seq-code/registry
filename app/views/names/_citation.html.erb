@@ -32,7 +32,7 @@
       <% if @name.corrigendum_in %>
         <%= display_link(@name.corrigendum_in, :short_citation) %>
       <% else %>
-        In SeqCode Registry
+        <%= @name.corrigendum_source %>
       <% end %>
 
       <% if @name.corrigendum_from? %>

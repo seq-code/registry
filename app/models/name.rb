@@ -339,6 +339,26 @@ class Name < ApplicationRecord
         VKM: 'http://www.vkm.ru/strains.php?vkm='
       }
     end
+
+    # ============ --- CLASS > NOMENCLATURE --- ============
+
+    def corrigendum_kinds
+      {
+        publication: {
+          name: 'Publication', source: 'In unregistered publication'
+        },
+        seqcode: {
+          name: 'SeqCode Registry', source: 'In SeqCode Registry'
+        },
+        other: {
+          name: 'Another source', source: 'In an unregistered source'
+        }
+      }
+    end
+
+    def corrigendum_kinds_opt
+      corrigendum_kinds.map { |k, v| [v[:name], k] }
+    end
   end
 
   # ============ --- STATUS --- ============
@@ -548,6 +568,12 @@ class Name < ApplicationRecord
 
   def assigned_in?(publication)
     publication.id == assigned_in_id
+  end
+
+  def corrigendum_source
+    corrigendum_kind? ?
+      self.class.corrigendum_kinds[corrigendum_kind.to_sym][:source] :
+      'In an unknown source'
   end
 
   def emended_in
