@@ -23,6 +23,9 @@ module Name::Inferences
     when /glomus$/
       # - Dictryoglomus -- Dictyoglomeraceae
       base.gsub!(/us$/, 'er')
+    when /chloros$/
+      # - Petrachloros -- Petrachlor-aceae
+      base.gsub!(/os$/, '')
     when /u[ms]$/
       # - Acidaminococcus -- Acidaminococc-aceae
       # - Acidilobus -- Acidilob-aceae
