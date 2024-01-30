@@ -825,11 +825,12 @@ class Name < ApplicationRecord
 
   ##
   # Attempts to update the accession of the type genome reusing the same genome
-  # entry. Please use with caution!
-  def update_type_genome!(new_accession)
+  # entry. If passed, it can also update the database. Please use with caution!
+  def update_type_genome!(new_accession, new_database = nil)
     g = genome
-    g.update! accession: new_accession
-    update! type_accession: new_accession
+    new_database ||= g.database
+    g.update! accession: new_accession, database: new_database
+    update! type_accession: new_accession, type_material: new_database
   end
 
   def type_strain_parsed
