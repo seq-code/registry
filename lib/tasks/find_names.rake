@@ -10,18 +10,20 @@ namespace :names do
     end
 
     non_epithets = %w[
-      by through for that has is as and are was were affiliated
-      archaeon bacterium bacteria archaea a an transmitted
-      belonging reveals community communities on which in clades? lineages?
-      associated taxon taxa revised be the from infecting genes? particles?
-      spp? species gen genus genera fam family families
-      cla class classes classis ord ordo orders? phylum phyla
-      instead of preferred provided list uncovers rhetoricae predominate[ds]?
-      detection have genomes? like related associated infected lacks?
-      pathosystems? into shares names? across do incorporate? represents?
-      predominantly enrichment found members? includes? chromosomes? can with
-      contains? distinct will at inhabiting living after to resulted remained
-      appears? shuttles? forms? activates? cultures? remains? belongs? imply
+      across activates? affiliated after an? and appears? archaea archaeon are
+      as associated at bacteria bacterium be belonging belongs? by
+      can chromosomes? cla clades? class class[ei]s communities community
+      contains? cultures? detection distinct do enrichment
+      facilitate[ds]? fam families family for forms? found from
+      gen genes? genomes? genus genera has have
+      imply in includes? incorporate? infected infecting inhabiting instead into
+      is lacks? lineages? like list living members? names?
+      of on ord orders? ordo
+      particles? pathosystems? phyla phylum predominantly predominate[ds]?
+      preferred provided
+      related remained remains? represents? resulted reveals revised
+      shares shuttles? species spp? taxa taxon that the through to transmitted
+      uncovers was were which will with
     ]
     non_hyphen = %w[like related associated infected ]
     Publication.where(scanned: false).each do |pub|
