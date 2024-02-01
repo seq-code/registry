@@ -41,7 +41,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def configure_account_params
     plus_attrs = %i[
-      username affiliation family given opt_notification opt_regular_email
+      username affiliation family given
+      opt_regular_email opt_message_email opt_notification
     ]
     devise_parameter_sanitizer.permit(:sign_up, keys: plus_attrs)
     devise_parameter_sanitizer.permit(:account_update, keys: plus_attrs)
