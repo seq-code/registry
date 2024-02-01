@@ -3,7 +3,7 @@
     <h2>Curator Actions</h2>
     <dd>
       <% if @register.validated %>
-        <% id = modal('Correspondence with curators') do %>
+        <% id = modal('Correspondence with curators', size: 'lg') do %>
           <%= render(
                 partial: 'correspondence',
                 locals: { correspondence_history: true }) %>
