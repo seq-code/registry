@@ -1,6 +1,12 @@
 <h2 class="mt-4">Editorial Checks</h2>
 <hr/>
 
+<%= link_to('#', class: 'btn btn-primary', data: { action: 'run_all' }) do %>
+  <%= fa_icon('mouse') %>
+  Run all editorial checks
+<% end %>
+<hr/>
+
 <!-- USERS -->
 <%
   users = [[@register.user, :submitter]]
@@ -90,6 +96,14 @@
 </div>
 
 <script>
+  $('a[data-action="run_all"]').on('click', function(){
+    $('a[data-action="orcid"]').click();
+    $('a[data-action="ror_search"]').click();
+    $('a[data-action="ror"]').click();
+    $('a[data-action="doi_check"]').click();
+    return(false);
+  });
+
   $('a[data-action="orcid"]').on('click', function(){
     var submit = $(this);
     submit.addClass("disabled");
