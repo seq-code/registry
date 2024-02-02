@@ -222,9 +222,7 @@ module Register::Status
           .sub(/^.*::(HTTP)?/, '').gsub(/([A-Z])/, ' \\1').strip
         errors = JSON.parse(response.body || '{}')['errors']
         errors &&= errors.map { |i| i['title'] }.join(', ')
-        @status_alert = 'DataCite returned "%s": %s [%s, %s]' % [
-          error_type, errors, api_url, api_verb
-        ]
+        @status_alert = 'DataCite returned "%s": %s' % [error_type, errors]
         return false
       end
     end
@@ -235,7 +233,7 @@ module Register::Status
       published: true, certificate_image: list_pdf
     )
 
-    HeavyMethodJob.perform_later(:post_publication, @register)
+    HeavyMethodJob.perform_later(:post_publication, self)
     true
     # No notification for published lists
   end
