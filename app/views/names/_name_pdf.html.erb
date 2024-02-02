@@ -29,7 +29,12 @@
         <% elsif name.type_is_strain? %>
           <%= name.type_text %>
         <% elsif name.type? %>
-          <%= link_to(name.type_text, name.type_link) %> <sup>Ts</sup>
+          <% if name.type_link %>
+            <%= link_to(name.type_text, name.type_link) %>
+          <% else %>
+            <%= name.type_text %>
+          <% end %>
+          <sup>Ts</sup>
         <% else %>
           <u>Unknown</u>
         <% end %>

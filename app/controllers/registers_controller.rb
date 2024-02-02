@@ -221,7 +221,8 @@ class RegistersController < ApplicationController
   # POST /registers/r:abc/publish
   def publish_commit
     change_status(
-      :publish, 'Successfully published the register list', current_user
+      :publish, 'Successfully published the register list', current_user,
+      params[:datacite_action]
     )
   end
 

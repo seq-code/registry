@@ -12,7 +12,6 @@
           <%= fa_icon('check-square') %> See correspondence
         <% end %>
         &raquo; Show historic record of communication with curators
-        <hr/>
       <% else %>
         <% unless @register.all_endorsed? %>
           <%= link_to(
@@ -55,7 +54,6 @@
           <% end %>
           &raquo; Validate all names under SeqCode and record the current list
           as permanent record of validation
-          <hr/>
         <% end %>
       <% end %>
     </dd>

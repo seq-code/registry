@@ -166,8 +166,11 @@ module Register::Status
   # Publish the register list and register it externally
   #
   # user: The user publishing the list (the current user, an editor)
-  def publish(user)
+  # action: The type of action to trigger on DataCite, one of: 'publish',
+  #   'update', or 'none'.
+  def publish(user, action)
     assert_status_with_alert(validated?, 'publish') or return false
+    action = action.present? ? action.to_sym : :none
 
     # Generate Certificate PDF
     list_pdf = RegistersController.render(
@@ -180,24 +183,49 @@ module Register::Status
     )
 
     # Register DOI
-    doi = propose_doi
-    cite64 = Base64.strict_encode64(RegistersController.render(
-      :cite, format: 'xml', assigns: { register: self }
-    ))
-    payload = JSON.generate(
-      data: {
-        type: 'dois', attributes: {
-          event: 'publish', doi: doi, xml: cite64, url: acc_url(true)
-        }
+    unless action == :none
+      # Connection
+      datacite = Rails.configuration.datacite
+      api_url  = "#{datacite[:host]}/dois"
+      api_verb = 'POST'
+      cred     = "#{datacite[:user]}:#{datacite[:password]}"
+      cred64   = Base64.strict_encode64(cred)
+      headers  = {
+        'Content-Type' => 'application/vnd.api+json',
+        'Authorization' => "Basic #{cred64}",
       }
-    )
-    datacite = Rails.configuration.datacite
-    cred64 = Base64.strict_encode64("#{datacite[:user]}:#{datacite[:password]}")
-    Net::HTTP.post(
-      URI.parse("#{datacite[:host]}/dois"), payload,
-      'Content-Type' => 'application/vnd.api+json',
-      'Authorization' => "Basic #{cred64}",
-    ) #.value TODO Check success!
+
+      # Payload and Request
+      doi = propose_doi
+      cite64 = Base64.strict_encode64(RegistersController.render(
+        :cite, format: 'xml', assigns: { register: self }
+      ))
+      attributes = { xml: cite64, url: acc_url(true) }
+      if action == :publish
+        attributes[:event] = 'publish'
+        attributes[:doi]   = doi
+      else
+        api_url += '/' + doi
+        api_verb = 'PUT'
+        attributes[:event] = 'hide' if action == :hide
+        attributes[:event] = 'publish' if action == :republish
+      end
+      payload = JSON.generate(data: { type: 'dois', attributes: attributes })
+      uri = URI.parse(api_url)
+      response = nil
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+        response = http.send_request(api_verb, uri, payload, headers)
+      end
+
+      unless response.is_a? Net::HTTPSuccess
+        error_type = response.class.to_s
+          .sub(/^.*::(HTTP)?/, '').gsub(/([A-Z])/, ' \\1').strip
+        errors = JSON.parse(response.body || '{}')['errors']
+        errors &&= errors.map { |i| i['title'] }.join(', ')
+        @status_alert = 'DataCite returned "%s": %s' % [error_type, errors]
+        return false
+      end
+    end
 
     # Update
     update!(

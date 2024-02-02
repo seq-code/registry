@@ -1,0 +1,17 @@
+<%= simple_form_for(@register,
+      url: publish_register_url(@register), method: :post) do |f| %>
+  <div class="my-4">
+    <%= label_tag(:datacite_action, 'DataCite Action') %>
+    <%= select_tag(:datacite_action,
+          options_for_select(
+            {
+              Publish: :publish, Update: :update, Hide: :hide,
+              Republish: :republish, None: :none
+            }, action ||= 'publish'
+           ),
+          class: 'form-control') %>
+    <br/>
+    <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
+    <%= f.submit("#{action.capitalize} list", class: 'btn btn-primary') %>
+  </div>
+<% end %>
