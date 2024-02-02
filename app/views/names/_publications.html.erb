@@ -1,7 +1,7 @@
 <div name="publications" class="main-section name-details">
   <h2>
     Publications
-    <small class='text-muted'>(<%= @publication_names.count %>)</small>
+    <div class="badge badge-count"><%= @publication_names.count %></div>
   </h2>
   <%= pager @publication_names %>
   <table class='table table-hover'>
