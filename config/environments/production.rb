@@ -125,4 +125,12 @@ Rails.application.configure do
   config.bypass_external_apis = false
   config.matomo = '//disc-genomics.uibk.ac.at/analytics/'
   config.plausible = 'http://disc-genomics.uibk.ac.at:8000'
+
+  # DataCite access
+  config.datacite = {
+    host:     'https://api.datacite.org',
+    prefix:   '10.57973',
+    user:     'xxxxxxxx',
+    password: 'xxxxxxxx',
+  }
 end

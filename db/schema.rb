@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_28_194103) do
+ActiveRecord::Schema.define(version: 2024_02_01_232106) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -327,10 +327,10 @@ ActiveRecord::Schema.define(version: 2024_01_28_194103) do
     t.boolean "submitter_is_author"
     t.boolean "authors_approval"
     t.datetime "submitted_at"
-    t.string "doi"
     t.boolean "nomenclature_review", default: false
     t.boolean "genomics_review", default: false
     t.text "internal_notes"
+    t.binary "certificate_image"
     t.index ["accession"], name: "index_registers_on_accession", unique: true
     t.index ["publication_id"], name: "index_registers_on_publication_id"
     t.index ["submitted"], name: "index_registers_on_submitted"

@@ -1,14 +1,24 @@
-<% if current_editor? && @register.validated? && !@register.published? %>
+<% if current_editor? && @register.validated? %>
   <dl class="main-section name-details">
     <h2>Editor Actions</h2>
     <dd>
-      <%= link_to(
-            publish_register_url(@register),
-            class: 'btn btn-primary btn-sm'
-          ) do %>
-        <%= fa_icon('satellite-dish') %> Publish list
+      <% if @register.published? %>
+        <%= link_to(
+              editorial_checks_register_url(@register),
+              class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('cubes') %> Revise editorial checks
+        <% end %>
+        &raquo; Evaluate editorial checks post-publication
+      <% else %>
+        <%= link_to(
+              publish_register_url(@register),
+              class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('satellite-dish') %> Publish list
+        <% end %>
+        &raquo; Register and transfer documents as displayed above
       <% end %>
-      &raquo; Register and transfer documents as displayed above
     </dd>
   </dl>
 <% end %>

@@ -63,4 +63,12 @@ Rails.application.configure do
 
   # Turn off API checks for external services
   config.bypass_external_apis = true
+
+  # DataCite access
+  config.datacite = {
+    host:     'https://api.test.datacite.org',
+    prefix:   '10.82892',
+    user:     'ULBT.SEQCODE-TEST',
+    password: 'yQRNGCOGXDN1vr'
+  }
 end

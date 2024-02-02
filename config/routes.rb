@@ -118,6 +118,7 @@ Rails.application.routes.draw do
       get  :notify
       post :notify, action: :notify_commit
       post :validate
+      get  :editorial_checks
       get  :publish
       post :publish, action: :publish_commit
       patch :internal_notes

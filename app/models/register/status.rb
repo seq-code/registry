@@ -169,7 +169,44 @@ module Register::Status
   def publish(user)
     assert_status_with_alert(validated?, 'publish') or return false
 
+    # Generate Certificate PDF
+    list_pdf = RegistersController.render(
+      assigns: { register: self },
+      template: 'registers/list.html.erb',
+      pdf: "Register List #{acc_url}",
+      header: { html: { template: 'layouts/_pdf_header' } },
+      footer: { html: { template: 'layouts/_pdf_footer' } },
+      page_size: 'A4'
+    )
+
+    # Register DOI
+    doi = propose_doi
+    cite64 = Base64.strict_encode64(RegistersController.render(
+      :cite, format: 'xml', assigns: { register: self }
+    ))
+    payload = JSON.generate(
+      data: {
+        type: 'dois', attributes: {
+          event: 'publish', doi: doi, xml: cite64, url: acc_url(true)
+        }
+      }
+    )
+    datacite = Rails.configuration.datacite
+    cred64 = Base64.strict_encode64("#{datacite[:user]}:#{datacite[:password]}")
+    Net::HTTP.post(
+      URI.parse("#{datacite[:host]}/dois"), payload,
+      'Content-Type' => 'application/vnd.api+json',
+      'Authorization' => "Basic #{cred64}",
+    ) #.value TODO Check success!
+
+    # Update
+    update!(
+      published_at: Time.now, published_doi: doi, published_by: user,
+      published: true, certificate_image: list_pdf
+    )
+
     HeavyMethodJob.perform_later(:post_publication, @register)
+    true
     # No notification for published lists
   end
 
@@ -178,7 +215,6 @@ module Register::Status
   ##
   # Production tasks to be executed once a list is published
   def post_publication
-    # TODO Produce and attach the certificate in PDF
     # TODO Distribute the certificate to mirrors
   end
 

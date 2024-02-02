@@ -212,11 +212,14 @@ class Register < ApplicationRecord
   end
 
   def propose_doi
-    doi || ('10.57973/seqcode.%s' % accession)
+    published_doi ||
+      '%s/seqcode.%s' % [Rails.configuration.datacite[:prefix], accession]
   end
 
+  alias :doi :propose_doi
+
   def doi_url
-    'https://doi.org/%s' % propose_doi
+    'https://doi.org/%s' % doi
   end
 
   def citations

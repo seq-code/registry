@@ -8,14 +8,6 @@
 <%= render(partial: 'abstract') %>
 <%= render(partial: 'editorial_checks') %>
 
-<%= simple_form_for(@register,
-      url: publish_register_url(@register), method: :post) do |f| %>
-  <div class="my-4">
-    <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
-    <%= f.submit('Publish list', class: 'btn btn-primary') %>
-  </div>
-<% end %>
-
 <br/>
 <%= render(partial: 'shared/cc') %>
 
