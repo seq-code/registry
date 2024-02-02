@@ -63,5 +63,13 @@
     <dd><%= @register.notes %></dd>
   <% end %>
 
+  <% if @register.published? %>
+    <dt><%= fa_icon('newspaper') %> Edited by</dt>
+    <dd>
+      <%= display_link(@register.published_by) %>
+      <%= time_ago_with_date(@register.published_at) %>
+    </dd>
+  <% end %>
+
 </dl>
 
