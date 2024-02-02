@@ -52,6 +52,11 @@ class UsersController < ApplicationController
     if current_user.curator?
       @pending_registers = Register.pending_for_curation
     end
+
+    if current_user.editor?
+      @unpublished_registers =
+        Register.where(validated: true, published: [false, nil])
+    end
   end
 
   def contributor_request

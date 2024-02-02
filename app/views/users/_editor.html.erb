@@ -1,0 +1,17 @@
+<% if current_editor? %>
+<div class="col-12 my-3">
+<div class="card">
+  <div class="card-header p-0">
+    <%= link_to('#editor-dashboard',
+                class: 'btn btn-light w-100 text-left m-0 px-4 py-2',
+                aria: { expanded: 'false', controls: 'editor-dashboard' },
+                role: 'button', data: { toggle: 'collapse' }) do %>
+      <h1>Editor Dashboard</h1>
+    <% end %>
+  </div>
+  <div class="card-body collapse show" id="editor-dashboard">
+    <%= render(partial: 'unpublished_registers') %>
+  </div>
+</div>
+</div>
+<% end %>

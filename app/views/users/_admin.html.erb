@@ -1,3 +1,5 @@
+<% if current_admin? %>
+<div class="col-12 my-3">
 <div class="card">
   <div class="card-header p-0">
     <%= link_to('#admin-dashboard',
@@ -71,3 +73,5 @@
     </ul>
   </div>
 </div>
+</div>
+<% end %>

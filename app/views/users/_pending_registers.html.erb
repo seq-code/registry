@@ -1,6 +1,6 @@
 <h2>
   Pending submissions
-  <span class="text-muted">(<%= @pending_registers.count %>)</span>
+  <div class="badge badge-count"><%= @pending_registers.count %></div>
 </h2>
 
 <% @pending_registers.each do |r| %>

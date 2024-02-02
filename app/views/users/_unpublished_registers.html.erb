@@ -1,0 +1,10 @@
+<h2>
+  Unpublished registers
+  <div class="badge badge-count"><%= @unpublished_registers.count %></div>
+</h2>
+
+<ul>
+  <% @unpublished_registers.each do |r| %>
+    <li><%= display_link(r) %>: <%= r.title %></li>
+  <% end %>
+</ul>

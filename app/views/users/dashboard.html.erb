@@ -6,21 +6,10 @@
     <div class="col-md-6 my-3" id="dashboard-actions">
       <%= render(partial: 'actions') %>
     </div>
-    <% if current_admin? %>
-      <div class="col-12 my-3">
-        <%= render(partial: 'admin') %>
-      </div>
-    <% end %>
-    <% if current_curator? %>
-      <div class="col-12 my-3">
-        <%= render(partial: 'curator') %>
-      </div>
-    <% end %>
-    <% if current_contributor? %>
-      <div class="col-12 my-3">
-        <%= render(partial: 'contributor') %>
-      </div>
-    <% end %>
+    <%= render(partial: 'admin') %>
+    <%= render(partial: 'editor') %>
+    <%= render(partial: 'curator') %>
+    <%= render(partial: 'contributor') %>
   </div>
 </div>
 <br/>
