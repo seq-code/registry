@@ -4,10 +4,12 @@
 </h1>
 <hr/>
 
-<div class='text-center'>
-<% @subjects.each do |subject| %>
-  <%= render subject %>
-<% end %>
+<%= pager @subjects %>
+<div class="text-center mb-4">
+  <% @subjects.each do |subject| %>
+    <%= render(subject) %>
+  <% end %>
 </div>
+<%= pager @subjects %>
 <br/><br/>
 

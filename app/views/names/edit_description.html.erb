@@ -1,0 +1,18 @@
+<h1><%= @name.name_html %></h1>
+<hr/>
+
+<%= simple_form_for(@name) do |f| %>
+  <%= f.input(
+        :description, as: :rich_text_area,
+        hint: 'Indicate the properties of the taxon (not the etymology)'
+      ) %>
+
+  <br/>
+
+  <% if @tutorial %>
+    <%= hidden_field_tag(:return_to, tutorial_path(@tutorial, next: true)) %>
+  <% end %>
+  <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
+  <%= f.button(:submit, 'Submit') %>
+  <br/><br/>
+<% end %>

@@ -39,7 +39,7 @@ module Name::QualityChecks
       missing_description: {
         message: 'The name has no registered description',
         link_text: 'Edit description',
-        link_to: lambda { |w| [:edit, w.name] }
+        link_to: lambda { |w| [:edit_description, w.name] }
       },
       candidatus_modifier: {
         message: 'The name has a Candidatus modifier that should be removed'
@@ -428,6 +428,8 @@ module Name::QualityChecks
         checklist: :nomenclature,
         message: 'An English description is required for works in other ' \
                  'languages',
+        link_text: 'Edit description',
+        link_to: lambda { |w| [:edit_description, w.name] },
         rules: %w[24b]
       },
       # - Rule 24c

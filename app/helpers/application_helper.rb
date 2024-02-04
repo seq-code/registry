@@ -203,8 +203,9 @@ module ApplicationHelper
   end
 
   def download_buttons(list)
-    content_tag(:div, class: 'float-right') do
-      list.map { |i| download_button(*i) }.inject(:+)
+    content_tag(:div, class: 'float-right text-right') do
+      list.map { |i| download_button(*i) }.inject(:+) +
+        (content_tag(:span) { yield } if block_given?)
     end
   end
 

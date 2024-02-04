@@ -1,21 +1,5 @@
 <dt>Citation</dt>
-<dd>
-  <%= publication.authors_et_al %>
-  <% if publication.journal.empty? %>
-    [<%= publication.pub_type.tr('-', ' ') %>,
-    <%= publication.journal_date.year %>]
-  <% else %>
-    (<%= publication.journal_date.year %>).
-    <em>
-      <%= link_to(
-            publication.journal,
-            search_path(
-              what: :publications, q: "journal::#{publication.journal}"
-            )
-          ) %>
-    </em> <%= publication.journal_loc %>
-  <% end %>
-</dd>
+<dd><%= publication_full_citation(publication) %></dd>
 
 <% if current_contributor? || !publication.names.empty? %>
   <dt>
@@ -24,20 +8,21 @@
   <dd>
     <% publication.publication_names.each do |publication_name| %>
       <% name = publication_name.name %>
-      <%= link_to name.abbr_name, name, class: 'badge badge-pill badge-primary' %>
+      <%= link_to(
+            name.abbr_name, name, class: 'badge badge-pill badge-primary') %>
       <% if current_contributor? %>
-        <%= link_to publication_name, method: :delete,
+        <%= link_to(
+              publication_name, method: :delete,
               class: 'badge badge-pill badge-info', title: 'unlink name',
-              data: {confirm: 'Are you sure?'} do %>
-          <%= fa_icon 'trash-alt' %>
-        <% end %>
+              data: { confirm: 'Are you sure?' }
+            ) { %><%= fa_icon('trash-alt') %><% } %>
       <% end %>
     <% end %>
     <% if current_contributor? %>
-      <%= link_to link_publication_name_path(publication),
-            class: 'badge badge-pill badge-info', title: 'link names' do %>
-        <%= fa_icon 'link' %>
-      <% end %>
+      <%= link_to(
+            link_publication_name_path(publication),
+            class: 'badge badge-pill badge-info', title: 'link names'
+          ) { %><%= fa_icon('link') %><% } %>
     <% end %>
   </dd>
 <% end %>
@@ -46,8 +31,10 @@
   <dt>Subjects</dt>
   <dd>
   <% publication.subjects.each do |subject| %>
-    <%= link_to subject.name, subject,
-      class: 'badge badge-pill badge-secondary' %>
+    <%= link_to(
+          subject.name, subject,
+          class: 'badge badge-pill badge-secondary'
+        ) %>
   <% end %>
   </dd>
 <% end %>

@@ -142,7 +142,9 @@ class Publication < ApplicationRecord
   end
 
   def clean_abstract
-    abstract.gsub(/<([^>]+>|script[^>]+>?)/, '') if abstract
+    if abstract?
+      @clean_abstract ||= abstract.gsub(/<([^>]+>|script[^>]+>?)/, '')
+    end
   end
 
   def short_citation
@@ -154,7 +156,7 @@ class Publication < ApplicationRecord
   end
 
   def journal_html
-    ERB::Util.h(journal || pub_type.tr('-', ' '))
+    ERB::Util.h(journal || '[%s]' % pub_type.tr('-', ' '))
   end
 
   def long_citation_html

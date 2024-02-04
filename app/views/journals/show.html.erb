@@ -1,10 +1,7 @@
-<% provide(:title, @author.full_name) %>
+<% provide(:title, @journal) %>
 
-<%= download_buttons(
-      [[author_url(@author, format: :json), 'file-code', 'JSON']]
-    ) { %><div class="my-2"><%= list_type_selector %></div><% } %>
-
-<h1><%= @author.full_name %></h1>
+<div class="float-right"><%= list_type_selector %></div>
+<h1><%= @journal %></h1>
 <hr/>
 
 <h2>

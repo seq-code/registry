@@ -29,12 +29,7 @@
             ) do %>
           <%= fa_icon('pen-fancy') %> Correct spelling
         <% end %>
-        &raquo; Issue a Registry corrigendum without linking a publication
-        <hr/>
-        <%= link_to(edit_name_url(@name), class: 'btn btn-sm btn-primary') do %>
-          <%= fa_icon('edit') %> Edit spelling
-        <% end %>
-        &raquo; Change this name's spelling and description
+        &raquo; Correct the name spelling directly or register a corrigendum
         <hr/>
         <%= link_to(
               edit_links_name_url(@name),

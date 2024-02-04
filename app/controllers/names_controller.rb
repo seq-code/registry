@@ -6,7 +6,7 @@ class NamesController < ApplicationController
       show edit update destroy
       proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
-      edit_rank edit_notes edit_etymology edit_links edit_type
+      edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology edit_parent
       return validate endorse claim unclaim new_correspondence
       observe unobserve
@@ -18,7 +18,7 @@ class NamesController < ApplicationController
       edit update destroy
       proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
-      edit_rank edit_notes edit_etymology edit_links edit_type
+      edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology edit_parent new_correspondence
     ]
   )
@@ -185,6 +185,10 @@ class NamesController < ApplicationController
 
   # GET /names/1/edit
   def edit
+  end
+
+  # GET /names/1/edit_description
+  def edit_description
   end
 
   # GET /names/1/edit_notes

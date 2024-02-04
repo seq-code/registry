@@ -33,7 +33,8 @@ class AuthorsController < ApplicationController
   # GET /authors/1
   # GET /authors/1.json
   def show
-    @publications = @author.publications.paginate(page: params['page'], per_page: 10)
+    @publications = @author.publications
+          .paginate(page: params['page'], per_page: 10)
     @crumbs = [['Authors', authors_path], @author.family]
   end
 

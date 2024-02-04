@@ -2,24 +2,39 @@
   Publications
   <div class="badge badge-count"><%= @count %></div>
 </h1>
-Sort by
-<% %w[date names].map do |sort| %>
-  <span class='text-muted'>·</span>
-  <%= sort == @sort ? sort : link_to(sort, publications_path(sort: sort)) %>
-<% end %>
+<div class="container p-0">
+  <div class="row">
+    <div class="col-sm-9">
+      <b>Sort by</b>
+      <% %w[date names].map do |sort| %>
+        <span class="text-muted">•</span>
+        <%= sort == @sort ? sort : link_to(sort, publications_path(sort: sort)) %>
+      <% end %>
+      <br/>
+      <b>Browse by</b>
+      <% %i[authors subjects journals].each do |what| %>
+        <span class="text-muted">•</span>
+        <%= link_to(what, what) %>
+      <% end %>
+    </div>
+    <div class="col-sm-3 text-right">
+      <% if current_contributor? %>
+        <%= link_to(new_publication_path) do %>
+          Register publication
+          <%= fa_icon('plus-circle') %>
+        <% end %>
+      <% end %>
+      <br/>
+      <%= list_type_selector %>
+    </div>
+  </div>
+</div>
 
-<% if current_contributor? %>
-  | <%= link_to new_publication_path do %>
-    <%= fa_icon 'plus-circle' %> Add publications
-  <% end %>
-<% end %>
 <hr/>
 
-<%= pager @publications %>
-<div class='card-columns card-columns-wide'>
-  <% @publications.each do |publication| %>
-    <%= render publication %>
+<%= adaptable_list(set: @publications) do |list| %>
+  <% @publications.each do |i| %>
+    <%= render(partial: i, locals: { list: list }) %>
   <% end %>
-</div>
-<%= pager @publications %>
+<% end %>
 

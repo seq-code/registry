@@ -1,30 +1,62 @@
-<div class='card'>
-  <%= link_to(publication, class: 'card-header-link') do %>
-    <div class='card-header'>
-      <h3><%= publication.title_html %></h3>
-    </div>
+<%= adaptable_entry(list, publication.title_html, publication) do |entry| %>
+  <%= adaptable_value(entry, 'Citation') do %>
+    <%= publication_full_citation(publication) %>
   <% end %>
-  <div class='card-body'>
-    <dl>
-      <%= render partial: 'publications/basic_info',
-        locals: { publication: publication } %>
-    </dl>
-  </div>
-  <div class='card-footer text-right bg-dark-ce'>
-    <ul class='list-inline' style='margin: 0;'>
-      <li class='list-inline-item'>
-        <%= link_to publication.url,
-              title: 'Link to publication', target: '_blank' do %>
-          <%= fa_icon 'file-alt' %>
+
+  <%= adaptable_value(entry, 'Names') do %>
+    <% if publication.names.any? %>
+      <% publication.publication_names.each do |publication_name| %>
+        <% name = publication_name.name %>
+        <%= link_to(
+              name.abbr_name, name, class: 'badge badge-pill badge-primary') %>
+        <% if current_contributor? %>
+          <%= link_to(
+                publication_name, method: :delete,
+                class: 'badge badge-pill badge-info', title: 'unlink name',
+                data: { confirm: 'Are you sure?' }
+              ) { %><%= fa_icon('trash-alt') %><% } %>
         <% end %>
+      <% end %>
+    <% end %>
+    <% if current_contributor? %>
+      <%= link_to(
+            link_publication_name_path(publication),
+            class: 'badge badge-pill badge-info', title: 'link names'
+          ) { %><%= fa_icon('link') %><% } %>
+    <% end %>
+  <% end %>
+
+  <%= adaptable_value(entry, 'Abstract') do %>
+    <% len = entry.list.type == :table ? 0 : 500 %>
+    <% if publication.abstract? %>
+      <div class='text-sm text-muted'>
+        <%= publication.clean_abstract[0, len] %>
+      </div>
+      <% if publication.clean_abstract.length > len %>
+        <% id = modal(publication.title_html, size: 'lg') do %>
+          <%= publication.clean_abstract %>
+        <% end %>
+        <%= modal_button(id, class: 'badge-secondary badge') do %>
+          <%= fa_icon('ellipsis-h') %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% entry.footer do %>
+    <ul class="list-inline m-0 text-right">
+      <li class="list-inline-item m-0">
+        <%= link_to(
+              publication.url,
+              title: 'Link to publication', target: '_blank'
+            ) { %><%= fa_icon('file-alt') %><% } %>
       </li>
-      <li class='list-inline-item'>
-        <%= link_to publication, title: 'See more' do %>
-          <%= fa_icon 'arrow-circle-right' %>
+      <li class="list-inline-item m-0">
+        <%= link_to(publication, title: 'See more') do %>
+          <%= fa_icon('arrow-circle-right') %>
         <% end %>
       </li>
     </ul>
-  </div>
-</div>
-
+  <% end %>
+<% end %>
 

@@ -2,7 +2,6 @@ class RegisterCorrespondence < ApplicationRecord
   belongs_to(:register)
   belongs_to(:user)
   has_rich_text(:message)
-  has_many(:notifications, as: :notifiable, dependent: :destroy)
 
   attr_accessor :notify
 

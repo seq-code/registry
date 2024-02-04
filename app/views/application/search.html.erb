@@ -1,17 +1,17 @@
 <div class="row">
-<h1 class='mt-3 col-sm-9'>
-  Search results
-  <small class='text-muted'>(<%= @results.count %>)</small>
-</h1>
-<div class="text-right col-sm-3 pt-4"><%= list_type_selector %></div>
+  <h1 class="mt-3 col-sm-9">
+    Search results
+    <div class="badge badge-count"><%= @results.count %></div>
+  </h1>
+  <div class="text-right col-sm-3 pt-4"><%= list_type_selector %></div>
 </div>
-<%= render partial: 'shared/search_bar' %>
+<%= render(partial: 'shared/search_bar') %>
 <hr/>
 <% if @results.empty? %>
-  <div class='jumbotron text-center'><h1>No results found</h1></div>
+  <div class="jumbotron text-center"><h1>No results found</h1></div>
 <% else %>
-  <%= adaptable_list(set: @names) do |list| %>
-    <div class="<%= 'text-center' if [:authors,:subjects].include?(@what) %>">
+  <%= adaptable_list(set: @results) do |list| %>
+    <div class="<%= 'text-center' if %i[authors subjects].include?(@what) %>">
       <% @results.each do |i| %>
         <%= render(partial: i, locals: { list: list }) %>
       <% end %>

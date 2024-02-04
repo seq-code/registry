@@ -62,6 +62,7 @@ Rails.application.routes.draw do
     end
     member do
       # --> Edit name
+      get  :edit_description
       get  :edit_type
       get  :edit_etymology
       get  :autofill_etymology
@@ -134,6 +135,9 @@ Rails.application.routes.draw do
 
   # Authors
   resources(:authors, concerns: :autocompletable)
+
+  # Journals
+  resources(:journals, only: %i[index show], param: :journal)
 
   # Publications
   resources(:publications, concerns: :autocompletable)
