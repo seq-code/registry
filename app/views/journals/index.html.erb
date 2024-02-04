@@ -8,9 +8,9 @@
 <div class="text-center mb-4">
   <% @journals.each do |journal| %>
     <%= link_to(
-          journal_path(journal),
+          journal_path(journal.journal),
           class: 'btn btn-sm btn-secondary', style: 'margin: 0.2em;'
-        ) { %><%= journal %><% } %>
+        ) { %><%= journal.journal %><% } %>
   <% end %>
 </div>
 <%= pager @journals %>
