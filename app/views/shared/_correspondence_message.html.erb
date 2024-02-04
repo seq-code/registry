@@ -6,7 +6,7 @@
     <%= correspondence.user.username %>
     <% if correspondence.user.curator? &&
           !correspondence.obj.user?(correspondence.user) %>
-      <span class="badge rounded-pill bg-primary text-light">
+      <span class="badge rounded-pill bg-secondary text-light">
         curator
       </span>
     <% end %>
