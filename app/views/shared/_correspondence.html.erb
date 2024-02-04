@@ -1,4 +1,5 @@
-<% if object&.can_edit?(current_user) || correspondence_history ||= false %>
+<% if object&.can_view_correspondence?(current_user) ||
+      correspondence_history ||= false %>
   <dl id="correspondence" class="main-section name-details">
     <% if correspondence_history %>
       <%= render(

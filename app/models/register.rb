@@ -129,6 +129,10 @@ class Register < ApplicationRecord
     user.curator? || user?(user)
   end
 
+  def can_view_correspondence?(user)
+    can_edit?(user) || user?(user)
+  end
+
   def display(_html = true)
     'Register List %s' % accession
   end

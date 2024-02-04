@@ -609,6 +609,11 @@ class Name < ApplicationRecord
     can_edit?(user) || user.try(:curator?)
   end
 
+  def can_view_correspondence?(user)
+    return false if only_display
+    can_edit?(user) || user?(user)
+  end
+
   def can_claim?(user)
     return false unless user.try(:contributor?)
     return true if auto?
