@@ -2,7 +2,9 @@ class JournalsController < ApplicationController
   # GET /journals
   # GET /journals.json
   def index
-    @journals = Publication.select(:journal).distinct
+    require 'will_paginate/array'
+
+    @journals = Publication.distinct.pluck(:journal)
           .paginate(page: params[:page], per_page: 100)
     @crumbs = ['Journals']
   end
