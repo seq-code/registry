@@ -11,7 +11,7 @@ class JournalsController < ApplicationController
   # GET /journals/title
   # GET /journals/title.json
   def show
-    @journal = ERB::Util.h(params[:journal])
+    @journal = params[:journal]
     @publications = Publication.where(journal: @journal)
           .paginate(page: params[:page], per_page: 10)
     @crumbs = [['Journals', journals_path], @journal]
