@@ -244,6 +244,7 @@ class Name < ApplicationRecord
     ##
     # Hash of culture collection prefixes and URL rule.
     # See also: https://ftp.ncbi.nih.gov/pub/taxonomy/Ccode_dump.txt
+    # See also: https://jcm.brc.riken.jp/en/abbr_e
     def culture_collections
       {
         ATCC: 'https://www.atcc.org/products/%s',
