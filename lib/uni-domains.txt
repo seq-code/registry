@@ -1,3 +1,6 @@
+mbzuai.ac.ae
+sempreceub.com
+uniceub.br
 student.karazin.ua
 karazin.ua
 usm.cl
@@ -476,6 +479,7 @@ greenleaf.edu
 grinnell.edu
 guilford.edu
 gac.edu
+gustavus.edu
 hagerstowncc.edu
 hamilton.edu
 hamline.edu
@@ -3067,6 +3071,8 @@ o6u.edu.eg
 pua.edu.eg
 sadatacademy.edu.eg
 shams.edu.eg
+asu.edu.eg
+eng.asu.edu.eg
 sohag-univ.edu.eg
 su.edu.eg
 suez.edu.eg
@@ -4026,6 +4032,7 @@ dbs.tn.nic.in
 dceonline.net
 ddugu.edu.in
 deccancollegepune.ac.in
+coeptech.ac.in
 dei.ac.in
 dibru.ernet.in
 dravidianuniversity.ac.in
@@ -8609,6 +8616,7 @@ northampton.ac.uk
 nottingham.ac.uk
 ntu.ac.uk
 open.ac.uk
+ou.ac.uk
 oxford.ac.uk
 ox.ac.uk
 paisley.ac.uk
@@ -10229,6 +10237,21 @@ ankarabilim.edu.tr
 thk.edu.tr
 omu.edu.tr
 ieu.edu.tr
+greenville.edu
+suny.oneonta.edu
+nmc.edu
+adrian.edu
+cuw.edu
+delval.edu
+dewv.edu
+eckerd.edu
+email.uagm.edu
+email.uscupstate.edu
+fairfield.edu
+fhda.edu
+g.fmarion.edu
+georgefox.edu
+grandview.edu
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10258,3 +10281,4 @@ medunigraz.at
 universite-paris-saclay.fr
 broadinstitute.org
 bc.cas.cz
+up.edu.ph
