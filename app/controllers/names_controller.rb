@@ -19,10 +19,12 @@ class NamesController < ApplicationController
       proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
-      autofill_etymology edit_parent new_correspondence
+      autofill_etymology edit_parent
     ]
   )
-  before_action(:authenticate_owner_or_curator!, only: %i[unclaim])
+  before_action(
+    :authenticate_owner_or_curator!, only: %i[unclaim new_correspondence]
+  )
   before_action(:authenticate_contributor!, only: %i[new create claim])
   before_action(
     :authenticate_curator!,

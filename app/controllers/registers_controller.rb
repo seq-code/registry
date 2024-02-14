@@ -25,12 +25,12 @@ class RegistersController < ApplicationController
     :authenticate_editor!, only: %i[editorial_checks publish publish_commit]
   )
   before_action(
-    :authenticate_can_view!, only: %i[show table list]
+    :authenticate_can_view!, only: %i[show table list new_correspondence]
   )
   before_action(:ensure_valid!, only: %i[list])
   before_action(
     :authenticate_can_edit!,
-    only: %i[edit update destroy submit notify notify_commit new_correspondence]
+    only: %i[edit update destroy submit notify notify_commit]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve])
 
