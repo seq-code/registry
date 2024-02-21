@@ -15,6 +15,7 @@ class Genome < ApplicationRecord
   validates(:seq_depth, numericality: { greater_than: 0.0 }, if: :seq_depth?)
   validates(:source_accession, presence: true, if: :source?)
   validates(:source_database, presence: true, if: :source?)
+  validates(:accession, uniqueness: { scope: :database })
 
   has_rich_text(:submitter_comments)
 
@@ -107,6 +108,18 @@ class Genome < ApplicationRecord
 
   def multiple_names?
     names.count > 1
+  end
+
+  ##
+  # Attempts to update the accession of the genome and all associated names.
+  # If passed, it can also update the database. Please use with caution!
+  def update_accession(new_accession, new_database = nil)
+    new_database = database unless new_database.present?
+    self.class.transaction do
+      g_par = { type_accession: new_accession, type_material: new_database }
+      names.each { |name| name.update(g_par) or return false }
+      update(accession: new_accession, database: new_database)
+    end
   end
 
   def kind_hash

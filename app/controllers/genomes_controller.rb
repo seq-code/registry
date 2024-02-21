@@ -1,11 +1,11 @@
 class GenomesController < ApplicationController
   before_action(
     :set_genome,
-    only: %i[show edit update update_external recalculate_miga]
+    only: %i[show edit update update_external update_accession recalculate_miga]
   )
-  before_action(:set_name, only: %i[show edit update])
+  before_action(:set_name, only: %i[show edit update update_accession])
   before_action(:set_tutorial)
-  before_action(:authenticate_can_edit!, only: %i[edit update])
+  before_action(:authenticate_can_edit!, only: %i[edit update update_accession])
   before_action(
     :authenticate_curator!,
     only: %i[index update_external recalculate_miga]
@@ -34,6 +34,19 @@ class GenomesController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  # PATCH /genomes/1/update_accession
+  def update_accession
+    par  = params.require(:genome).permit(:database, :accession)
+    name = @genome.names.first
+    if @genome.update_accession(par[:accession], par[:database])
+      flash[:notice] = 'Genome successfully updated, ' \
+                       'recalculate MiGA entry if needed'
+    else
+      flash[:alert] = 'Genome could not be updated'
+    end
+    redirect_back(fallback_location: @genome)
   end
 
   # POST /genomes/1/update_external

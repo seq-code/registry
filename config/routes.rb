@@ -96,8 +96,11 @@ Rails.application.routes.draw do
 
   # Genomes
   resources(:genomes) do
-    post :update_external, on: :member
-    post :recalculate_miga, on: :member
+    member do
+      post  :update_external
+      post  :recalculate_miga
+      patch :update_accession
+    end
   end
 
   # Checks

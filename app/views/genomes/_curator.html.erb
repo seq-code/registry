@@ -18,6 +18,19 @@
       <% end %>
       &raquo; Queue the genome to recalculate all MiGA statistics
       <hr/>
+      <% id = modal('Change database and/or accession') do %>
+        <%= simple_form_for(@genome, url: update_accession_genome_path(@genome)) do |f| %>
+          <%= f.input(:database) %>
+          <%= f.input(:accession) %>
+          <br/>
+          <%= f.submit('Update', class: 'btn btn-primary') %>
+        <% end %>
+      <% end %>
+      <%= modal_button(id, class: 'btn btn-primary btn-sm') do %>
+        <%= fa_icon('tags') %> Change accession
+      <% end %>
+      &raquo; Change database and/or accession entry for genome
+      <hr/>
     </dd>
   </dl>
 <% end %>
