@@ -20,6 +20,10 @@
       <hr/>
       <% id = modal('Change database and/or accession') do %>
         <%= simple_form_for(@genome, url: update_accession_genome_path(@genome)) do |f| %>
+          <div class="alert alert-info">
+            Please be very careful with accession changes, as they can have
+            unexpected consequences. Use only when absolutely necessary.
+          </div>
           <%= f.input(:database) %>
           <%= f.input(:accession) %>
           <br/>
