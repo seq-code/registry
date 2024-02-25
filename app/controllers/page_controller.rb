@@ -75,13 +75,12 @@ class PageController < ApplicationController
     def help_topics
       {
         guide: {
-          etymology: 'How do I Fill the Etymology Table?'
+          etymology: 'How do I Fill the Etymology Table?',
+          # SOPs
+          curation: 'How are names internally curated?'
         },
         explanation: {
           register: 'What are Register Lists?'
-        },
-        sop: {
-          curation: 'How are names internally curated?'
         }
       }
     end
