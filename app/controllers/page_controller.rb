@@ -60,6 +60,7 @@ class PageController < ApplicationController
       return
     end
 
+    @category = category.to_s.capitalize
     render    = SeqCodeDown.new
     @topic    = help_topics[category][topic]
     @markdown = Redcarpet::Markdown.new(render, autolink: true, tables: true)
@@ -86,7 +87,9 @@ class PageController < ApplicationController
     end
 
     def help_topic_categories
-      Hash[help_topics.map { |k, v| v.keys.map { |topic| [topic, k] }.flatten }]
+      Hash[
+        *help_topics.map { |k, v| v.keys.map { |topic| [topic, k] } }.flatten
+      ]
     end
 end
 

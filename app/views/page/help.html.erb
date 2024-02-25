@@ -1,6 +1,7 @@
 <% unless params[:content].present? %>
-  <% provide(:title, 'Help: %s' % @topic) %>
-  <h1>Help: <%= @topic %></h1>
+  <% title = '%s: %s' % [@category, @topic] %>
+  <% provide(:title, title) %>
+  <h1><%= title %></h1>
   <hr/>
 <% end %>
 
@@ -19,7 +20,9 @@
   // Out-links
   var ext_link = $('<i class="fas fa-external-link-alt ml-2"> </i>');
   var out_links = sqdown
-    .find('a[href^="http:"]:not(:has(.fas)), a[href^="https:"]:not(:has(.fas))');
+    .find(
+      'a[href^="http:"]:not(:has(.fas)), a[href^="https:"]:not(:has(.fas))'
+    );
   out_links.attr("target", "_blank");
   out_links.append(ext_link);
 </script>
