@@ -16,7 +16,7 @@ module ApplicationHelper
 
   def time_ago_with_date(date)
     date  = DateTime.parse(date) if date.is_a?(String)
-    fdate = d.strftime('%F %r (%Z)')
+    fdate = date.strftime('%F %r (%Z)')
     content_tag(:u, class: 'hover-help', title: fdate) do
       time_ago_in_words(date) + ' ago'
     end
