@@ -15,7 +15,8 @@ module ApplicationHelper
   end
 
   def time_ago_with_date(date)
-    content_tag(:u, class: 'hover-help', title: date.to_s) do
+    fdate = date.strftime('%F %r (%Z)')
+    content_tag(:u, class: 'hover-help', title: fdate) do
       time_ago_in_words(date) + ' ago'
     end
   end
