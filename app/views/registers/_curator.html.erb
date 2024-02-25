@@ -14,13 +14,27 @@
         &raquo; Show historic record of communication with curators
       <% else %>
         <% unless @register.all_endorsed? %>
-          <%= link_to(
-                endorse_register_url(@register), method: :post,
-                class: 'btn btn-primary btn-sm',
-                data: {
-                  confirm: 'Are you sure? The submitter will be notified'
-                }
-              ) do %>
+          <% id = modal('Are you sure?') do %>
+            <h5>Endorse names in the list</h5>
+            <p>
+              This action will endorse
+              <%= pluralize(@register.names.count, 'names') %>, and the
+              submitter will be immediately notified.
+            </p>
+            <p>
+              Endorsed names don't have
+              standing in nomenclature, but indicate that the curation team can
+              confirm the correctness of the names and (if available) sufficient
+              genome quality.
+            </p>
+            <%= link_to(
+                  endorse_register_url(@register), method: :post,
+                  class: 'btn btn-primary'
+                ) do %>
+              <%= fa_icon('check-square') %> Endorse all names in the list
+            <% end %>
+          <% end %>
+          <%= modal_button(id, class: 'btn btn-primary btn-sm') do %>
             <%= fa_icon('check-square') %> Endorse all names in the list
           <% end %>
           &raquo; Mark all names in the list as endorsed in batch

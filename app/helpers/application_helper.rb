@@ -171,7 +171,8 @@ module ApplicationHelper
                     :span, '&times;'.html_safe, aria: { hidden: true }
                   )
                 end
-            end + content_tag(:div, class: 'modal-body') { yield }
+            end + content_tag(:div, class: 'modal-body') { yield } +
+              (content_tag(:div, opts[:footer], class: 'modal-footer') if opts[:footer])
           end
         end
       end
@@ -195,6 +196,16 @@ module ApplicationHelper
     modal_button(id, opts) do
       content_tag(:b, opts[:text], class: 'text-info') +
       fa_icon('question-circle', class: 'hover-help')
+    end
+  end
+
+  def help_topic(topic, title = '', opts = {})
+    footer = link_to('View help message as individual page', help_url(topic))
+    id = modal(title, opts.merge(footer: footer)) do
+      render(partial: 'page/help_inline', locals: { topic: topic })
+    end
+    modal_button(id, class: 'btn btn-info') do
+      fa_icon('question-circle', class: 'mr-2') + title
     end
   end
 

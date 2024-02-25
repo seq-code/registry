@@ -32,11 +32,24 @@
         &raquo; Notify the SeqCode about names <b>already</b> published
         <hr/>
       <% end %>
-      <%= link_to(
-            @register, method: :delete,
-            class: 'btn btn-danger btn-sm',
-            data: { confirm: 'Are you sure? This action cannot be undone' }
-          ) do %>
+      <% id = modal('Are you sure?') do %>
+        <div class="alert alert-danger my-0">
+          <h5>Remove register list</h5>
+          <p>
+            This action cannot be undone. Once you remove this list, all
+            associated metadata will also be removed, including any validation
+            or curation progress.
+          </p>
+          <%= link_to(
+                @register, method: :delete,
+                class: 'btn btn-danger',
+                data: { confirm: 'Final confirmation: Are you sure?' }
+              ) do %>
+            <%= fa_icon('trash-alt') %> Eliminate register list
+          <% end %>
+        </div>
+      <% end %>
+      <%= modal_button(id, class: 'btn btn-danger btn-sm') do %>
         <%= fa_icon('trash-alt') %> Eliminate register list
       <% end %>
       &raquo; Eliminate the list (the names will remain registered)

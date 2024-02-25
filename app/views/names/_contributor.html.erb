@@ -49,11 +49,24 @@
           &raquo; Link this name to a Register List for validation
           <hr/>
         <% end %>
-        <%= link_to(
-              @name, method: :delete,
-              class: 'btn btn-sm btn-danger',
-              data: { confirm: 'Are you sure? This action cannot be undone' }
-            ) do %>
+        <% id = modal('Are you sure?') do %>
+          <div class="alert alert-danger my-0">
+            <h5>Remove name</h5>
+            <p>
+              <u>This action cannot be undone</u>. Once you remove this name, all
+              associated metadata will also be removed, including any validation
+              or curation progress.
+            </p>
+            <%= link_to(
+                  @name, method: :delete,
+                  class: 'btn btn-danger',
+                  data: { confirm: 'Final confirmation: Are you sure?' }
+                ) do %>
+              <%= fa_icon('minus-circle') %> Remove name
+          <% end %>
+          </div>
+        <% end %>
+        <%= modal_button(id, class: 'btn btn-sm btn-danger') do %>
           <%= fa_icon('minus-circle') %> Remove name
         <% end %>
         &raquo; Eliminate this name and all metadata from the Registry

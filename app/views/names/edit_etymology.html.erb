@@ -11,14 +11,7 @@
       Automatically fill the etymology
     <% end %>
   <% end %>
-
-  <% help_id = modal('How to Fill the Etymology Table', size: 'xl') do %>
-    <%= render(partial: 'page/help_inline', locals: { topic: 'etymology' }) %>
-  <% end %>
-  <%= modal_button(help_id, class: 'btn btn-info') do %>
-    <%= fa_icon('question-circle') %>&nbsp;
-    How to fill the etymology table
-  <% end %>
+  <%= help_topic('etymology', 'How to Fill the Etymology Table?', size: 'xl') %>
 </div>
 
 <%= simple_form_for(@name) do |f| %>

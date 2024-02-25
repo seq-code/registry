@@ -12,40 +12,66 @@
         &raquo; Remove ownership of this name and make it public
         <hr/>
       <% end %>
-      <% unless @name.after_endorsement? %>
-        <%= link_to(
-              endorse_name_url(@name),
-              method: :post,
-              class: 'btn btn-primary btn-sm',
-              data: { confirm: 'Are you sure? This action cannot be undone' }
-            ) do %>
+      <% unless @name.after_endorsement? || !@name.register %>
+        <% id = modal('Are you sure?') do %>
+          <h5>Endorse individual name</h5>
+          <p>
+            Please consider that endorsing an individual name can cause
+            confusion to authors. To track curation progress in each name,
+            consider using the <b>Expert Curation</b> checks instead.
+          </p>
+          <%= link_to(
+                endorse_name_url(@name),
+                method: :post, class: 'btn btn-primary'
+              ) do %>
+            <%= fa_icon('check-square') %> Endorse name
+          <% end %>
+          <%= link_to(@name.register, class: 'btn btn-secondary') do %>
+            <%= fa_icon('clipboard-list') %> Visit Register List
+          <% end %>
+        <% end %>
+        <%= modal_button(id, class: 'btn btn-primary btn-sm') do %>
           <%= fa_icon('check-square') %> Endorse name
         <% end %>
         &raquo; Recommend this name as a candidate for validation
         <hr/>
       <% end %>
-      <%= link_to(
-            validate_name_url(@name, code: :icnp),
-            method: :post,
-            class: 'btn btn-primary btn-sm',
-            data: { confirm: 'Are you sure? This action cannot be undone' }
-          ) do %>
-        <%= fa_icon('stamp') %> Report valid under ICNP
+      <% id = modal('Select code of nomenclature') do %>
+        <h5>Validly published under a different code</h5>
+        <p>
+          Has this name already been validly published under a code of
+          nomenclature other than the SeqCode?
+          You could also
+          <%= link_to('search this name in LPSN',
+                      'https://lpsn.dsmz.de/search?word=%s' % @name.name,
+                      target: '_blank') %>.
+        </p>
+        <hr/>
+        <h5 class="text-primary">Report valid under</h5>
+        <%= link_to(
+              validate_name_url(@name, code: :icnp),
+              method: :post,
+              class: 'btn btn-primary',
+              data: { confirm: 'Are you sure? This action cannot be undone' }
+            ) do %>
+          <%= fa_icon('stamp') %> ICNP
+        <% end %>
+        <%= link_to(
+              validate_name_url(@name, code: :icn),
+              method: :post,
+              class: 'btn btn-primary',
+              data: { confirm: 'Are you sure? This action cannot be undone' }
+            ) do %>
+          <%= fa_icon('stamp') %> ICN (Botanical Code)
+        <% end %>
       <% end %>
-      &raquo; Indicate that this name has already been validly published under
-      the ICNP
-      <hr/>
-      <%= link_to(
-            validate_name_url(@name, code: :icn),
-            method: :post,
-            class: 'btn btn-primary btn-sm',
-            data: { confirm: 'Are you sure? This action cannot be undone' }
-          ) do %>
-        <%= fa_icon('stamp') %> Report valid under ICN
+      <%= modal_button(id, class: 'btn btn-primary btn-sm') do %>
+        <%= fa_icon('stamp') %> Report valid under other code
       <% end %>
-      &raquo; Indicate that this name has been validly published under
-      the ICN (Botanical Code)
+      &raquo; Indicate that this name has been validly published under another
+      code of nomenclature
       <hr/>
+      <!-- This option is hidden as register-level actions are to be preferred
       <% if @name.after_submission? %>
         <%= link_to(
               return_name_url(@name),
@@ -60,6 +86,7 @@
         &raquo; Send this name back to the author for additional revisions
         <hr/>
       <% end %>
+      -->
     </dd>
   </dl>
 <% end %>
