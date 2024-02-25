@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
     when /\A(r:.+)\z/i
       list = Register.where(accession: $1).first or not_found
       redirect_to(register_path(list, par))
-    when /\A(g:.+)\z/i
+    when /\Ag:(.+)\z/i
       genome = Genome.where(id: $1).first or not_found
       redirect_to(genome_path(genome, par))
     else
