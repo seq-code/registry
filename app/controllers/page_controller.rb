@@ -79,12 +79,15 @@ class PageController < ApplicationController
         },
         explanation: {
           register: 'What are Register Lists?'
+        },
+        sop: {
+          curation: 'How are names internally curated?'
         }
       }
     end
 
     def help_topic_categories
-      Hash[help_topics.map { |k,v| v.keys.map { |topic| [topic, k] }.flatten }]
+      Hash[help_topics.map { |k, v| v.keys.map { |topic| [topic, k] }.flatten }]
     end
 end
 

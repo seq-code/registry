@@ -1,5 +1,5 @@
 <% unless params[:content].present? %>
-  <% provide(:title, 'Help: Etymology') %>
+  <% provide(:title, 'Help: %s' % @topic) %>
   <h1>Help: <%= @topic %></h1>
   <hr/>
 <% end %>
