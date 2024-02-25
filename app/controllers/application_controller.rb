@@ -82,6 +82,8 @@ class ApplicationController < ActionController::Base
     when /\Ag:(.+)\z/i
       genome = Genome.where(id: $1).first or not_found
       redirect_to(genome_path(genome, par))
+    when /\Ah:(.+)\z/i
+      redirect_to(help_path($1, par))
     else
       redirect_to(root_path)
     end
