@@ -15,10 +15,10 @@ module ApplicationHelper
   end
 
   def time_ago_with_date(date)
-    d = DateTime.parse(date.to_s)
+    date  = DateTime.parse(date) if date.is_a?(String)
     fdate = d.strftime('%F %r (%Z)')
     content_tag(:u, class: 'hover-help', title: fdate) do
-      time_ago_in_words(d) + ' ago'
+      time_ago_in_words(date) + ' ago'
     end
   end
 
