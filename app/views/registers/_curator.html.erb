@@ -18,15 +18,28 @@
             <h5>Endorse names in the list</h5>
             <p>
               This action will endorse
-              <%= pluralize(@register.names.count, 'names') %>, and the
+              <%= pluralize(@register.names.count, 'name') %>, and the
               submitter will be immediately notified.
             </p>
             <p>
-              Endorsed names don't have
-              standing in nomenclature, but indicate that the curation team can
-              confirm the correctness of the names and (if available) sufficient
-              genome quality.
+              Endorsed names don't have standing in nomenclature, but indicate
+              that the curation team can confirm the correctness of the names
+              and (if available) sufficient genome quality.
             </p>
+            <% unless @register.all_review? %>
+              <div class="alert alert-warning">
+                This list has not been fully reviewed yet. It's currently
+                missing nomenclatural and/or genomics review.
+              </div>
+            <% end %>
+            <% if @register.notified? %>
+              <div class="alert alert-warning">
+                The SeqCode Registry has already been notified of effective
+                publication of this list, and endorsement is superfluous at
+                this point. If all names are correct, consider validating the
+                list instead.
+              </div>
+            <% end %>
             <%= link_to(
                   endorse_register_url(@register), method: :post,
                   class: 'btn btn-primary'
@@ -59,11 +72,31 @@
           &raquo; Edit the notification form, including minor changes in title
           and abstract
           <hr/>
-          <%= link_to(
-                validate_register_url(@register), method: :post,
-                class: 'btn btn-primary btn-sm',
-                data: { confirm: 'Are you sure? This cannot be undone' }
-              ) do %>
+          <% id = modal('Are you sure?') do %>
+            <h5>Validate names in the list</h5>
+            <p>
+              This action will validate
+              <%= pluralize(@register.names.count, 'name') %>, the submitter
+              will be immediately notified, and <u>it cannot be undone</u>.
+            </p>
+            <p>
+              Validly published names have standing in nomenclature.
+            </p>
+            <% unless @register.all_review? %>
+              <div class="alert alert-warning">
+                This list has not been fully reviewed yet. It's currently
+                missing nomenclatural and/or genomics review.
+              </div>
+            <% end %>
+            <%= link_to(
+                  validate_register_url(@register), method: :post,
+                  class: 'btn btn-primary',
+                  data: { confirm: 'Final confirmation: Are you sure?' }
+                ) do %>
+              <%= fa_icon('certificate') %> Validate list
+            <% end %>
+          <% end %>
+          <%= modal_button(id, class: 'btn btn-primary btn-sm') do %>
             <%= fa_icon('certificate') %> Validate list
           <% end %>
           &raquo; Validate all names under SeqCode and record the current list

@@ -286,6 +286,10 @@ class Register < ApplicationRecord
     ).compact.uniq
   end
 
+  def all_review?
+    genomics_review && nomenclature_review
+  end
+
   private
 
   def assign_accession
