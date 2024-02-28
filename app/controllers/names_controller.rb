@@ -338,7 +338,7 @@ class NamesController < ApplicationController
       flash[:alert] = 'Corrigendum could not be removed'
       redirect_to(@name)
     else
-      flash[:alert] = 'There was an issue registering the corrigendum'
+      flash.now[:alert] = 'There was an issue registering the corrigendum'
       params[:publication_id] = par[:corrigendum_in_id]
       render(:corrigendum_in)
     end
