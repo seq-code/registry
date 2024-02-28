@@ -329,8 +329,19 @@ class NamesController < ApplicationController
       params.require(:name).permit(
         :name, :corrigendum_in_id, :corrigendum_from, :corrigendum_kind
       )
-    @name.update(par)
-    redirect_to(@name)
+    if @name.update(par)
+      flash[:notice] = params[:delete_corrigenda] ?
+        'Corrigendum removed successfully' :
+        'Corrigendum successfully registered'
+      redirect_to(@name)
+    elsif params[:delete_corrigenda]
+      flash[:alert] = 'Corrigendum could not be removed'
+      redirect_to(@name)
+    else
+      flash[:alert] = 'There was an issue registering the corrigendum'
+      params[:publication_id] = par[:corrigendum_in_id]
+      render(:corrigendum_in)
+    end
   end
 
   # POST /names/1/emended_in/2
