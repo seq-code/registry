@@ -17,6 +17,7 @@ ac-aix-marseille.fr
 ac-creteil.fr
 marywood.edu
 upes.ac.in
+ashoka.edu.in
 cstj.qc.ca
 lindenwood.edu
 davietjal.org
@@ -907,6 +908,9 @@ fredonia.edu
 oswego.edu
 plattsburgh.edu
 stonybrook.edu
+fsl.cs.sunysb.edu
+cs.sunysb.edu
+lmc.cs.sunysb.edu
 stonybrookmedicine.edu
 brockport.edu
 buffalostate.edu
@@ -1118,6 +1122,7 @@ uoregon.edu
 upenn.edu
 seas.upenn.edu
 phoenix.edu
+email.uophx.edu
 pitt.edu
 upj.pitt.edu
 upb.pitt.edu
@@ -1141,6 +1146,7 @@ andersonuniversity.edu
 usca.edu
 usd.edu
 usc.edu
+isi.edu
 usi.edu
 usm.maine.edu
 usm.edu
@@ -2249,6 +2255,7 @@ uwinnipeg.ca
 uwo.ca
 vcc.ca
 vicu.utoronto.ca
+eecg.toronto.edu
 wlu.ca
 mylaurier.ca
 yorku.ca
@@ -2584,6 +2591,7 @@ shtdu.edu.cn
 shtu.edu.cn
 shtvu.edu.cn
 shu.edu.cn
+shanghaitech.edu.cn
 shufe.edu.cn
 shutcm.edu.cn
 shzu.edu.cn
@@ -2642,6 +2650,7 @@ usc.edu.cn
 usst.edu.cn
 ustb.edu.cn
 ustc.edu.cn
+ustc.edu
 utibet.edu.cn
 uvu.edu.cn
 wcums.edu.cn
@@ -2995,6 +3004,7 @@ utesa.edu
 utesur.edu.do
 brookdale.edu.ec
 brookings.edu
+whoi.edu
 casagrande.edu.ec
 epn.edu.ec
 espe.edu.ec
@@ -3727,6 +3737,7 @@ uni-bremen.de
 unibw-hamburg.de
 unibw-muenchen.de
 tu-dortmund.de
+udo.edu
 uni-duesseldorf.de
 uni-duisburg-essen.de
 uni-erfurt.de
@@ -4220,6 +4231,7 @@ nitsikkim.ac.in
 nits.ac.in
 nitsri.net
 nitk.ac.in
+nitk.edu.in
 nitt.edu
 nituk.ac.in
 nitw.ernet.in
@@ -5483,7 +5495,7 @@ ynu.ac.jp
 yokkaichi-u.ac.jp
 yokohama-cu.ac.jp
 zokei.ac.jp
-aabfs.org
+aambfs.edu.eg
 aabu.edu.jo
 aau.edu.jo
 ahu.edu.jo
@@ -6422,6 +6434,7 @@ ru.nl
 saxion.edu
 stenden.com
 tilburguniversity.nl
+tilburguniversity.edu
 tudelft.nl
 student.tudelft.nl
 tue.nl
@@ -8348,6 +8361,7 @@ mersin.edu.tr
 mku.edu.tr
 msu.edu.tr
 mu.edu.tr
+marun.edu.tr
 ohu.edu.tr
 nku.edu.tr
 metu.edu.tr
@@ -8355,6 +8369,7 @@ ogu.edu.tr
 omu.edu.tr
 odu.edu.tr
 ozyegin.edu.tr
+ozu.edu.tr
 pamukkale.edu.tr
 sabanciuniv.edu.tr
 sabanciuniv.edu
@@ -9395,6 +9410,7 @@ vcc.edu
 wetcc.edu
 coahomacc.edu
 colin.edu
+students.olin.edu
 eccc.edu
 eastms.edu
 hindscc.edu
@@ -10148,6 +10164,7 @@ csupueblo.edu
 panimalar.ac.in
 panimalarengineeringcollegechennai.ac.in
 rajalakshmi.org
+rajagiritech.edu.in
 stjosephs.ac.in
 stjosephstechnology.ac.in
 ssn.edu.in
@@ -10187,6 +10204,7 @@ ac-bordeaux.fr
 insead.edu
 thk.edu.tr
 if-pan.krakow.pl
+camk.edu.pl
 lamar.org.mx
 ehtp.ac.ma
 idti.edu
@@ -10252,6 +10270,15 @@ fhda.edu
 g.fmarion.edu
 georgefox.edu
 grandview.edu
+uf3ceu.es
+usj.es
+hesperides.edu.es
+uneatlantico.es
+usms.edu.pk
+cusit.edu.pk
+cityuniversity.edu.pk
+cup.edu.pk
+tcioe.edu.np
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10282,3 +10309,4 @@ universite-paris-saclay.fr
 broadinstitute.org
 bc.cas.cz
 up.edu.ph
+tll.org.sg

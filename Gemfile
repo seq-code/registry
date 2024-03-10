@@ -31,7 +31,7 @@ gem 'redirect_safely', '~> 1.0'
 gem 'roo', '~> 2.9.0'
 gem 'dkim', '~> 1.1'
 gem 'inline_svg', '~> 1.8'
-gem 'miga-base', '~> 1.2'
+gem 'miga-base', '~> 1.3'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
