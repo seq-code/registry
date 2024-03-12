@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_02_093304) do
+ActiveRecord::Schema.define(version: 2024_03_12_190827) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -293,6 +293,7 @@ ActiveRecord::Schema.define(version: 2024_02_02_093304) do
     t.string "pub_type"
     t.string "abstract"
     t.boolean "scanned", default: false
+    t.string "datacite_json"
     t.index ["doi"], name: "index_publications_on_doi", unique: true
     t.index ["journal"], name: "index_publications_on_journal"
   end

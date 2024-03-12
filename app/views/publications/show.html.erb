@@ -11,13 +11,18 @@
     <ul>
       <% @publication.publication_authors.each do |publication_author| %>
         <% author = publication_author.author %>
-        <li><%= link_to author.full_name, author %> (<%= publication_author.sequence %>)</li>
+        <li>
+          <%= link_to author.full_name, author %>
+          <% if publication_author.sequence %>
+            (<%= publication_author.sequence %>)
+          <% end %>
+        </li>
       <% end %>
     </ul>
   </dd>
   <dt>Publication date</dt>
   <dd><%= @publication.journal_date %></dd>
   <dt>DOI</dt>
-  <dd><%= link_to @publication.doi, @publication.url, target: '_blank' %></dd>
+  <dd><%= link_to(@publication.doi, @publication.url, target: '_blank') %></dd>
 </dl>
 

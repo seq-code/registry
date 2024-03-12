@@ -32,20 +32,93 @@ class Publication < ApplicationRecord
   class << self
 
     def by_doi(doi, force_update = false)
-      if doi.nil? || doi.empty?
+      unless doi.present?
         return Publication.new.tap { |i| i.errors.add(:doi, 'cannot be empty') }
       end
       p = Publication.find_by(doi: doi)
       return p if p && !force_update
 
-      begin
-        works = Serrano.works(ids: doi)
-      rescue Serrano::NotFound
-        return Publication.new.tap { |i| i.errors.add(:doi, 'not in CrossRef') }
-      end
-
+      works = Serrano.works(ids: doi)
       work = works[0].fetch('message', {})
       by_serrano_work(work) if work['DOI']
+    rescue Serrano::NotFound
+      by_doi_datacite(doi)
+    end
+
+    def by_doi_datacite(doi)
+      url = 'https://api.datacite.org/dois/%s' % doi
+      res = Net::HTTP.get_response(URI(url))
+      p = nil
+      if res.is_a?(Net::HTTPSuccess) && res.body.present?
+        p = by_datacite_work(JSON.parse(res.body))
+      end
+      return p if p
+
+      Publication.new.tap do |i|
+        i.errors.add(:doi, 'not in CrossRef or DataCite')
+      end
+    end
+
+    def by_uniform_hash_work(params, subjects, authors)
+      p = Publication.find_by(doi: params[:doi])
+      if p
+        p.update(params)
+      else
+        p = Publication.new(params)
+        p.save or return p
+      end
+
+      subjects.each do |subject|
+        next unless subject.present?
+        s = Subject.find_by(name: subject)
+        next if s and p.subjects.include? s
+        s ||= Subject.new(name: subject).tap(&:save)
+        PublicationSubject.new(publication: p, subject: s).save
+      end
+
+      authors.each do |author|
+        author['family'] ||= author['name']
+        next unless author['family']
+
+        a = Author.find_or_create(author['given'], author['family'])
+        next if p.authors.include? a
+
+        PublicationAuthor.
+          new(publication_id: p.id, author_id: a.id,
+            sequence: author['sequence']).save
+      end
+
+      return p
+    end
+
+    def by_datacite_work(work)
+      att = work&.dig('data', 'attributes')
+      return unless att.present?
+
+      abstract = att['descriptions']
+        .find { |i| i['descriptionType'] == 'Abstract' }
+        &.dig('description')
+      params = {
+        title: att['titles'].map { |i| i['title'] }.join('. '),
+        journal: att['journal'] || att['publisher'],
+        journal_loc: nil,
+        journal_date: Date.new(att['publicationYear']),
+        doi: work.dig('data', 'id'),
+        url: att['url'],
+        pub_type: att.dig('types', 'bibtex'),
+        abstract: abstract,
+        datacite_json: work.to_json
+      }
+      subjects = att.fetch('subjects', []).map { |i| i['subject'] }.compact
+      authors  = att.fetch('creators', []).map do |author|
+        {
+          'name'     => author['name'],
+          'family'   => author['familyName'],
+          'given'    => author['givenName'],
+          'sequence' => author['sequence']
+        }
+      end
+      by_uniform_hash_work(params, subjects, authors)
     end
 
     def by_serrano_work(work)
@@ -64,35 +137,9 @@ class Publication < ApplicationRecord
         abstract: work['abstract'],
         crossref_json: work.to_json
       }
-      p = Publication.find_by(doi: work['DOI'])
-      if p
-        p.update(params)
-      else
-        p = Publication.new(params)
-        p.save or return p
-      end
-
-      work.fetch('subject', []).each do |subject|
-        next unless subject
-        s = Subject.find_by(name: subject)
-        next if s and p.subjects.include? s
-        s ||= Subject.new(name: subject).tap{ |i| i.save }
-        PublicationSubject.
-          new(publication_id: p.id, subject_id: s.id).save
-      end
-
-      work.fetch('author', []).each do |author|
-        author['family'] ||= author['name']
-        next unless author['family']
-
-        a = Author.find_or_create(author['given'], author['family'])
-        next if p.authors.include? a
-
-        PublicationAuthor.
-          new(publication_id: p.id, author_id: a.id,
-            sequence: author['sequence']).save
-      end
-      p
+      subjects = work.fetch('subject', [])
+      authors  = work.fetch('author', [])
+      by_uniform_hash_work(params, subjects, authors)
     end
 
     def query_crossref(query)
@@ -178,7 +225,7 @@ class Publication < ApplicationRecord
   end
 
   def prepub?
-    !journal? || pub_type == 'posted-content'
+    !journal? || pub_type == 'posted-content' || datacite_json.present?
   end
 
   def link
