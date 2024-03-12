@@ -21,6 +21,17 @@
   </p>
 <% end %>
 
+<div class="alert alert-info">
+  This action can be reversed, and you'll still have access to editing the
+  name and the register list information until the list is submitted or
+  notified.
+  <hr/>
+  Please note that all names proposed in a given publication should be added
+  to the same register list, so select below the appropriate existing list or
+  "Create a new register" if no register lists have been created for the
+  effective publication.
+</div>
+
 <%= simple_form_for(@register) do |f| %>
   <div class="form-actions">
     <%= hidden_field_tag(:name, @name&.id) %>
