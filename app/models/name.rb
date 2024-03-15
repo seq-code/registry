@@ -821,6 +821,10 @@ class Name < ApplicationRecord
     end
   end
 
+  def type_object
+    type_is_genome? ? genome : type_is_name? ? type_name : nil
+  end
+
   attr_writer :type_name
 
   def type_genome

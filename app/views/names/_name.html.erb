@@ -1,16 +1,31 @@
 <%= adaptable_entry(list, name.abbr_name, name) do |entry| %>
-  <%= adaptable_value(entry, 'Reported in') do %>
-    <% fc = name.publications.last %>
-    <% if fc %>
-      <%= link_to fc.short_citation, fc %>
-    <% else %>
-      <em>Unknown</em>
+  <% if effective_publication ||= false %>
+    <%= adaptable_value(entry, 'Effective publication') do %>
+      <% if name.proposed_in %>
+        <%= display_link(name.proposed_in, :short_citation) %>
+      <% else %>
+        <em>Unknown</em>
+      <% end %>
     <% end %>
-    <% if name.publications.count > 2 %>
-      and <%= name.publications.count - 1 %> other publications
-    <% elsif name.publications.count == 2 %>
-      <% lc = name.publications.first %>
-      and <%= link_to lc.short_citation, lc %>
+  <% else %>
+    <%= adaptable_value(entry, 'Reported in') do %>
+      <% if name.publications.any? %>
+        <%= display_link(name.publications.last, :short_citation) %>
+      <% else %>
+        <em>Unknown</em>
+      <% end %>
+
+      <% if name.publications.count > 2 %>
+        and <%= name.publications.count - 1 %> other publications
+      <% elsif name.publications.count == 2 %>
+        and <%= display_link(name.publications.first, :short_citation) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if show_type ||= false %>
+    <%= adaptable_value(entry, 'Nomenclatural type') do %>
+      <%= link_to_name_type(name) %>
     <% end %>
   <% end %>
 

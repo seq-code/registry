@@ -101,9 +101,8 @@ class NamesController < ApplicationController
   # GET /type-genomes
   # GET /type-genomes.json
   def type_genomes
-    @names = Name.where(status: 15, type_material: :nuccore)
-                 .or(Name.where(status: 15, type_material: :assembly))
-                 .paginate(page: params[:page], per_page: 100)
+    @names = Name.where(status: 15, type_material: [:nuccore, :assembly])
+                 .paginate(page: params[:page], per_page: 50)
   end
 
   # GET /names/user

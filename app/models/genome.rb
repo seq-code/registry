@@ -269,6 +269,10 @@ class Genome < ApplicationRecord
     "#{db_text}: #{accession}"
   end
 
+  def display(_html = true)
+    text
+  end
+
   def title
     'Genome sc|%07i' % id
   end

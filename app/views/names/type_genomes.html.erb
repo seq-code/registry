@@ -1,6 +1,11 @@
+<%=
+  download_buttons([
+    [name_type_genomes_url(format: :json), 'file-code', 'JSON']
+  ])
+%>
 <h1>
   Type genomes of valid names
-  <small class='text-muted'>(<%= @names.count %>)</small>
+  <div class="badge badge-count"><%= @names.count %></div>
 </h1>
 <div class="container p-0">
   <div class="row">
@@ -15,7 +20,12 @@
 
 <%= adaptable_list(set: @names) do |list| %>
   <% @names.each do |name| %>
-    <%= render(partial: name, locals: { list: list }) %>
+    <%=
+      render(
+        partial: name,
+        locals: { list: list, show_type: true, effective_publication: true }
+      )
+    %>
   <% end %>
 <% end %>
 

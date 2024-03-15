@@ -7,7 +7,12 @@ unless name.description.empty?
 end
 json.formal_styling(raw: name.formal_txt, html: name.formal_html)
 json.etymology(name.full_etymology(false))
-json.type(name.type_is_name? ? name.type_name.name : name.type_text)
+json.type_material(
+  class: name.type_object ? name.type_object.class.to_s : 'unknown',
+  url: name.type_object ?
+        polymorphic_url(name.type_object, format: :json) : nil,
+  display: name.type_object&.display(false),
+)
 
 unless name.notes.empty?
   json.notes(raw: name.notes.body.to_plain_text, html: name.notes.body)
