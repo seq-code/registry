@@ -80,3 +80,9 @@ gem 'font_awesome5_rails', '~> 1.5'
 # loaded (see https://github.com/heartcombo/simple_form/issues/1824)
 gem 'simple_form', '~> 5.2.0'
 
+group :rubocop do
+  gem 'rubocop', '~> 1.62', require: false
+  gem 'rubocop-packaging', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+end
