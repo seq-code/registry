@@ -17,6 +17,6 @@ class Author < ApplicationRecord
   end
 
   def abbreviated_name
-    family.to_s + ( given ? " " + given.gsub(/([^\s])[^\s]+ ?/, '\1') : '' )
+    family.to_s + ( given ? ' ' + given.gsub(/([^\s])[^\s]+ ?/, '\1') : '' )
   end
 end

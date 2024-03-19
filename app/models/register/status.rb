@@ -316,13 +316,13 @@ module Register::Status
     elsif bnames.values.any?
       if bnames.values.count(&:!) > 5
         add_note(
-          "The effective publication mentions" \
+          'The effective publication mentions' \
             " #{bnames.values.count(&:itself)} out of" \
             " #{bnames.count} names in the list"
         )
       else
         add_note(
-          "The effective publication mentions some names in the list," \
+          'The effective publication mentions some names in the list,' \
             " but not: #{bnames.select { |_, v| !v }.keys.join(', ')}"
         )
       end

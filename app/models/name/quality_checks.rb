@@ -294,14 +294,14 @@ module Name::QualityChecks
       # - Rule 15
       incorrect_suffix: {
         message: lambda { |w|
-          "The ending of the name is incompatible with the " +
+          'The ending of the name is incompatible with the ' +
             "rank of #{w.name.rank}"
         },
         rules: %w[15]
       }.merge(@@link_to_edit_spelling),
       inconsistent_etymology_with_type_genus: {
         message: lambda { |w|
-          "The etymology should be formed by the stem of the type " +
+          'The etymology should be formed by the stem of the type ' +
             "genus and the suffix -#{w.name.rank_suffix}"
         },
         link_text: 'Autofill etymology',
@@ -310,7 +310,7 @@ module Name::QualityChecks
       },
       inconsistent_with_type_genus: {
         message: lambda { |w|
-          "The name should be formed by adding the suffix " +
+          'The name should be formed by adding the suffix ' +
             "-#{w.name.rank_suffix} to the stem of the type genus"
         },
         rules: %w[15 16]

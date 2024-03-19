@@ -451,7 +451,7 @@ class Name < ApplicationRecord
   def formal_html
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
-    y += " <i>corrig.</i>".html_safe if corrigendum_from?
+    y += ' <i>corrig.</i>'.html_safe if corrigendum_from?
     if authority || proposed_in
       y += " #{sanitize(authority || proposed_in.short_citation)}"
     end

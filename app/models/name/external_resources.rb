@@ -81,7 +81,7 @@ module Name::ExternalResources
     names.map do |i|
       "<a href=\"#{base}&search_value=#{i[:tsn]}\" target=_blank>" \
         "<i>#{i[:combinedName]}</i> #{i[:author]} (<i>#{i[:kingdom]}</i>)" \
-        "</a>"
+        '</a>'
     end
   end
 
@@ -145,7 +145,7 @@ module Name::ExternalResources
 
     (col_hash[:alternatives] || []).map do |i|
       "#{i[:labelHtml]} " \
-        "(<a href=\"https://www.catalogueoflife.org/\" target=_blank>COL</a>)"
+        '(<a href="https://www.catalogueoflife.org/" target=_blank>COL</a>)'
     end
   end
 

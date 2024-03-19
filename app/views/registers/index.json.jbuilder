@@ -1,1 +1,1 @@
-json.array! @registers, partial: "registers/register", as: :register
+json.array! @registers, partial: 'registers/register', as: :register

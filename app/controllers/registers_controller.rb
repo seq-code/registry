@@ -128,7 +128,7 @@ class RegistersController < ApplicationController
   def update
     respond_to do |format|
       if @register.update(register_params)
-        format.html { redirect_to @register, notice: "Register was successfully updated." }
+        format.html { redirect_to @register, notice: 'Register was successfully updated.' }
         format.json { render :show, status: :ok, location: @register }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -144,7 +144,7 @@ class RegistersController < ApplicationController
       @register.destroy!
     end
     respond_to do |format|
-      format.html { redirect_to registers_url, notice: "Register was successfully destroyed." }
+      format.html { redirect_to registers_url, notice: 'Register was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

@@ -175,7 +175,7 @@ module Name::Etymology
   # Standardize the way the syllabification is represented for the
   # current instance *without* saving the changes to the database
   def standardize_syllabication
-    self.syllabication&.gsub!(/[-\.\/]+/, ".")
+    self.syllabication&.gsub!(/[-\.\/]+/, '.')
     self.syllabication&.gsub!(/\.?[‘’ʼ＇´']\.?/, "'")
   end
 
