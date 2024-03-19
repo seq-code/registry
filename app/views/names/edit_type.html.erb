@@ -34,7 +34,9 @@
     <div id="name_genome_strain_container">
       <%=
         f.input(
-          :genome_strain, label: 'Genome strain (an isolate or other culture)',
+          :genome_strain,
+          label: 'Reference strain ' \
+                 '(if the genome is derived from an isolate or other culture)',
           hint: 'Strain associated to the type genome. ' \
                 'Use "=" to separate multiple equivalent strain accessions.'
         )
