@@ -67,9 +67,15 @@ module Genome::ExternalResources
   ##
   # Retrieve BioSample metadata and return as a parsed Hash
   def external_biosample_hash(acc)
+    external_biosample_hash_ncbi(acc) || external_biosample_hash_ebi(acc) || {}
+  end
+
+  ##
+  # Retrieve BioSample metadata and return as a parsed Hash from EBI
+  def external_biosample_hash_ebi(acc)
     uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
     body = external_request(uri)
-    return {} unless body && body != '{}'
+    return external_biosample_hash_ncbi(acc) unless body && body != '{}'
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
@@ -82,4 +88,25 @@ module Genome::ExternalResources
     end
   end
 
+  ##
+  # Retrieve BioSample metadata and return as a parsed Hash from NCBI
+  def external_biosample_hash_ncbi(acc)
+    uri = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' \
+          "db=biosample&id=#{acc}&rettype=xml&retmode=text"
+    body = external_request(uri)
+    return unless body && body != '{}'
+
+    ng = Nokogiri::XML(body)
+    {}.tap do |hash|
+      hash[:title] = ng.xpath('//BioSampleSet/BioSample/Description/Title').text
+      hash[:description] =
+        ng.xpath('//BioSampleSet/BioSample/Description/Comment/Paragraph').text
+      hash[:attributes] = Hash[
+        ng.xpath('//BioSampleSet/BioSample/Attributes/Attribute')
+          .map do |attr|
+            [attr['harmonized_name'] || attr['attribute_name'], attr.text]
+          end
+      ]
+    end
+  end
 end
