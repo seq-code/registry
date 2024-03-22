@@ -79,7 +79,9 @@ class Genome < ApplicationRecord
           environment_biome environment_feature gold_ecosystem_classification
         ],
         other: %i[host ph depth temp temperature rel_to_oxygen],
-        package: %i[ena_checklist ncbi_submission_package biosamplemodel]
+        package: %i[
+          ncbi_package ena_checklist ncbi_submission_package biosamplemodel
+        ]
       }
     end
   end

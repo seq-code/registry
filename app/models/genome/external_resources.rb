@@ -108,7 +108,7 @@ module Genome::ExternalResources
           end
       ]
       package = ng.xpath('//BioSampleSet/BioSample/Package').text
-      hash[:attributes][:package] = package if package.present?
+      hash[:attributes][:ncbi_package] = package if package.present?
     end
   end
 end
