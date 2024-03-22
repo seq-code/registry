@@ -107,8 +107,8 @@ module Genome::ExternalResources
             [attr['harmonized_name'] || attr['attribute_name'], attr.text]
           end
       ]
-      package = ng.xpath('//BioSampleSet/BioSample/Models/Package').text
-      hash[:attributes][:package] = package if package
+      package = ng.xpath('//BioSampleSet/BioSample/Package').text
+      hash[:attributes][:package] = package if package.present?
     end
   end
 end
