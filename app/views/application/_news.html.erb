@@ -1,3 +1,5 @@
+<% all ||= false %>
+
 <div class="container news">
   <div class="row mx-1">
     <div class="col-lg-12 text-center">
@@ -5,6 +7,16 @@
       <hr/>
     </div>
     <dl class="col-lg-12">
+      <dt>
+        <div class="date">March 18, 2023</div>
+        SeqCode Prize 2024 to Dr. Jiménez Avella
+      </dt>
+      <dd>
+        The SeqCode Committee congratulates Dr. Diego Javier Jiménez Avella,
+        recipient of the SeqCode Prize 2024. Learn more at the
+        <%= link_to('SeqCode Prize page', page_prize_url) %>.
+      </dd>
+
       <dt>
         <div class="date">October 12, 2023</div>
         Proposal to amend the SeqCode
@@ -37,16 +49,24 @@
         visit <b><%= link_to('https://seqco.de/prize', page_prize_url) %></b>.
       </dd>
 
-      <dt>
-        <div class="date">June 23, 2023</div>
-        The Reconciliation Comission is seeking your contribution
-      </dt>
-      <dd>
-        <% disc2_url = 'https://github.com/seq-code/seqcode/discussions/2' %>
-        Please share your opinion on the validation of the species name
-        ‘<i>Omnitrophus fodinae</i>’ by commenting on this discussion:
-        <b><%= link_to(disc2_url, disc2_url, target: '_blank') %></b>.
-      </dd>
+      <% if all %>
+        <dt>
+          <div class="date">June 23, 2023</div>
+          The Reconciliation Comission is seeking your contribution
+        </dt>
+        <dd>
+          <% disc2_url = 'https://github.com/seq-code/seqcode/discussions/2' %>
+          Please share your opinion on the validation of the species name
+          ‘<i>Omnitrophus fodinae</i>’ by commenting on this discussion:
+          <b><%= link_to(disc2_url, disc2_url, target: '_blank') %></b>.
+        </dd>
+      <% else %>
+        <p class="text-right my-2">
+        <%= link_to(page_news_url, class: '') do %>
+          Previous news &raquo;
+        <% end %>
+        </p>
+      <% end %>
     </dl>
   </div>
 </div>
