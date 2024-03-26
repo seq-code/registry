@@ -792,7 +792,9 @@ module Name::QualityChecks
     end
 
     if type_is_name? && !type_name.validated?
-      @qc_warnings.add(:non_valid_name_as_type)
+      unless register&.names&.include?(type_name)
+        @qc_warnings.add(:non_valid_name_as_type)
+      end
     end
 
     if type_is_genome?
