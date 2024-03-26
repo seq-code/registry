@@ -988,11 +988,14 @@ module Name::QualityChecks
         @qc_warnings.add(:grammatical_gender_varies_from_source) # check
       end
 
-      @qc_warnings.add(:inapt_personal_name) # check
-      @qc_warnings.add(:contentious_name) # check
-      @qc_warnings.add(:lacking_mnemonic_cues) # check
+      if rank? && !above_rank?(:family)
+        # These checks don't make sense for names in ranks above genus
+        @qc_warnings.add(:inapt_personal_name) # check
+        @qc_warnings.add(:contentious_name) # check
+        @qc_warnings.add(:lacking_mnemonic_cues) # check
+        @qc_warnings.add(:missing_roots_from_existing_languages) # check
+      end
       @qc_warnings.add(:incorrect_spelling) # check
-      @qc_warnings.add(:missing_roots_from_existing_languages) # check
     else
       @qc_warnings.add(:missing_etymology)
     end
