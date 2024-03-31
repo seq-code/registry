@@ -42,6 +42,10 @@
           <%= (@name.created_at + 1.year).strftime('%b %-d / %Y') %>
         <% end %>
       </div>
+      <hr/>
+      <%= link_to(help_url(:open_data)) do %>
+        &raquo; Learn more about data release
+      <% end %>
     <% end %>
   </span>
 <% end %>

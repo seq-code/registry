@@ -21,7 +21,7 @@ namespace :names do
       of on ord orders? ordo
       particles? pathosystems? phyla phylum predominantly predominate[ds]?
       preferred provided
-      related remained remains? represents? resulted reveals revised
+      recovered related remained remains? represents? resulted reveals revised
       shares shuttles? species spp? taxa taxon that the through to transmitted
       uncovers was were which will with
     ]

@@ -81,7 +81,8 @@ class PageController < ApplicationController
           curation: 'How are names internally curated?'
         },
         explanation: {
-          register: 'What are Register Lists?'
+          register: 'What are Register Lists?',
+          open_data: 'What data is publicly released and how?'
         }
       }
     end
