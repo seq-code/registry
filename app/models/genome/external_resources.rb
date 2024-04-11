@@ -47,7 +47,6 @@ module Genome::ExternalResources
     uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
     body = external_request(uri)
     return [] unless body && body != '{}'
-    sleep 1
 
     ng = Nokogiri::XML(body)
     if ng.xpath('//RUN_SET').present?
@@ -68,7 +67,10 @@ module Genome::ExternalResources
   ##
   # Retrieve BioSample metadata and return as a parsed Hash
   def external_biosample_hash(acc)
-    external_biosample_hash_ncbi(acc) || external_biosample_hash_ebi(acc) || {}
+    y = external_biosample_hash_ncbi(acc)
+    y = external_biosample_hash_ebi(acc) unless y.present?
+    y = {} unless y.present?
+    y
   end
 
   ##
@@ -76,8 +78,7 @@ module Genome::ExternalResources
   def external_biosample_hash_ebi(acc)
     uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
     body = external_request(uri)
-    return external_biosample_hash_ncbi(acc) unless body && body != '{}'
-    sleep 1
+    return unless body && body != '{}'
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
@@ -97,7 +98,6 @@ module Genome::ExternalResources
           "db=biosample&id=#{acc}&rettype=xml&retmode=text"
     body = external_request(uri)
     return unless body && body != '{}'
-    sleep 1
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
