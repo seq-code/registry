@@ -1,5 +1,5 @@
 <% @without_layout = true %>
-
+<% @citations = @register.citations || [] %>
 <div id="content">
 
 <div class="text-center my-5 border-bottom">
@@ -22,11 +22,11 @@
   <% end %>
 </div>
 
-<% if @register.citations.any? %>
+<% if @citations.any? %>
   <div class="pdf-abstract m-4 px-2">
     <h2>References</h2>
     <ol>
-      <% @register.citations.each do |publication| %>
+      <% @citations.each do |publication| %>
         <li><%= publication.long_citation_html %></li>
       <% end %>
     </ol>

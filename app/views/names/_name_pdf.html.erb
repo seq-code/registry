@@ -1,3 +1,4 @@
+<% @citations ||= name.citations %>
 <div class="pdf-list-entry main-section name-details my-3 rounded">
   <h2>
     <%= name.inferred_rank.capitalize %>
@@ -66,7 +67,7 @@
         <% end %>
       </dd>
     </div>
-    <% if name.citations.any? %>
+    <% if @citations.any? %>
       <%
         def show_references(refs, citations)
           refs.map do |ref|
@@ -80,17 +81,17 @@
         <dd>
           <% if name.proposed_in %>
             Effective publication:
-            <%= show_references([name.proposed_in], name.citations) %>
+            <%= show_references([name.proposed_in], @citations) %>
             <br/>
           <% end %>
           <% if name.not_validly_proposed_in.any? %>
             Original (not validly published) proposal:
-            <%= show_references(name.not_validly_proposed_in, name.citations) %>
+            <%= show_references(name.not_validly_proposed_in, @citations) %>
             <br/>
           <% end %>
           <% if name.corrigendum_in %>
             <i>Corrigendum</i>:
-            <%= show_references([name.corrigendum_in], name.citations) %>
+            <%= show_references([name.corrigendum_in], @citations) %>
             <% unless name.corrigendum_from.blank? %>
               (from &#8220;<%= name.corrigendum_from %>&#8221;)
             <% end %>
@@ -98,12 +99,12 @@
           <% end %>
           <% if name.emended_in.any? %>
             <i>Emendavit</i>:
-            <%= show_references(name.emended_in, name.citations) %>
+            <%= show_references(name.emended_in, @citations) %>
             <br/>
           <% end %>
           <% if name.assigned_in %>
             Assigned taxonomically:
-            <%= show_references([name.assigned_in], name.citations) %>
+            <%= show_references([name.assigned_in], @citations) %>
           <% end %>
       </div>
     <% end %>
