@@ -4,7 +4,7 @@ class NamesController < ApplicationController
     :set_name,
     only: %i[
       show edit update destroy
-      proposed_in emended_in assigned_in
+      proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology edit_parent
@@ -16,7 +16,7 @@ class NamesController < ApplicationController
     :authenticate_can_edit!,
     only: %i[
       edit update destroy
-      proposed_in emended_in assigned_in
+      proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology edit_parent
@@ -300,6 +300,15 @@ class NamesController < ApplicationController
     @publication =
       params[:not] ? nil : Publication.where(id: params[:publication_id]).first
     @name.update(proposed_in: @publication)
+    redirect_back(fallback_location: @name)
+  end
+
+  # POST /names/1/not_validly_proposed_in/2
+  # POST /names/1/not_validly_proposed_in/2?not=true
+  def not_validly_proposed_in
+    @name.publication_names
+      .where(publication_id: params[:publication_id])
+      .update(not_valid_proposal: !params[:not])
     redirect_back(fallback_location: @name)
   end
 

@@ -86,6 +86,8 @@ Rails.application.routes.draw do
       post :corrigendum
       post :emended_in, path: '/emended_in/:publication_id'
       post :assigned_in, path: '/assigned_in/:publication_id'
+      post :not_validly_proposed_in,
+           path: '/not_validly_proposed_in/:publication_id'
     end
   end
 

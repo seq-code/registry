@@ -19,12 +19,24 @@
           <%= radio_button(:link_name, :as, :propose) %>
           Proposing the name (effective publication)
           <%= help_message('Effective Publication') do %>
-            For the purposes of the SeqCode, an "Effective publication" refers
-            to: The peer-reviewed publication in which a name first appears.
-            Under the SeqCode, preprints are not eligible as an effective
-            publication.
+            For the purposes of the SeqCode, an <b>effective publication</b>
+            refers to the peer-reviewed publication in which a name and evidence
+            for the taxon first appears. Under the SeqCode, preprints are not
+            eligible as an effective publication.<br/><br/>
             See <%= link_to_rule('24a', 'Rule 24') %> for additional
             explanation.
+          <% end %>
+        </label><br/>
+        <label>
+          <%= radio_button(:link_name, :as, :not_valid_proposal) %>
+          Original (not validly published) proposal
+          <%= help_message('Not Validly Published Proposal') do %>
+            This is the original publication proposing the name or the
+            establishment of this taxon, but it did not meet all minimum
+            criteria for valid publication under the SeqCode. For example, it
+            proposed this name on the basis of marker genes or low-quality
+            genomes as nomenclatural type, or used a non-validly published
+            name as type.
           <% end %>
         </label><br/>
         <label>

@@ -452,6 +452,12 @@ class Name < ApplicationRecord
     y = name_html
     y = "&#8220;#{y}&#8221;" if candidatus?
     y += ' <i>corrig.</i>'.html_safe if corrigendum_from?
+    if not_validly_proposed_in.any?
+      y += ' (ex'
+      y += not_validly_proposed_in
+             .map { |i| " #{sanitize(i.short_citation)}" }.join(';')
+      y += ')'
+    end
     if authority || proposed_in
       y += " #{sanitize(authority || proposed_in.short_citation)}"
     end
@@ -514,7 +520,8 @@ class Name < ApplicationRecord
     return @citations unless (@citations ||= nil).nil?
 
     @citations ||= [
-      proposed_in, corrigendum_in, assigned_in, emended_in.to_a
+      proposed_in, not_validly_proposed_in.to_a, corrigendum_in,
+      emended_in.to_a, assigned_in
     ].flatten.compact.uniq
   end
 
@@ -583,6 +590,14 @@ class Name < ApplicationRecord
 
   def emended_in?(publication)
     emended_in.include? publication
+  end
+
+  def not_validly_proposed_in
+    publication_names.where(not_valid_proposal: true).map(&:publication)
+  end
+
+  def not_validly_proposed_in?(publication)
+    not_validly_proposed_in.include? publication
   end
 
   # ============ --- USERS --- ============

@@ -67,15 +67,30 @@
       </dd>
     </div>
     <% if name.citations.any? %>
+      <%
+        def show_references(refs, citations)
+          refs.map do |ref|
+            citations << ref unless citations.include? ref
+            ref.short_citation + ' [%i]' % (citations.find_index(ref) + 1)
+          end.to_sentence
+        end
+      %>
       <div class="avoid-page-break">
         <dt>References</dt>
         <dd>
           <% if name.proposed_in %>
-            Proposed: <%= name.proposed_in.short_citation %>
+            Effective publication:
+            <%= show_references([name.proposed_in], name.citations) %>
+            <br/>
+          <% end %>
+          <% if name.not_validly_proposed_in.any? %>
+            Original (not validly published) proposal:
+            <%= show_references(name.not_validly_proposed_in, name.citations) %>
             <br/>
           <% end %>
           <% if name.corrigendum_in %>
-            <i>Corrigendum</i>: <%= name.corrigendum_in.short_citation %>
+            <i>Corrigendum</i>:
+            <%= show_references([name.corrigendum_in], name.citations) %>
             <% unless name.corrigendum_from.blank? %>
               (from &#8220;<%= name.corrigendum_from %>&#8221;)
             <% end %>
@@ -83,11 +98,12 @@
           <% end %>
           <% if name.emended_in.any? %>
             <i>Emendavit</i>:
-            <%= name.emended_in.map(&:short_citation).to_sentence %>
+            <%= show_references(name.emended_in, name.citations) %>
             <br/>
           <% end %>
           <% if name.assigned_in %>
-            Assigned taxonomically: <%= name.assigned_in.short_citation %>
+            Assigned taxonomically:
+            <%= show_references([name.assigned_in], name.citations) %>
           <% end %>
       </div>
     <% end %>

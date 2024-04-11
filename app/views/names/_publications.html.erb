@@ -23,32 +23,51 @@
           <td><%= publication.title_html %></td>
           <td>
             <% if @name.proposed_in? publication %>
-              <div class="badge"><%= fa_icon('star') %> Proposed this name</div>
+              <div class="badge">
+                <%= fa_icon('star') %> Effective publication
+              </div>
             <% end %>
             <% if @name.corrigendum_in? publication %>
               <div class="badge"><%= fa_icon('pen-fancy') %> Corrigendum</div>
             <% end %>
             <% if @name.emended_in? publication %>
-              <div class="badge"><%= fa_icon('asterisk') %> Emended this name</div>
+              <div class="badge">
+                <%= fa_icon('asterisk') %> Emended this name
+              </div>
             <% end %>
             <% if @name.assigned_in? publication %>
-              <div class="badge"><%= fa_icon('arrow-alt-circle-up') %> Assigned this taxon</div>
+              <div class="badge">
+                <%= fa_icon('arrow-alt-circle-up') %> Assigned this taxon
+              </div>
+            <% end %>
+            <% if @name.not_validly_proposed_in? publication %>
+              <div class="badge">
+                <%= fa_icon('firstdraft', type: :fab) %>
+                Original (not validly published) proposal
+              </div>
             <% end %>
           </td>
           <td>
             <% if @name.can_edit?(current_user) %>
-              <% unless publication_name.proposes? %>
+              <% if publication_name.proposes? ||
+                    publication_name.not_valid_proposal? %>
+                <div class="badge badge-pill badge-light text-secondary"
+                     title="Invalid option"><%= fa_icon('star') %></div>
+              <% else %>
                 <%= link_to(
                       proposed_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-primary',
-                      method: :post, title: 'Proposed this name',
+                      method: :post, title: 'Effective publication',
                       data: { confirm: 'Are you sure?' }
                     ) do %>
                   <%= fa_icon('star') %>
                 <% end %>
               <% end %>
 
-              <% unless publication_name.corrigendum? %>
+              <% if publication_name.corrigendum? %>
+                <div class="badge badge-pill badge-light text-secondary"
+                     title="Invalid option"><%= fa_icon('pen-fancy') %></div>
+              <% else %>
                 <%= link_to(
                       corrigendum_in_name_url(
                         @name, publication_id: publication.id
@@ -60,7 +79,10 @@
                 <% end %>
               <% end %>
 
-              <% unless publication_name.emends? %>
+              <% if publication_name.emends? %>
+                <div class="badge badge-pill badge-light text-secondary"
+                     title="Invalid option"><%= fa_icon('asterisk') %></div>
+              <% else %>
                 <%= link_to(
                       emended_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-primary',
@@ -71,7 +93,11 @@
                 <% end %>
               <% end %>
 
-              <% unless publication_name.assigns? %>
+              <% if publication_name.assigns? %>
+                <div class="badge badge-pill badge-light text-secondary"
+                     title="Invalid option">
+                     <%= fa_icon('arrow-alt-circle-up') %></div>
+              <% else %>
                 <%= link_to(
                       assigned_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-primary',
@@ -79,6 +105,22 @@
                       data: { confirm: 'Are you sure?' }
                     ) do %>
                   <%= fa_icon('arrow-alt-circle-up') %>
+                <% end %>
+              <% end %>
+
+              <% if publication_name.not_valid_proposal? ||
+                    publication_name.proposes? %>
+                <div class="badge badge-pill badge-light text-secondary"
+                     title="Invalid option">
+                     <%= fa_icon('firstdraft', type: :fab) %></div>
+              <% else %>
+                <%= link_to(
+                      not_validly_proposed_in_name_url(@name, publication),
+                      class: 'badge badge-pill badge-primary', method: :post,
+                      title: 'Original (not validly published) proposal',
+                      data: { confirm: 'Are you sure?' }
+                    ) do %>
+                  <%= fa_icon('firstdraft', type: :fab) %>
                 <% end %>
               <% end %>
 

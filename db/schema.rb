@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_01_235709) do
+ActiveRecord::Schema.define(version: 2024_04_11_122005) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -265,6 +265,7 @@ ActiveRecord::Schema.define(version: 2024_04_01_235709) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "emends", default: false
+    t.boolean "not_valid_proposal", default: false
     t.index ["name_id"], name: "index_publication_names_on_name_id"
     t.index ["publication_id", "name_id"], name: "index_publication_names_on_publication_id_and_name_id", unique: true
     t.index ["publication_id"], name: "index_publication_names_on_publication_id"

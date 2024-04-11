@@ -59,22 +59,26 @@ class PublicationsController < ApplicationController
         case params[:link_name][:as]
         when 'propose'
           @name.update(proposed_in: @publication)
-          redirect_to(@name, notice: 'Effective publication registered')
+          flash[:notice] = 'Effective publication registered'
+        when 'not_valid_proposal'
+          pn.update(not_valid_proposal: true)
+          flash[:notice] =
+            'Original (not validly published) proposal registered'
         when 'corrig'
           redirect_to(
             corrigendum_in_name_url(@name, publication_id: @publication.id)
           )
+          return
         when 'assign'
           @name.update(assigned_in: @publication)
-          redirect_to(
-            @name, notice: 'Taxonomic assignment publication registered'
-          )
+          flash[:notice] = 'Taxonomic assignment publication registered'
         when 'emend'
           pn.update(emends: true)
-          redirect_to(@name, notice: 'Emending publication registered')
+          flash[:notice] = 'Emending publication registered'
         else
-          redirect_to(@name, notice: 'Corrigendum registered')
+          flash[:notice] = 'Publication registered'
         end
+        redirect_to(@name)
       else
         redirect_to(@publication)
       end

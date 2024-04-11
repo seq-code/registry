@@ -24,6 +24,16 @@ if name.proposed_in
     url: publication_url(name.proposed_in, format: :json)
   )
 end
+if name.not_validly_proposed_in.present?
+  json.not_validly_proposed_in(
+    name.not_validly_proposed_in.map do |pub|
+      {
+        id: pub.id, citation: pub.citation,
+        url: publication_url(pub, format: :json)
+      }
+    end
+  )
+end
 if name.corrigendum_in
   json.corrigendum_in(
     id: name.corrigendum_in.id,
@@ -43,8 +53,7 @@ if name.emended_in.present?
   json.emended_in(
     name.emended_in.map do |pub|
       {
-        id: pub.id,
-        citation: pub.citation,
+        id: pub.id, citation: pub.citation,
         url: publication_url(pub, format: :json)
       }
     end
