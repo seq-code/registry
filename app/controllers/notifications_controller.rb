@@ -9,9 +9,10 @@ class NotificationsController < ApplicationController
     @to_notify =
       @notifications
         .group(%i[notifiable_type notifiable_id])
-        .select('notifiable_type, notifiable_id, MAX(created_at) as max_created_at')
+        .select('notifiable_type, notifiable_id, ' \
+                'MAX(created_at) as max_created_at')
         .reorder(max_created_at: :desc)
-        .paginate(page: params[:page], per_page: 25)
+        .paginate(page: params[:page], per_page: 10)
   end
 
   # GET /alerts/1
