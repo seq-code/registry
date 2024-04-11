@@ -5,12 +5,17 @@
 <hr/>
 
 <br/>
-<% if @notifications.any? %>
+<% if @to_notify.any? %>
   <%= adaptable_list(
-        set: @notifications, type: :table, noheader: true
+        set: @to_notify, type: :table, noheader: true, nolead: true
       ) do |list| %>
-    <% @notifications.each do |notification| %>
-      <%= render(partial: notification, locals: { list: list }) %>
+    <% @to_notify.each do |rel| %>
+      <%=
+        render(
+          partial: 'notification',
+          locals: { notifiable: rel.notifiable, list: list }
+        )
+      %>
     <% end %>
   <% end %>
 

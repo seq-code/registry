@@ -1,7 +1,19 @@
 
 @import "custom";
 
-.unseen-notification {
+.alerts {
+  margin: 0.5rem 0 0 0;
+  .row {
+    margin: 0;
+    padding: 0.5rem;
+    border-left: 0.25em solid theme-color-level(secondary, 0);
+    &:hover {
+      background: theme-color-level(dark, -10);
+    }
+  }
+}
+
+.unseen-alert {
   background: theme-color-level(info, -10);
   &:hover {
     background: theme-color-level(info, -8) !important;

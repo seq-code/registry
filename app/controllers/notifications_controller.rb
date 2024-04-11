@@ -5,9 +5,11 @@ class NotificationsController < ApplicationController
 
   # GET /alerts or /alerts.json
   def index
-    @notifications =
-      current_user.notifications
-        .paginate(page: params[:page], per_page: 50)
+    @notifications = current_user.notifications
+    @to_notify =
+      @notifications.group(%i[notifiable_type notifiable_id])
+        .reorder('MAX(created_at) desc')
+        .paginate(page: params[:page], per_page: 25)
   end
 
   # GET /alerts/1

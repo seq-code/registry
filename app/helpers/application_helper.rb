@@ -130,7 +130,7 @@ module ApplicationHelper
       else
         o << content_tag(entry.header_tag, entry.header_css, scope: :row) do
           link_to(title, link, entry.link_css)
-        end
+        end unless list.opts[:nolead]
         o << content_tag(:div) { yield(entry) }
         if entry.footer_blk
           o << content_tag(entry.footer_tag, entry.footer_css) do
@@ -143,11 +143,14 @@ module ApplicationHelper
     end
   end
 
-  def adaptable_value(entry, name)
+  def adaptable_value(entry, name, opts = {})
     value = entry.value(name)
     o = []
+    value_class = opts[:class] || ''
     o << content_tag(:dt, name) if value.type == :cards
-    o << content_tag(value.tag) { yield(value) }
+    o << content_tag(value.tag, class: value_class) do
+           yield(value)
+         end
     o.compact.inject(:+)
   end
 
@@ -253,9 +256,10 @@ module ApplicationHelper
 end
 
 class AdaptableList
-  attr_accessor :type, :set, :value_names
+  attr_accessor :type, :set, :value_names, :opts
 
   def initialize(opts)
+    @opts = opts
     @type = opts[:type]
     @set  = opts[:set]
     @value_names = []

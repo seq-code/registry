@@ -1,33 +1,35 @@
 <%= adaptable_entry(
-      list, '', notification,
-      full_link: true,
-      container_opts: { class: notification.seen? ? '' : 'unseen-notification' }
+      list, '', notifiable, full_link: true
     ) do |entry| %>
-
-  <%= adaptable_value(entry, 'Seen') do %>
-    <%= link_to(toggle_seen_notification_url(notification),
-          method: :post, title: "Mark as #{'un' unless notification.seen?}seen",
-          class: 'btn btn-sm') do %>
-      <%= fa_icon('circle', class: 'text-info',
-            type: notification.seen? ? :regular : :solid) %>
-    <% end %>
+  <%= adaptable_value(entry, 'Notification') do %>
+    <%= fa_icon('caret-right', class: 'mr-3') %>
+    <%= display_link(notifiable) %>
+    <div class="container alerts">
+      <% notifiable.notifications(current_user).each do |alert| %>
+        <div class="row clickeable <%= 'unseen-alert' unless alert.seen? %>"
+             data-href="<%= polymorphic_url(alert)%>"
+             onclick="location.href=$(this).data('href');">
+          <div class="col-8">
+            <%= link_to(toggle_seen_notification_url(alert),
+                  method: :post,
+                  title: "Mark as #{'un' unless alert.seen?}seen",
+                  class: 'btn btn-sm') do %>
+              <%= fa_icon('circle', class: 'text-info',
+                    type: alert.seen? ? :regular : :solid) %>
+            <% end %>
+            <%= alert.title || alert.action %>
+          </div>
+          <div class="col-4 text-right">
+            <%= time_ago_with_date(alert.created_at) %>
+            <%= link_to(alert, method: :delete, class: 'btn btn-sm') do %>
+              <%= fa_icon('trash', class: 'text-danger') %>
+            <% end %>
+            <%= link_to(alert, class: 'btn btn-sm') do %>
+              <%= fa_icon('arrow-circle-right', class: 'text-primary') %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   <% end %>
-
-  <%= adaptable_value(entry, 'Title') do %>
-    <%= notification.title || notification.action %>
-  <% end %>
-
-  <%= adaptable_value(entry, 'Date') do %>
-    <%= time_ago_with_date(notification.created_at) %>
-  <% end %>
-
-  <%= adaptable_value(entry, 'Actions') do %>
-    <%= link_to(notification, method: :delete, class: 'btn btn-sm') do %>
-      <%= fa_icon('trash', class: 'text-danger') %>
-    <% end %>
-    <%= link_to(notification, class: 'btn btn-sm') do %>
-      <%= fa_icon('arrow-circle-right', class: 'text-primary') %>
-    <% end %>
-  <% end %>
-
 <% end %>
