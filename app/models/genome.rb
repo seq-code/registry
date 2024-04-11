@@ -77,6 +77,8 @@ class Genome < ApplicationRecord
           env_material sample_type env_biome isolation_source
           env_broad_scale env_local_scale env_medium
           environment_biome environment_feature gold_ecosystem_classification
+          broad_scale_environmental_context local_environmental_context
+          environmental_medium
         ],
         other: %i[host ph depth temp temperature rel_to_oxygen],
         package: %i[
