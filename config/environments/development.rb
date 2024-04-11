@@ -62,7 +62,7 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Turn off API checks for external services
-  config.bypass_external_apis = false # true
+  config.bypass_external_apis = true
 
   # DataCite access
   config.datacite = {
