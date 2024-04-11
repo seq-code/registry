@@ -5,7 +5,11 @@
     <%= fa_icon('caret-right', class: 'mr-3') %>
     <%= display_link(notifiable) %>
     <div class="container alerts">
-      <% notifiable.notifications(current_user).each do |alert| %>
+      <% notifiable.notifications(current_user).each_with_index do |alert, k| %>
+        <% if k > 5 %>
+          <div class="row"><%= fa_icon('ellipsis-h') %></div>
+          <% break %>
+        <% end %>
         <div class="row clickeable <%= 'unseen-alert' unless alert.seen? %>"
              data-href="<%= polymorphic_url(alert)%>"
              onclick="location.href=$(this).data('href');">
