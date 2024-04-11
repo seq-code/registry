@@ -82,12 +82,14 @@ module Genome::ExternalResources
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
-      hash[:title] = ng.xpath('//SAMPLE_SET/SAMPLE/TITLE').text
-      hash[:description] = ng.xpath('//SAMPLE_SET/SAMPLE/DESCRIPTION').text
-      hash[:attributes] = Hash[
+      h = {}
+      h[:title] = ng.xpath('//SAMPLE_SET/SAMPLE/TITLE').text
+      h[:description] = ng.xpath('//SAMPLE_SET/SAMPLE/DESCRIPTION').text
+      h[:attributes] = Hash[
         ng.xpath('//SAMPLE_SET/SAMPLE/SAMPLE_ATTRIBUTES/SAMPLE_ATTRIBUTE')
           .map { |attr| [attr.xpath('TAG').text, attr.xpath('VALUE').text] }
       ]
+      h.each { |k, v| hash[k] = h[k] if h[k].present? }
     end
   end
 
@@ -101,17 +103,19 @@ module Genome::ExternalResources
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
-      hash[:title] = ng.xpath('//BioSampleSet/BioSample/Description/Title').text
-      hash[:description] =
+      h = {}
+      h[:title] = ng.xpath('//BioSampleSet/BioSample/Description/Title').text
+      h[:description] =
         ng.xpath('//BioSampleSet/BioSample/Description/Comment/Paragraph').text
-      hash[:attributes] = Hash[
+      h[:attributes] = Hash[
         ng.xpath('//BioSampleSet/BioSample/Attributes/Attribute')
           .map do |attr|
             [attr['harmonized_name'] || attr['attribute_name'], attr.text]
           end
       ]
       package = ng.xpath('//BioSampleSet/BioSample/Package').text
-      hash[:attributes][:ncbi_package] = package if package.present?
+      h[:attributes][:ncbi_package] = package if package.present?
+      h.each { |k, v| hash[k] = h[k] if h[k].present? }
     end
   end
 end
