@@ -24,7 +24,7 @@ module Genome::ExternalResources
       source_accessions.each do |acc|
         external_sra_to_biosamples(acc).each do |biosample|
           data[biosample] ||=
-            {from_sra: []}.merge(external_biosample_hash(biosample))
+            { from_sra: [] }.merge(external_biosample_hash(biosample))
           data[biosample][:from_sra] << acc
         end
       end
@@ -47,6 +47,7 @@ module Genome::ExternalResources
     uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
     body = external_request(uri)
     return [] unless body && body != '{}'
+    sleep 1
 
     ng = Nokogiri::XML(body)
     if ng.xpath('//RUN_SET').present?
@@ -76,6 +77,7 @@ module Genome::ExternalResources
     uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
     body = external_request(uri)
     return external_biosample_hash_ncbi(acc) unless body && body != '{}'
+    sleep 1
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
@@ -95,6 +97,7 @@ module Genome::ExternalResources
           "db=biosample&id=#{acc}&rettype=xml&retmode=text"
     body = external_request(uri)
     return unless body && body != '{}'
+    sleep 1
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
