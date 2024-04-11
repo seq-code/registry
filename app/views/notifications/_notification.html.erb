@@ -6,8 +6,8 @@
     <%= display_link(notifiable) %>
     <div class="container alerts">
       <% notifiable.notifications(current_user).each_with_index do |alert, k| %>
-        <% if k > 5 %>
-          <div class="row"><%= fa_icon('ellipsis-h') %></div>
+        <% if k > 4 %>
+          <div class="row"><%= fa_icon('ellipsis-h', class: 'ml-4 p-1') %></div>
           <% break %>
         <% end %>
         <div class="row clickeable <%= 'unseen-alert' unless alert.seen? %>"
