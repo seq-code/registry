@@ -26,7 +26,10 @@ module HasExternalResources
     require 'net/http'
 
     res = Net::HTTP.get_response(URI(uri))
-    return nil unless res.is_a?(Net::HTTPSuccess)
+    unless res.is_a?(Net::HTTPSuccess)
+      Rails.logger.error "External Request #{uri} returned #{res}"
+      return nil
+    end
     res.body ? normalize_encoding(res.body) : nil
   rescue
     nil
