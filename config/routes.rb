@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :tags
   # General configuration
   root(to: 'application#main')
   concern(:autocompletable) do
