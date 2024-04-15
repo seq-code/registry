@@ -43,7 +43,7 @@
             <% if @name.not_validly_proposed_in? publication %>
               <div class="badge">
                 <%= fa_icon('firstdraft', type: :fab) %>
-                Original (not validly published) proposal
+                Original (not valid) publication
               </div>
             <% end %>
           </td>
@@ -117,7 +117,7 @@
                 <%= link_to(
                       not_validly_proposed_in_name_url(@name, publication),
                       class: 'badge badge-pill badge-primary', method: :post,
-                      title: 'Original (not validly published) proposal',
+                      title: 'Original (not valid) publication',
                       data: { confirm: 'Are you sure?' }
                     ) do %>
                   <%= fa_icon('firstdraft', type: :fab) %>

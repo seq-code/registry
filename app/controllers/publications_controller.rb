@@ -63,7 +63,7 @@ class PublicationsController < ApplicationController
         when 'not_valid_proposal'
           pn.update(not_valid_proposal: true)
           flash[:notice] =
-            'Original (not validly published) proposal registered'
+            'Original (not valid) publication registered'
         when 'corrig'
           redirect_to(
             corrigendum_in_name_url(@name, publication_id: @publication.id)
