@@ -19,7 +19,13 @@ module PageHelper
     number = number.gsub(/-/, ' ').titleize
 
     if section.to_s == 'rule_note'
-      "Rule #{number} (Note)"
+      if number =~ /#(\d+)$/
+        note_number = $1
+        number.gsub!(/#\d+$/, '')
+        "Rule #{number} (Note #{note_number})"
+      else
+        "Rule #{number} (Note)"
+      end
     else
       "#{section.capitalize} #{number}"
     end
@@ -31,7 +37,7 @@ module PageHelper
     if number =~ /^appendix-(\S+)$/
       "appendix-#{$1}"
     else
-      "#{section}-#{number.to_s.gsub(/\..*/, '')}"
+      "#{section}-#{number.to_s.gsub(/[\.#].*/, '')}"
     end
   end
 
@@ -74,9 +80,11 @@ module PageHelper
     end
 
     if section =~ /_note$/
+      text = 'Note'
+      text += ' ' + $1 if number =~ /#(\d+)$/
       content = content.map do |i|
         i.dup.tap do |y|
-          y.xpath("strong[contains(text(), 'Note')]/..")
+          y.xpath("strong[contains(text(), '#{text}')]/..")
            .set(:class, 'highlight')
         end
       end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_11_122005) do
+ActiveRecord::Schema.define(version: 2024_04_26_101741) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -248,6 +248,16 @@ ActiveRecord::Schema.define(version: 2024_04_11_122005) do
     t.index ["publication_id"], name: "index_placements_on_publication_id"
   end
 
+  create_table "pseudonyms", force: :cascade do |t|
+    t.string "pseudonym"
+    t.integer "name_id", null: false
+    t.string "kind"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name_id"], name: "index_pseudonyms_on_name_id"
+    t.index ["pseudonym", "name_id"], name: "index_pseudonyms_on_pseudonym_and_name_id", unique: true
+  end
+
   create_table "publication_authors", force: :cascade do |t|
     t.integer "publication_id"
     t.integer "author_id"
@@ -424,6 +434,7 @@ ActiveRecord::Schema.define(version: 2024_04_11_122005) do
   add_foreign_key "observe_registers", "users"
   add_foreign_key "placements", "names"
   add_foreign_key "placements", "publications"
+  add_foreign_key "pseudonyms", "names"
   add_foreign_key "register_correspondences", "registers"
   add_foreign_key "register_correspondences", "users"
   add_foreign_key "registers", "publications"

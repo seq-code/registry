@@ -20,7 +20,7 @@
   <% end %>
 </p>
 
-<%= simple_form_for(@name, hrml: { method: :post }) do |f| %>
+<%= simple_form_for(@name, html: { method: :post }) do |f| %>
   <%= f.input :name, required: true, autofocus: true %>
   <%= f.button :submit, 'Register' %>
 <% end %>

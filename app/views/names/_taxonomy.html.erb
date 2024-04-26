@@ -221,5 +221,48 @@
         <% end %>
       </ul></dd>
     <% end %>
+
+    <% if @name.pseudonyms.present? || @name.can_edit_placements?(current_user) %>
+      <dt><%= fa_icon('mask') %> Pseudonyms</dt>
+      <dd>
+        <ul>
+          <% @name.pseudonyms.each do |pseudonym| %>
+            <li>
+              <%= pseudonym.pseudonym %>
+              <% if pseudonym.kind? %>
+                <span class="text-muted">(<%= pseudonym.kind_text %>)</span>
+              <% end %>
+              <% if @name.can_edit_placements?(current_user) %>
+                <%= link_to(
+                      edit_name_pseudonym_url(@name, pseudonym),
+                      class: 'badge badge-pill badge-primary',
+                      title: 'edit pseudonym'
+                    ) do %>
+                  <%= fa_icon('edit') %> Edit
+                <% end %>
+                <%= link_to(
+                      name_pseudonym_url(@name, pseudonym),
+                      method: :delete,
+                      class: 'badge badge-pill badge-primary',
+                      title: 'remove pseudonym',
+                      data: { confirm: 'Are you sure?' }
+                    ) do %>
+                  <%= fa_icon('trash-alt') %> Remove
+                <% end %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+        <% if @name.can_edit_placements?(current_user) %>
+          <%= link_to(
+                new_name_pseudonym_url(@name),
+                class: 'badge badge-pill badge-primary',
+                title: 'add new pseudonym'
+              ) do %>
+            <%= fa_icon('plus-square') %>&nbsp; Report new pseudonym
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
   </dl>
 <% end %>

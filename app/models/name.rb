@@ -1,4 +1,5 @@
 class Name < ApplicationRecord
+  has_many(:pseudonyms, dependent: :destroy)
   has_many(:publication_names, dependent: :destroy)
   has_many(:publications, through: :publication_names)
   has_many(
@@ -107,10 +108,14 @@ class Name < ApplicationRecord
     # ============ --- CLASS > QUERYING --- ============
 
     def find_variants(name)
-      name = name.gsub(/^Candidatus /, '')
-      vars = [name, "Candidatus #{name}"]
-      Name.where(name: vars)
-          .or(Name.where(corrigendum_from: vars))
+      name = name.strip.downcase.gsub(/^candidatus /, '')
+      vars = [name, "candidatus #{name}"]
+      Name.where('LOWER(name) IN (?, ?)', *vars)
+          .or(Name.where('LOWER(corrigendum_from) IN (?, ?)', *vars))
+          .or(Name.where(
+            id: Pseudonym.where('LOWER(pseudonym) IN (?, ?)', *vars)
+                         .pluck(:name_id)
+          ))
     end
 
     def find_by_variants(name)

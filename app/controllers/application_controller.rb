@@ -4,11 +4,19 @@ class ApplicationController < ActionController::Base
   protect_from_forgery(with: :exception)
 
   @@search_obj = {
-    publications: [Publication, %w[title doi journal abstract]],
-    authors: [Author, %w[given family]],
-    names: [Name, %w[name corrigendum_from]],
+    publications: [Publication, %w[title doi journal abstract], {}],
+    authors: [Author, %w[given family], {}],
+    names: [
+      Name, %w[name corrigendum_from],
+      {
+        Pseudonym => %i[pseudonym name_id],
+        # This is ready to work, but it could return too much "trash", so
+        # I'm holding off until we have advanced search options:
+        # ActionText::RichText.where(record_type: 'Name') => %i[body record_id]
+      }
+    ],
     # TODO Include description (rich-text) as field of names
-    subjects: [Subject, %w[name]]
+    subjects: [Subject, %w[name], {}]
   }
 
   def main
@@ -124,11 +132,21 @@ class ApplicationController < ActionController::Base
     def search_by(k, q)
       obj = @@search_obj[k]
       o = obj[0].none
+      q = q.chomp
       if q =~ /^(\S+)::(.+)/ && obj[1].include?($1)
         o = o.or(obj[0].where("LOWER(#{$1}) = ?", $2.downcase))
       else
+        q_like = "%#{q.downcase}%"
         obj[1].each do |i|
-          o = o.or(obj[0].where("LOWER(#{i}) LIKE ?", "%#{q.downcase}%"))
+          o = o.or(obj[0].where("LOWER(#{i}) LIKE ?", q_like))
+        end
+        obj[2].each do |table, fields|
+          o = o.or(
+            obj[0].where(
+              id: table.where("LOWER(#{fields[0]}) LIKE ?", q_like)
+                       .pluck(fields[1])
+            )
+          )
         end
       end
       o

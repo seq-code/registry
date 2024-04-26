@@ -89,6 +89,7 @@ Rails.application.routes.draw do
       post :not_validly_proposed_in,
            path: '/not_validly_proposed_in/:publication_id'
     end
+    resources :pseudonyms
   end
 
   # Taxonomic placements

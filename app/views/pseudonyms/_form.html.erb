@@ -1,0 +1,12 @@
+<%= simple_form_for(
+      @pseudonym,
+      url: @pseudonym.persisted? ?
+             name_pseudonym_path(@name, @pseudonym) :
+             name_pseudonyms_path(@name),
+      html: { method: @pseudonym.persisted? ? :put : :post }
+    ) do |f| %>
+  <%= f.input(:pseudonym, required: true, autofocus: true) %>
+  <%= f.input(:kind, collection: Pseudonym.kind_opts) %>
+  <br/>
+  <%= f.button(:submit, 'Register') %>
+<% end %>
