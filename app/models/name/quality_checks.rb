@@ -484,6 +484,14 @@ module Name::QualityChecks
                  'identified',
         rules: %w[26.5]
       }.merge(@@link_to_edit_etymology),
+      # - Rule 26 Note 1
+      non_valid_parent_genus: {
+        message: 'A species must be established in a validly published genus',
+        rule_notes: %w[26#1],
+        can_endorse: false
+      }.merge(@@link_to_edit_parent),
+      # - Rule 26 Note 2 [TODO: Report as check and not as register note]
+      # - Rule 26 Note 3 is enforced outside of the SeqCode Registry
       # - Recommendation 26 [Checklist-N]
       missing_description_in_publication: {
         checklist: :nomenclature,
@@ -654,6 +662,7 @@ module Name::QualityChecks
     end
 
     def is_error?
+      return true if can_endorse == false
       rules.present? && (!can_endorse || name.notified?)
     end
 
@@ -797,6 +806,10 @@ module Name::QualityChecks
       end
     end
 
+    if inferred_rank == 'species' && parent.present? &&
+        !parent.validated? && !register&.names&.include?(parent)
+      @qc_warnings.add(:non_valid_parent_genus)
+    end
     if type_is_genome?
       @qc_warnings.add(:ambiguous_type_genome) # check
       if genome.isolate? && !genome_strain?
