@@ -132,7 +132,7 @@ class ApplicationController < ActionController::Base
     def search_by(k, q)
       obj = @@search_obj[k]
       o = obj[0].none
-      q = q.chomp
+      q = q.strip
       if q =~ /^(\S+)::(.+)/ && obj[1].include?($1)
         o = o.or(obj[0].where("LOWER(#{$1}) = ?", $2.downcase))
       else
