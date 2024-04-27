@@ -67,8 +67,8 @@ module Genome::ExternalResources
   ##
   # Retrieve BioSample metadata and return as a parsed Hash
   def external_biosample_hash(acc)
-    y = external_biosample_hash_ncbi(acc)
-    y = external_biosample_hash_ebi(acc) unless y.present?
+    y = external_biosample_hash_ebi(acc)
+    y = external_biosample_hash_ncbi(acc) unless y.present?
     y = {} unless y.present?
     y
   end
