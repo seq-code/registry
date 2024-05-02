@@ -164,7 +164,7 @@ class ApplicationController < ActionController::Base
       if Rails.configuration.try(:api_only)
         unless params[:format].to_s == 'json' ||
                params[:controller] == 'page'
-          redirect_to page_api_path
+          redirect_to 'https://seqco.de/p:api'
         end
       end
     end
