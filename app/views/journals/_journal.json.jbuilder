@@ -1,5 +1,6 @@
 journal = journal.journal unless journal.is_a? String
 json.name(journal)
+json.url journal_url(journal, format: :json)
 if @publications
   json.publications(
     @publications.map do |i|
@@ -8,4 +9,3 @@ if @publications
     end
   )
 end
-json.url journal_url(journal, format: :json)
