@@ -165,6 +165,7 @@ class ApplicationController < ActionController::Base
         unless params[:format].to_s == 'json' ||
                params[:controller] == 'page'
           redirect_to 'https://seqco.de/p:api'
+          return
         end
       end
     end
