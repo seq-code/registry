@@ -8,7 +8,7 @@ class GenomesController < ApplicationController
   before_action(:authenticate_can_edit!, only: %i[edit update update_accession])
   before_action(
     :authenticate_curator!,
-    only: %i[index update_external recalculate_miga]
+    only: %i[update_external recalculate_miga]
   )
 
   # GET /genomes or /genomes.json

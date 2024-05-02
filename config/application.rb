@@ -21,5 +21,8 @@ module CandidatusExcubia
 
     # Define mailer job method
     config.action_mailer.delivery_job = 'ActionMailer::MailDeliveryJob'
+
+    # Make sure Flash is always present even if api_only=true
+    config.middleware.use ActionDispatch::Flash
   end
 end
