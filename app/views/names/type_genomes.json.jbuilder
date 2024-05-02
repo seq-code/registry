@@ -4,7 +4,7 @@ json.response do
   json.(@names, :count, :current_page, :total_pages)
   json.next(
     @names.next_page ?
-      names_type_genomes_url(format: :json, page: @names.next_page) : nil
+      name_type_genomes_url(format: :json, page: @names.next_page) : nil
   )
 end
 json.values(@names, partial: 'names/type_genome', as: :name)

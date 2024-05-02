@@ -1,11 +1,19 @@
 <% provide(:title, 'API Documentation') %>
 
+<%
+def api_url(path)
+  @server ||= Rails.configuration.try(:api_server)
+  @server ||= root_url
+  File.join(@server, path)
+end
+%>
+
 <h1>REST API Documentation</h1>
 <hr/>
 
 <div class="mt-4">
   <h2>Public endpoint</h2>
-  The public endpoint is located at <code><%= root_url %></code>.
+  The public endpoint is located at <code><%= api_url('/') %></code>.
 </div>
 
 <div class="mt-4">
@@ -260,7 +268,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = names_url(status: :SeqCode, format: :json) %>
+      <% url = api_url('/names.json?status=SeqCode') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -334,7 +342,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = name_url(1, format: :json) %>
+      <% url = api_url('/names/1.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -407,7 +415,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = genomes_url(format: :json) %>
+      <% url = api_url('/genomes.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -480,7 +488,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = genome_url(1, format: :json) %>
+      <% url = api_url('/genomes/1.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -551,7 +559,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = authors_url(format: :json) %>
+      <% url = api_url('/type-genomes.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -612,7 +620,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = registers_url(format: :json) %>
+      <% url = api_url('/registers.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -670,7 +678,7 @@
     <dt>Example</dt>
     <dd>
       <% example_acc = 'r:sy5jeiw2' %>
-      <% url = register_url(example_acc, format: :json) %>
+      <% url = api_url('/registers/r:sy5jeiw2.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -768,7 +776,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = authors_url(format: :json) %>
+      <% url = api_url('/authors.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -810,7 +818,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = author_url(1, format: :json) %>
+      <% url = api_url('/authors/1.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -854,7 +862,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = journals_url(format: :json) %>
+      <% url = api_url('/journals.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -897,7 +905,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = journal_url('Acta Horticulturae', format: :json) %>
+      <% url = api_url('/journals/Acta Horticulturae.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -938,7 +946,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = publications_url(format: :json) %>
+      <% url = api_url('/publications.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -993,7 +1001,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = publication_url(1, format: :json) %>
+      <% url = api_url('/publications/1.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -1034,7 +1042,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = subjects_url(format: :json) %>
+      <% url = api_url('/subjects.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
@@ -1081,7 +1089,7 @@
     </dd>
     <dt>Example</dt>
     <dd>
-      <% url = subject_url(1, format: :json) %>
+      <% url = api_url('/subjects/1.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
