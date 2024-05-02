@@ -1,13 +1,9 @@
 # Basic data + nomenclature
 json.(name, :id, :name, :rank, :status_name, :priority_date)
-json.type_material(
-  name.type_material => name.type_accession,
-  class: name.type_object ? name.type_object.class.to_s : 'unknown',
-  id: name.type_object.try(:id),
-  url: name.type_object ?
-        polymorphic_url(name.type_object, format: :json) : nil,
-  display: name.type_object&.display(false),
-)
+json.type_material do
+  json.set!(name.type_material, name.type_accession)
+  json.partial!('names/type_material', object: name.type_object)
+end
 json.classification(name.lineage, partial: 'names/name_ref', as: :name)
 
 json.(name, :created_at, :updated_at)

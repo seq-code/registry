@@ -81,6 +81,10 @@ class Register < ApplicationRecord
     "#{'https://' if protocol}seqco.de/#{accession}"
   end
 
+  def uri
+    acc_url(true)
+  end
+
   def names_by_rank
     names.sort do |a, b|
       Name.ranks.index(a.rank) <=> Name.ranks.index(b.rank)

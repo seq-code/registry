@@ -282,6 +282,14 @@ class Genome < ApplicationRecord
     '%ssc|%07i' % [prefix, id]
   end
 
+  def seqcode_url(protocol = true)
+    "#{'https://' if protocol}seqco.de/g:#{id}"
+  end
+
+  def uri
+    seqcode_url
+  end
+
   def quality
     return nil unless completeness? && contamination?
 

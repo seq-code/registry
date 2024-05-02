@@ -1,5 +1,4 @@
-json.extract!(genome, :id, :database, :accession, :kind)
-json.url genome_url(genome, format: :json)
+json.partial!('/genomes/genome_item', genome: genome)
 json.sample(genome, :source_database, :source_accessions)
 json.genomic_features(
   Hash[

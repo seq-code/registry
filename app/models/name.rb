@@ -569,6 +569,10 @@ class Name < ApplicationRecord
     "#{'https://' if protocol}seqco.de/i:#{id}"
   end
 
+  def uri
+    seqcode_url
+  end
+
   # ============ --- PUBLICATIONS --- ============
 
   def proposed_in?(publication)
