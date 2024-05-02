@@ -166,10 +166,6 @@ class ApplicationController < ActionController::Base
                params[:controller] == 'page'
           redirect_to page_api_path
         end
-      elsif Rails.configuration.try(:api_server)
-        if params[:format].to_s == 'json'
-          redirect_to File.join(Rails.configuration.api_server, request.path)
-        end
       end
     end
 
