@@ -2,6 +2,7 @@
 json.(name, :id, :name, :rank, :status_name, :priority_date)
 json.type_material(
   class: name.type_object ? name.type_object.class.to_s : 'unknown',
+  id: name.type_object.try(:id),
   url: name.type_object ?
         polymorphic_url(name.type_object, format: :json) : nil,
   display: name.type_object&.display(false),

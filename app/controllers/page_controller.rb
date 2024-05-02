@@ -71,6 +71,10 @@ class PageController < ApplicationController
     render('help', layout: !params[:content].present?)
   end
 
+  # GET /api
+  def api
+  end
+
   private
 
     def help_topics

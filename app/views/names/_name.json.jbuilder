@@ -1,5 +1,7 @@
-# Basic data + nomenclature
-json.(name, :id, :name, :rank, :status_name, :syllabication, :priority_date)
+json.partial!('names/name_item', name: name)
+
+# Nomenclature
+json.(name, :rank, :status_name, :syllabication, :priority_date)
 unless name.description.empty?
   json.description(
     raw: name.description.body.to_plain_text, html: name.description.body
@@ -7,71 +9,44 @@ unless name.description.empty?
 end
 json.formal_styling(raw: name.formal_txt, html: name.formal_html)
 json.etymology(name.full_etymology(false))
-json.type_material(
-  class: name.type_object ? name.type_object.class.to_s : 'unknown',
-  url: name.type_object ?
-        polymorphic_url(name.type_object, format: :json) : nil,
-  display: name.type_object&.display(false),
-)
-
+json.type_material do
+  json.partial!('names/type_material', object: name.type_object)
+end
 unless name.notes.empty?
   json.notes(raw: name.notes.body.to_plain_text, html: name.notes.body)
 end
-if name.proposed_in
-  json.proposed_in(
-    id: name.proposed_in.id,
-    citation: name.proposed_in.citation,
-    url: publication_url(name.proposed_in, format: :json)
+json.proposed_in do
+  json.partial!(
+    'publications/publication_item', publication: name.proposed_in
   )
-end
-if name.not_validly_proposed_in.present?
-  json.not_validly_proposed_in(
-    name.not_validly_proposed_in.map do |pub|
-      {
-        id: pub.id, citation: pub.citation,
-        url: publication_url(pub, format: :json)
-      }
-    end
-  )
-end
+end if name.proposed_in
+json.not_validly_proposed_in(
+  name.not_validly_proposed_in, partial: 'publications/publication_item',
+  as: :publication
+) if name.not_validly_proposed_in.present?
 if name.corrigendum_in
-  json.corrigendum_in(
-    id: name.corrigendum_in.id,
-    citation: name.corrigendum_in.citation,
-    url: publication_url(name.corrigendum_in, format: :json)
-  )
+  json.corrigendum_in do
+    json.partial!(
+      'publications/publication_item', publication: name.corrigendum_in
+    )
+  end
   json.(name, :corrigendum_from)
 end
-if name.assigned_in
-  json.assigned_in(
-    id: name.assigned_in.id,
-    citation: name.assigned_in.citation,
-    url: publication_url(name.assigned_in, format: :json)
-  )
-end
-if name.emended_in.present?
-  json.emended_in(
-    name.emended_in.map do |pub|
-      {
-        id: pub.id, citation: pub.citation,
-        url: publication_url(pub, format: :json)
-      }
-    end
-  )
-end
+json.assigned_in do
+  json.partial!('publications/publication_item', publication: name.assigned_in)
+end if name.assigned_in
+json.emended_in(
+  name.emended_in, partial: 'publications/publication_item', as: :publication
+) if name.emended_in.present?
 
 # Taxonomy
-if name.parent
-  json.classification(name.lineage, partial: 'names/name_ref', as: :name)
-end
-json.children(name.children) { |child| json.(child, :id, :name) }
+json.classification(name.lineage, partial: 'names/name_ref', as: :name)
+json.children(name.children, partial: 'names/name_item', as: :name)
 
 # Register list
 if name.status == 15
   json.register(
-    acc: name.register.acc_url,
-    doi: name.register.propose_doi,
-    url: register_url(name.register, format: :json)
+    name.register, partial: 'registers/register_item', as: :register
   )
 end
 
@@ -82,4 +57,3 @@ end
 
 # Local metadata
 json.(name, :created_at, :updated_at)
-json.url name_url(name, format: :json)

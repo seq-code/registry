@@ -1,5 +1,9 @@
 <% provide(:title, @subject.name) %>
-<div class="float-right"><%= list_type_selector %></div>
+
+<%= download_buttons(
+      [[subject_url(@subject, format: :json), 'file-code', 'JSON']]
+    ) { content_tag(:div, class: 'mt-1') { list_type_selector } } %>
+
 <h1><%= @subject.name %></h1>
 <hr/>
 

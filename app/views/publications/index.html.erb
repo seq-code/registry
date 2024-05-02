@@ -1,7 +1,12 @@
+<%= download_buttons(
+      [[publications_url(format: :json), 'file-code', 'JSON']]
+    ) %>
+
 <h1>
   Publications
   <div class="badge badge-count"><%= @count %></div>
 </h1>
+
 <div class="container p-0">
   <div class="row">
     <div class="col-sm-9">
@@ -29,7 +34,6 @@
     </div>
   </div>
 </div>
-
 <hr/>
 
 <%= adaptable_list(set: @publications) do |list| %>

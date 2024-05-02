@@ -103,6 +103,7 @@ class NamesController < ApplicationController
   def type_genomes
     @names = Name.where(status: 15, type_material: [:nuccore, :assembly])
                  .paginate(page: params[:page], per_page: 50)
+    @crumbs = [['Genomes', genomes_path], 'Type']
   end
 
   # GET /names/user

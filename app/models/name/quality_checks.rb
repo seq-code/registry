@@ -7,8 +7,8 @@ module Name::QualityChecks
 
     # Attributes supported for warnings
     @@attributes = %i[
-      message link_text link_to rules recommendations can_endorse
-      link_public rule_notes checklist
+      message link_text link_to rules recommendations rule_notes
+      can_endorse link_public checklist
     ]
 
     # Preformed links to common targets

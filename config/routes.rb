@@ -9,7 +9,8 @@ Rails.application.routes.draw do
   # Static pages
   namespace :page do
     %i[
-      publications seqcode initiative connect join about prize committee news
+      api about committee connect initiative join
+      news prize publications seqcode
     ].each { |i| get(i) }
   end
   get  'help' => 'page#help_index', as: :help_index

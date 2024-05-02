@@ -13,11 +13,13 @@ class GenomesController < ApplicationController
 
   # GET /genomes or /genomes.json
   def index
-    @genomes = Genome.all
+    @genomes = Genome.all.paginate(page: params[:page], per_page: 30)
+    @crumbs = ['Genomes']
   end
 
   # GET /genomes/1 or /genomes/1.json
   def show
+    @crumbs = [['Genomes', genomes_path], @genome.title('')]
   end
 
   # GET /genomes/1/edit
@@ -77,7 +79,8 @@ class GenomesController < ApplicationController
     end
 
     def set_name
-      @name = params[:name].present? ? Name.find(params[:name]) : @genome.names.first
+      @name = params[:name].present? ? Name.find(params[:name]) :
+                @genome.names.first
     end
 
     def set_tutorial

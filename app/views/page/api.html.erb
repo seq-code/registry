@@ -1,0 +1,1093 @@
+<% provide(:title, 'API Documentation') %>
+
+<h1>REST API Documentation</h1>
+<hr/>
+
+<div class="mt-4">
+  <h2>Public endpoint</h2>
+  The public endpoint is located at <code><%= root_url %></code>.
+</div>
+
+<div class="mt-4">
+  <h2>Global Models</h2>
+  All the following models can also take the value of <code>null</code>:
+  <ul>
+    <li>
+      <b><code>bool</code></b>: Boolean, one of <code>true</code> or
+      <code>false</code>
+    </li>
+    <li>
+      <b><code>int</code></b>: Integer. Example: <code>3</code>
+    </li>
+    <li>
+      <b><code>float</code></b>: Double (floating point number).
+      Example: <code>3.14</code>
+    </li>
+    <li><b><code>str</code></b>: String. Example: <code>"e.g."</code></li>
+    <li>
+      <b><code>date</code></b>:
+      Date and time, in format <code>ISO 8601</code> (without time).
+      Example: <code>"2019-04-15"</code>
+    </li>
+    <li>
+      <b><code>date_time</code></b>:
+      Date and time, in format <code>ISO 8601</code> (including seconds).
+      Example: <code>"2019-04-15T18:47:15.734Z"</code>
+    </li>
+  </ul>
+</div>
+
+<div class="accordion" id="actions-accordion">
+  <h2 class="py-3">Generic</h2>
+
+  <!-- Model text_with_format -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-26" aria-expanded="false"
+          aria-controls="actions-accordion-26" id="actions-accordion-h-26">
+    <h4>Model: <code>text_with_format</code></h4>
+  </button>
+  <div id="actions-accordion-26" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-26"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "raw": <i>str</i>,
+  "html": <i>str</i>
+}</pre>
+  </div>
+
+  <!-- Model response -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-07" aria-expanded="false"
+          aria-controls="actions-accordion-07" id="actions-accordion-h-07">
+    <h4>Model: <code>response</code></h4>
+  </button>
+  <div id="actions-accordion-07" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-07"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "status": "ok",
+  "message_type": <i>str</i>
+}</pre>
+  </div>
+
+  <!-- Model response_paginated -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-08" aria-expanded="false"
+          aria-controls="actions-accordion-08" id="actions-accordion-h-08">
+    <h4>Model: <code>response_paginated</code></h4>
+  </button>
+  <div id="actions-accordion-08" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-08"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "status": "ok",
+  "message_type": <i>str</i>,
+  "count": <i>int</i>,
+  "current_page": <i>int</i>,
+  "total_pages": <i>int</i>,
+  "next": <i>str</i>
+}</pre>
+  </div>
+
+  <h2 class="py-3">Names</h2>
+
+  <!-- Model name_item -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-10" aria-expanded="false"
+          aria-controls="actions-accordion-10" id="actions-accordion-h-10">
+    <h4>Model: <code>name_item</code></h4>
+  </button>
+  <div id="actions-accordion-10" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-10"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "id": <i>int</i>,
+  "name": <i>str</i>,
+  "url": <i>str</i>
+}</pre>
+  </div>
+
+  <!-- Model classification -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-18" aria-expanded="false"
+          aria-controls="actions-accordion-18" id="actions-accordion-h-18">
+    <h4>Model: <code>classification</code></h4>
+  </button>
+  <div id="actions-accordion-18" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-18"
+      data-parent="#actions-accordion">
+<pre class=json>[
+  {
+    "id": <i>int</i>,
+    "name": <i>str</i>,
+    "rank": <i>str</i>,
+    "status_name": <i>str</i>,
+    "priority_date": <i>date_time</i>,
+    "type_material": <i>type_material</i>,
+    "created_at": <i>date_time</i>,
+    "updated_at": <i>date_time</i>,
+    "url": <i>str</i>
+  },
+  <i>...</i>
+]</pre>
+    <ul>
+      <li>
+        The <code>classification</code> model is an array ordered from highest
+        to lowest taxonomic rank, where the first value typically
+        corresponds to a name with the rank of <code>"domain"</code>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Model type_material -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-19" aria-expanded="false"
+          aria-controls="actions-accordion-19" id="actions-accordion-h-19">
+    <h4>Model: <code>type_material</code></h4>
+  </button>
+  <div id="actions-accordion-19" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-19"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "class": <i>str</i>,
+  "id": <i>int</i>,
+  "url": <i>str</i>,
+  "display": <i>str</i>
+}</pre>
+    <ul>
+      <li>
+        <b><code>class</code></b> can take any value from
+        <code>"unknown"</code>, <code>"Name"</code>, or <code>"Genome"</code>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Model qc_warning -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-20" aria-expanded="false"
+          aria-controls="actions-accordion-20" id="actions-accordion-h-20">
+    <h4>Model: <code>qc_warning</code></h4>
+  </button>
+  <div id="actions-accordion-20" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-20"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "message": <i>str</i>,
+  "rules": [
+    <i>str</i>,
+    <i>...</i>
+  ],
+  "recommendations": [
+    <i>str</i>,
+    <i>...</i>
+  ],
+  "rule_notes": [
+    <i>str</i>,
+    <i>...</i>
+  ],
+  "can_endorse": <i>bool</i>,
+  "checklist": <i>str</i>
+}</pre>
+    <ul>
+      <li>
+        <b><code>message</code></b> is the only mandatory field in this model
+      </li>
+      <li>
+        <b><code>rules</code></b>, <b><code>recommendations</code></b>, and
+        <b><code>rule_notes</code></b> are (optional) arrays indicating which
+        rules, recommendations, or rule notes (respectively) from the SeqCode
+        are being contravened by the name in its current status
+      </li>
+      <li>
+        <b><code>can_endorse</code></b> indicates if the name can be endorsed
+        despite the warning. If missing, warnings citing rules don't allow
+        endorsement, and all other warnings do
+      </li>
+      <li>
+        <b><code>checklist</code></b> indicates (if present) that the warning
+        was registered by manual curation of this type, one of
+        <code>"nomenclature"</code> or <code>"genomics"</code>
+      </li>
+    </ul>
+  </div>
+
+  <!-- GET /names.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-16" aria-expanded="false"
+          aria-controls="actions-accordion-16" id="actions-accordion-h-16">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= names_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-16" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-16"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve a list of names</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of names
+        </li>
+        <li>
+          <b>status <span class=text-muted>[<code>str</code>, opt]</span></b>:
+          Filter names by status, one of <code>public</code>,
+          <code>automated</code>, <code>SeqCode</code>, <code>ICNP</code>,
+          <code>ICN</code>, or <code>valid</code>
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    <i>name_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = names_url(status: :SeqCode, format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /names/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-17" aria-expanded="false"
+          aria-controls="actions-accordion-17" id="actions-accordion-h-17">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= name_path('(id)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-17" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-17"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve data about the name <code>(id)</code> [<code>int</code>]</dd>
+    <dt>Parameters</dt>
+    <dd>None</dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response</i>,
+  <i>name_item</i>,
+  "rank": <i>str</i>,
+  "status_name": <i>str</i>,
+  "syllabication": <i>str</i>,
+  "priority_date": <i>date_time</i>,
+  "description": <i>text_with_format</i>,
+  "formal_styling": <i>text_with_format</i>,
+  "etymology": <i>str</i>,
+  "type_material": <i>type_material</i>,
+  "notes": <i>text_with_format</i>,
+  "proposed_in": <i>publication_item</i>,
+  "not_validly_proposed_in": [
+    <i>publication_item</i>,
+    <i>...</i>
+  ],
+  "corrigendum_in": <i>publication_item</i>,
+  "corrigendum_from": <i>str</i>,
+  "emended_in": [
+    <i>publication_item</i>,
+    <i>...</i>
+  ],
+  "classification": <i>classification</i>,
+  "children": [
+    <i>name_item</i>,
+    <i>...</i>
+  ],
+  "register": <i>register_item</i>,
+  "qc_warnings": [
+    <i>qc_warning</i>,
+    <i>...</i>
+  ],
+  "register": <i>register_item</i>,
+  "created_at": <i>date_time</i>,
+  "updated_at": <i>date_time</i>
+}</pre>
+      <ul>
+        <li>
+          The following fields are optional: <b><code>description</code></b>,
+          <b><code>notes</code></b>, <b><code>proposed_in</code></b>, 
+          <b><code>not_validly_proposed_in</code></b>,
+          <b><code>corrigendum_in</code></b>,
+          <b><code>corrigendum_from</code></b>, <b><code>emended_in</code></b>,
+          <b><code>register</code></b>, and <b><code>qc_warnings</code></b>
+        </li>
+      </ul>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = name_url(1, format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <h2 class="py-3">Genomes</h2>
+
+  <!-- Model genome_item -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-12" aria-expanded="false"
+          aria-controls="actions-accordion-12" id="actions-accordion-h-12">
+    <h4>Model: <code>genome_item</code></h4>
+  </button>
+  <div id="actions-accordion-12" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-12"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "id": <i>int</i>,
+  "database": <i>str</i>,
+  "accession": <i>str</i>,
+  "kind": <i>str</i>,
+  "url": <i>str</i>
+}</pre>
+    <ul>
+      <li>
+        <b><code>database</code></b> can take any of the values:
+        <code>"assembly"</code> or <code>"nuccore"</code>
+      </li>
+      <li>
+        <b><code>kind</code></b> can take any of the values:
+        <code>"isolate"</code>, <code>"enrichment"</code>, <code>"mag"</code>,
+        <code>"sag"</code>, or <code>null</code>
+      </li>
+    </ul>
+  </div>
+
+  <!-- GET /genomes.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-13" aria-expanded="false"
+          aria-controls="actions-accordion-13" id="actions-accordion-h-13">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= genomes_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-13" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-13"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve a list of genomes</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of genomes
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    <i>genome_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = genomes_url(format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /genomes/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-14" aria-expanded="false"
+          aria-controls="actions-accordion-14" id="actions-accordion-h-14">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= genome_path('(id)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-14" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-14"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve data about genome <code>(id)</code> [<code>int</code>]</dd>
+    <dt>Parameters</dt>
+    <dd>None</dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response</i>,
+  <i>genome_item</i>,
+  "sample": {
+    "source_database": <i>str</i>,
+    "source_accessions": [
+      <i>str</i>,
+      <i>...</i>
+    ]
+  },
+  "genomic_features": {
+    "auto_check": <i>bool</i>,
+    "seq_depth": <i>int</i>,
+    "gc_content": <i>float</i>,
+    "most_complete_16s": <i>float</i>,
+    "number_of_16s": <i>int</i>,
+    "most_complete_23s": <i>float</i>,
+    "number_of_23s": <i>int</i>,
+    "number_of_trnas": <i>int</i>,
+    "coding_density": <i>float</i>,
+    "codon_table": <i>int</i>,
+    "n50": <i>float</i>,
+    "contigs": <i>int</i>,
+    "largest_contig": <i>int</i>,
+    "assembly_length": <i>int</i>,
+    "ambiguous_fraction": <i>float</i>
+  },
+  "names": [
+    <i>name_item</i>,
+    <i>...</i>
+  ],
+  "created_at": <i>date_time</i>,
+  "updated_at": <i>date_time</i>
+}</pre>
+      <ul>
+        <li>
+          <b><code>sample.source_database</code></b> can take any of the values:
+          <code>"biosample"</code>, <code>"sra"</code>, <code>""</code>, or
+          <code>null</code> (the last two should be interpreted as equivalent)
+        </li>
+        <li>
+          <b><code>genomic_features.codon_table</code></b> follows the NCBI
+          codon table numbering, and typically would take a value of
+          <code>11</code>, <code>4</code>, or <code>null</code>
+        </li>
+      </ul>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = genome_url(1, format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /type-genomes.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-15" aria-expanded="false"
+          aria-controls="actions-accordion-15" id="actions-accordion-h-15">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= name_type_genomes_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-15" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-15"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>
+      Retrieve a list of type genomes from validly published names and their
+      corresponding names
+    </dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list genomes and corresponding validly published names
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    {
+      "id": <i>int</i>,
+      "name": <i>str</i>,
+      "rank": <i>str</i>,
+      "status_name": <i>str</i>,
+      "priority_date": <i>date_time</i>,
+      "type_material": {
+        <i>str</i>: <i>str</i>,
+        <i>type_material</i>
+      },
+      "classification": <i>classification</i>,
+      "created_at": <i>date_time</i>,
+      "updated_at": <i>date_time</i>,
+      "url": <i>str</i>
+    },
+    <i>...</i>
+  ]
+}</pre>
+      <ul>
+        <li>
+          The first key-value pair in
+          <b><code>values[*].type_material</code></b> corresponds to
+          database and accession, where the database (key) is 
+          <code>"nuccore"</code> or <code>"assembly"</code>
+        </li>
+        <li>
+          <b><code>values[*].id</code></b> and all other direct children of
+          <b><code>values[*]</code></b> correspond to features of the name,
+          not features of the type genome
+        </li>
+      </ul>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = authors_url(format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <h2 class="py-3">Registers</h2>
+
+  <!-- Model register_item -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-21" aria-expanded="false"
+          aria-controls="actions-accordion-21" id="actions-accordion-h-21">
+    <h4>Model: <code>register_item</code></h4>
+  </button>
+  <div id="actions-accordion-21" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-21"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "acc_url": <i>str</i>,
+  "title": <i>str</i>,
+  "priority_date": <i>date_time</i>,
+  "url": <i>str</i>
+}</pre>
+  </div>
+
+  <!-- GET /registers.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-24" aria-expanded="false"
+          aria-controls="actions-accordion-24" id="actions-accordion-h-24">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= registers_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-24" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-24"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve a list of (validated) register lists</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    <i>register_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = registers_url(format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /registers/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-25" aria-expanded="false"
+          aria-controls="actions-accordion-25" id="actions-accordion-h-25">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= register_path('(acc)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-25" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-25"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>
+      Retrieve a data from register list <code>(acc)</code> [<code>str</code>]
+    </dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of names in the register list
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  <i>register_item</i>,
+  "submitted": <i>bool</i>,
+  "validated": <i>bool</i>,
+  "validated_by": <i>str</i>,
+  "submitter": <i>str</i>,
+  "effective_publication": <i>publication_item</i>,
+  "doi": <i>str</i>,
+  "created_at": <i>date_time</i>,
+  "updated_at": <i>date_time</i>,
+  "names": [
+    <i>name_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+      <ul>
+        <li>
+          <b><code>doi</code></b> is only present for validated register lists
+        </li>
+      </ul>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% example_acc = 'r:sy5jeiw2' %>
+      <% url = register_url(example_acc, format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <h2 class="py-3">Publications</h2>
+
+  <!-- Model author_item -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-0" aria-expanded="false"
+          aria-controls="actions-accordion-0" id="actions-accordion-h-0">
+    <h4>Model: <code>author_item</code></h4>
+  </button>
+  <div id="actions-accordion-0" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-0"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "id": <i>int</i>,
+  "given": <i>str</i>,
+  "family": <i>str</i>,
+  "created_at": <i>date_time</i>,
+  "updated_at": <i>date_time</i>,
+  "url": <i>str</i>
+}</pre>
+  </div>
+
+  <!-- Model publication_item -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-05" aria-expanded="false"
+          aria-controls="actions-accordion-05" id="actions-accordion-h-05">
+    <h4>Model: <code>publication_item</code></h4>
+  </button>
+  <div id="actions-accordion-05" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-05"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "id": <i>int</i>,
+  "citation": <i>str</i>,
+  "doi": <i>str</i>,
+  "url": <i>str</i>
+}</pre>
+  </div>
+
+  <!-- Model subject_item -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-11" aria-expanded="false"
+          aria-controls="actions-accordion-11" id="actions-accordion-h-11">
+    <h4>Model: <code>subject_item</code></h4>
+  </button>
+  <div id="actions-accordion-11" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-11"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "id": <i>int</i>,
+  "name": <i>str</i>,
+  "url": <i>str</i>
+}</pre>
+  </div>
+
+  <!-- GET /authors.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-01" aria-expanded="false"
+          aria-controls="actions-accordion-01" id="actions-accordion-h-01">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= authors_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-01" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-01"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve a list of publication authors</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of authors
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    <i>author_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = authors_url(format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /authors/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-02" aria-expanded="false"
+          aria-controls="actions-accordion-02" id="actions-accordion-h-02">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= author_path('(id)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-02" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-02"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve data about the author <code>(id)</code> [<code>int</code>]</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of publications from the author
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  <i>author_item</i>,
+  "publications": [
+    <i>publication_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = author_url(1, format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /journals.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-03" aria-expanded="false"
+          aria-controls="actions-accordion-03" id="actions-accordion-h-03">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= journals_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-03" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-03"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve a list of publication journals</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    {
+      "name": <i>str</i>,
+      "url": <i>str</i>
+    },
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = journals_url(format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /journals/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-04" aria-expanded="false"
+          aria-controls="actions-accordion-04" id="actions-accordion-h-04">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= journal_path('(name)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-04" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-04"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>
+      Retrieve data about the journal <code>(name)</code> [<code>str</code>]
+    </dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of publications from the journal
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "publications": [
+    <i>publication_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = journal_url('Acta Horticulturae', format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /publications.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-06" aria-expanded="false"
+          aria-controls="actions-accordion-06" id="actions-accordion-h-06">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= publications_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-06" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-06"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve a list of publications</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of publications
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    <i>publication_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = publications_url(format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /publications/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-09" aria-expanded="false"
+          aria-controls="actions-accordion-09" id="actions-accordion-h-09">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= publication_path('(id)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-09" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-09"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>
+      Retrieve data about publication <code>(id)</code> [<code>int</code>]
+    </dd>
+    <dt>Parameters</dt>
+    <dd>None</dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response</i>,
+  <i>publication_item</i>,
+  "link_ext": <i>str</i>,
+  "title": <i>str</i>,
+  "journal": <i>str</i>,
+  "journal_loc": <i>str</i>,
+  "journal_date": <i>date</i>,
+  "pub_type": <i>str</i>,
+  "abstract": <i>str</i>,
+  "long_citation_html": <i>str</i>,
+  "created_at": <i>date_time</i>,
+  "updated_at": <i>date_time</i>,
+  "authors": [
+    <i>author_item</i>,
+    <i>...</i>
+  ],
+  "names": [
+    <i>name_item</i>,
+    <i>...</i>
+  ],
+  "subjects": [
+    <i>subject_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = publication_url(1, format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /subjects.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-22" aria-expanded="false"
+          aria-controls="actions-accordion-22" id="actions-accordion-h-22">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= subjects_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-22" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-22"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>Retrieve a list of publication subjects</dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  "values": [
+    <i>subject_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = subjects_url(format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <!-- GET /subjects/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-23" aria-expanded="false"
+          aria-controls="actions-accordion-23" id="actions-accordion-h-23">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= subject_path('(id)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-23" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-23"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>
+      Retrieve data from publication subject <code>(id)</code>
+      [<code>int</code>]
+    </dd>
+    <dt>Parameters</dt>
+    <dd>
+      <ul>
+        <li>
+          <b>page <span class=text-muted>[<code>int</code>, opt]</span></b>:
+          Page of the list of publications with the subject
+        </li>
+      </ul>
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response_paginated</i>,
+  <i>subject_item</i>,
+  "created_at": <i>date_time</i>,
+  "updated_at": <i>date_time</i>,
+  "publications": [
+    <i>publication_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = subject_url(1, format: :json) %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+</div>
+<br/><br/><br/>
+
+<%= render(partial: 'shared/cc') %>
+

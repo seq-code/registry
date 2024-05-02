@@ -1,10 +1,10 @@
-json.(@names, :count, :current_page, :total_pages)
-if @names.current_page < @names.total_pages
-  json.next(names_url(
-    sort: @sort, status: @status,
-    page: @names.current_page + 1, format: :json
-  ))
-else
-  json.next nil
+json.response do
+  json.status 'ok'
+  json.message_type 'names'
+  json.(@names, :count, :current_page, :total_pages)
+  json.next(
+    @names.next_page ?
+      names_url(format: :json, status: @status, page: @names.next_page) : nil
+  )
 end
-json.values(@names, partial: 'names/name_ref', as: :name)
+json.values(@names, partial: 'names/name_item', as: :name)

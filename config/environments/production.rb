@@ -133,4 +133,8 @@ Rails.application.configure do
     user:     'xxxxxxxx',
     password: 'xxxxxxxx',
   }
+
+  # API Configuration
+  config.api_only = ENV['RAILS_SEQCODE_API_ONLY'].present?
+  config.api_server = 'https://api.seqco.de/v1'
 end

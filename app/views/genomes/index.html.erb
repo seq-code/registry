@@ -1,55 +1,29 @@
-<p id="notice"><%= notice %></p>
+<%= download_buttons(
+      [[genomes_url(format: :json), 'file-code', 'JSON']]
+    ) %>
 
 <h1>
   Genomes
   <div class="badge badge-count"><%= @genomes.count %></div>
 </h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Database</th>
-      <th>Accession</th>
-      <th>Type</th>
-      <th>Gc content</th>
-      <th>Completeness</th>
-      <th>Contamination</th>
-      <th>Seq depth</th>
-      <th>Most complete 16s</th>
-      <th>Number of 16s</th>
-      <th>Most complete 23s</th>
-      <th>Number of 23s</th>
-      <th>Number of trnas</th>
-      <th>Updated by</th>
-      <th>Auto check</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
+<div class="container p-0">
+  <div class="row">
+    <div class="col-sm-9">
+      <b>Browse by</b>
+      <span class="text-muted">•</span>
+      <%= link_to('type genomes', name_type_genomes_path) %>
+    </div>
+    <div class="col-sm-3 text-right">
+      <%= list_type_selector %>
+    </div>
+  </div>
+</div>
+<hr/>
 
-  <tbody>
-    <% @genomes.each do |genome| %>
-      <tr>
-        <td><%= genome.database %></td>
-        <td><%= genome.accession %></td>
-        <td><%= genome.kind %></td>
-        <td><%= genome.gc_content %></td>
-        <td><%= genome.completeness %></td>
-        <td><%= genome.contamination %></td>
-        <td><%= genome.seq_depth %></td>
-        <td><%= genome.most_complete_16s %></td>
-        <td><%= genome.number_of_16s %></td>
-        <td><%= genome.most_complete_23s %></td>
-        <td><%= genome.number_of_23s %></td>
-        <td><%= genome.number_of_trnas %></td>
-        <td><%= genome.updated_by %></td>
-        <td><%= genome.auto_check %></td>
-        <td><%= link_to 'Show', genome %></td>
-        <td><%= link_to 'Edit', edit_genome_path(genome) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%= adaptable_list(set: @genomes) do |list| %>
+  <% @genomes.each do |genome| %>
+    <%= render(partial: 'genome_item', locals: { list: list, genome: genome }) %>
+  <% end %>
+<% end %>
 
-<br>
-
-<%= link_to 'New Genome', new_genome_path %>

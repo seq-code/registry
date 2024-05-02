@@ -3,4 +3,3 @@ json.(@names) do |name|
   json.value(name.name)
   json.display(name.display)
 end
-

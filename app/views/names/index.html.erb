@@ -1,7 +1,12 @@
+<%= download_buttons(
+      [[names_url(format: :json, status: @status), 'file-code', 'JSON']]
+    ) %>
+
 <h1>
   <%= @title %>
   <div class="badge badge-count"><%= @count %></div>
 </h1>
+
 <div class="container p-0">
   <div class="row">
     <div class="col-sm-9">

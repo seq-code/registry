@@ -1,18 +1,12 @@
-json.extract!(
-  register, :acc_url, :title, :submitted, :validated,
-  :created_at, :updated_at, :priority_date
-)
-json.validated_by register.validated_by&.display_name
-json.submitter register.user&.display_name
-if register.publication_id
-  json.effective_publication(
-    id: register.publication_id,
-    url: publication_url(register.publication_id, format: :json)
-  )
-else
-  json.effective_publication(nil)
+json.partial!('registers/register_item', register: register)
+json.extract!(register, :submitted, :validated)
+json.validated_by register.validated_by.try(:display_name)
+json.submitter register.user.try(:display_name)
+json.effective_publication do
+  register.publication_id ?
+    json.partial!(
+      'publications/publication_item', publication: register.publication
+    ) : nil
 end
-if register.validated?
-  json.doi(register.propose_doi)
-end
-json.url register_url(register, format: :json)
+json.doi(register.propose_doi) if register.validated?
+json.extract!(register, :created_at, :updated_at)

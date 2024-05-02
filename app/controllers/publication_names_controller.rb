@@ -1,18 +1,9 @@
 class PublicationNamesController < ApplicationController
-  before_action :set_publication_name, only: [:show, :destroy]
-  before_action :set_publication, only: [:link_name, :link_name_commit]
-  before_action :authenticate_contributor!, only: [:destroy, :link_name, :link_name_commit]
-
-  # GET /publication_names
-  # GET /publication_names.json
-  def index
-    @publication_names = PublicationName.all
-  end
-
-  # GET /publication_names/1
-  # GET /publication_names/1.json
-  def show
-  end
+  before_action :set_publication_name, only: %i[destroy]
+  before_action :set_publication, only: %i[link_name link_name_commit]
+  before_action(
+    :authenticate_contributor!, only: %i[destroy link_name link_name_commit]
+  )
 
   # DELETE /publication_names/1
   def destroy
@@ -39,15 +30,25 @@ class PublicationNamesController < ApplicationController
 
   # GET /publications/1/link_name
   def link_name
-    @crumbs = [['Publications', publications_path], [@publication.short_citation, @publication], 'Link names']
+    @crumbs = [
+      ['Publications', publications_path],
+      [@publication.short_citation, @publication],
+      'Link names'
+    ]
     @publication_name = PublicationName.new(publication: @publication)
   end
 
   # POST /publications/1/link_name
   def link_name_commit
-    @crumbs = [['Publications', publications_path], [@publication.short_citation, @publication], 'Link names']
+    @crumbs = [
+      ['Publications', publications_path],
+      [@publication.short_citation, @publication],
+      'Link names'
+    ]
     @name = Name.find_by(name: params[:publication_name][:name])
-    @publication_name = PublicationName.new(publication: @publication, name: @name)
+    @publication_name = PublicationName.new(
+      publication: @publication, name: @name
+    )
     if @publication_name.save
       flash[:notice] = 'Name linked to the publication'
       redirect_to @publication

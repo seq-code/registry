@@ -3,4 +3,3 @@ json.(@subjects) do |subject|
   json.value(subject.name)
   json.display(subject.name)
 end
-

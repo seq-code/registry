@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include PageHelper
 
   protect_from_forgery(with: :exception)
+  before_action(:check_api!)
 
   @@search_obj = {
     publications: [Publication, %w[title doi journal abstract], {}],
@@ -156,6 +157,19 @@ class ApplicationController < ActionController::Base
       unless current_user.try(role)
         flash[:alert] = 'Action not allowed'
 	redirect_to root_path
+      end
+    end
+
+    def check_api!
+      if Rails.configuration.try(:api_only)
+        unless params[:format].to_s == 'json' ||
+               params[:controller] == 'page'
+          redirect_to page_api_path
+        end
+      elsif Rails.configuration.try(:api_server)
+        if params[:format].to_s == 'json'
+          redirect_to File.join(Rails.configuration.api_server, request.path)
+        end
       end
     end
 

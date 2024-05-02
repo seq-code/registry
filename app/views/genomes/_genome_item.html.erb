@@ -1,0 +1,10 @@
+<%= adaptable_entry(list, genome.text, genome) do |entry| %>
+  <%= adaptable_value(entry, 'Name(s)') do %>
+    <% genome.names.each do |name| %>
+      <%= display_link(name) %><br/>
+    <% end %>
+  <% end %>
+  <%= adaptable_value(entry, 'Type') do %>
+    <%= genome.kind_name %>
+  <% end %>
+<% end %>

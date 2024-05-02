@@ -1,7 +1,11 @@
 <h1><%= @publication.title %></h1>
 <hr/>
 
-<%= simple_form_for(@publication_name, url: link_publication_name_path(@publication), html: { method: :post }) do |f| %>
+<%= simple_form_for(
+      @publication_name,
+      url: link_publication_name_path(@publication),
+      html: { method: :post }
+    ) do |f| %>
   <%= f.input :publication_id, as: :hidden %>
   <%=
     f.input(

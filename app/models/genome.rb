@@ -277,8 +277,9 @@ class Genome < ApplicationRecord
     text
   end
 
-  def title
-    'Genome sc|%07i' % id
+  def title(prefix = nil)
+    prefix ||= 'Genome '
+    '%ssc|%07i' % [prefix, id]
   end
 
   def quality
