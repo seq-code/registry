@@ -130,8 +130,8 @@ Rails.application.configure do
   config.datacite = {
     host:     'https://api.datacite.org',
     prefix:   '10.57973',
-    user:     'xxxxxxxx',
-    password: 'xxxxxxxx',
+    user:     ENV['RAILS_SEQCODE_DATACITE_USER'],
+    password: ENV['RAILS_SEQCODE_DATACITE_PASS'],
   }
 
   # API Configuration
