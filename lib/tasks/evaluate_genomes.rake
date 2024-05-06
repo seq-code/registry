@@ -23,7 +23,7 @@ namespace :genomes do
       MiGA::Cli.new([
         'get', '--project', p_path, '--dataset', genome.miga_name,
         '--universe', 'ncbi', '--db', genome.database,
-        '--metadata', "url=#{genome_path(genome)}",
+        '--metadata', "url=#{genome.uri}",
         '--ids', genome.accession,
         '--type', (genome.kind_miga || 'popgenome')
       ]).launch(false)
