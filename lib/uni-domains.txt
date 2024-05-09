@@ -1,3 +1,6 @@
+student.westherts.ac.uk
+westherts.ac.uk
+insa-toulouse.fr
 mbzuai.ac.ae
 sempreceub.com
 uniceub.br
@@ -315,7 +318,6 @@ clarion.edu
 clarke.edu
 clarkson.edu
 clarku.edu
-hallco.org
 clayton.edu
 clemson.edu
 csuohio.edu
@@ -556,6 +558,7 @@ judson.edu
 juniata.edu
 kzoo.edu
 ksu.edu
+k-state.edu
 kwu.edu
 kaplan.edu
 kean.edu
@@ -1971,6 +1974,7 @@ uneb.br
 unesc.rct-sc.br
 unesp.br
 ung.br
+uniara.edu.br
 uniara.com.br
 uniban.br
 unib.br
@@ -3498,7 +3502,6 @@ tiaa.edu.ge
 tsmu.edu
 tsu.edu.ge
 akad.de
-bsaoe.de
 asfh-berlin.de
 augustana.de
 bethel.de
@@ -3552,6 +3555,7 @@ fh-furtwangen.de
 fh-gelsenkirchen.de
 fh-giessen.de
 fh-hamburg.de
+haw-hamburg.de
 fh-hannover.de
 fh-heidelberg.de
 fh-heilbronn.de
@@ -3908,16 +3912,21 @@ cityu.edu.hk
 um.cityu.edu.hk
 my.cityu.edu.hk
 cuhk.edu.hk
+link.cuhk.edu.hk
 hkapa.edu
 hkbu.edu.hk
-hksyc.edu
+life.hkbu.edu.hk
+associate.hkbu.edu.hk
+hksyu.edu
 hku.hk
-ied.edu.hk
 ln.edu.hk
+ln.hk
+hkmu.edu.hk
 ouhk.edu.hk
 polyu.edu.hk
 connect.polyu.hk
 ust.hk
+connect.ust.hk
 s.eduhk.hk
 eduhk.hk
 agr.unideb.hu
@@ -5287,6 +5296,7 @@ okigei.ac.jp
 okinawa-u.ac.jp
 okiu.ac.jp
 osakac.ac.jp
+oecu.jp
 osaka-cu.ac.jp
 osaka-dent.ac.jp
 osakafu-u.ac.jp
@@ -7616,6 +7626,7 @@ spartanmed.org
 tusom.org
 nus.edu.ws
 unirsm.sm
+iau.edu.sa
 act.gotevot.edu.sa
 alfaisal.edu
 almaarifah.com
@@ -8116,7 +8127,6 @@ isu.edu.tw
 kmc.edu.tw
 ksit.edu.tw
 ksu.edu.tw
-kuas.edu.tw
 lhu.edu.tw
 ltc.edu.tw
 mcu.edu.tw
@@ -8125,7 +8135,6 @@ nchu.edu.tw
 nchulc.edu.tw
 ncnu.edu.tw
 ncpes.edu.tw
-nctu.edu.tw
 ncu.edu.tw
 ncue.edu.tw
 ncyu.edu.tw
@@ -8136,7 +8145,7 @@ nhltc.edu.tw
 nhu.edu.tw
 nia.edu.tw
 niu.edu.tw
-nkfu.edu.tw
+nkust.edu.tw
 nknu.edu.tw
 nou.edu.tw
 npttc.edu.tw
@@ -8177,7 +8186,7 @@ tnca.edu.tw
 tpec.edu.tw
 ttit.edu.tw
 ttu.edu.tw
-ym.edu.tw
+nycu.edu.tw
 yuntech.edu.tw
 yzu.edu.tw
 tajagroun.tj
@@ -10279,6 +10288,26 @@ cusit.edu.pk
 cityuniversity.edu.pk
 cup.edu.pk
 tcioe.edu.np
+univ-rennes2.fr
+univ-fcomte.fr
+paris-sorbonne.fr
+univ-paris-diderot.fr
+parisnanterre.fr
+u-pec.fr
+unimes.fr
+univ-jfc.fr
+upmf-grenoble.fr
+abac.edu
+stallions.abac.edu
+capital.edu
+oneonta.edu
+spjain.org
+umo.edu
+olivetcollege.edu
+westminsteru.edu
+dom.edu
+gandakiuniversity.edu.np
+gpu.edu.np
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10310,3 +10339,4 @@ broadinstitute.org
 bc.cas.cz
 up.edu.ph
 tll.org.sg
+westlake.edu.cn
