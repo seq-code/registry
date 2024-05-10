@@ -58,8 +58,6 @@ class Genome < ApplicationRecord
     def required
       %i[
         kind? source_database? source_accession?
-        completeness_any contamination_any most_complete_16s_any
-        number_of_16s_any number_of_trnas_any
       ]
     end
 

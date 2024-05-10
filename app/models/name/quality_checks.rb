@@ -666,6 +666,14 @@ module Name::QualityChecks
       rules.present? && (!can_endorse || name.notified?)
     end
 
+    def is_tutorial_error?
+      is_error? &&
+        !%i[
+          missing_genome_completeness missing_genome_contamination
+          non_valid_parent_genus
+        ].include?(type)
+    end
+
     def fail
       is_error? ? :error : :warn
     end
@@ -758,6 +766,10 @@ module Name::QualityChecks
 
     def errors?
       !set.empty? && set.any?(&:is_error?)
+    end
+
+    def tutorial_errors?
+      !set.empty? && set.any?(&:is_tutorial_error?)
     end
   end # QcWarningSet
 

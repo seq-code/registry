@@ -10,7 +10,7 @@
 <% end %>
 
 <% @name.only_display = true %>
-<%= render(partial: 'names/quality_checks') %>
+<%= render(partial: 'names/quality_checks', locals: { force_qc_view: true }) %>
 <!-- To be reviewed -->
 <%= render(partial: 'names/taxonomy') %>
 <%= render(partial: 'names/nomenclature') %>

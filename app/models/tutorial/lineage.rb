@@ -14,7 +14,7 @@ module Tutorial::Lineage
           'Description',
           'Etymology',
           'Quality checks',
-          'Validation list'
+          'Register list'
         ]
       }
     end
@@ -178,7 +178,7 @@ module Tutorial::Lineage
   # Lineage Step 06: Next Name
   def lineage_step_06(params, user)
     next_name = false
-    if current_name.qc_warnings.errors?
+    if current_name.qc_warnings.tutorial_errors?
       if current_name.can_edit?(user) && current_name.correspondence_by?(user)
         next_name = true
       end
@@ -199,7 +199,7 @@ module Tutorial::Lineage
   end
 
   ##
-  # Lineage Step 07: Validation list
+  # Lineage Step 07: Register list
   def lineage_step_07(params, user)
     update!(ongoing: false)
     @next_action = [:new_register, tutorial: self]
