@@ -63,7 +63,7 @@ namespace :gtdb do
     usage(t) unless args[:dir]
     @n_name = 0
     Placement.update_all(gtdb_taxonomy: false)
-    Dir[args[:dir] + '/*_taxonomy_r*.tsv.gz'].each do |file|
+    Dir[args[:dir] + '/*_taxonomy*.tsv.gz'].each do |file|
       $stderr.puts "Reading: #{file}"
       File.open(file) do |fh|
         lno = 0
