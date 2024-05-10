@@ -79,6 +79,10 @@ class PageController < ApplicationController
 
     def help_topics
       {
+        tutorial: {
+          new_genome: 'I have a genome belonging to a novel taxon, how can I ' \
+                      'register it?'
+        },
         guide: {
           etymology: 'How do I Fill the Etymology Table?',
           # SOPs

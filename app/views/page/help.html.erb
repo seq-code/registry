@@ -25,5 +25,10 @@
     );
   out_links.attr("target", "_blank");
   out_links.append(ext_link);
+
+  // In-links
+  sqdown.find('a[href^="../"]').each(function() {
+    $(this).attr("href", $(this).attr("href").replace(/..\/.*\/(.*)\.md/, './$1'));
+  });
 </script>
 
