@@ -477,7 +477,7 @@ class NamesController < ApplicationController
       @name_params ||=
         params.require(:name)
           .permit(
-            :name, :rank, :description, :notes, :ncbi_taxonomy,
+            :name, :rank, :description, :notes, :ncbi_taxonomy, :lpsn_url,
             :syllabication, :syllabication_reviewed,
             :type_material, :type_accession, :etymology_text, :register,
             :genome_strain,
