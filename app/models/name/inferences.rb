@@ -10,6 +10,9 @@ module Name::Inferences
 
   def genus_root(base)
     case base # Genus name
+    when /pulchritudo$/
+      # - Oceanipulchritudo -- Oceanipulchritud-in-aceae
+      base.gsub!(/o$/, 'in')
     when /aeum$/
       # - Methanonatronarchaeum -- Methanonatroarchae-aceae
       base.gsub!(/um$/, '')
