@@ -13,12 +13,13 @@ module Name::Inferences
     when /aeum$/
       # - Methanonatronarchaeum -- Methanonatroarchae-aceae
       base.gsub!(/um$/, '')
-    when /(opsis|physalis|glans)$/
+    when /(opsis|physalis|glans|desmis)$/
       # - Coelosphaeriopsis -- 
       # - Hapalopsis -- 
       # - Lyngbyopsis --
       # - Entophysalis -- Entophysalidaceae
       # - Desulfatiglans -- Desulfatiglan-d-aceae
+      # - Phormidesmis -- Phormidesmi-d-aceae
       base.gsub!(/s$/, 'd')
     when /glomus$/
       # - Dictryoglomus -- Dictyoglomeraceae
