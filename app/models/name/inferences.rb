@@ -3,6 +3,8 @@ module Name::Inferences
     @stem ||=
       if inferred_rank == 'genus'
         genus_root(base_name)
+      elsif inferred_rank == 'domain'
+        nil
       elsif type_is_name?
         type_name.stem
       end
