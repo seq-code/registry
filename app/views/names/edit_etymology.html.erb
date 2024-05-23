@@ -179,7 +179,7 @@
         var list = $('<ul class="mb-3"></ul>');
         result.find("div.lex_sense > i").each(function() {
           var description = $(this).text();
-          if (/[0-9]|^([a-z ]*\.)*$/.test(description)) return;
+          if (/[0-9]|^([a-z ]*\.)*$/i.test(description)) return;
           var item = $("<li></li>");
           var anchor = $("<span type=button class='badge badge-pill " +
                          "badge-primary ml-2'>use</span>");
