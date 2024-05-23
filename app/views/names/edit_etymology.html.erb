@@ -112,6 +112,7 @@
       }).done(function(data) {
         var list = $('<ul></ul>');
         var lemma = '';
+        var texts = [];
         if ($(data).find("analyses analysis").length == 0) {
           list = $('<span class="text-danger ml-4">Term not found</span>');
         } else {
@@ -125,9 +126,13 @@
             ].forEach(function(i) {
               var val = analysis.children(i).text();
               if (!val | val == "sg") return;
+              if (i == "case" & val != "gen") return;
+              if (i == "pos" & val == "noun") val = "n";
               text = text + " " + val;
               if (i != "dialect") text = text + ".";
             });
+            if (texts.includes(text)) return;
+            texts.push(text);
             var item = $("<li></li>");
             var anchor = $("<span type=button class='badge badge-pill " +
                            "badge-primary ml-2'>use</span>");
