@@ -208,6 +208,10 @@
           '<i class="fas fa-exchange-alt mr-1"> </i> ' +
           'Look-up ' + source_names[alt_src] + ' instead</span>');
         other_source.on("click", function() {
+          var spinner = '<i class="fas fa-spinner fa-spin mr-1"> <i>';
+          var cont = modal_body.children('.definition');
+          cont.append(spinner);
+          cont.append('Switching source...');
           dictionary_search_definition(comp, modal_body, part, alt_src);
         });
         cont.append("<br/>");
