@@ -84,6 +84,8 @@ class RegistersController < ApplicationController
   # GET /registers/r:abcd.json
   def show
     @names = @register.names.order(created_at: :desc)
+    @count = @names.count
+    @names &&= @names.where(rank: params[:rank]) if params[:rank].present?
     @names &&= @names.paginate(page: params[:page], per_page: 30)
     @crumbs = [['Register Lists', registers_url], @register.acc_url]
   end
