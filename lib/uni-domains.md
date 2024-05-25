@@ -3,6 +3,7 @@ Extracting university domains from:
 https://github.com/Hipo/university-domains-list
 
 ```bash
+(cd ../university-domains-list && git pull)
 cat ../university-domains-list/world_universities_and_domains.json \
   | jq '.[].domains' \
   | grep '"' \

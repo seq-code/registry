@@ -10340,3 +10340,4 @@ bc.cas.cz
 up.edu.ph
 tll.org.sg
 westlake.edu.cn
+gbu.edu.in
