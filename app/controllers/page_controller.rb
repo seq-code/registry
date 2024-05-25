@@ -47,6 +47,7 @@ class PageController < ApplicationController
   # GET /help
   def help_index
     @topics = help_topics
+    @crumbs = ['Help']
   end
 
   # GET /help/topic
