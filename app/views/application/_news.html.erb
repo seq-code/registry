@@ -8,6 +8,18 @@
     </div>
     <dl class="col-lg-12">
       <dt>
+        <div class="date">May 24, 2024</div>
+        New feature in Registry: Dictionary looups
+      </dt>
+      <dd>
+        We recognize that completing etymology tables correctly is challenging.
+        In order to help users and ease curation, the Registry now includes a
+        built-in Latin dictionary lookup to simplify the process of grammatical
+        analysis and morpheme descriptions. To learn more, see
+        <%= link_to('How do I use dictionary lookups?',
+            help_url('dictionary')) %>
+      </dd>
+      <dt>
         <div class="date">May 03, 2024</div>
         New server domain for the Registry
       </dt>
@@ -29,26 +41,26 @@
         <%= link_to('SeqCode Prize page', page_prize_url) %>.
       </dd>
 
-      <dt>
-        <div class="date">October 12, 2023</div>
-        Proposal to amend the SeqCode
-      </dt>
-      <dd>
-        A proposal to amend the SeqCode has recently been published by Whitman
-        et al.
-        (<%=
-          link_to('ISME Commun, 2023',
-            'https://doi.org/10.1038/s43705-023-00303-y') 
-        %>).
-        In line with the the SeqCode statutes, a public discussion
-        will now be held via the
-        <%= link_to('SeqCode Slack workspace', page_connect_url) %>,
-        in the channel
-        <b>#discussion-of-whitmanetal-2023-proposed-seqcode-amendments</b>.
-        The public discussion will be open until 10 January 2024.
-      </dd>
+      <% if all %>
+        <dt>
+          <div class="date">October 12, 2023</div>
+          Proposal to amend the SeqCode
+        </dt>
+        <dd>
+          A proposal to amend the SeqCode has recently been published by Whitman
+          et al.
+          (<%=
+            link_to('ISME Commun, 2023',
+              'https://doi.org/10.1038/s43705-023-00303-y') 
+          %>).
+          In line with the the SeqCode statutes, a public discussion
+          will now be held via the
+          <%= link_to('SeqCode Slack workspace', page_connect_url) %>,
+          in the channel
+          <b>#discussion-of-whitmanetal-2023-proposed-seqcode-amendments</b>.
+          The public discussion will be open until 10 January 2024.
+        </dd>
 
-        <% if all %>
         <dt>
           <div class="date">August 30, 2023</div>
           Call for Nominations for the SeqCode Prize 2024

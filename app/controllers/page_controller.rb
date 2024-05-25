@@ -67,6 +67,7 @@ class PageController < ApplicationController
     docs_path = Rails.root.join('documentation')
     file_path = docs_path.join(category.to_s, '%s.md' % topic)
     @document = File.read(file_path)
+    @crumbs = [['Help', help_index_path], @category, @topic]
 
     render('help', layout: !params[:content].present?)
   end
@@ -84,7 +85,8 @@ class PageController < ApplicationController
                       'register it?'
         },
         guide: {
-          etymology: 'How do I Fill the Etymology Table?',
+          etymology: 'How do I fill the etymology table?',
+          dictionary: 'How do I use dictionary lookups?',
           # SOPs
           curation: 'How are names internally curated?'
         },

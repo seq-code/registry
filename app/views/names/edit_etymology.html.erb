@@ -6,16 +6,23 @@
   <% if @name.can_autofill_etymology? || !@name.syllabication? %>
     <% pars = {} %>
     <% pars[:tutorial] = @tutorial.id if @tutorial %>
-    <%= link_to(autofill_etymology_name_path(@name, pars), class: 'btn btn-primary') do %>
+    <%= link_to(
+          autofill_etymology_name_path(@name, pars),
+          class: 'btn btn-primary'
+        ) do %>
       <%= fa_icon('magic') %> &nbsp;
       Automatically fill the etymology
     <% end %>
   <% end %>
-  <%= help_topic('etymology', 'How to Fill the Etymology Table?', size: 'xl') %>
+  <%= help_topic('etymology',
+        'How do I fill the etymology table?', size: 'xl') %>
+  <%= help_topic('dictionary',
+        'How do I use dictionary lookups?', size: 'xl') %>
 </div>
 
 <%= simple_form_for(@name) do |f| %>
-  <%= f.input(:syllabication, label: 'Syllabification', required: false, autofocus: true) %>
+  <%= f.input(:syllabication, label: 'Syllabification', required: false,
+        autofocus: true) %>
 
   <% if @name.autofilled_etymology %>
     <div class="alert alert-info mt-4">
@@ -159,6 +166,10 @@
     }
 
     function dictionary_search_definition(comp, modal_body, part, src) {
+      // TODO
+      // A safer way of parsing definitions might be using:
+      // {perseus}/xmlchunk?doc=Perseus%3Atext%3A1999.04.0060%3Aentry%3Dcandidus
+
       // Definition
       var dicts = ['Perseus:text:1999.04.0059', 'Perseus:text:1999.04.0060'];
       var source_names = ['Lewis & Short', 'Elem. Lewis'];
@@ -224,7 +235,9 @@
       td.html('');
       var latin = [
         "", "L", "L.", "Latin", "N.L.", "NL", "NL.", "Neolatin", "Neo Latin",
-        "Neo-Latin"
+        "Neo-Latin",
+        // The dictionary includes Greek entries
+        "Greek", "Gr."
       ];
       var lang = $("#name_etymology_" + comp + "_lang").val();
       if (!latin.includes(lang)) return;
