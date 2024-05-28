@@ -39,10 +39,11 @@ module Name::Inferences
       # - Acidimicrobium -- Acidimicrobi-aceae
       # - Eubacterium -- Eubacteri-aceae
       base.gsub!(/u[ms]$/, '')
-    when /(ta|vive|vora)ns$/
+    when /(ta|vive|vora|flore)ns$/
       # - Jatrophihabitans -- Jatrophihabitan-t-aceae
       # - Aquivivens -- Aquiviven-t-aceae
       # - Hopanoidivorans -- Hopanoidivoran-t-aceae
+      # - Methanoflorens -- Methanofloren-t-aceae
       base.gsub!(/ns$/, 'nt')
     when /[stl]is$/
       # - Nocardiopsis -- Nocardiops-aceae
