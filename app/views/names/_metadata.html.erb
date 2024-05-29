@@ -106,6 +106,7 @@
           <% end %>
         </li>
       <% end %>
+
       <% if current_curator? %>
         <li>
           <% id = modal('Users with active alerts') do %>
@@ -122,6 +123,19 @@
             Users with active alerts (only visible to curators)
           <% end %>
         </li>
+
+        <% if @name.valid? %>
+          <li>
+            <% id = modal('Correspondence with curators', size: 'lg') do %>
+              <%= render(
+                    partial: 'shared/correspondence',
+                    locals: { correspondence_history: true, object: @name }) %>
+            <% end %>
+          <%= modal_button(id, as_anchor: true) do %>
+            Historic communication record (only visible to curators)
+          <% end %>
+          </li>
+        <% end %>
       <% end %>
     </ul>
   </dd>
