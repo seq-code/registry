@@ -7,3 +7,18 @@
     one per effective publication.
   </div>
 <% end %>
+
+<% if @register.proposing_publications.present? && !@register.notified? &&
+      !@register.validated? %>
+  <div class="alert alert-warning">
+    Some names in this list already include effective publication.
+    Consider moving forward in the process to:<br/><br/>
+    <%= link_to(
+          notify_register_url(@register),
+          class: 'btn btn-primary'
+        ) do %>
+      <%= fa_icon('file-upload') %> Notify about effective publication
+    <% end %>
+  </div>
+<% end %>
+
