@@ -100,8 +100,9 @@
 
       // Build scaffold
       modal_body.html("");
-      modal_body.append(definition);
       modal_body.append(grammar);
+      modal_body.append('<hr/>');
+      modal_body.append(definition);
       modal_body.append(footer);
 
       // Launch search
@@ -118,7 +119,7 @@
         dataType: 'xml'
       }).done(function(data) {
         var list = $('<ul></ul>');
-        var lemma = '';
+        var lemmata = [];
         var texts = [];
         if ($(data).find("analyses analysis").length == 0) {
           list = $('<span class="text-danger ml-4">Term not found</span>');
@@ -127,7 +128,8 @@
             // Parse analysis
             var analysis = $(this);
             var text = "";
-            if (!lemma) lemma = analysis.children("lemma").text();
+            var lemma = analysis.children("lemma").text()
+            if (!lemmata.includes(lemma)) lemmata.push(lemma);
             [
               "pos" , "number", "gender", "case", "dialect", "feature"
             ].forEach(function(i) {
@@ -141,6 +143,15 @@
             if (texts.includes(text)) return;
             texts.push(text);
             var item = $("<li></li>");
+            var lemma_anchor = $(
+              '<a href="#" data-lemma="' + lemma + '">' +
+                '<i class="far fa-bookmark small"> </i> ' + lemma +
+              '</a>'
+            );
+            lemma_anchor.on("click", function() {
+              dictionary_search_definition(comp, modal_body, lemma, 1);
+              return false;
+            });
             var anchor = $("<span type=button class='badge badge-pill " +
                            "badge-primary ml-2'>use</span>");
             anchor.on("click", function() {
@@ -150,14 +161,17 @@
             // Build item and add to list
             item.append("<b>" + analysis.children("form").text() + "</b>");
             item.append(text);
+            item.append(" (");
+            item.append(lemma_anchor);
+            item.append(")");
             item.append(anchor);
             list.append(item);
           });
         }
         modal_body.children('.analyses').html('<h2>Grammatical analyses</h2>');
         modal_body.children('.analyses').append(list);
-        if (!lemma) lemma = part;
-        dictionary_search_definition(comp, modal_body, lemma, 1);
+        if (!lemmata.includes(part)) lemmata.push(part);
+        dictionary_search_definition(comp, modal_body, lemmata[0], 1);
       }).fail(function() {
         modal_body.children('.analyses')
           .html('<h2>Grammatical analyses</h2>' +
@@ -166,13 +180,44 @@
     }
 
     function dictionary_search_definition(comp, modal_body, part, src) {
-      // TODO
-      // A safer way of parsing definitions might be using:
-      // {perseus}/xmlchunk?doc=Perseus%3Atext%3A1999.04.0060%3Aentry%3Dcandidus
-
-      // Definition
       var dicts = ['Perseus:text:1999.04.0059', 'Perseus:text:1999.04.0060'];
       var source_names = ['Lewis & Short', 'Elem. Lewis'];
+
+      // Report process
+      var spinner = '<i class="fas fa-spinner fa-spin mr-1 ml-2"> <i>';
+      var cont = modal_body.children('.definition');
+      cont.append(spinner);
+      cont.append("Looking up " + part + "...");
+      var bold = "font-weight-bold";
+      modal_body.find('.analyses a[data-lemma]').removeClass(bold);
+      modal_body.find('.analyses a[data-lemma] i').removeClass('fas');
+      modal_body.find('.analyses a[data-lemma] i').removeClass('far');
+      modal_body.find('.analyses a[data-lemma="' + part + '"]').addClass(bold);
+      modal_body.find('.analyses a[data-lemma="' + part + '"]  i').addClass('fas');
+      modal_body.find('.analyses a[data-lemma!="' + part + '"]  i').addClass('far');
+      var title = $('<h2 class="input-group">Definition in</h2>');
+      var title_src = $(
+        '<select class="custom-select ml-2" id="dictionary-title-src"></select>'
+      );
+      for (var i = 0; i < dicts.length; i++) {
+        var title_opt = $(
+          '<option value="' + i + '">' + source_names[i] + '</option>'
+        );
+        if (i == src) title_opt.attr("selected", true);
+        title_src.append(title_opt);
+      }
+      title_src.on("change", function() {
+        var new_src = $(this).prop("selectedIndex");
+        dictionary_search_definition(comp, modal_body, part, new_src)
+      });
+      title.append(title_src);
+      title.append(
+        '<div class="input-group-append">' +
+          '<label for="dictionary-title-src" class="input-group-text">' +
+          '<i class="fas fa-exchange-alt"> </i></label></div>'
+      );
+
+      // Definition
       $.ajax({
         url: perseus + "/loadquery",
         data: { doc: dicts[src] + ':entry=' + part }
@@ -186,7 +231,7 @@
 
         // Parse definitions
         var cont = modal_body.children('.definition');
-        cont.html('<h2>Definition in ' + source_names[src] + '<h2>');
+        cont.html(title);
         var list = $('<ul class="mb-3"></ul>');
         result.find("div.lex_sense > i").each(function() {
           var description = $(this).text();
@@ -204,29 +249,15 @@
         cont.append(list);
 
         // Show raw definition
-        var def = $('<div class="ml-4 pl-2 border-left"></div>');
+        var def = $(
+          '<div class="raw-entry mx-2 p-2 border bg-light mb-2"></div>'
+        );
         def.append(result);
         cont.append(def);
       }).fail(function() {
         var cont = modal_body.children('.definition')
-        cont.html('<h2>Definition in ' + source_names[src] + '</h2>' +
-                  '<span class="text-danger ml-4">Term not found</span>');
-      }).always(function() {
-        var cont = modal_body.children('.definition');
-        var alt_src = src == 0 ? 1 : 0;
-        var other_source = $('<span type=button ' +
-          ' class="btn btn-sm btn-primary">' +
-          '<i class="fas fa-exchange-alt mr-1"> </i> ' +
-          'Look-up ' + source_names[alt_src] + ' instead</span>');
-        other_source.on("click", function() {
-          var spinner = '<i class="fas fa-spinner fa-spin mr-1 ml-2"> <i>';
-          var cont = modal_body.children('.definition');
-          cont.append(spinner);
-          cont.append('Switching source...');
-          dictionary_search_definition(comp, modal_body, part, alt_src);
-        });
-        cont.append("<br/>");
-        cont.append(other_source);
+        cont.html(title);
+        cont.append('<span class="text-danger ml-4">Term not found</span>');
       });
     }
 
