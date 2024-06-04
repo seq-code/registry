@@ -77,6 +77,9 @@ module Name::Inferences
       # Counterexamples:
       # - Ferroplasma -- Ferroplasm-aceae (irregularly formed)
       base.gsub!(/plasma$/, 'plasmat')
+    when /comes$/
+      # - Porifericomes -- Porifericom-it-aceae
+      base.gsub!(/es$/, 'it')
     when /ue$/
       # - Kallotenue -- Kallotenu-aceae
       base.gsub!(/e$/, '')
