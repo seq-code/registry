@@ -17,7 +17,7 @@ module Name::Inferences
 
     when /pulchritudo$/
       # - Oceanipulchritudo -- Oceanipulchritud-in-aceae
-      base.gsub!(/o$/, 'in')
+      base.sub!(/o$/, 'in')
     when /(opsis|physalis|glans|desmis)$/
       # - Coelosphaeriopsis -- 
       # - Hapalopsis -- 
@@ -25,83 +25,83 @@ module Name::Inferences
       # - Entophysalis -- Entophysali-d-aceae
       # - Desulfatiglans -- Desulfatiglan-d-aceae
       # - Phormidesmis -- Phormidesmi-d-aceae
-      base.gsub!(/s$/, 'd')
+      base.sub!(/s$/, 'd')
     when /glomus$/
       # - Dictryoglomus -- Dictyoglom-er-aceae
-      base.gsub!(/us$/, 'er')
+      base.sub!(/us$/, 'er')
     when /chloro[sn]$/
       # - Petrachloros -- Petrachlor-aceae
       # - Prochloron -- Prochlor-aceae
-      base.gsub!(/o[sn]$/, '')
+      base.sub!(/o[sn]$/, '')
     when /(ta|vive|vora|flore)ns$/
       # - Jatrophihabitans -- Jatrophihabitan-t-aceae
       # - Aquivivens -- Aquiviven-t-aceae
       # - Hopanoidivorans -- Hopanoidivoran-t-aceae
       # - Methanoflorens -- Methanofloren-t-aceae
-      base.gsub!(/ns$/, 'nt')
+      base.sub!(/ns$/, 'nt')
     when /myces$/
       # - Actinomyces -- Actinomyce-t-aceae
-      base.gsub!(/s$/, 't')
+      base.sub!(/s$/, 't')
     when /plasma$/
       # - Acholeplasma -- Acholeplasma-t-aceae
       # Counterexamples:
       # - Ferroplasma -- Ferroplasm-aceae (irregularly formed)
-      base.gsub!(/plasma$/, 'plasmat')
+      base.sub!(/plasma$/, 'plasmat')
     when /comes$/
       # - Porifericomes -- Porifericom-it-aceae
-      base.gsub!(/es$/, 'it')
+      base.sub!(/es$/, 'it')
     when /thrix$/
       # - Erysipelothrix -- Erysipelotri-ch-aceae
       # - Caldithrix -- Calditri-ch-aceae
       # - Thiothrix -- Thiotri-ch-aceae
       # Counterexamples:
       # - Thermosporothrix -- Thermosporothri-ch-aceae
-      base.gsub!(/thrix$/, 'trich')
+      base.sub!(/thrix$/, 'trich')
 
     # Common exception endings (covering groups of morphemes)
 
     when /aeum$/
       # - Methanonatronarchaeum -- Methanonatroarchae-aceae
-      base.gsub!(/um$/, '')
+      base.sub!(/um$/, '')
     when /u[ms]$/
       # - Acidaminococcus -- Acidaminococc-aceae
       # - Acidilobus -- Acidilob-aceae
       # - Acidimicrobium -- Acidimicrobi-aceae
       # - Eubacterium -- Eubacteri-aceae
-      base.gsub!(/u[ms]$/, '')
+      base.sub!(/u[ms]$/, '')
     when /[stl]is$/
       # - Nocardiopsis -- Nocardiops-aceae
       # - Methylocystis -- Methylocyst-aceae
       # - Maricaulis -- Maricaulaceae
-      base.gsub!(/is$/, '')
+      base.sub!(/is$/, '')
     when /[nr][ai]s$/
       # - Aeromonas -- Aeromona-d-aceae
       # - Alteromonas -- Alteromona-d-aceae
       # - Blastochloris -- Blastochlori-d-aceae
       # Counterexamples:
       # - Catalinimonas -- Catali-mona-d-aceae (irregularly formed)
-      base.gsub!(/s$/, 'd')
+      base.sub!(/s$/, 'd')
     when /[eoy]ma$/
       # - Brevinema -- Brevinema-t-aceae
       # - Deferrisoma -- Deferrisoma-t-aceae
       # - Tropheryma -- Tropheryma-t-aceae
       # Counterexamples:
       # - Spirosoma -- Spirosoma-ceae (irregularly formed)
-      base.gsub!(/ma$/, 'mat')
+      base.sub!(/ma$/, 'mat')
     when /[eai]s$/
       # - Alcaligenes -- Alcaligen-aceae
       # - Desulfallas -- Desulfall-aceae
       # - Desulfocucumis -- Desulfocucum-aceae
-      base.gsub!(/[eai]s$/, '')
+      base.sub!(/[eai]s$/, '')
     when /non$/
       # - Caryophanon -- Caryophan-aceae
-      base.gsub!(/on$/, '')
+      base.sub!(/on$/, '')
 
     # Standard endings
 
     when /ue$/
       # - Kallotenue -- Kallotenu-aceae
-      base.gsub!(/e$/, '')
+      base.sub!(/e$/, '')
     when /[ae]$/
       # - Actinochlamydia -- Actinochlamydi-aceae
       # - Actinopolymorpha -- Actinopolymorph-aceae
@@ -110,14 +110,14 @@ module Name::Inferences
       # - Aggregatilinea -- Aggregatiline-aceae
       # - Aliterella -- Aliterell-aceae
       # - Desulfomonile -- Desulfomonil-aceae
-      base.gsub!(/[ae]$/, '')
+      base.sub!(/[ae]$/, '')
     when /io$/
       # - Vibrio -- Vibrio-n-aceae
       # - Cellvibrio -- Cellvibrio-n-aceae
-      base.gsub!(/io$/, 'ion')
+      base.sub!(/io$/, 'ion')
     when /ex$/
       # - Aquifex -- Aquif-ic-aceae
-      base.gsub!(/ex$/, 'ic')
+      base.sub!(/ex$/, 'ic')
     when /x$/
       # - Adiutrix -- Adiutri-c-aceae
       # - Alcanivorax -- Alcanivora-c-aceae
@@ -126,7 +126,7 @@ module Name::Inferences
       # - Thiotrix -- Thiotri-ch-aceae (illegitimate?)
       # - Halobacteriovorax -- Halobacteriovor-aceae (irregularly formed)
       # - Proteinivorax -- Proteinivor-aceae (irregularly formed)
-      base.gsub!(/x$/, 'c')
+      base.sub!(/x$/, 'c')
     end
 
     # Other cases:
