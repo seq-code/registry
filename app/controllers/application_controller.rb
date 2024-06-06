@@ -15,7 +15,8 @@ class ApplicationController < ActionController::Base
         # This is ready to work, but it could return too much "trash", so
         # I'm holding off until we have advanced search options:
         # ActionText::RichText.where(record_type: 'Name') => %i[body record_id]
-      }
+      },
+      { rank: :rank }
     ],
     # TODO Include description (rich-text) as field of names
     subjects: [Subject, %w[name], {}]
@@ -149,6 +150,11 @@ class ApplicationController < ActionController::Base
                        .pluck(fields[1])
             )
           )
+        end
+        if obj[3].present?
+          obj[3].each do |par, field|
+            o = o.where(field => params[par]) if params[par].present?
+          end
         end
       end
       o

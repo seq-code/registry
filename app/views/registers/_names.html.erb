@@ -6,23 +6,7 @@
 </h2>
 
 <% if @count >= 3 %>
-  <%= simple_form_for(
-        @register, url: register_url(@register), method: :get
-      ) do |f| %>
-    <div class="input-group my-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">
-          <%= fa_icon('filter', class: 'mr-2') %> Filter by rank
-        </span>
-      </div>
-      <% opts = [['All', nil]] + Name.ranks.map { |i| [i.titleize, i] }%>
-      <%= select_tag(
-            'rank', options_for_select(opts, params[:rank]),
-            class: 'form-control', id: 'filter-rank',
-            onchange: 'this.form.submit(); $(this).attr("disabled", true);'
-          ) %>
-    </div>
-  <% end %>
+  <%= render(partial: 'names/filter') %>
 <% end %>
 
 <%= pager @names %>
