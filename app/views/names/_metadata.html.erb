@@ -193,4 +193,9 @@
       <%= time_ago_with_date(@name.validated_at) %>
     </dd>
   <% end %>
+
+  <% if @name.valid? && @name.priority_date %>
+    <dt><%= fa_icon('calendar-check') %> Date of priority</dt>
+    <dd><%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %></dd>
+  <% end %>
 </dl>

@@ -104,6 +104,7 @@ class NamesController < ApplicationController
   # GET /type-genomes.json
   def type_genomes
     @names = Name.where(status: 15, type_material: [:nuccore, :assembly])
+                 .reorder(priority_date: :desc, updated_at: :desc)
                  .paginate(page: params[:page], per_page: 50)
     @crumbs = [['Genomes', genomes_path], 'Type']
   end
