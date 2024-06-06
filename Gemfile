@@ -7,6 +7,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'addressable'
 gem 'bootstrap', '~> 4.6'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
