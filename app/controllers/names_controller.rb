@@ -56,6 +56,7 @@ class NamesController < ApplicationController
     @sort      ||= params[:sort] || 'date'
     @status    ||= params[:status] || 'public'
     @title     ||= "#{@status.gsub(/^\S/, &:upcase)} Names"
+    opts[:rank] = params[:rank] if params[:rank].present?
 
     opts[:status] ||=
       case @status
@@ -90,6 +91,7 @@ class NamesController < ApplicationController
         Name.order(name: :asc)
       end
     @names = @names.where(status: opts[:status]) if opts[:status]
+    @names = @names.where(rank: opts[:rank]) if opts[:rank]
     @names = @names.where(opts[:where]) if opts[:where]
     @names = @names.paginate(page: params[:page], per_page: 30)
 
