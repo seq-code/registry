@@ -123,8 +123,9 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
   config.bypass_external_apis = false
-  config.matomo = '//disc-genomics.uibk.ac.at/analytics/'
-  ### TODO config.plausible = 'http://disc-genomics.uibk.ac.at:8000'
+  # config.matomo = '//disc-genomics.uibk.ac.at/analytics/'
+  config.plausible_domain = ENV['RAILS_SEQCODE_PLAUSIBLE_DOMAIN']
+  config.plausible_server = ENV['RAILS_SEQCODE_PLAUSIBLE_SERVER']
 
   # DataCite access
   config.datacite = {

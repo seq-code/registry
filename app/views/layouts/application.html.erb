@@ -14,9 +14,11 @@
             'jquery-ui.min.css'
         ) %>
 
-    <% if Rails.configuration.try(:plausible) %>
-      <script defer data-domain="disc-genomics.uibk.ac.at"
-            src="<%= Rails.configuration.plausible %>/js/script.js"></script>
+    <% if Rails.configuration.try(:plausible_server).present? %>
+      <script
+        defer data-domain="<%= Rails.configuration.plausible_domain %>"
+        src="<%= Rails.configuration.plausible_server %>/js/script.js"
+      ></script>
     <% end %>
 
     <link rel="apple-touch-icon" sizes="180x180"
