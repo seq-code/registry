@@ -16,7 +16,7 @@
                 publication_name, method: :delete,
                 class: 'badge badge-pill badge-info px-2', title: 'unlink name',
                 data: { confirm: 'Are you sure?' }
-              ) { %><%= fa_icon('trash-alt') %><% } %>
+              ) { %><%= fa_icon('unlink') %><% } %>
         <% end %>
       </div>
     <% end %>
@@ -24,7 +24,7 @@
       <%= link_to(
             link_publication_name_path(publication),
             class: 'badge badge-pill badge-info', title: 'link names'
-          ) { %><%= fa_icon('link') %><% } %>
+          ) { %><%= fa_icon('link') %> <%= fa_icon('plus') %><% } %>
     <% end %>
   </dd>
 <% end %>
