@@ -136,4 +136,20 @@ module Name::Status
     notify_status_change(:unclaim, user)
     true
   end
+
+  ##
+  # Demote the name
+  #
+  # user: The user demoting the name
+  def demote(user)
+    if !user.admin?
+      @status_alert = 'User cannot demote name'
+      return false
+    end
+
+    update_status_with_alert(status: 0) or return false
+    # This change does not trigger notifications, as it is intended only for
+    # internal curation
+    true
+  end
 end

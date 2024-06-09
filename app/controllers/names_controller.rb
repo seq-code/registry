@@ -8,7 +8,7 @@ class NamesController < ApplicationController
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       autofill_etymology edit_parent
-      return validate endorse claim unclaim new_correspondence
+      return validate endorse claim unclaim demote new_correspondence
       observe unobserve
     ]
   )
@@ -26,6 +26,7 @@ class NamesController < ApplicationController
     :authenticate_owner_or_curator!, only: %i[unclaim new_correspondence]
   )
   before_action(:authenticate_contributor!, only: %i[new create claim])
+  before_action(:authenticate_admin!, only: %i[demote])
   before_action(
     :authenticate_curator!,
     only: %i[
@@ -399,6 +400,11 @@ class NamesController < ApplicationController
   # POST /names/1/unclaim
   def unclaim
     change_status(:unclaim, 'Name successfully claimed', current_user)
+  end
+
+  # POST /names/1/demote
+  def demote
+    change_status(:demote, 'Name successfully demoted', current_user)
   end
 
   # POST /names/1/new_correspondence

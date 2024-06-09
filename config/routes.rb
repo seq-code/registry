@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       get  :unobserve
       post :claim
       post :unclaim
+      post :demote
       # --> Edit name relationships
       get  :edit_parent
       post :new_correspondence

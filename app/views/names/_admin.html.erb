@@ -1,0 +1,20 @@
+<% if current_admin? && @name.validated? %>
+  <dl name="admin" class="main-section name-details">
+    <h2>Admin Actions</h2>
+    <dd class="pt-2">
+      <% if @name.validated? %>
+        <%= link_to(
+              demote_name_url(@name),
+              method: :post, class: 'btn btn-primary btn-sm',
+              data: {
+                confirm: 'Are you sure? This can have unintended consequences'
+              }
+            ) do %>
+          <%= fa_icon('frown-open') %> Demote name
+        <% end %>
+        &raquo; Send name back to the status of automated discovery
+        <hr/>
+      <% end %>
+    </dd>
+  </dl>
+<% end %>
