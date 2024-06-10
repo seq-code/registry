@@ -3,7 +3,7 @@ class NamesController < ApplicationController
   before_action(
     :set_name,
     only: %i[
-      show edit update destroy
+      show edit update destroy network
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
@@ -180,6 +180,17 @@ class NamesController < ApplicationController
           footer: { html: { template: 'layouts/_pdf_footer' } },
           page_size: 'A4'
         )
+      end
+    end
+  end
+
+  # GET /names/1/network
+  def network
+    respond_to do |format|
+      format.html
+      format.json do
+        @nodes = @name.network_nodes
+        @edges = @name.network_edges
       end
     end
   end

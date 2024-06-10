@@ -98,6 +98,7 @@ class Name < ApplicationRecord
   include Name::Citations
   include Name::ExternalResources
   include Name::Inferences
+  include Name::Network
 
   attr_accessor :only_display
 

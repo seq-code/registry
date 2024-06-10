@@ -11,6 +11,7 @@ gem 'addressable'
 gem 'bootstrap', '~> 4.6'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
+gem 'd3-rails'
 gem 'devise'
 gem 'dkim', '~> 1.1'
 gem 'font_awesome5_rails', '~> 1.5'

@@ -63,6 +63,8 @@ Rails.application.routes.draw do
       get  :unknown_proposal
     end
     member do
+      # --> Display name
+      get  :network
       # --> Edit name
       get  :edit_description
       get  :edit_type
