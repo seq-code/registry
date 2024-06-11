@@ -56,7 +56,7 @@ function taxonomic_network(id, container_id) {
           d3.forceLink(data.links)
             .id(d => d.id)
             .distance(1)
-            .strength(d => d.kind == "is_type" ? 0.1 : 1)
+            .strength(d => d.kind == "is_type" ? 0.1 : d.preferred ? 1 : 0.9)
         )
         .force("x", d3.forceX().strength(0.1))
         .force("charge",
