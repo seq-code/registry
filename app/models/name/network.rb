@@ -56,6 +56,8 @@ module Name::Network
     child_placements.each do |placement|
       @network_descendents << placement.name
       @network_descendent_edges << placement
+      @network_descendents += placement.name.network_ancestors
+      @network_descendent_edges += placement.name.network_ancestor_edges
     end
     @network_descendents
   end
