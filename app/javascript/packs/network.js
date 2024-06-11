@@ -1,4 +1,34 @@
 
+function move_network(id, direction) {
+  const select = "[data-behavior='network'][data-id=" + id + "]";
+  const svg = $(select + " > div.network > svg");
+  const k = 15, z = 0.1;
+  var box = svg.attr("viewBox").split(",");
+  [0, 1, 2, 3].forEach(i => box[i] = parseInt(box[i]));
+  if (direction == "up") {
+    box[1] = box[1] + k; box[3] = box[3] + k;
+  } else if (direction == "down") {
+    box[1] = box[1] - k; box[3] = box[3] - k;
+  } else if (direction == "left") {
+    box[0] = box[0] + k; box[2] = box[2] + k;
+  } else if (direction == "right") {
+    box[0] = box[0] - k; box[2] = box[2] - k;
+  } else if (direction == "in") {
+    var x = box[2] - box[0], y = box[3] - box[1];
+    box = [
+      box[0] + x * z, box[1] + y * z,
+      box[2] - x * z, box[3] - y * z
+    ];
+  } else if (direction == "out") {
+    var x = box[2] - box[0], y = box[3] - box[1];
+    box = [
+      box[0] - x * z, box[1] - y * z,
+      box[2] + x * z, box[3] + y * z
+    ];
+  }
+  svg.attr("viewBox", box.join(","));
+}
+
 drag = simulation => {
   function dragstarted(event, d) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -23,15 +53,46 @@ drag = simulation => {
       .on("end", dragended);
 }
 
-function taxonomic_network(id, container_id) {
+function taxonomic_network(id) {
   // Gather data
   const data_url = ROOT_PATH + "names/" + id + "/network.json";
 
-  // Create container
+  // Create container and add controls
   const width = 1024; // 928;
   const height = 600;
-  $("#" + container_id).html('');
-  const svg = d3.select("#" + container_id).append("svg")
+  const select = "[data-behavior='network'][data-id=" + id + "]";
+  const cont_id = "network-" + id;
+  var container = $(select);
+  container.attr("id", cont_id);
+  var controls = container.find("div.network-controls");
+  if (controls.length == 0) {
+    controls = $(
+      "<div class='network-controls float-right " +
+          "bg-light rounded-sm'></div>"
+    );
+    container.prepend(controls);
+  } else {
+    controls.html('');
+  }
+
+  ["out", "up", "in", "left", "down", "right"].forEach(function(dir) {
+    var icon = "fa-arrow-circle-" + dir;
+    if (dir == "in") icon = "fa-search-plus";
+    else if (dir == "out") icon = "fa-search-minus";
+
+    var button = $(
+      "<button class='btn btn-light'><i class='fas " + icon +
+          "'> </i></button>"
+    );
+    button.on("click", () => move_network(id, dir));
+    controls.append(button);
+    if (dir == "in") controls.append("<br/>");
+  });
+  container.find("div.network").html('');
+  container.append("<div class=network></div>")
+
+  const svg = d3.select("#" + cont_id + " > div.network")
+    .append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-width / 2, -height / 2, width, height])
@@ -64,8 +125,11 @@ function taxonomic_network(id, container_id) {
             .strength(-2500)
         )
         .force("y",
-          d3.forceY(d => ranks[d.rank] ? (ranks[d.rank].k / 7 - 0.5) * height * 0.75 : null)
-            .strength(1)
+          d3.forceY(
+            d => ranks[d.rank] ? (ranks[d.rank].k / 7 - 0.5) * height * 0.75 :
+                  null
+          )
+          .strength(1)
         );
 
     // Append links
@@ -77,7 +141,9 @@ function taxonomic_network(id, container_id) {
     link.append("line")
           .attr("stroke-opacity", 0.7)
           .attr("stroke-width", 2.5)
-          .attr("stroke", d => d.preferred ? "#000" : d.kind == "is_type" ? "#d33" : "#ccc")
+          .attr("stroke",
+            d => d.preferred ? "#000" : d.kind == "is_type" ? "#d33" : "#ccc"
+          )
           .attr("stroke-dasharray", d => d.kind == "is_type" ? "5,3" : null);
 
     link.insert("circle")
@@ -100,9 +166,10 @@ function taxonomic_network(id, container_id) {
       d3.select(this.childNodes[1]).attr("opacity", 0);
     }
     function gotoNode(d, i) {
-      taxonomic_network(i.id, container_id);
-      $("h1.network-title > a").html(i.styling);
-      $("h1.network-title > a").attr("href", i.url);
+      $(select + " > h1 > a").html(i.styling);
+      $(select + " > h1 > a").attr("href", i.url);
+      $(select).attr("data-id", i.id);
+      taxonomic_network(i.id);
     }
     const node = svg.selectAll(".node")
       .data(data.nodes)
@@ -166,11 +233,7 @@ function taxonomic_network(id, container_id) {
 
 $(document).on("turbolinks:load", function() {
   $("[data-behavior='network']").each(function() {
-    var cont = $(this);
-    var id = cont.data("id");
-    var cont_id = "network-" + id;
-    cont.attr("id", cont_id);
-    taxonomic_network(id, cont_id);
+    taxonomic_network($(this).data("id"));
   });
 });
 
