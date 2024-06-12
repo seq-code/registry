@@ -1,6 +1,6 @@
 
 namespace :placements do
-  task :update => :environment do |t, args|
+  task :ensure_consistency => :environment do |t, args|
     n = Name.all.count
     k = 0
     $stderr.puts "Traversing #{n} names"
