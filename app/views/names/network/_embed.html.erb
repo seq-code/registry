@@ -3,17 +3,32 @@
   <hr/>
 </div>
 
-<p class="lead">
-  <b>Nodes:</b>
-  The nodes are colored and placed by rank, from domain (blue, top) to
-  subspecies (red, bottom).
-  The focus taxon is indicated by a black ring.
-  <br/>
-  <b>Edges:</b>
-  Solid lines correspond to taxonomic placements, with black lines
-  indicating preferred placements and grey lines indicating alternative
-  placements.
-  Dashed red lines indicate nomenclatural types.
-  Additionally, some edges are decorated with dots that indicate that a
-  placement is endorsed by NCBI Taxonomy (blue) and/or GTDB (green).
-</p>
+<dl class="lead">
+  <dt>Nodes</dt>
+  <dd>
+    The nodes are colored and placed by rank, from domain (blue, top) to
+    subspecies (red, bottom).
+    The focus taxon is indicated by a black ring.
+  </dd>
+  <dt>Edges</dt>
+  <dd>
+    Solid lines correspond to taxonomic placements, with black lines
+    indicating preferred placements and grey lines indicating alternative
+    placements.
+    Dashed red lines indicate nomenclatural types.
+    Additionally, some edges are decorated with dots that indicate that a
+    placement is endorsed by NCBI Taxonomy (blue
+    <%= fa_icon('circle', class: 'small', style: 'color: #266b99;') %>)
+    and/or GTDB (green
+    <%= fa_icon('circle', class: 'small', style: 'color: #649964;') %>).
+  </dd>
+  <dt>Network</dt>
+  <dd>
+    The nodes included are the full upwards lineage of the focus name,
+    the direct descendants of the focus name, and the type line of the focus
+    name (<i>i.e.</i>, the nomenclatural type and its nomenclatural type,
+    recursively), as well as the complete upwards lineage of all names in the
+    type line. All edges connecting included nodes are included too.
+  </dd>
+</dl>
+<br/>

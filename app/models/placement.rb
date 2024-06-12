@@ -25,6 +25,11 @@ class Placement < ApplicationRecord
     incertae_sedis.gsub(/(incertae sedis)/i, '<i>\\1</i>').html_safe
   end
 
+  def downwards?
+    Name.ranks.index(parent.inferred_rank) >=
+      Name.ranks.index(name.inferred_rank)
+  end
+
   private
 
   def harmonize_name_parent
