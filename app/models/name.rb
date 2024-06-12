@@ -16,10 +16,10 @@ class Name < ApplicationRecord
   alias :correspondences :name_correspondences
   has_many(:checks, dependent: :destroy)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
-  has_many(:placements, dependent: :destroy)
+  has_many(:placements, -> { includes(:parent) }, dependent: :destroy)
   has_many(
-    :child_placements, class_name: 'Placement', foreign_key: 'parent_id',
-    dependent: :destroy
+    :child_placements, -> { includes(:name) },
+    class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy
   )
   has_many(:observe_names, dependent: :destroy)
   has_many(:observers, through: :observe_names, source: :user)
@@ -69,6 +69,7 @@ class Name < ApplicationRecord
   before_validation(:standardize_etymology)
   before_validation(:prevent_self_parent)
   before_validation(:monitor_name_changes)
+  after_save(:clear_cached_objects)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -918,7 +919,7 @@ class Name < ApplicationRecord
   end
 
   def type_text
-    @type_text ||= "#{type_material_name}: #{type_accession_text}" if type?
+    "#{type_material_name}: #{type_accession_text}" if type?
   end
 
   def possible_type_materials
@@ -1056,5 +1057,19 @@ class Name < ApplicationRecord
 
   def harmonize_register_and_status
     self.status = 5 if !register && in_curation?
+  end
+
+  def clear_cached_objects
+    @citations = nil
+    @reviewers = nil
+    @curators  = nil
+    @lineage   = nil
+    @type_name = nil
+    @type_genome = nil
+    @alt_placements = nil
+    @alt_child_placements = nil
+    @placement = nil
+    @genome    = nil
+    @priority_date = nil
   end
 end
