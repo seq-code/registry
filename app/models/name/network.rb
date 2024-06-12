@@ -62,7 +62,7 @@ module Name::Network
     @network_up_nodes = Set.new
     @network_up_edges = Set.new
     placements.includes(:parent, :name).each do |placement|
-      next if placement.incertae_sedis? || placement.downwards?
+      next if !placement.parent.present? || placement.downwards?
 
       @network_up_nodes << placement.parent
       @network_up_nodes += placement.parent.network_up_nodes

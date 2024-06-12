@@ -26,7 +26,7 @@ class Placement < ApplicationRecord
   end
 
   def downwards?
-    return false if incertae_sedis?
+    return false unless parent.present? # e.g., incertae sedis
 
     Name.ranks.index(parent.inferred_rank) >=
       Name.ranks.index(name.inferred_rank)
