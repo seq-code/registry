@@ -70,6 +70,7 @@ class Name < ApplicationRecord
   before_validation(:prevent_self_parent)
   before_validation(:monitor_name_changes)
   after_save(:clear_cached_objects)
+  after_save(:ensure_consistent_placement)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -984,6 +985,14 @@ class Name < ApplicationRecord
     @placement ||= placements.where(preferred: true).first
   end
 
+  def consistent_placement?
+    placement.try(:parent_id) == parent_id
+  end
+
+  def ensure_consistent_placement!
+    ensure_consistent_placement
+  end
+
   # ============ --- GENOMICS --- ============
 
   def genome?
@@ -1057,6 +1066,23 @@ class Name < ApplicationRecord
 
   def harmonize_register_and_status
     self.status = 5 if !register && in_curation?
+  end
+
+  def ensure_consistent_placement
+    if parent_id.present?
+      pp = placements.where(parent_id: parent_id).first
+      if pp.present?
+        unless pp.preferred?
+          placements.update(preferred: false) && pp.update(preferred: true)
+        end
+      else
+        placements.update(preferred: false) &&
+          Placement.new(name_id: id, parent_id: parent_id, preferred: true).save
+      end
+    else
+      # Conservatively preserve as alternative placement
+      placements.update(preferred: false)
+    end
   end
 
   def clear_cached_objects
