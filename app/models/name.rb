@@ -16,9 +16,9 @@ class Name < ApplicationRecord
   alias :correspondences :name_correspondences
   has_many(:checks, dependent: :destroy)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
-  has_many(:placements, -> { includes(:parent) }, dependent: :destroy)
+  has_many(:placements, dependent: :destroy)
   has_many(
-    :child_placements, -> { includes(:name) },
+    :child_placements,
     class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy
   )
   has_many(:observe_names, dependent: :destroy)
