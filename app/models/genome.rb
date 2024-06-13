@@ -79,7 +79,9 @@ class Genome < ApplicationRecord
           broad_scale_environmental_context local_environmental_context
           environmental_medium
         ],
-        other: %i[host ph depth temp temperature rel_to_oxygen],
+        other: %i[
+          host ph depth temp temperature rel_to_oxygen geographic_location_depth
+        ],
         package: %i[
           ncbi_package ena_checklist ncbi_submission_package biosamplemodel
         ]
