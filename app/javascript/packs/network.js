@@ -194,7 +194,7 @@ function taxonomic_network(id) {
     node.append("circle") // Hole
         .attr("fill", "#fff")
         .attr("fill-opacity", d => d.illegitimate ? 1 : 0)
-        .attr("r", 15);
+        .attr("r", 10);
 
     node.append("circle") // Ring
         .attr("stroke-width", 6)
