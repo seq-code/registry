@@ -27,6 +27,15 @@
                       "\\1<a href='#{envo}\\2' target='_blank'>ENVO:\\2</a>\\3"
                     )
                   end
+                when :toponym
+                  mrg =
+                    'https://www.marineregions.org/gazetteer.php?p=details&id='
+                  v.map! do |i|
+                    sanitize(i).gsub(
+                      /(^\s*|[^A-Z\d])(MRGID:\d+)(\s*$|[^A-Z\d])/,
+                      "\\1<a href='#{mrg}\\2' target='_blank'>\\2</a>\\3"
+                    )
+                  end
                 when :package
                   # ENA Checklists
                   ena = 'https://www.ebi.ac.uk/ena/browser/view/'
