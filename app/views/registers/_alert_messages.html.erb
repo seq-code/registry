@@ -8,8 +8,8 @@
   </div>
 <% end %>
 
-<% if @register.proposing_publications.present? && !@register.notified? &&
-      !@register.validated? %>
+<% if @register.proposing_publications.present? && @register.submitted? &&
+      !@register.notified? && !@register.validated? %>
   <div class="alert alert-warning">
     <h4>List ready for notification</h4>
     Some names in this list already include effective publication.
