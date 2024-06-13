@@ -160,10 +160,11 @@ function taxonomic_network(id) {
 
     // Append nodes
     function showDetail(d, i) {
-      d3.select(this.childNodes[2]).attr("opacity", 0.5);
+      $(this).find(".foreground-2").attr("opacity", 0.5);
+      $(this).appendTo($(this).parent()); // <- Bring to the front
     }
     function hideDetail(d, i) {
-      d3.select(this.childNodes[2]).attr("opacity", 0);
+      $(this).find(".foreground-2").attr("opacity", 0.0);
     }
     function gotoNode(d, i) {
       $(select + " > h1 > a").html(i.styling);
@@ -192,8 +193,9 @@ function taxonomic_network(id) {
         .attr("r", 20);
 
     node.append("circle") // Foreground 2
+        .classed("foreground-2", true)
         .attr("fill", "#fff")
-        .attr("fill-opacity", 0)
+        .attr("opacity", 0)
         .attr("r", 20);
 
     node.append("circle") // Hole
