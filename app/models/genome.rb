@@ -63,16 +63,17 @@ class Genome < ApplicationRecord
 
     def important_sample_attributes
       {
-        date: %i[collection_date],
+        date: %i[collection_date event_date_time_start event_date_time_end],
         location: %i[
           lat_lon lat lon
           geographic_location_latitude geographic_location_longitude
+          latitude_start latitude_end longitude_start longitude_end
         ],
         toponym: %i[
           geo_loc_name geographic_location_country_and_or_sea
         ],
         environment: %i[
-          env_material sample_type env_biome isolation_source
+          env_material sample_type env_biome isolation_source analyte_type
           env_broad_scale env_local_scale env_medium
           environment_biome environment_feature gold_ecosystem_classification
           broad_scale_environmental_context local_environmental_context
