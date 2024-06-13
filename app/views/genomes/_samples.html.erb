@@ -28,8 +28,7 @@
                     )
                   end
                 when :toponym
-                  mrg =
-                    'https://www.marineregions.org/gazetteer.php?p=details&id='
+                  mrg = 'http://marineregions.org/mrgid/'
                   v.map! do |i|
                     sanitize(i).gsub(
                       /(^\s*|[^A-Z\d])(MRGID:\d+)(\s*$|[^A-Z\d])/,
