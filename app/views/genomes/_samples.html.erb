@@ -31,8 +31,8 @@
                   mrg = 'http://marineregions.org/mrgid/'
                   v.map! do |i|
                     sanitize(i).gsub(
-                      /(^\s*|[^A-Z\d])(MRGID:\d+)(\s*$|[^A-Z\d])/,
-                      "\\1<a href='#{mrg}\\2' target='_blank'>\\2</a>\\3"
+                      /(^\s*|[^A-Z\d])MRGID:(\d+)(\s*$|[^A-Z\d])/,
+                      "\\1<a href='#{mrg}\\2' target='_blank'>MRGID:\\2</a>\\3"
                     )
                   end
                 when :package
