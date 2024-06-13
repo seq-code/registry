@@ -230,7 +230,8 @@
       </ul></dd>
     <% end %>
 
-    <% if @name.pseudonyms.present? || @name.can_edit_placements?(current_user) %>
+    <% if @name.pseudonyms.present? || @name.corrigendum_from? ||
+          @name.can_edit_placements?(current_user) %>
       <dt><%= fa_icon('mask') %> Pseudonyms</dt>
       <dd>
         <ul>
@@ -258,6 +259,12 @@
                   <%= fa_icon('trash-alt') %> Remove
                 <% end %>
               <% end %>
+            </li>
+          <% end %>
+          <% if @name.corrigendum_from? %>
+            <li>
+              <%= @name.corrigendum_from %>
+              <span class="text-muted">(Original, corrected name)</span>
             </li>
           <% end %>
         </ul>
