@@ -181,9 +181,24 @@ function taxonomic_network(id) {
       .on("mouseout", hideDetail)
       .on("click", gotoNode);
 
-    node.append("circle")
-        .attr("stroke-width", 6)
+    node.append("circle") // Background
         .attr("fill", d => ranks[d.rank] ? ranks[d.rank].col : "#fff")
+        .attr("fill-opacity", 1)
+        .attr("r", 20);
+
+    node.append("circle") // Foreground
+        .attr("fill", "#fff")
+        .attr("fill-opacity", d => d.valid ? 0 : 0.5)
+        .attr("r", 20);
+
+    node.append("circle") // Hole
+        .attr("fill", "#fff")
+        .attr("fill-opacity", d => d.illegitimate ? 1 : 0)
+        .attr("r", 15);
+
+    node.append("circle") // Ring
+        .attr("stroke-width", 6)
+        .attr("fill-opacity", 0)
         .attr("stroke", d => d.id == id ? "#000" : "#fff")
         .attr("r", 20);
 
