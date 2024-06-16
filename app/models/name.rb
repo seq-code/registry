@@ -336,6 +336,9 @@ class Name < ApplicationRecord
         # (Culture Collection of Algae)
         # [DE: University of Göttingen]
         SAG: 'https://sagdb.uni-goettingen.de/detailedList.php?str_number=%s',
+        # Thailand Bioresource Research Center
+        # [TH: Thailand Bioresource Research Center]
+        TBRC: 'https://tbrcnetwork.org/microb_detail.php?code=TBRC_%s',
         # BCCM, Belgian Coordinated Collections of Microorganisms /
         # University of of Liège Cyanobacteria Collection
         # [BE: Belgian Science Policy (BELSPO)]
