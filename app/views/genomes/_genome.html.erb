@@ -167,11 +167,11 @@ end
       <dd>
         <% if @genome.source_links.count > 3 %>
           <%= show_genome_sources(1) %>
-          <% id = modal('Data sources') do %>
+          <% id = modal('Genome sources') do %>
             <%= show_genome_sources %>
           <% end %>
-          <%= modal_button(id, class: 'btn btn-secondary') do %>
-            See all sources
+          <%= modal_button(id, class: 'btn btn-sm btn-secondary') do %>
+            <%= fa_icon('ellipsis-h') %> See all sources
           <% end %>
         <% else %>
           <%= show_genome_sources %>
@@ -210,7 +210,18 @@ end
 
     <% if @genome.submitter_comments? %>
       <dt><%= fa_icon('comment-alt') %> Submitter comments</dt>
-      <dd><%= @genome.submitter_comments %></dd>
+      <dd>
+        <% if @genome.submitter_comments.to_s.size > 1e3 %>
+          <% id = modal('Genome submitter comments', size: 'lg') do %>
+            <%= @genome.submitter_comments %>
+          <% end %>
+          <%= modal_button(id, class: 'btn btn-sm btn-secondary') do %>
+            <%= fa_icon('ellipsis-h') %> See full comment
+          <% end %>
+        <% else %>
+          <%= @genome.submitter_comments %>
+        <% end %>
+      </dd>
     <% end %>
 
     <dt><%= fa_icon('robot') %> Automated checks</dt>
