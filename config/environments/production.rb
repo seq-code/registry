@@ -135,6 +135,9 @@ Rails.application.configure do
     password: ENV['RAILS_SEQCODE_DATACITE_PASS'],
   }
 
+  # NCBI LinkOut configuration
+  config.linkout_provider_id = ENV['RAILS_SEQCODE_LINKOUT_ID']
+
   # API Configuration
   config.api_only = ENV['RAILS_SEQCODE_API_ONLY'].present?
   config.api_server = 'https://api.seqco.de/v1'

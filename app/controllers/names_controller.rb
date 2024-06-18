@@ -184,6 +184,21 @@ class NamesController < ApplicationController
     end
   end
 
+  # GET /names/linkout.xml
+  # GET /names/1/linkout.xml
+  def linkout
+    @provider_id = Rails.configuration.try(:linkout_provider_id)
+    unless @provider_id.present?
+      @provider_id = 'Define using config.linkout_provider_id'
+    end
+
+    @names = params[:id] ? Name.where(id: params[:id]) : Name.where(status: 15)
+    if params[:page]
+      @names =
+        @names.paginate(page: params[:page], per_page: params[:per_page] || 10)
+    end
+  end
+
   # GET /names/1/network
   def network
     respond_to do |format|

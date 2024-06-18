@@ -77,6 +77,14 @@ class PageController < ApplicationController
   def api
   end
 
+  # GET /page/linkout.xml
+  def linkout
+    @provider_id = Rails.configuration.try(:linkout_provider_id)
+    unless @provider_id.present?
+      @provider_id = 'Define using config.linkout_provider_id'
+    end
+  end
+
   private
 
     def help_topics

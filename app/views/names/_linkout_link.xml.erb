@@ -1,0 +1,16 @@
+  <Link>
+    <LinkId><%= name.id %></LinkId>
+    <ProviderId><%= @provider_id %></ProviderId>
+    <ObjectSelector>
+      <Database>Taxonomy</Database>
+      <ObjectList>
+        <Query><%= name.base_name %>[All Names]</Query>
+      </ObjectList>
+    </ObjectSelector>
+    <ObjectUrl>
+      <Base>&base.url;</Base>
+      <Rule><%= name.id %></Rule>
+      <UrlName><%= name.abbr_name_raw %> | SeqCode Registry</UrlName>
+      <SubjectType>taxonomy/phylogenetic</SubjectType>
+    </ObjectUrl>
+  </Link>

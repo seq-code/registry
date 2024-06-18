@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   namespace :page do
     %i[
       api about committee connect initiative join
-      news prize publications seqcode
+      news prize publications seqcode linkout
     ].each { |i| get(i) }
   end
   get  'help' => 'page#help_index', as: :help_index
@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       get  :user
       get  :observing
       get  :autocomplete
+      get  :linkout
       # --> Curator utilities
       get  :unranked
       get  :unknown_proposal
@@ -65,6 +66,7 @@ Rails.application.routes.draw do
     member do
       # --> Display name
       get  :network
+      get  :linkout
       # --> Edit name
       get  :edit_description
       get  :edit_type
