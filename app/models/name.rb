@@ -1072,15 +1072,22 @@ class Name < ApplicationRecord
   end
 
   def ensure_consistent_placement
-    if parent_id.present?
-      pp = placements.where(parent_id: parent_id).first
+    if parent_id.present? || incertae_sedis.present?
+      pp = placements.where(
+        parent_id: parent_id, incertae_sedis: incertae_sedis
+      ).first
       if pp.present?
-        unless pp.preferred?
+        if pp.preferred?
+          true
+        else
           placements.update(preferred: false) && pp.update(preferred: true)
         end
       else
         placements.update(preferred: false) &&
-          Placement.new(name_id: id, parent_id: parent_id, preferred: true).save
+          Placement.new(
+            name_id: id, parent_id: parent_id, incertae_sedis: incertae_sedis,
+            incertae_sedis_text: incertae_sedis_text, preferred: true
+          ).save
       end
     else
       # Conservatively preserve as alternative placement
