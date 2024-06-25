@@ -1,6 +1,7 @@
 student.westherts.ac.uk
 westherts.ac.uk
 insa-toulouse.fr
+bugemauniv.ac.ug
 mbzuai.ac.ae
 sempreceub.com
 uniceub.br
@@ -21,6 +22,7 @@ ac-creteil.fr
 marywood.edu
 upes.ac.in
 ashoka.edu.in
+iiits.in
 cstj.qc.ca
 lindenwood.edu
 davietjal.org
@@ -4147,7 +4149,7 @@ jiwaji.edu
 jmi.nic.in
 jncasr.ac.in
 jnkvv.nic.in
-jntu.ac.in
+jntuh.ac.in
 jnu.ac.in
 jnujaipur.ac.in
 jodhpurnationaluniversity.com
@@ -4816,6 +4818,7 @@ shannoncollege.com
 tcd.ie
 ucc.ie
 ucd.ie
+ucdconnect.ie
 nuigalway.ie
 ucg.ie
 ul.ie
@@ -8697,7 +8700,6 @@ uea.ac.uk
 uel.ac.uk
 ukc.ac.uk
 ulsop.ac.uk
-ulst.ac.uk
 umds.ac.uk
 unl.ac.uk
 northumbria.ac.uk
@@ -10148,6 +10150,7 @@ anurag.edu.in
 ateneo.edu
 bath.edu
 ulster.ac.uk
+ulst.ac.uk
 belhaven.edu
 berry.edu
 bhc.edu.in
@@ -10308,6 +10311,26 @@ westminsteru.edu
 dom.edu
 gandakiuniversity.edu.np
 gpu.edu.np
+ara.ac.nz
+moodle.ara.ac.nz
+myara.ara.ac.nz
+u-pec.fr
+jisuniversity.ac.in
+jiscollege.ac.in
+nit.ac.in
+gnit.ac.in
+gnihm.ac.in
+gnipst.ac.in
+gnidsr.ac.in
+surtech.edu.in
+jisiasr.org
+jismsr.org
+jisiop.org
+jissp.ac.in
+gkcem.ac.in
+chandilpolytechnic.org
+golapolytechnic.org
+aecwb.edu.in
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10341,3 +10364,4 @@ up.edu.ph
 tll.org.sg
 westlake.edu.cn
 gbu.edu.in
+nwafu.edu.cn
