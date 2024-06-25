@@ -52,7 +52,7 @@ end
 
 <% if @genome.present? %>
   <dl name="genomics" class="main-section name-details">
-    <h2>Genomics</h2>
+    <h2><%= fa_icon('dna', class: 'float-right') %> Genomics</h2>
 
     <% if @genome.multiple_names? %>
       <div class="alert alert-danger">
@@ -65,7 +65,7 @@ end
       </div>
     <% end %>
 
-    <dt><%= fa_icon('dna') %> Accession</dt>
+    <dt><%= fa_icon('database') %> Accession</dt>
     <dd>
       <%= genome_accession_links(@genome) %>
       <% if current_curator? %>

@@ -6,7 +6,10 @@
             partial: 'shared/correspondence_history',
             locals: { object: object }) %>
     <% else %>
-      <h2>Correspondence with curators</h2>
+      <h2>
+        <%= fa_icon('comments', class: 'float-right') %>
+        Correspondence with curators
+      </h2>
       <% if object.correspondences.count > 3 %>
         <% id = modal('Full correspondence history', size: 'lg') do %>
           <%= render(

@@ -1,6 +1,9 @@
 <% if @genome.try(:source_hash).present? %>
   <dl name="samples" class="main-section name-details">
-    <h2>Sample Metadata</h2>
+    <h2>
+      <%= fa_icon('atlas', class: 'float-right') %>
+      Sample Metadata
+    </h2>
 
     <%
       attributes_icon = {

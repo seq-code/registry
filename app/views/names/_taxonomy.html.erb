@@ -1,7 +1,7 @@
 <% if @name.taxonomic_data? || @name.can_edit?(current_user) ||
       @name.can_edit_placements?(current_user) %>
   <dl name="taxonomy" class="main-section name-details">
-    <h2>Taxonomy</h2>
+    <h2><%= fa_icon('network-wired', class: 'float-right') %> Taxonomy</h2>
 
     <% if @name.description? || @name.can_edit?(current_user) %>
       <dt><%= fa_icon('file-alt') %> Description</dt>
