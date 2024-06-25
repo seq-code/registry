@@ -253,7 +253,7 @@ nav.navbar {
   &:has(h2:first-child) {
     padding-top: 0.5rem;
   }
-  h2:first-child {
+  & > h2:first-child {
     background: var(--light);
     position: sticky;
     top: 3.1rem; // for xl

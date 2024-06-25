@@ -4,7 +4,10 @@
     <dl name="quality-checks"
         class="main-section name-details border-danger"
         style="border-left: 1em solid;">
-      <h2>Failed Quality Checks</h2>
+      <h2>
+        <%= fa_icon('exclamation-circle', class: 'float-right') %>
+        Failed Quality Checks
+      </h2>
       <% @name.qc_warnings.each do |warn| %>
         <%= render(partial: 'checks/check', locals: { warn: warn }) %>
       <% end %>
