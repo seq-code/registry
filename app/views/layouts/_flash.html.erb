@@ -1,6 +1,6 @@
-<% if (flash ||= nil).present? %>
+<% if flash %>
   <div class='container mt-3'>
-    <% flash.each do |k,v| %>
+    <% flash.each do |k, v| %>
       <%
         alt_k = { alert: 'danger', notice: 'info' }
 	k = alt_k[ k.to_sym ] if alt_k[ k.to_sym ]

@@ -1,0 +1,18 @@
+<% provide(:title, @name.abbr_name_raw) %>
+<h1><%= @name.name_html %></h1>
+<hr/>
+<div class="alert alert-warning">
+  <h3>Insufficient permits</h3>
+  <hr/>
+  You don't have access to view this name's details.
+  <% if user_signed_in? %>
+    If you think this is a mistake, please
+    <%= link_to('contact us', page_connect_url) %> to request a change in
+    ownership
+  <% else %>
+    Please <%= link_to('sign in', new_user_session_path) %> and try again to
+    check your user's privileges
+  <% end %>
+</div>
+<br/>
+<%= render(partial: 'shared/cc') %>

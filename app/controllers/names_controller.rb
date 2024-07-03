@@ -482,8 +482,7 @@ class NamesController < ApplicationController
         &.update(seen: true)
 
       unless @name.can_see?(current_user)
-        flash[:alert] = 'User cannot access name'
-        redirect_to(root_path)
+        render 'hidden'
       end
     end
 
