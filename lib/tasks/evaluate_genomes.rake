@@ -3,6 +3,26 @@ require 'miga'
 require 'miga/cli'
 
 namespace :genomes do
+  desc 'Deactivate unlinked genomes last modified over a month ago'
+  task :purge => :environment do |t, args|
+    def usage(t)
+      puts "Usage: rake #{t}"
+      exit 0
+    end
+
+    $stderr.puts 'Purging genomes'
+    k = 0
+    Genome.where(active: true).each do |genome|
+      next if genome.updated_at > 1.month.ago
+      next if genome.names.present?
+
+      $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
+      genome.inactivate
+      k += 1
+    end
+    $stderr.puts "Purged genomes: #{k}"
+  end
+
   desc 'Registers all genomes in a MiGA project to be evaluated'
   task :download => :environment do |t, args|
     def usage(t)
