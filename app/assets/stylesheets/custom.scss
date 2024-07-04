@@ -268,5 +268,8 @@ nav.navbar {
       color: theme-color-level(light, 2);
     }
   }
+  & > dt, & > dd {
+    padding-right: 0.25rem;
+  }
 }
 
