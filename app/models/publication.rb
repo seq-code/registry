@@ -28,6 +28,7 @@ class Publication < ApplicationRecord
     dependent: :nullify
   )
   has_many(:placements, dependent: :nullify)
+  has_many(:contacts)
 
   class << self
 

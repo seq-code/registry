@@ -238,7 +238,7 @@ module ApplicationHelper
   def display_obj(obj, display_method = nil)
     preferred_fields =
       display_method ? [display_method] :
-      %i[name_html name display_name accession citation]
+      %i[name_html name display_name accession citation full_name]
 
     field = preferred_fields.find { |i| obj.respond_to? i }
     if field

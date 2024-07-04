@@ -481,9 +481,7 @@ class NamesController < ApplicationController
         &.where(notifiable: @name)
         &.update(seen: true)
 
-      unless @name.can_see?(current_user)
-        render 'hidden'
-      end
+      render 'hidden' unless @name.can_see?(current_user)
     end
 
     def set_tutorial

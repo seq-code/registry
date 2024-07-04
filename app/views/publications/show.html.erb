@@ -25,4 +25,7 @@
   <dt>DOI</dt>
   <dd><%= link_to(@publication.doi, @publication.url, target: '_blank') %></dd>
 </dl>
+<%# render(partial: 'curator') %>
+<br/>
+<%= render(partial: 'shared/cc') %>
 

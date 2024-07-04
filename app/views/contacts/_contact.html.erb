@@ -1,0 +1,15 @@
+<%= adaptable_entry(
+      list, contact.subject,
+      publication_contact_url(contact.publication, contact)
+    ) do |entry| %>
+  <%= adaptable_value(entry, 'Publication') do %>
+    <%= display_link(contact.publication) %>
+  <% end %>
+  <%= adaptable_value(entry, 'Author') do %>
+    <%= display_link(contact.author) %>
+  <% end %>
+  <%= adaptable_value(entry, 'Date') do %>
+    <%= time_ago_with_date(contact.created_at) %>
+  <% end %>
+<% end %>
+

@@ -3,6 +3,7 @@ class Author < ApplicationRecord
   has_many(:publications, through: :publication_authors)
   has_many(:publication_names, through: :publications)
   has_many(:names, -> { group(:name_id) }, through: :publication_names)
+  has_many(:contacts)
 
   class << self
     def find_or_create(given, family)

@@ -58,6 +58,7 @@ class User < ApplicationRecord
     :unseen_notifications, -> { where(seen: false).order(created_at: :desc) },
     class_name: 'Notification'
   )
+  has_many(:contacts)
 
   validates(
     :username,

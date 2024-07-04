@@ -1,0 +1,14 @@
+<% if current_curator? %>
+  <dl name="curator" class="main-section name-details">
+    <h2>Curator Actions</h2>
+    <dd class="pt-2">
+      <%= link_to(
+            new_publication_contact_url(@publication),
+            class: 'btn btn-primary btn-sm'
+          ) do %>
+        <%= fa_icon('envelope') %> Contact authors
+      <% end %>
+      &raquo; Send message to authors related to the current publication
+    </dd>
+  </dl>
+<% end %>

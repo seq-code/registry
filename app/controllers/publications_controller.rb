@@ -4,8 +4,7 @@ class PublicationsController < ApplicationController
     only: %i[show edit update destroy]
   )
   before_action(
-    :authenticate_contributor!,
-    only: %i[new edit create update destroy]
+    :authenticate_contributor!, only: %i[new edit create update destroy]
   )
 
   # GET /publications

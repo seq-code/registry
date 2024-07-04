@@ -1,0 +1,17 @@
+<div class="text-right pt-4 float-right"><%= list_type_selector %></div>
+<h1>Contacted authors</h1>
+<hr/>
+
+<% if @publication %>
+  <div class="my-4 bg-light p-3 rounded-sm">
+    Associated to the publication: <%= display_link(@publication) %>
+  </div>
+<% end %>
+
+<%= adaptable_list(set: @contacts) do |list| %>
+  <% @contacts.each do |contact| %>
+    <%= render(partial: contact, locals: { list: list }) %>
+  <% end %>
+<% end %>
+
+

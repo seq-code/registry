@@ -1,0 +1,59 @@
+<% provide(:title, @publication.title) %>
+<h1><%= @publication.title_html %></h1>
+<hr/>
+
+<% if @publication.contacts.any? %>
+  <div class="alert alert-info">
+    <h4>Authors already contacted</h4>
+    <hr/>
+    Authors have already been contacted
+    <%= pluralize(@publication.contacts.count, 'time') %> in the past with
+    respect to this publication:
+    <%= link_to('see previous messages',
+                publication_contacts_url(@publication)) %>
+  </div>
+<% end %>
+
+<%= simple_form_for(
+      @contact,
+      url: publication_contacts_url(@publication),
+      method: :post
+    ) do |f| %>
+  <dl class='main-section name-details'>
+    <h2><%= fa_icon('envelope', class: 'float-right') %> Contact authors</h2>
+    <hr/>
+    <dt><%= fa_icon('file') %> Publication</dt>
+    <dd>
+      <%= link_to(@publication) do %>
+        <%= fa_icon('arrow-circle-right') %> <%= @publication.citation %>
+      <% end %><br/>
+      <%= link_to(@publication.link, target: '_blank') do %>
+        DOI: <%= @publication.doi %>
+        <%= fa_icon('external-link-alt') %>
+      <% end %>
+    </dd>
+
+    <dt><%= fa_icon('envelope') %> Correspondence attributes</dt>
+    <dd>
+      <%= f.association(
+            :author, collection: @publication.authors, label_method: :full_name,
+            label: 'Corresponding author'
+          ) %>
+      <%= f.input(:to, label: 'To (corresponding author\'s email address)') %>
+      <%= f.input(:cc, label: 'Carbon copy (CC)') %>
+      <%= f.input(:subject) %>
+    </dd>
+
+    <dt><%= fa_icon('envelope-open-text') %> Contents</dt>
+    <dd>
+      <%= f.input(:message, as: :rich_text_area) %>
+    </dd>
+
+    <dt>&nbsp;</dt>
+    <dd>
+      <%= link_to('Cancel', @publication, class: 'btn btn-secondary') %>
+      <%= f.submit('Send', class: 'btn btn-primary') %>
+    </dd>
+  </dl>
+<% end %>
+<br/>

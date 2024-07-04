@@ -1,0 +1,47 @@
+<% provide(:title, @publication.title) %>
+<h1><%= @publication.title_html %></h1>
+<hr/>
+
+<dl class='main-section name-details'>
+  <h2><%= fa_icon('envelope', class: 'float-right') %> Contacted authors</h2>
+  <hr/>
+  <dt><%= fa_icon('file') %> Publication</dt>
+  <dd>
+    <%= link_to(@publication) do %>
+      <%= fa_icon('arrow-circle-right') %> <%= @publication.citation %>
+    <% end %><br/>
+    <%= link_to(@publication.link, target: '_blank') do %>
+      DOI: <%= @publication.doi %>
+      <%= fa_icon('external-link-alt') %>
+    <% end %>
+  </dd>
+
+  <dt><%= fa_icon('envelope') %> Correspondence attributes</dt>
+  <dd>
+    <dl class="border-left pl-3 py-2">
+      <dt>Corresponding author</dt>
+      <dd><%= display_link(@contact.author) %></dd>
+      <dt>To (corresponding author's email address)</dt>
+      <dd><%= @contact.to %></dd>
+      <dt>Carbon copy (CC)</dt>
+      <dd><%= @contact.cc %></dd>
+      <dt>Subject</dt>
+      <dd><%= @contact.subject %></dd>
+    </dl>
+  </dd>
+
+  <dt><%= fa_icon('envelope-open-text') %> Contents</dt>
+  <dd><%= @contact.message %></dd>
+
+  <dt><%= fa_icon('table') %> Metadata</dt>
+  <dd>
+    <dl>
+      <dt>Created</dt>
+      <dd><%= time_ago_with_date(@contact.created_at) %></dd>
+      <dt>User</dt>
+      <dd><%= display_link(@contact.user) %></dd>
+    </dl>
+  </dd>
+
+</dl>
+<br/>

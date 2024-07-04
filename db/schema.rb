@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_06_12_180304) do
+ActiveRecord::Schema.define(version: 2024_07_04_140752) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -67,6 +67,20 @@ ActiveRecord::Schema.define(version: 2024_06_12_180304) do
     t.index ["name_id", "kind"], name: "index_checks_on_name_id_and_kind", unique: true
     t.index ["name_id"], name: "index_checks_on_name_id"
     t.index ["user_id"], name: "index_checks_on_user_id"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.integer "publication_id", null: false
+    t.integer "user_id", null: false
+    t.string "to"
+    t.string "cc"
+    t.string "subject"
+    t.integer "author_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["author_id"], name: "index_contacts_on_author_id"
+    t.index ["publication_id"], name: "index_contacts_on_publication_id"
+    t.index ["user_id"], name: "index_contacts_on_user_id"
   end
 
   create_table "genomes", force: :cascade do |t|
@@ -423,6 +437,9 @@ ActiveRecord::Schema.define(version: 2024_06_12_180304) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "checks", "names"
   add_foreign_key "checks", "users"
+  add_foreign_key "contacts", "authors"
+  add_foreign_key "contacts", "publications"
+  add_foreign_key "contacts", "users"
   add_foreign_key "name_correspondences", "names"
   add_foreign_key "name_correspondences", "users"
   add_foreign_key "names", "genomes"

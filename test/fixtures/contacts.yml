@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  publication: one
+  user: one
+  to: MyString
+  cc: MyString
+  subject: MyString
+  author: one
+
+two:
+  publication: two
+  user: two
+  to: MyString
+  cc: MyString
+  subject: MyString
+  author: two

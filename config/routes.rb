@@ -153,7 +153,9 @@ Rails.application.routes.draw do
   resources(:journals, only: %i[index show], param: :journal)
 
   # Publications
-  resources(:publications, concerns: :autocompletable)
+  resources(:publications, concerns: :autocompletable) do
+    resources(:contacts, only: %i[new create show index])
+  end
   get  'doi/:doi' => 'publications#show', as: :doi, doi: /.+/
 
   # Publication Names (n:m relationship)
