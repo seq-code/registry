@@ -34,7 +34,7 @@
     </dd>
 
     <dt><%= fa_icon('envelope') %> Correspondence attributes</dt>
-    <dd>
+    <dd class="pr-1">
       <%= f.association(
             :author, collection: @publication.authors, label_method: :full_name,
             label: 'Corresponding author'
@@ -45,7 +45,7 @@
     </dd>
 
     <dt><%= fa_icon('envelope-open-text') %> Contents</dt>
-    <dd>
+    <dd class="pr-1">
       <%= f.input(:message, as: :rich_text_area) %>
     </dd>
 
