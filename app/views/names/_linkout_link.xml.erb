@@ -4,7 +4,11 @@
     <ObjectSelector>
       <Database>Taxonomy</Database>
       <ObjectList>
-        <Query><%= name.base_name %>[All Names]</Query>
+        <% if name.ncbi_taxonomy %>
+          <ObjId><%= name.ncbi_taxonomy %></ObjId>
+        <% else %>
+          <Query><%= name.base_name %>[Name]</Query>
+        <% end %>
       </ObjectList>
     </ObjectSelector>
     <ObjectUrl>
