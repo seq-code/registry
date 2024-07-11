@@ -169,7 +169,8 @@ class ApplicationController < ActionController::Base
 
     def check_api!
       if Rails.configuration.try(:api_only)
-        unless params[:format].to_s == 'json'
+        unless params[:format].to_s == 'json' ||
+               request.request_uri =~ /^\.well-known/
           redirect_to 'https://seqco.de/p:api'
         end
       end
