@@ -144,6 +144,18 @@ nav.navbar-dark {
   }
 }
 
+.sticky-top {
+  top: -1px !important;
+  .only-stuck {
+    display: none;
+  }
+  &.is-pinned {
+    .only-stuck {
+      display: unset;
+    }
+  }
+}
+
 /* Home Page */
 .user-actions {
   .btn {
