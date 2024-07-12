@@ -7,18 +7,26 @@ namespace :gtdb do
       exit 0
     end
 
-    def find_or_create_name(name, rank)
-      k = [rank, name]
+    def find_or_create_name(name, rank, accession)
+      k = [rank, name, accession]
       @cached_names ||= {}
       @cached_names[k] ||= Name.find_by_variants(name)
       if @cached_names[k].present? &&
             @cached_names[k].inferred_rank.to_sym != rank
+        # Ignore cross-rank homonyms
         return(@cached_names[k] = [])
       end
 
-      unless @cached_names[k]
+      if @cached_names[k]
+        unless @cached_names[k].is_a?(Array) ||
+               @cached_names[k].gtdb_accession == accession
+          @cached_names[k].update_column(:gtdb_accession, accession)
+        end
+      else
         @n_name += 1
-        @cached_names[k] = Name.create!(name: name, rank: rank)
+        @cached_names[k] = Name.create!(
+          name: name, rank: rank, gtdb_accession: accession
+        )
       end
       @cached_names[k]
     end
@@ -32,7 +40,7 @@ namespace :gtdb do
       names =
         string.split(';').map { |i| i.split('__', 2) }
           .map do |i|
-            [ranks[i[0]], i[1]]
+            [ranks[i[0]], i[1], "#{i[0]}__#{i[1]}"]
           end
           .map do |i|
             ((i[0] == :species && i[1] =~ /^[A-Z][a-z]+ [a-z]+$/) ||
@@ -44,8 +52,8 @@ namespace :gtdb do
         next if (p = names[k - 1]).nil?
         @names_done[n] = true
 
-        name = find_or_create_name(n[1], n[0])
-        parent = find_or_create_name(p[1], p[0])
+        name = find_or_create_name(n[1], n[0], n[2])
+        parent = find_or_create_name(p[1], p[0], p[2])
         next unless name.present? && parent.present?
 
         placement =

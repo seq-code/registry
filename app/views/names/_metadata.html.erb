@@ -23,6 +23,15 @@
           </li>
         <% end %>
 
+        <% if @name.gtdb_accession? %>
+          <li>
+            <%= link_to(@name.gtdb_tree_url, target: '_blank') do %>
+              GTDB Tree: <%= @name.gtdb_accession %>
+              <%= fa_icon('external-link-alt') %>
+            <% end %>
+          </li>
+        <% end %>
+
         <% gbif = @name.gbif_homonyms(false, true) %>
         <% if gbif.present? %>
           <% id = modal('GBIF Links') do %>
@@ -62,14 +71,14 @@
     <ul>
       <li>
         <%= link_to(@name.ncbi_search_url, target: '_blank') do %>
-          NCBI Nucleotide
+          Seach in NCBI Nucleotide
           <%= fa_icon('external-link-alt') %>
         <% end %>
       </li>
       <% if @name.ncbi_taxonomy? %>
         <li>
           <%= link_to(@name.ncbi_genomes_url, target: '_blank') do %>
-            NCBI Genomes
+            NCBI Genomes table
             <%= fa_icon 'external-link-alt' %>
           <% end %>
         </li>

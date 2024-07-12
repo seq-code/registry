@@ -546,7 +546,7 @@ class Name < ApplicationRecord
 
   def links?
     ncbi_taxonomy? || gtdb_genome? || !gbif_homonyms(false, true).empty? ||
-      lpsn_url?
+      lpsn_url? || gtdb_accession?
   end
 
   def gtdb_genome?
@@ -559,6 +559,12 @@ class Name < ApplicationRecord
     'https://gtdb.ecogenomic.org/genome?gid=%s' % type_accession
   end
 
+  def gtdb_tree_url
+    return unless gtdb_accession?
+
+    'https://gtdb.ecogenomic.org/tree?r=%s' % gtdb_accession
+  end
+
   def ncbi_taxonomy_url
     return unless ncbi_taxonomy?
 
@@ -568,7 +574,7 @@ class Name < ApplicationRecord
   def ncbi_genomes_url
     return unless ncbi_taxonomy?
 
-    'https://www.ncbi.nlm.nih.gov/datasets/taxonomy/%i/' % ncbi_taxonomy
+    'https://www.ncbi.nlm.nih.gov/datasets/genome/?taxon=%i' % ncbi_taxonomy
   end
 
   def seqcode_url(protocol = true)
