@@ -64,17 +64,20 @@ namespace :ncbi do
 
     def filter_names_by_domain(names, nodes, ranks)
       $stderr.puts 'Using only prokaryotic names'
+      non_epithet = %w[bacterium archaeum cyanobacterium]
       new_names = {}
       i = 0
       names.each do |k, n|
         $stderr.print "- #{i += 1}/#{names.size} \r"
         next unless n && ranks.include?(nodes[k][1])
-        unless (nodes[k][1] == :species && n =~ /^[A-Z][a-z]+ [a-z]+$/) ||
-              (nodes[k][1] == :subspecies &&
-                n =~ /^[A-Z][a-z]+ [a-z]+ subsp\. [a-z]+$/) ||
-              (!%i[species subspecies].include?(nodes[k][1]) &&
-                n =~ /^[A-Z][a-z]+$/)
-          next
+        case nodes[k][1]
+        when :species
+          next if n !~ /^[A-Z][a-z]+ [a-z]+$/
+          next if non_epithet.include?(n.split(/ +/, 2)[1])
+        when :subspecies
+          next if n !~ /^[A-Z][a-z]+ [a-z]+ subsp\. [a-z]+$/
+        else
+          next if n !~ /^[A-Z][a-z]+$/
         end
         next unless [2, 2157].include?(domain(k, nodes))
 
