@@ -10,17 +10,18 @@ namespace :ncbi do
     def find_or_create_name(name, rank)
       k = [rank, name]
       @cached_names ||= {}
-      @cached_names[k] ||= Name.find_by_variants(name)
-      if @cached_names[k].present? &&
-            @cached_names[k].inferred_rank.to_sym != rank
+      name_obj = @cached_names[k] ? Name.find(@cached_names[k]) :
+                                    Name.find_by_variants(name)
+      if name_obj.present? && name_obj.inferred_rank.to_sym != rank
         return(@cached_names[k] = [])
       end
 
-      unless @cached_names[k]
-        @n_name += 1
-        @cached_names[k] = Name.create!(name: name, rank: rank)
-      end
-      @cached_names[k]
+      return name_obj if name_obj
+
+      @n_name += 1
+      name_obj = Name.create!(name: name, rank: rank)
+      @cached_names[k] = name_obj.id
+      return name_obj
     end
 
     def read_names_dmp(file)
@@ -64,7 +65,7 @@ namespace :ncbi do
 
     def filter_names_by_domain(names, nodes, ranks)
       $stderr.puts 'Using only prokaryotic names'
-      non_epithet = %w[bacterium archaeum cyanobacterium]
+      non_epithet = %w[bacterium archaeon cyanobacterium]
       new_names = {}
       i = 0
       names.each do |k, n|
