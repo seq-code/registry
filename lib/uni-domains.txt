@@ -1,3 +1,5 @@
+tbs.edu
+unochapeco.edu.br
 student.westherts.ac.uk
 westherts.ac.uk
 insa-toulouse.fr
@@ -521,6 +523,7 @@ ici.edu
 isu.edu
 ibc.edu
 iit.edu
+hawk.iit.edu
 illinoisstate.edu
 ilstu.edu
 indianatech.edu
@@ -1115,6 +1118,7 @@ uncc.edu
 uncg.edu
 uncw.edu
 und.edu
+nodak.edu
 unco.edu
 uni.edu
 unf.edu
@@ -2254,6 +2258,7 @@ ustpaul.ca
 usudbury.com
 utm.utoronto.ca
 utoronto.ca
+toronto.edu
 uvic.ca
 uwaterloo.ca
 uwindsor.ca
@@ -2261,7 +2266,6 @@ uwinnipeg.ca
 uwo.ca
 vcc.ca
 vicu.utoronto.ca
-eecg.toronto.edu
 wlu.ca
 mylaurier.ca
 yorku.ca
@@ -3745,6 +3749,7 @@ unibw-muenchen.de
 tu-dortmund.de
 udo.edu
 uni-duesseldorf.de
+hhu.de
 uni-duisburg-essen.de
 uni-erfurt.de
 fau.de
@@ -9481,7 +9486,6 @@ acs350.org
 atlantic.edu
 bergen.edu
 brookdalecc.edu
-bcc.edu
 camdencc.edu
 ccm.edu
 student.ccm.edu
@@ -10331,6 +10335,8 @@ gkcem.ac.in
 chandilpolytechnic.org
 golapolytechnic.org
 aecwb.edu.in
+claremont.edu
+rcbc.edu
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10365,3 +10371,4 @@ tll.org.sg
 westlake.edu.cn
 gbu.edu.in
 nwafu.edu.cn
+drfz.de
