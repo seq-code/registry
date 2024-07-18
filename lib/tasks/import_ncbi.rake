@@ -10,12 +10,12 @@ namespace :ncbi do
     def find_or_create_name(name, rank)
       k = [rank, name]
       @cached_names ||= {}
-      name_obj = @cached_names[k] ? Name.find(@cached_names[k]) :
-                                    Name.find_by_variants(name)
+      return Name.find(@cached_names[k]) if @cached_names[k].present?
+
+      name_obj = Name.find_by_variants(name)
       if name_obj.present? && name_obj.inferred_rank.to_sym != rank
         return(@cached_names[k] = [])
       end
-
       return name_obj if name_obj
 
       @n_name += 1
