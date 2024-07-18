@@ -59,7 +59,7 @@ namespace :lpsn do
       end
       name.update!(pars)
       parsed_names[row['record_no']] = {
-        name: name, parent: parent, correct_name: row['record_lnk'],
+        name_id: name.id, parent: parent, correct_name: row['record_lnk'],
         type_name: type_name
       }
     end # CSV.foreach
@@ -75,13 +75,13 @@ namespace :lpsn do
         pars[:parent_id] = Name.find_by(entry[:parent])&.id
       end
       if entry[:correct_name].present?
-        pars[:correct_name_id] = parsed_names[entry[:correct_name]][:name].id
+        pars[:correct_name_id] = parsed_names[entry[:correct_name]][:name_id]
       end
       if entry[:type_material].present?
         pars[:type_material] = 'name'
-        pars[:type_accession] = parsed_names[entry[:type_material]][:name].id
+        pars[:type_accession] = parsed_names[entry[:type_material]][:name_id]
       end
-      entry[:name].update(pars) unless pars.empty?
+      Name.find(entry[:name_id]).update(pars) unless pars.empty?
     end
 
     $stderr.puts "Parsed #{parsed_names.size} names"
