@@ -15,30 +15,27 @@ module Name::Inferences
 
     # Particular morpheme exceptions
 
-    when /pulchritudo$/
-      # - Oceanipulchritudo -- Oceanipulchritud-in-aceae
-      base.sub!(/o$/, 'in')
-    when /(opsis|physalis|glans|desmis)$/
-      # - Coelosphaeriopsis -- 
-      # - Hapalopsis -- 
-      # - Lyngbyopsis --
-      # - Entophysalis -- Entophysali-d-aceae
-      # - Desulfatiglans -- Desulfatiglan-d-aceae
-      # - Phormidesmis -- Phormidesmi-d-aceae
-      base.sub!(/s$/, 'd')
-    when /glomus$/
-      # - Dictryoglomus -- Dictyoglom-er-aceae
-      base.sub!(/us$/, 'er')
     when /chloro[sn]$/
       # - Petrachloros -- Petrachlor-aceae
       # - Prochloron -- Prochlor-aceae
       base.sub!(/o[sn]$/, '')
-    when /(ta|vive|vora|flore)ns$/
-      # - Jatrophihabitans -- Jatrophihabitan-t-aceae
-      # - Aquivivens -- Aquiviven-t-aceae
-      # - Hopanoidivorans -- Hopanoidivoran-t-aceae
-      # - Methanoflorens -- Methanofloren-t-aceae
-      base.sub!(/ns$/, 'nt')
+    when /comes$/
+      # - Porifericomes -- Porifericom-it-aceae
+      base.sub!(/es$/, 'it')
+    when /[ck]orys$/
+      # - Myxacorys -- 
+      base.sub!(/ys$/, '')
+    when /(desmis|glans|opsis|physalis)$/
+      # - Phormidesmis -- Phormidesmi-d-aceae
+      # - Desulfatiglans -- Desulfatiglan-d-aceae
+      # - Coelosphaeriopsis -- 
+      # - Hapalopsis -- 
+      # - Lyngbyopsis --
+      # - Entophysalis -- Entophysali-d-aceae
+      base.sub!(/s$/, 'd')
+    when /glomus$/
+      # - Dictryoglomus -- Dictyoglom-er-aceae
+      base.sub!(/us$/, 'er')
     when /myces$/
       # - Actinomyces -- Actinomyce-t-aceae
       base.sub!(/s$/, 't')
@@ -47,9 +44,9 @@ module Name::Inferences
       # Counterexamples:
       # - Ferroplasma -- Ferroplasm-aceae (irregularly formed)
       base.sub!(/plasma$/, 'plasmat')
-    when /comes$/
-      # - Porifericomes -- Porifericom-it-aceae
-      base.sub!(/es$/, 'it')
+    when /pulchritudo$/
+      # - Oceanipulchritudo -- Oceanipulchritud-in-aceae
+      base.sub!(/o$/, 'in')
     when /thrix$/
       # - Erysipelothrix -- Erysipelotri-ch-aceae
       # - Caldithrix -- Calditri-ch-aceae
@@ -63,6 +60,15 @@ module Name::Inferences
     when /aeum$/
       # - Methanonatronarchaeum -- Methanonatroarchae-aceae
       base.sub!(/um$/, '')
+    when /[aeiou]ns$/
+      # - Myceligenerans -- 
+      # - Jatrophihabitans -- Jatrophihabitan-t-aceae
+      # - Hopanoidivorans -- Hopanoidivoran-t-aceae
+      # - Saccharicenans -- Saccharicenan-t-aceae
+      # - Hydrogenedens -- Hydrogeneden-t-aceae
+      # - Methanoflorens -- Methanofloren-t-aceae
+      # - Aquivivens -- Aquiviven-t-aceae
+      base.sub!(/ns$/, 'nt')
     when /u[ms]$/
       # - Acidaminococcus -- Acidaminococc-aceae
       # - Acidilobus -- Acidilob-aceae
@@ -88,11 +94,18 @@ module Name::Inferences
       # Counterexamples:
       # - Spirosoma -- Spirosoma-ceae (irregularly formed)
       base.sub!(/ma$/, 'mat')
-    when /[eai]s$/
-      # - Alcaligenes -- Alcaligen-aceae
+    when /[aeiou]s$/
       # - Desulfallas -- Desulfall-aceae
+      # - Alcaligenes -- Alcaligen-aceae
       # - Desulfocucumis -- Desulfocucum-aceae
-      base.sub!(/[eai]s$/, '')
+      # - Rhodoligotrophos -- Rodoligotroph-aceae
+      # - Petrachloros -- Petrachlor-aceae (already captured above)
+      # - Other examples from /u[ms]$/ (already captured above)
+      base.sub!(/[aeiou]s$/, '')
+    when /ys$/
+      # - Labrys --
+      # - Pseudolabrys --
+      base.sub!(/s$/, '')
     when /non$/
       # - Caryophanon -- Caryophan-aceae
       base.sub!(/on$/, '')
