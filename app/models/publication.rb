@@ -216,7 +216,8 @@ class Publication < ApplicationRecord
 
   def title_html
     ERB::Util.h(title)
-      .gsub(/(?:&|\\u0026|&amp;)lt;(\/?(?:i|em))(?:&|\\u0026|&amp;)gt;/, '<\1>')
+      .gsub(/(?:&|\\u0026|&amp;)lt;(\/?(?:i|em|sup|sub))(?:&|\\u0026|&amp;)gt;/,
+            '<\1>')
       .gsub(/\.$/, '')
       .html_safe
   end
