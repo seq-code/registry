@@ -96,6 +96,7 @@ class PageController < ApplicationController
         guide: {
           etymology: 'How do I fill the etymology table?',
           dictionary: 'How do I use dictionary lookups?',
+          exceptions: 'When and how do I request a genome quality exception?',
           # SOPs
           curation: 'How are names internally curated?'
         },
