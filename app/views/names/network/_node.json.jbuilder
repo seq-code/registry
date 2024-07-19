@@ -8,5 +8,6 @@ json.styling(name.name_html)
 json.url(name_url(name))
 json.rank(name.inferred_rank)
 json.valid(name.validated?)
+json.status_code(name.status_hash[:symbol])
 json.illegitimate(name.nomenclatural_status&.match? /illegitimate/)
 

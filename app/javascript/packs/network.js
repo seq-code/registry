@@ -209,6 +209,15 @@ function taxonomic_network(id) {
         .attr("stroke", d => d.id == id ? "#000" : "#fff")
         .attr("r", 20);
 
+    node.append("circle") // Border
+        .attr("stroke-width", 2)
+        .attr("fill-opacity", 0)
+        .attr("stroke",
+          d => d.status_code == 'seqcode' ? "#2373b3" :
+               d.status_code == 'icnp'    ? "#b32429" :
+               d.status_code == 'icn'     ? "#8cc63f" : "#fff")
+        .attr("r", 17);
+
     node.append("circle")
         .attr("stroke-width", 6)
         .attr("fill", "#fff")

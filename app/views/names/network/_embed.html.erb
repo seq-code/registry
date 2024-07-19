@@ -7,10 +7,16 @@
   <dt>Nodes</dt>
   <dd>
     The nodes are colored and placed by rank, from domain (blue, top) to
-    subspecies (red, bottom).
-    The focus taxon is indicated by a black ring. Lighter nodes indicate
-    non-validly published names, and nodes with a central white disc indicate
-    illegitimate names.
+    subspecies (red, bottom). The border of each node is colored according to
+    the code of nomenclature under which the name was validated: SeqCode
+    (blue <%= fa_icon('circle', class: 'small', style: 'color: #2373b3;')%>),
+    ICNP
+    (red <%= fa_icon('circle', class: 'small', style: 'color: #b32429;')%>),
+    or ICNafp
+    (green <%= fa_icon('circle', class: 'small', style: 'color: #8cc63f;')%>).
+    Lighter nodes indicate non-validly published names, and nodes with a central
+    white disc indicate illegitimate names.
+    The focus taxon is indicated by a black ring. 
   </dd>
   <dt>Edges</dt>
   <dd>

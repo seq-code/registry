@@ -215,10 +215,10 @@ class Name < ApplicationRecord
           TXT
         },
         25 => {
-          symbol: :icn, name: 'Valid (ICN)',
+          symbol: :icn, name: 'Valid (ICNafp)',
           public: true, valid: true,
           help: <<~TXT
-            This name has been validly published under the rules of the ICN
+            This name has been validly published under the rules of the ICNafp
             and has priority in the scientific record
           TXT
         }
