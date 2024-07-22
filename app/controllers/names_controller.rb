@@ -194,7 +194,7 @@ class NamesController < ApplicationController
 
     @names =
       params[:id] ? Name.where(id: params[:id]) :
-        Name.where(status: 15).where.not(ncbi_taxonomy: nil)
+        Name.where('status >= 15').where.not(ncbi_taxonomy: nil)
     @names =
       @names.paginate(
         page: params[:page] || 1, per_page: params[:per_page] || 10
