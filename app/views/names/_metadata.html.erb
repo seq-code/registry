@@ -62,6 +62,15 @@
             <% end %>
           </li>
         <% end %>
+
+        <% if @name.algaebase_url.present? %>
+          <li>
+            <%= link_to(@name.algaebase_url, target: '_blank') do %>
+              AlgaeBase entry
+              <%= fa_icon('external-link-alt') %>
+            <% end %>
+          </li>
+        <% end %>
       </ul>
     </dd>
   <% end %>

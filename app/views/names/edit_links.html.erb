@@ -8,6 +8,8 @@
         hint: 'The cannonical URL in LPSN corresponding to this name') %>
   <%= f.input(:gtdb_accession, label: 'GTDB taxon accession',
         hint: 'The GTDB label to the name in the format d__Archaea') %>
+  <%= f.input(:algaebase_species, label: 'AlgaeBase Species ID') %>
+  <%= f.input(:algaebase_taxonomy, label: 'AlgaeBase Taxonomy ID') %>
   <br/>
 
   <% if @tutorial %>

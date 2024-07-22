@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_12_074407) do
+ActiveRecord::Schema.define(version: 2024_07_22_112248) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -206,6 +206,8 @@ ActiveRecord::Schema.define(version: 2024_07_12_074407) do
     t.integer "genomics_review_by_id"
     t.text "corrigendum_kind"
     t.string "gtdb_accession"
+    t.string "algaebase_species"
+    t.string "algaebase_taxonomy"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["parent_id"], name: "index_names_on_parent_id"

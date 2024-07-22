@@ -546,7 +546,7 @@ class Name < ApplicationRecord
 
   def links?
     ncbi_taxonomy? || gtdb_genome? || !gbif_homonyms(false, true).empty? ||
-      lpsn_url? || gtdb_accession?
+      lpsn_url? || gtdb_accession? || algaebase_url.present?
   end
 
   def gtdb_genome?
@@ -563,6 +563,19 @@ class Name < ApplicationRecord
     return unless gtdb_accession?
 
     'https://gtdb.ecogenomic.org/tree?r=%s' % gtdb_accession
+  end
+
+  def algaebase_url
+    d = 'https://www.algaebase.org'
+    if algaebase_species?
+      return '%s/search/species/detail/?species_id=%s' % [d, algaebase_species]
+    end
+
+    if algaebase_taxonomy?
+      return '%s/browse/taxonomy/#%s' % [d, algaebase_taxonomy]
+    end
+
+    nil
   end
 
   def ncbi_taxonomy_url
