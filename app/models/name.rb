@@ -273,6 +273,9 @@ class Name < ApplicationRecord
         # [MX: CIAD, Centro de Investigación en Alimentación y Desarrollo]
         CAIM: 'https://www.ciad.mx/caim/busqueda.php?' \
               'searchtype=caim&criterio=%s',
+        # Culture Collection of Autotrophic Organisms
+        # [CZ: Czech Academy of Sciences]
+        CCALA: 'https://ccala.butbn.cas.cz/strain/%s',
         # Czech Collection of Microorganisms
         # [CZ: Masaryk University]
         CCM: 'https://www.sci.muni.cz/ccm/bakterie/camb/%s',
@@ -348,7 +351,7 @@ class Name < ApplicationRecord
         # (All-Russian Collection of Microorganisms)
         # [RU: Pushchino Scientific Center for Biological Research of the
         # Russian Academy of Sciences]
-        VKM: 'http://www.vkm.ru/strains.php?vkm='
+        VKM: 'http://www.vkm.ru/strains.php?vkm=%s'
       }
     end
 
