@@ -567,7 +567,7 @@ class Name < ApplicationRecord
 
   def algaebase_text
     algaebase_species? ? 'Species %s' % algaebase_species :
-      algaebase_taxonomy? ? 'Taxon %s' : nil
+      algaebase_taxonomy? ? 'Taxon %s' % algaebase_taxonomy : nil
   end
 
   def algaebase_url
