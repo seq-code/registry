@@ -565,6 +565,11 @@ class Name < ApplicationRecord
     'https://gtdb.ecogenomic.org/tree?r=%s' % gtdb_accession
   end
 
+  def algaebase_text
+    algaebase_species? ? 'Species %s' % algaebase_species :
+      algaebase_taxonomy? ? 'Taxon %s' : nil
+  end
+
   def algaebase_url
     d = 'https://www.algaebase.org'
     if algaebase_species?
