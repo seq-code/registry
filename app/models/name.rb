@@ -577,7 +577,7 @@ class Name < ApplicationRecord
     end
 
     if algaebase_taxonomy?
-      return '%s/browse/taxonomy/#%s' % [d, algaebase_taxonomy]
+      return '%s/browse/taxonomy/detail/?taxonid=%s' % [d, algaebase_taxonomy]
     end
 
     nil
