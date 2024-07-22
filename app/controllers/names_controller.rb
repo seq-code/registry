@@ -512,7 +512,7 @@ class NamesController < ApplicationController
         params.require(:name)
           .permit(
             :name, :rank, :description, :notes, :ncbi_taxonomy, :lpsn_url,
-            :gtdb_accession,
+            :gtdb_accession, :algaebase_species, :algaebase_taxonomy,
             :syllabication, :syllabication_reviewed,
             :type_material, :type_accession, :etymology_text, :register,
             :genome_strain,
