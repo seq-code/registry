@@ -13,7 +13,8 @@ class GenomesController < ApplicationController
 
   # GET /genomes or /genomes.json
   def index
-    @genomes = Genome.all.paginate(page: params[:page], per_page: 30)
+    @genomes = Genome.all.order(created_at: :desc)
+                     .paginate(page: params[:page], per_page: 30)
     @crumbs = ['Genomes']
   end
 
