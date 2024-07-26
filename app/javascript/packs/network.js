@@ -264,6 +264,7 @@ function taxonomic_network(id) {
 
 $(document).on("turbolinks:load", function() {
   $("[data-behavior='network']").each(function() {
+    console.log('Initializing Taxonomic Network');
     taxonomic_network($(this).data("id"));
   });
 });

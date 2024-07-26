@@ -18,6 +18,6 @@ $(document).on("turbolinks:load", function() {
   };
   var input = $('*[data-behavior="autocomplete"][data-autocomplete]');
   input.easyAutocomplete(eac_options);
-  // $('#search-bar').easyAutocomplete(eac_options);
+  console.log('Autocomplete initialized');
 });
 

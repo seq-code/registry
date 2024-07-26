@@ -24,6 +24,7 @@ require("jquery");
 require("jquery-ui");
 require("easy-autocomplete");
 import "packs/autocomplete";
+import "packs/dictionary";
 import "packs/network";
 import "packs/styling";
 
