@@ -1,5 +1,14 @@
 const perseus = "https://www.perseus.tufts.edu/hopper/";
 
+function flash_modal(dict_id, target) {
+  var modal = $("#" + dict_id);
+  const tgt_classes = "text-white bg-info";
+  target.addClass(tgt_classes);
+  modal.fadeOut(100, function() {
+    modal.fadeIn(800, function() { target.removeClass(tgt_classes); });
+  });
+}
+
 function dictionary_search(dict_id, comp) {
   var select = "[data-behavior='dictionary'][data-id='" + dict_id + "']";
   var modal_body = $("#" + dict_id + " div.modal-body");
@@ -43,7 +52,13 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
     var list = $('<ul></ul>');
     var lemmata = [];
     var texts = [];
+    var help = $('<p>Click on a lemma (words in parenthesis) to see its ' +
+                 'definition, or click "use" to copy the grammar to the ' +
+                 'appropriate box in the etymology table</p>');
+    help.addClass("text-muted small border-left px-2 mx-2");
+
     if ($(data).find("analyses analysis").length == 0) {
+      help = '';
       list = $('<span class="text-danger ml-4">Term not found</span>');
     } else {
       $(data).find("analyses analysis").each(function() {
@@ -60,9 +75,8 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
           if (i == "case" & val != "gen") return;
           if (i == "pos" & val == "noun") val = "n";
           text = text + " " + val;
-          if (i != "dialect") text = text + ".";
+          if (i != "dialect" & val != "verb") text = text + ".";
         });
-        if (texts.includes(text)) return;
         texts.push(text);
         var item = $("<li></li>");
         var lemma_anchor = $(
@@ -77,7 +91,9 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
         var anchor = $("<span type=button class='badge badge-pill " +
                        "badge-primary ml-2'>use</span>");
         anchor.on("click", function() {
-          $(select + " #name_etymology_" + comp + "_grammar").val(text);
+          var target = $(select + " #name_etymology_" + comp + "_grammar");
+          target.val(text);
+          flash_modal(dict_id, target);
         });
 
         // Build item and add to list
@@ -91,7 +107,8 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
       });
     }
     modal_body.children('.analyses').html('<h2>Grammatical analyses</h2>');
-    modal_body.children('.analyses').append(list);
+    modal_body.children(".analyses").append(help);
+    modal_body.children(".analyses").append(list);
     if (!lemmata.includes(part)) lemmata.push(part);
     dictionary_search_definition(dict_id, comp, modal_body, lemmata[0], 1);
   }).fail(function() {
@@ -139,6 +156,10 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
       '<label for="dictionary-title-src" class="input-group-text">' +
       '<i class="fas fa-exchange-alt"> </i></label></div>'
   );
+  var help = $('<p>Click on "use" to copy the definition to the appropriate ' +
+               'box in the etymology table, or see the full formatted ' +
+               'definition for the term below in the grey box</p>');
+  help.addClass("text-muted small border-left px-2 mx-2");
 
   // Definition
   $.ajax({
@@ -155,6 +176,7 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
     // Parse definitions
     var cont = modal_body.children('.definition');
     cont.html(title);
+    cont.append(help);
     var list = $('<ul class="mb-3"></ul>');
     result.find("div.lex_sense > i").each(function() {
       var description = $(this).text();
@@ -163,7 +185,9 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
       var anchor = $("<span type=button class='badge badge-pill " +
                      "badge-primary ml-2'>use</span>");
       anchor.on("click", function() {
-        $(select + " #name_etymology_" + comp + "_description").val(description);
+        var target = $(select + " #name_etymology_" + comp + "_description");
+        target.val(description);
+        flash_modal(dict_id, target);
       });
       item.append(description);
       item.append(anchor);
@@ -189,10 +213,12 @@ function dictionary_search_button(dict_id, comp) {
   var td = $(select + " #name_etymology_" + comp + "_dict");
   td.html('');
   var latin = [
-    "", "L", "L.", "Latin", "N.L.", "NL", "NL.", "Neolatin", "Neo Latin",
+    "L", "L.", "Latin", "N.L.", "NL", "NL.", "Neolatin", "Neo Latin",
     "Neo-Latin",
     // The dictionary includes Greek entries
-    "Greek", "Gr."
+    "Greek", "Gr.",
+    // We might as well try if the language is blank
+    ""
   ];
   var lang = $(select + " #name_etymology_" + comp + "_lang").val();
   if (!latin.includes(lang)) return;
@@ -217,10 +243,11 @@ $(document).on("turbolinks:load", function() {
   $("[data-behavior='dictionary']").each(function() {
     console.log('Initializing Dictionary Lookup');
     var dict_id = $(this).data("id");
+    var select  = "[data-behavior='dictionary'][data-id='" + dict_id + "']";
     components.forEach(function(comp_i) {
       fields.forEach(function(field_i) {
         var id = "name_etymology_" + comp_i + "_" + field_i;
-        $("#" + id).on("change", function() {
+        $(select + " #" + id).on("change", function() {
           dictionary_search_button(dict_id, comp_i);
         });
       });

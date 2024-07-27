@@ -411,8 +411,8 @@ module Name::Etymology
     end
 
     # Propose emphasis
-    if syllables.size == 1
-      # No accent for monosyllabic words
+    if syllables.size <= 1
+      # Ignore empty words, and no accent for monosyllabic words
     elsif word =~ /(aceae|ia|icus|iae|icola|ium)$/
       syllables[-3] += "'"
     else

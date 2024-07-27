@@ -1,0 +1,45 @@
+<h1>Etymology sandbox</h1>
+<%= simple_form_for(@name) do |f| %>
+  <div class="rounded border p-3 my-4 bg-light">
+    <p>
+      The etymology sandbox is designed to provide all the tools available to
+      you in the etymology table of names, without having to create or modify
+      a name in the system.
+    </p>
+    <p>
+      To get started, simply write the Latin or Latinized name in the field
+      below, which should trigger an automated proposal of the syllabification.
+      Continue by filling up the etymology table below, including the usage of
+      the dictionary lookups.
+    </p>
+    <hr/>
+    <%= help_topic('etymology',
+      'How do I fill the etymology table?', size: 'xl') %>
+    <%= help_topic('dictionary',
+          'How do I use dictionary lookups?', size: 'xl') %>
+  </div>
+
+  <%= f.input(:name) %>
+  <%= f.input(:syllabification, label: 'Inferred syllabification') %>
+  <% @name.name = '...' %>
+  <%= render(partial: 'etymology_table', locals: { form: f, name: @name }) %>
+<% end %>
+
+<script>
+  $(document).on("turbolinks:load", function() {
+    $('#name_name').on("keyup", function() {
+      var name = $(this).val();
+      var part = $("#name_etymology_xx_particle");
+      var syll = $("#name_syllabification");
+
+      $.ajax({
+        url: "<%= syllabify_names_url(format: :json) %>", data: { name: name }
+      }).done(function(data) {
+        syll.val(data["syllabification"]);
+        part.html(data["last_epithet"]).val(data["last_epithet"]);
+      });
+    });
+    $("#name_name").trigger("keyup");
+  });
+</script>
+

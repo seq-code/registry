@@ -38,57 +38,7 @@
     </div>
   <% end %>
 
-  <br/>
-  <% dict_id = modal('Dictionary lookup', size: 'lg') do %>
-  <% end %>
-  <table class="table table-hover table-responsive-lg"
-         data-behavior="dictionary" data-id="<%= dict_id %>">
-    <thead>
-      <th>Component</th>
-      <th>Language</th>
-      <th>Grammar</th>
-      <th>Particle</th>
-      <th>Description or translation</th>
-      <th></th>
-    </thead>
-    <tbody>
-      <%
-        components = {
-          p1: '1st morpheme', p2: '2nd morpheme', p3: '3rd morpheme',
-          p4: '4th morpheme', p5: '5th morpheme', xx: 'Full word'
-        }
-        fields = { lang: 5, grammar: 15, particle: 15, description: 30 }
-      %>
-      <% components.each do |k, v| %>
-        <tr class='<%= 'table-active' if k == :xx %>'>
-          <td><b><%= v %></b></td>
-          <% fields.each do |i, size| %>
-            <% entry = :"etymology_#{ k }_#{ i }" %>
-            <td>
-              <% if i == :particle && k == :xx %>
-                <%= content_tag(:i, @name.last_epithet, id: "name_#{entry}") %>
-              <% else %>
-                <%= f.input entry, input_html: { size: size }, label: false %>
-              <% end %>
-            </td>
-          <% end %>
-          <td id="name_etymology_<%= k %>_dict"></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-  <br/>
-
-  <!--
-  <hr/>
-  <%=
-    f.input(
-      :etymology_text,
-      as: :rich_text_area,
-      label: 'Alternatively, provide a formatted etymology text (optional)'
-    )
-  %>
-  -->
+  <%= render(partial: 'etymology_table', locals: { form: f, name: @name }) %>
   <br/>
 
   <% if @tutorial %>

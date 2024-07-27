@@ -57,8 +57,11 @@ Rails.application.routes.draw do
       get  :draft
       get  :user
       get  :observing
-      get  :autocomplete
       get  :linkout
+      # --> User utilities
+      get  :autocomplete
+      get  :etymology_sandbox
+      get  :syllabify
       # --> Curator utilities
       get  :unranked
       get  :unknown_proposal

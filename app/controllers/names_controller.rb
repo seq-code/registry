@@ -159,6 +159,17 @@ class NamesController < ApplicationController
     render(:index)
   end
 
+  # GET /names/etymology_sandbox
+  def etymology_sandbox
+    @name = Name.new(name: params[:name] || '')
+  end
+
+  # GET /names/syllabify?name=Abc
+  def syllabify
+    @name = Name.new(name: params[:name] || '')
+    @syllabification = @name.guess_syllabication
+  end
+
   # GET /names/1
   # GET /names/1.json
   # GET /names/1.pdf
