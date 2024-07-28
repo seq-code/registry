@@ -218,11 +218,11 @@ class Publication < ApplicationRecord
         <i>#{journal_html}</i>. <a href="#{link}" target="_blank">DOI:#{doi}</a>
       HTML
     when :wikispecies
-      <<~WIKI.html_safe
-        #{authors_et_al(format).gsub(/[^\.]?$/, '.')} #{journal_date.year}:
-        #{title}. #{journal}. {{Doi|#{doi}}}
-      WIKI
+      "#{authors_et_al(format).gsub(/[^\.]?$/, '.')} #{journal_date.year}: " \
+        "#{title}. #{journal}. {{Doi|#{doi}}}"
     else
+      "#{authors_et_al(format)} (#{journal_date.year}). " \
+        "#{title}. #{journal}. DOI:#{doi}"
     end
   end
 
