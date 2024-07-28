@@ -49,7 +49,7 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
 <%= @name.formal_wiki %>
 
 =={{int:References}}==
-==={{int:Primary references}}==
+==={{int:Primary references}}===
 <% @name.citations.each do |citation| %>
 * <%= citation.long_citation(:wikispecies) %>
 <% end %>
