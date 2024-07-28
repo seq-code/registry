@@ -8,7 +8,7 @@
 {{<%= @name.parent&.base_name %>}}
 <% end %>
 <%= Name.rank_variant(@name.inferred_rank, latin: true, title: true)
-  %>: <%= @name.name_wiki(link: true) %> <br/>
+  %>: <%= @name.name_wiki(link: true) %> &lt;br/&gt;
 <% end %>
 
 &lt;noinclude&gt;[[Category:Taxonavigation templates]]&lt;/noinclude&gt;
