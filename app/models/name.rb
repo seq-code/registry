@@ -557,6 +557,9 @@ class Name < ApplicationRecord
     if authority || proposed_in
       y += " #{sanitize(authority || proposed_in.short_citation(:wikispecies))}"
     end
+    if priority_date && priority_date.year != proposed_in&.journal_date&.year
+      y += " (valid #{priority_date.year})"
+    end
     if emended_in.any?
       cit = emended_in.map { |p| p.short_citation(:wikispecies) }.join('; ')
       y += " emend. #{cit}"
