@@ -15,7 +15,7 @@
 <%= Name.rank_variant(ancestor.inferred_rank, latin: true, title: true) %>:
 <%= ancestor.name_wiki(link: true) %>
 <%     end %>
-<%= Name.rank_variant(@name.rank_above, latin: true, title: true) %>: -
+<%= Name.rank_variant(@name.rank_above, latin: true, title: true) %>: - &lt;br/&gt;
 <%   end %>
 <% end %>
 <%= Name.rank_variant(@name.inferred_rank, latin: true, title: true)
