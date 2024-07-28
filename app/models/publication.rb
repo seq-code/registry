@@ -222,7 +222,7 @@ class Publication < ApplicationRecord
       HTML
     when :wikispecies
       "#{authors_array(format).join(', ')}. #{journal_date.year}: " \
-        "#{title}. #{journal}. {{Doi|#{doi}}}"
+        "#{title.gsub(/[\n\r\s]+/, ' ')}. #{journal}. {{Doi|#{doi}}}"
     else
       "#{authors_et_al(format)} (#{journal_date.year}). " \
         "#{title}. #{journal}. DOI:#{doi}"
