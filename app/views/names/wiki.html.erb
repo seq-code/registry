@@ -2,18 +2,7 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
-<h3>Wikispecies page source</h3>
-<p>
-  The following source can be used as a basis to
-  <%= link_to('edit page in Wikispecies',
-        @name.edit_wikispecies_page_link) %>:
-</p>
-<pre class="rounded bg-light px-3 py-2 border"><%=
-  render(partial: 'names/wiki/wikispecies_page')
-%></pre>
-
 <% unless %w[species subspecies].include?(@name.inferred_rank) %>
-  <br/>
   <h3>Wikispecies template source</h3>
   <p>
     The following source can be used as a basis to
@@ -23,7 +12,18 @@
   <pre class="rounded bg-light px-3 py-2 border"><%=
     render(partial: 'names/wiki/wikispecies_template')
   %></pre>
+  <br/>
 <% end %>
+
+<h3>Wikispecies page source</h3>
+<p>
+  The following source can be used as a basis to
+  <%= link_to('edit page in Wikispecies',
+        @name.edit_wikispecies_page_link) %>:
+</p>
+<pre class="rounded bg-light px-3 py-2 border"><%=
+  render(partial: 'names/wiki/wikispecies_page')
+%></pre>
 
 <br/>
 <%= render(partial: 'shared/cc') %>
