@@ -12,12 +12,6 @@
   <pre class="rounded bg-light px-3 py-2 border"><%=
     render(partial: 'names/wiki/wikispecies_template')
   %></pre>
-  <% if @name.parent.present? %>
-    <p>
-      Make sure to also register the
-      <%= link_to('parent wikispecies template', wiki_name_url(@name.parent)) %>
-    </p>
-  <% end %>
   <br/>
 <% end %>
 
@@ -30,6 +24,13 @@
 <pre class="rounded bg-light px-3 py-2 border"><%=
   render(partial: 'names/wiki/wikispecies_page')
 %></pre>
+<% if @name.parent.present? %>
+  <p>
+    Make sure to also register the
+    <%= link_to('parent wikispecies template', wiki_name_url(@name.parent)) %>
+  </p>
+<% end %>
+<br/>
 
 <br/>
 <%= render(partial: 'shared/cc') %>
