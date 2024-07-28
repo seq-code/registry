@@ -4,8 +4,9 @@
 <%    # Lower ranks don't get their own template! %>
 <%   when 'family' %>
 {{Taxonav|<%= @name.parent&.base_name %>}}
-<% else %>
+<%   else %>
 {{<%= @name.parent&.base_name %>}}
+<%   end %>
 <% elsif @name.incertae_sedis? %>
 <%   @name.lineage.each do |ancestor| %>
 <%     if ancestor.inferred_rank == 'domain' %>
