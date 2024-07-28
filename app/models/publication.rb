@@ -210,11 +210,24 @@ class Publication < ApplicationRecord
     ERB::Util.h(journal || '[%s]' % pub_type.tr('-', ' '))
   end
 
+  def long_citation(format = :text)
+    case format.to_sym
+    when :html
+      <<~HTML.html_safe
+        #{authors_et_al(format)} (#{journal_date.year}). #{title_html}. 
+        <i>#{journal_html}</i>. <a href="#{link}" target="_blank">DOI:#{doi}</a>
+      HTML
+    when :wikispecies
+      <<~WIKI.html_safe
+        #{authors_et_al(format).gsub(/[^\.]?$/, '.')} #{journal_date.year}:
+        #{title}. #{journal}. {{Doi|#{doi}}}
+      WIKI
+    else
+    end
+  end
+
   def long_citation_html
-    <<~HTML.html_safe
-      #{authors_et_al_html} (#{journal_date.year}). #{title_html}. 
-      <i>#{journal_html}</i>. <a href="#{link}" target="_blank">DOI:#{doi}</a>
-    HTML
+    long_citation(:html)
   end
 
   def title_html
