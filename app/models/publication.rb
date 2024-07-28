@@ -175,17 +175,20 @@ class Publication < ApplicationRecord
   end
 
   def authors_et_al(format = :text)
-    family = authors.pluck(:family) # To reduce SQL requests
-    family.map! { |a| "{{aut|#{a}}}" } if format == :wikispecies
+    family = authors_array(format)
     y =
-      if family.empty?
-        'Anonymous'
-      elsif family.count < 3
+      if family.count < 3
         family.join(', ')
       else
         family.first + ' et al.'
       end
     format == :html ? ERB::Util.h(y) : y
+  end
+
+  def authors_array(format = :text)
+    family = authors.pluck(:family)
+    family.map! { |a| "{{aut|#{a}}}" } if format == :wikispecies
+    family.empty? ? ['Anonymous'] : family
   end
 
   def authors_et_al_html
@@ -218,7 +221,7 @@ class Publication < ApplicationRecord
         <i>#{journal_html}</i>. <a href="#{link}" target="_blank">DOI:#{doi}</a>
       HTML
     when :wikispecies
-      "#{authors_et_al(format).gsub(/[^\.]?$/, '.')} #{journal_date.year}: " \
+      "#{authors_array(format).join(', ')}. #{journal_date.year}: " \
         "#{title}. #{journal}. {{Doi|#{doi}}}"
     else
       "#{authors_et_al(format)} (#{journal_date.year}). " \
