@@ -36,7 +36,7 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
     when 'order'
       '{{ordo' + last + '|' + name.base_name + '}}'
     else
-      '[[' + name.base_name + ']]' + (last.present? ? '&nbsp;- ' : '')
+      '[[' + name.base_name + ']]' + (last.present? ? '' : '&nbsp;- ')
     end
 %>
 <%= wiki_link %>
