@@ -500,7 +500,13 @@ class Name < ApplicationRecord
     y = base_name
     y = "[[#{y}]]" if opts[:link]
     y = "''Candidatus'' #{y}" if !opts[:no_candidatus] && candidatus?
-    validated? ? "''#{y}''" : "\"#{y}\""
+    return "\"#{y}\"" unless validated?
+
+    y = "''#{y}''"
+    if rank == 'species' && parent&.type_accession&.==(id.to_s)
+      y += " T#{'s' unless icnp? || icn?}"
+    end
+    y
   end
 
   def abbr_corr_name
