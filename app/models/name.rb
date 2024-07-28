@@ -170,13 +170,13 @@ class Name < ApplicationRecord
           if opts[:plural]
             {
               domain: 'dominia',  kingdom: 'regna',    phylum: 'phyla',
-              class:  'classis',  order:   'ordines',  family: 'familiae',
+              class:  'classes',  order:   'ordines',  family: 'familiae',
               genus:  'genera',   species: 'species',  subspecies: 'subspecies'
             }
           else
             {
               domain: 'dominium', kingdom: 'regnum',   phylum: 'phylum',
-              class:  'classes',  order:   'ordo',     family: 'familia',
+              class:  'classis',  order:   'ordo',     family: 'familia',
               genus:  'genus',    species: 'species',  subspecies: 'subspecies'
             }
           end

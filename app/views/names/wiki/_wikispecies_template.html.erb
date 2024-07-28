@@ -9,6 +9,16 @@
 <% end %>
 <%= Name.rank_variant(@name.inferred_rank, latin: true, title: true)
   %>: <%= @name.name_wiki(link: true) %> &lt;br/&gt;
+<% elsif @name.incertae_sedis? %>
+<% @name.lineage.each do |ancestor| %>
+<% if ancestor.inferred_rank == 'domain' %>
+{{<%= ancestor.base_name %>}}
+<% else %>
+<%= Name.rank_variant(ancestor.inferred_rank, latin: true, title: true) %>:
+<%= ancestor.name_wiki(link: true) %>
+<% end %>
+<%= Name.rank_variant(@name.rank_above, latin: true, title: true) %>: -
+<% end %>
 <% end %>
 
 &lt;noinclude&gt;[[Category:Taxonavigation templates]]&lt;/noinclude&gt;
