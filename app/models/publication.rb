@@ -176,7 +176,7 @@ class Publication < ApplicationRecord
 
   def authors_et_al(format = :text)
     family = authors.pluck(:family) # To reduce SQL requests
-    family.map! { |a| "{{a|#{a}}}" } if format == :wikispecies
+    family.map! { |a| "{{aut|#{a}}}" } if format == :wikispecies
     y =
       if family.empty?
         'Anonymous'
