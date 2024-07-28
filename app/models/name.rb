@@ -158,6 +158,48 @@ class Name < ApplicationRecord
       { phylum: 'ota', class: 'ia', order: 'ales', family: 'aceae' }
     end
 
+    def rank_variant(rank, opts = {})
+      list =
+        if opts[:abbr]
+            {
+              domain: 'dom.',     kingdom: 'regn.',    phylum: 'phy.',
+              class:  'classis',  order:   'ord.',     family: 'fam.',
+              genus:  'gen.',     species: 'sp.',      subspecies: 'subsp.'
+            }
+        elsif opts[:latin]
+          if opts[:plural]
+            {
+              domain: 'dominia',  kingdom: 'regna',    phylum: 'phyla',
+              class:  'classis',  order:   'ordines',  family: 'familiae',
+              genus:  'genera',   species: 'species',  subspecies: 'subspecies'
+            }
+          else
+            {
+              domain: 'dominium', kingdom: 'regnum',   phylum: 'phylum',
+              class:  'classes',  order:   'ordo',     family: 'familia',
+              genus:  'genus',    species: 'species',  subspecies: 'subspecies'
+            }
+          end
+        else
+          if opts[:plural]
+            {
+              domain: 'domains',  kingdom: 'kingdoms', phylum: 'phyla',
+              class:  'classes',  order:   'orders',   family: 'family',
+              genus:  'genera',   species: 'species',  subspecies: 'subspecies'
+            }
+          else
+            {
+              domain: 'domain',   kingdom: 'kingdom',  phylum: 'phylum',
+              class:  'class',    order:   'order',    family: 'families',
+              genus:  'genus',    species: 'species',  subspecies: 'subspecies'
+            }
+          end
+        end
+      return list unless rank.present?
+      var = list[rank.to_s.downcase.to_sym]
+      opts[:title] ? var.titleize : var
+    end
+
     def rank_regexps
       Hash[rank_suffixes.map { |k, v| [k, /#{v}$/] }]
     end
@@ -454,6 +496,13 @@ class Name < ApplicationRecord
     end
   end
 
+  def name_wiki(opts = {})
+    y = base_name
+    y = "[[#{y}]]" if opts[:link]
+    y = "''Candidatus'' #{y}" if !opts[:no_candidatus] && candidatus?
+    validated? ? "''#{y}''" : "\"#{y}\""
+  end
+
   def abbr_corr_name
     abbr_name(corrigendum_from)
   end
@@ -469,7 +518,7 @@ class Name < ApplicationRecord
     if not_validly_proposed_in.any?
       y += ' (ex'
       y += not_validly_proposed_in
-             .map { |i| " #{sanitize(i.short_citation)}" }.join(';')
+             .map { |i| " #{sanitize(i.short_citation)}" }.join('; ')
       y += ')'
     end
     if authority || proposed_in
@@ -487,6 +536,26 @@ class Name < ApplicationRecord
 
   def formal_txt
     sanitize(formal_html.gsub(/&#822[01];/, "'"))
+  end
+
+  def formal_wiki
+    y = name_wiki
+    y += ' corrig.' if corrigendum_from?
+    if not_validly_proposed_in.any?
+      y += ' (ex'
+      y += not_validly_proposed_in
+             .map { |i| " #{sanitize(i.short_citation(:wikispecies))}" }
+             .join('; ')
+      y += ')'
+    end
+    if authority || proposed_in
+      y += " #{sanitize(authority || proposed_in.short_citation(:wikispecies))}"
+    end
+    if emended_in.any?
+      cit = emended_in.map { |p| p.short_citation(:wikispecies) }.join('; ')
+      y += " emend. #{cit}"
+    end
+    sanitize(y)
   end
 
   def display(html = true)
@@ -586,6 +655,15 @@ class Name < ApplicationRecord
     nil
   end
 
+  def edit_wikispecies_page_link
+    'https://species.wikimedia.org/w/index.php?title=%s&action=edit' % base_name
+  end
+
+  def edit_wikispecies_template_link
+    'https://species.wikimedia.org/w/index.php?title=Template:%s&action=edit'
+      % base_name
+  end
+
   def ncbi_taxonomy_url
     return unless ncbi_taxonomy?
 
@@ -663,7 +741,7 @@ class Name < ApplicationRecord
     false
   end 
 
-  def can_edit_placements?(user)
+  def can_edit_validated?(user)
     can_edit?(user) || user.try(:curator?)
   end
 
@@ -965,6 +1043,14 @@ class Name < ApplicationRecord
 
   def lineage_find(rank)
     lineage.find { |par| par.rank == rank.to_s }
+  end
+
+  def rank_above
+    self.class.ranks[self.class.ranks.index(inferred_rank) - 1]
+  end
+
+  def rank_below
+    self.class.ranks[self.class.ranks.index(inferred_rank) + 1]
   end
 
   def propose_lineage_name(rank)

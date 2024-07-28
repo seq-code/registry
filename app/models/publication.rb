@@ -174,19 +174,22 @@ class Publication < ApplicationRecord
 
   end
 
-  def authors_et_al
+  def authors_et_al(format = :text)
     family = authors.pluck(:family) # To reduce SQL requests
-    if family.empty?
-      'Anonymous'
-    elsif family.count < 3
-      family.join(', ')
-    else
-      family.first + ' et al.'
-    end
+    family.map! { |a| "{{a|#{a}}}" } if format == :wikispecies
+    y =
+      if family.empty?
+        'Anonymous'
+      elsif family.count < 3
+        family.join(', ')
+      else
+        family.first + ' et al.'
+      end
+    format == :html ? ERB::Util.h(y) : y
   end
 
   def authors_et_al_html
-    ERB::Util.h(authors_et_al)
+    authors_et_al(:html)
   end
 
   def clean_abstract
@@ -195,8 +198,8 @@ class Publication < ApplicationRecord
     end
   end
 
-  def short_citation
-    "#{authors_et_al}, #{journal_date.year}"
+  def short_citation(format = :text)
+    "#{authors_et_al(format)}, #{journal_date.year}"
   end
 
   def citation

@@ -1,0 +1,53 @@
+=={{int:Taxonavigation}}==
+<% if @name.inferred_rank == 'subspecies' %>
+{{<%= @name.genus&.base_name %>}}
+Species: <%= @name.parent&.name_wiki(no_candidatus: true, link: true)
+         %> &lt;br/&gt;
+Subspecies: <%= @name.name_wiki %>
+<% elsif @name.inferred_rank == 'species' %>
+{{<%= @name.genus&.base_name %>}}
+Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
+<% else %>
+{{<%= @name.base_name %>}}
+<% end %>
+<% unless @name.children.empty? %>
+<%= Name.rank_variant(
+      @name.rank_below, plural: true, latin: true, title: true
+    ) %>:
+<% end %>
+<% @name.children.each_with_index do |name, k| %>
+<%
+  last = @name.children.count == k + 1 ? 'last' : ''
+  wiki_link =
+    case name.inferred_rank
+    when 'subspecies'
+      fmt = (@name.genus&.base_name || '').split(//, 2).join('|')
+      fmt += '|' + (name.parent&.last_epithet || '')
+      fmt += '|' + (name.last_epithet || '')
+      '{{subspbacteria' + last + '|' + fmt + '}}'
+    when 'species'
+      fmt = (name.genus&.base_name || '').split(//, 2).join('|')
+      fmt += '|' + (name.last_epithet || '')
+      '{{sp' + last + '|' + fmt + '}}'
+    when 'genus'
+      '{{g' + last + '|' + name.base_name + '}}'
+    when 'family'
+      '{{fam' + last + '|' + name.base_name + '}}'
+    when 'order'
+      '{{ordo' + last + '|' + name.base_name + '}}'
+    else
+      '[[' + name.base_name + ']]' + ('&nbsp;- ' unless last.present?)
+    end
+%>
+<%= wiki_link %>
+<% end %>
+
+=={{int:Name}}==
+<%= @name.formal_wiki %>
+
+=={{int:References}}==
+==={{int:Links}}===
+<% if @name.ncbi_taxonomy? %>
+* {{NCBI|<%= @name.ncbi_taxonomy %>}}
+<% end %>
+* {{SeqCode|<%= @name.id %>}}

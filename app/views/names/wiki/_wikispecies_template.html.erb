@@ -1,0 +1,15 @@
+<% if @name.parent.present? %>
+<% case @name.inferred_rank %>
+<% when 'species', 'subspecies' %>
+<%# Lower ranks don't get their own template! %>
+<% when 'family' %>
+{{Taxonav|<%= @name.parent&.base_name %>}}
+<% else %>
+{{<%= @name.parent&.base_name %>}}
+<% end %>
+<%= Name.rank_variant(@name.inferred_rank, latin: true, title: true)
+  %>: <%= @name.name_wiki(link: true) %> <br/>
+<% end %>
+
+&lt;noinclude&gt;[[Category:Taxonavigation templates]]&lt;/noinclude&gt;
+&lt;includeonly&gt;[[Category:Pages with taxonavigation templates]]&lt;/includeonly%gt;

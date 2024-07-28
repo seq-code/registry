@@ -70,6 +70,7 @@ Rails.application.routes.draw do
       # --> Display name
       get  :network
       get  :linkout
+      get  :wiki
       # --> Edit name
       get  :edit_description
       get  :edit_type

@@ -70,7 +70,7 @@ class PseudonymsController < ApplicationController
     end
 
     def authenticate_can_edit!
-      unless @name&.can_edit_placements?(current_user)
+      unless @name&.can_edit_validated?(current_user)
         flash[:alert] = 'User cannot edit pseudonyms'
         redirect_to(root_path)
       end

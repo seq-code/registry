@@ -3,7 +3,7 @@ class NamesController < ApplicationController
   before_action(
     :set_name,
     only: %i[
-      show edit update destroy network
+      show edit update destroy network wiki
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
@@ -15,10 +15,10 @@ class NamesController < ApplicationController
   before_action(
     :authenticate_can_edit!,
     only: %i[
-      edit update destroy
+      edit destroy
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
-      edit_description edit_rank edit_notes edit_etymology edit_links edit_type
+      edit_description edit_rank edit_notes edit_etymology edit_type
       autofill_etymology edit_parent
     ]
   )
@@ -35,6 +35,7 @@ class NamesController < ApplicationController
     ]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve observing])
+  before_action(:authenticate_can_edit_validated!, only: %i[update edit_links])
 
   # GET /names/autocomplete.json?q=Maco
   # GET /names/autocomplete.json?q=Allo&rank=genus
@@ -221,6 +222,11 @@ class NamesController < ApplicationController
         @edges = @name.network_edges
       end
     end
+  end
+
+  # GET /names/1/wiki
+  def wiki
+    @crumbs = [['Names', names_path], [@name.name_html, @name], 'Wiki source']
   end
 
   # GET /names/new
@@ -505,14 +511,21 @@ class NamesController < ApplicationController
     def authenticate_owner_or_curator!
       unless current_user.try(:curator?) || @name.user?(current_user)
         flash[:alert] = 'User is not the owner of the name'
-        redirect_to(root_path)
+        redirect_to(@name)
+      end
+    end
+
+    def authenticate_can_edit_validated!
+      unless @name.can_edit_validated?(current_user)
+        flash[:alert] = 'User cannot edit this aspect of the name'
+        redirect_to(@name)
       end
     end
 
     def authenticate_can_edit!
       unless @name.can_edit?(current_user)
         flash[:alert] = 'User cannot edit name'
-        redirect_to(root_path)
+        redirect_to(@name)
       end
     end
 
@@ -520,14 +533,20 @@ class NamesController < ApplicationController
     # through
     def name_params
       @name_params ||=
-        params.require(:name)
-          .permit(
-            :name, :rank, :description, :notes, :ncbi_taxonomy, :lpsn_url,
-            :gtdb_accession, :algaebase_species, :algaebase_taxonomy,
+        @name.can_edit?(current_user) ?
+          params.require(:name).permit(
+            :name, :rank, :description, :notes,
+            :ncbi_taxonomy, :lpsn_url, :gtdb_accession,
+            :algaebase_species, :algaebase_taxonomy,
             :syllabication, :syllabication_reviewed,
             :type_material, :type_accession, :etymology_text, :register,
             :genome_strain,
             *etymology_pars
+          ) :
+          params.require(:name).permit(
+            :notes,
+            :ncbi_taxonomy, :lpsn_url, :gtdb_accession,
+            :algaebase_species, :algaebase_taxonomy
           )
     end
 

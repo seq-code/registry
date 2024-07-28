@@ -171,7 +171,7 @@ class PlacementsController < ApplicationController
   end
 
   def authenticate_can_edit!
-    unless @name.can_edit_placements?(current_user)
+    unless @name.can_edit_validated?(current_user)
       flash[:alert] = 'User cannot edit name placements'
       redirect_to(@name)
     end

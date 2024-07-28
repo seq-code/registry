@@ -23,9 +23,7 @@
     observe
   ].compact)
 %>
-<h1>
-  <%= @name.name_html %>
-</h1>
+<h1><%= @name.name_html %></h1>
 <% unless @name.public? %>
   <span class="text-muted">
     <%= fa_icon('eye-slash') %> Only visible to you and curators
