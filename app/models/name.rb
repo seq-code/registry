@@ -660,8 +660,8 @@ class Name < ApplicationRecord
   end
 
   def edit_wikispecies_template_link
-    'https://species.wikimedia.org/w/index.php?title=Template:%s&action=edit'
-      % base_name
+    'https://species.wikimedia.org/w/index.php?title=Template:%s&action=edit' %
+      base_name
   end
 
   def ncbi_taxonomy_url
