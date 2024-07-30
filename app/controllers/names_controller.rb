@@ -533,7 +533,7 @@ class NamesController < ApplicationController
     # through
     def name_params
       @name_params ||=
-        @name.can_edit?(current_user) ?
+        @name.nil? || @name.can_edit?(current_user) ?
           params.require(:name).permit(
             :name, :rank, :description, :notes,
             :ncbi_taxonomy, :lpsn_url, :gtdb_accession,
