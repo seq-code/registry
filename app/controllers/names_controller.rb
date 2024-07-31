@@ -18,10 +18,11 @@ class NamesController < ApplicationController
       edit destroy
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
-      edit_description edit_rank edit_notes edit_etymology edit_type
+      edit_description edit_rank edit_notes edit_etymology
       autofill_etymology edit_parent
     ]
   )
+  before_action(:authenticate_can_edit_type!, only: [:edit_type])
   before_action(
     :authenticate_owner_or_curator!, only: %i[unclaim new_correspondence]
   )
@@ -271,9 +272,8 @@ class NamesController < ApplicationController
   # POST /names
   # POST /names.json
   def create
-    @name = Name.new(name_params)
-    @name.status = 5 # All new names begin as draft
-    @name.created_by = current_user
+    @name = Name.new(status: 5, created_by: current_user)
+    @name.assign_attributes(name_params)
 
     respond_to do |format|
       if @name.save
@@ -522,6 +522,13 @@ class NamesController < ApplicationController
       end
     end
 
+    def authenticate_can_edit_type!
+      unless @name.can_edit_type?(current_user)
+        flash[:alert] = 'User cannot edit the nomenclatural type'
+        redirect_to(@name)
+      end
+    end
+
     def authenticate_can_edit!
       unless @name.can_edit?(current_user)
         flash[:alert] = 'User cannot edit name'
@@ -532,22 +539,23 @@ class NamesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list
     # through
     def name_params
-      @name_params ||=
-        @name.nil? || @name.can_edit?(current_user) ?
-          params.require(:name).permit(
-            :name, :rank, :description, :notes,
-            :ncbi_taxonomy, :lpsn_url, :gtdb_accession,
-            :algaebase_species, :algaebase_taxonomy,
-            :syllabication, :syllabication_reviewed,
-            :type_material, :type_accession, :etymology_text, :register,
-            :genome_strain,
-            *etymology_pars
-          ) :
-          params.require(:name).permit(
-            :notes,
-            :ncbi_taxonomy, :lpsn_url, :gtdb_accession,
-            :algaebase_species, :algaebase_taxonomy
-          )
+      fields = []
+      if @name.can_edit_validated?(current_user)
+        fields += %i[
+          notes ncbi_taxonomy lpsn_url gtdb_accession algaebase_species
+          algaebase_taxonomy
+        ]
+        fields += %i[type_material type_accession] unless @name.type?
+      end
+
+      if @name.can_edit?(current_user)
+        fields += %i[
+          name rank description syllabication syllabication_reviewed
+          type_material type_accession etymology_text register genome_strain
+        ] + etymology_pars
+      end
+
+      @name_params ||= params.require(:name).permit(*fields.uniq)
     end
 
     def etymology_pars

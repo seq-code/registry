@@ -54,13 +54,13 @@
     <% end %>
   </dd>
 
-  <% if @name.type? || @name.can_edit?(current_user) %>
+  <% if @name.type? || @name.can_edit_type?(current_user) %>
     <dt><%= fa_icon('id-card') %> Nomenclatural type</dt>
     <dd>
       <% if @name.type? %>
         <%= link_to_name_type(@name) %>
       <% end %>
-      <% if @name.can_edit?(current_user) %>
+      <% if @name.can_edit_type?(current_user) %>
         <%= link_to(
               edit_type_name_url(@name),
               class: 'badge badge-pill badge-primary',
