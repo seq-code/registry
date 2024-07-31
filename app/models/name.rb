@@ -626,6 +626,8 @@ class Name < ApplicationRecord
   end
 
   def links?
+    return true if public? # <- return Wikispecies for all public names
+
     ncbi_taxonomy? || gtdb_genome? || !gbif_homonyms(false, true).empty? ||
       lpsn_url? || gtdb_accession? || algaebase_url.present?
   end
@@ -671,6 +673,10 @@ class Name < ApplicationRecord
   def edit_wikispecies_template_link
     'https://species.wikimedia.org/w/index.php?title=Template:%s&action=edit' %
       base_name
+  end
+
+  def wikispecies_url
+    'https://species.wikimedia.org/wiki/%s' % base_name
   end
 
   def ncbi_taxonomy_url
