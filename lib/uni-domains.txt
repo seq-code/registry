@@ -10336,7 +10336,9 @@ chandilpolytechnic.org
 golapolytechnic.org
 aecwb.edu.in
 claremont.edu
+students.vizja.pl
 rcbc.edu
+jefferson.edu
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10372,3 +10374,4 @@ westlake.edu.cn
 gbu.edu.in
 nwafu.edu.cn
 drfz.de
+mails.ucas.ac.cn
