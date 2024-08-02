@@ -1,0 +1,23 @@
+<h1>Soft-remove <%= @name.name_html %></h1>
+<hr/>
+
+<div class="alert alert-warning">
+  This will cause the page's name to redirect to a different entry,
+  but the data and metadata might still be accessible.
+</div>
+
+<%= simple_form_for(@name) do |f| %>
+  <%= hidden_field_tag(:edit, :redirect) %>
+  <%=
+    f.input(
+      :redirect, label: 'Redirect to name',
+      input_html: {
+        value: @name.redirect&.name,
+        data: { behavior: 'autocomplete', autocomplete: 'names' }
+      }
+    )
+  %>
+  <%= f.submit('Soft-remove', class: 'btn btn-danger') %>
+  <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
+<% end %>
+

@@ -7,7 +7,7 @@ class NamesController < ApplicationController
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
-      autofill_etymology edit_parent
+      edit_redirect autofill_etymology edit_parent
       return validate endorse claim unclaim demote new_correspondence
       observe unobserve
     ]
@@ -32,7 +32,7 @@ class NamesController < ApplicationController
     :authenticate_curator!,
     only: %i[
       unranked unknown_proposal submitted endorsed draft
-      return validate endorse
+      return validate endorse edit_redirect
     ]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve observing])
@@ -93,6 +93,7 @@ class NamesController < ApplicationController
         @sort = 'alphabetically'
         Name.order(name: :asc)
       end
+    @names = @names.where(redirect: nil)
     @names = @names.where(status: opts[:status]) if opts[:status]
     @names = @names.where(rank: opts[:rank]) if opts[:rank]
     @names = @names.where(opts[:where]) if opts[:where]
@@ -176,6 +177,14 @@ class NamesController < ApplicationController
   # GET /names/1.json
   # GET /names/1.pdf
   def show
+    if @name.redirect.present? && !params[:no_redirect]
+      redirect_to(
+        name_url(@name.redirect, format: params[:format], redirector: @name.id)
+      )
+      return
+    end
+
+    @redirector = Name.find(params[:redirector]) if params[:redirector]
     @publication_names =
       @name.publication_names_ordered
            .paginate(page: params[:page], per_page: 10)
@@ -266,6 +275,10 @@ class NamesController < ApplicationController
     end
   end
 
+  # GET /names/1/edit_redirect
+  def edit_redirect
+  end
+
   # GET /names/1/autofill_etymology
   def autofill_etymology
     @name.autofill_etymology
@@ -311,6 +324,15 @@ class NamesController < ApplicationController
 
       if !acc.empty? && type_name.nil?
         flash[:alert] = 'Type name does not exist'
+      end
+    end
+
+    if params[:edit].==('redirect')
+      if name_params[:redirect].present?
+        name_params[:redirect] = Name.find_by(name: name_params[:redirect])
+        name_params[:status] = @name.status <= 15 ? 0 : @name.status
+      else
+        name_params[:redirect] = nil
       end
     end
 
@@ -557,6 +579,8 @@ class NamesController < ApplicationController
           type_material type_accession etymology_text register genome_strain
         ] + etymology_pars
       end
+
+      fields << :redirect if current_user.try(:curator?)
 
       @name_params ||= params.require(:name).permit(*fields.uniq)
     end

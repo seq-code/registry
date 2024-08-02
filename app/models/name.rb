@@ -17,6 +17,10 @@ class Name < ApplicationRecord
     :synonyms, class_name: 'Name', foreign_key: 'correct_name_id',
     dependent: :nullify
   )
+  has_many(
+    :redirectors, class_name: 'Name', foreign_key: 'redirect_id',
+    dependent: :nullify
+  )
   alias :correspondences :name_correspondences
   has_many(:checks, dependent: :destroy)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
@@ -42,6 +46,7 @@ class Name < ApplicationRecord
   )
   belongs_to(:parent, optional: true, class_name: 'Name')
   belongs_to(:correct_name, optional: true, class_name: 'Name')
+  belongs_to(:redirect, optional: true, class_name: 'Name')
   belongs_to(
     :created_by, optional: true,
     class_name: 'User', foreign_key: 'created_by_id'

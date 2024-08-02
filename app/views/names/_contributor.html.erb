@@ -53,10 +53,18 @@
           <div class="alert alert-danger my-0">
             <h5>Remove name</h5>
             <p>
-              <u>This action cannot be undone</u>. Once you remove this name, all
-              associated metadata will also be removed, including any validation
-              or curation progress.
+              <u>This action cannot be undone</u>. Once you remove this name,
+              all associated metadata will also be removed, including any
+              validation or curation progress.
             </p>
+            <% if current_curator? %>
+              <p>
+                <u>Prefer redirections</u>. If you are removing this name
+                because a different entry replaces it, a beter option is to
+                <%= link_to('create a redirection',
+                      edit_redirect_name_url(@name)) %>.
+              </p>
+            <% end %>
             <%= link_to(
                   @name, method: :delete,
                   class: 'btn btn-danger',

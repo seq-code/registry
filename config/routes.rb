@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       get  :edit_notes
       get  :edit_rank
       get  :edit_links
+      get  :edit_redirect
       post :return
       post :validate
       post :endorse

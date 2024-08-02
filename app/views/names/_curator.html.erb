@@ -112,6 +112,12 @@
       <% end %>
       &raquo; Generate source for Wikipedia affiliated pages
       <hr/>
+      <%= link_to(edit_redirect_name_url(@name),
+            class: 'btn btn-sm btn-danger') do %>
+        <%= fa_icon('directions') %> Create redirection
+      <% end %>
+      &raquo; Soft-remove this name and redirect to a different entry
+      <hr/>
     </dd>
   </dl>
 <% end %>
