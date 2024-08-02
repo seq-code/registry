@@ -167,6 +167,19 @@
     </ul>
   </dd>
 
+  <% if @name.redirectors.any? %>
+    <dt><%= fa_icon('directions') %> Redirect here</dt>
+    <dd>
+      <ul>
+        <% @name.redirectors.each do |name| %>
+          <li>
+            <%= link_to(name.name_html, name_url(name, no_redirect: true)) %>
+          </li>
+        <% end %>
+      </ul>
+    </dd>
+  <% end %>
+
   <dt><%= fa_icon('user') %> Registered by</dt>
   <dd>
     <%= @name.created_by ?

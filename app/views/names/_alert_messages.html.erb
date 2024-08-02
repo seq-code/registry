@@ -1,11 +1,3 @@
-<% if @redirector %>
-  <div class="alert alert-info">
-    Redirected from
-    <%= link_to(@redirector.name_html,
-          name_url(@redirector, no_redirect: true)) %>
-  </div>
-<% end %>
-
 <% if @name.auto? %>
   <div class="alert alert-info">
     This name was automatically created through literature mining,

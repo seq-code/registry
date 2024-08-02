@@ -178,13 +178,11 @@ class NamesController < ApplicationController
   # GET /names/1.pdf
   def show
     if @name.redirect.present? && !params[:no_redirect]
-      redirect_to(
-        name_url(@name.redirect, format: params[:format], redirector: @name.id)
-      )
+      flash[:info] = 'Redirected from ' + @name.name
+      redirect_to(name_url(@name.redirect, format: params[:format]))
       return
     end
 
-    @redirector = Name.find(params[:redirector]) if params[:redirector]
     @publication_names =
       @name.publication_names_ordered
            .paginate(page: params[:page], per_page: 10)
