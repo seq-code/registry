@@ -568,7 +568,7 @@ class Name < ApplicationRecord
       cit = emended_in.map { |p| p.short_citation(:wikispecies) }.join('; ')
       y += " emend. #{cit}"
     end
-    sanitize(y)
+    sanitize(y.gsub(/{{aut\|/, '{{a|'))
   end
 
   def display(html = true)
