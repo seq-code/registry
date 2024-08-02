@@ -10,6 +10,10 @@ class Name < ApplicationRecord
     class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
   )
   has_many(
+    :valid_children, -> { where('names.status >= 15').order(:name) },
+    class_name: 'Name', foreign_key: 'parent_id'
+  )
+  has_many(
     :synonyms, class_name: 'Name', foreign_key: 'correct_name_id',
     dependent: :nullify
   )

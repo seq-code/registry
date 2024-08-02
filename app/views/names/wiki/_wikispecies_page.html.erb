@@ -10,13 +10,13 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
 <% else %>
 {{<%= @name.base_name %>}}
 <% end %>
-<% unless @name.children.empty? %>
+<% unless @name.valid_children.empty? %>
 <%= Name.rank_variant(
       @name.rank_below, plural: true, latin: true, title: true
     ) %>:
-<% @name.children.each_with_index do |name, k| %>
+<% @name.valid_children.each_with_index do |name, k| %>
 <%
-  last = @name.children.count == k + 1 ? 'last' : ''
+  last = @name.valid_children.count == k + 1 ? 'last' : ''
   wiki_link =
     case name.inferred_rank
     when 'subspecies'
