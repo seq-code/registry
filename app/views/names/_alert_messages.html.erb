@@ -1,3 +1,10 @@
+<% if @name.redirect.present? %>
+  <div class="alert alert-warning">
+    This entry is now deprecated and has been replaced by
+    <%= display_link(@name) %>
+  </div>
+<% end %>
+
 <% if @name.auto? %>
   <div class="alert alert-info">
     This name was automatically created through literature mining,
