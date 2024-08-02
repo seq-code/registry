@@ -132,17 +132,20 @@ class Name < ApplicationRecord
 
     def find_by_variants(name)
       variants = find_variants(name)
-      return variants.first if variants.count <= 1
+      return if variants.empty?
 
-      if name =~ /^Candidatus /
-        ca = variants.find(&:candidatus?)
-        return ca if ca
-      else
-        non_ca = variants.find { |variant| !variant.candidatus? }
-        return non_ca if non_ca
+      p_var = nil
+      if variants.count > 1
+        if name =~ /^Candidatus /
+          ca     = variants.find(&:candidatus?)
+          p_var  = ca if ca
+        else
+          non_ca = variants.find { |variant| !variant.candidatus? }
+          p_var  = non_ca if non_ca
+        end
       end
-
-      variants.first
+      p_var ||= variants.first
+      p_var.redirect.present? ? p_var.redirect : p_var
     end
 
     # ============ --- CLASS > ETYMOLOGY --- ============
