@@ -1054,9 +1054,10 @@ module Name::QualityChecks
 
   def identical_base_name
     if candidatus?
-      @identical_base_name ||= Name.where(name: base_name).first
+      @identical_base_name ||= Name.where(name: base_name, redirect: nil).first
     else
-      @identical_base_name ||= Name.where(name: "Candidatus #{name}").first
+      ca_name = "Candidatus #{name}"
+      @identical_base_name ||= Name.where(name: ca_name, redirect: nil).first
     end
   end
 
