@@ -43,13 +43,13 @@ gem 'turbolinks', '~> 5'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-gem 'yui-compressor', '>= 0.12'
 gem 'webpacker'
 gem 'whenever', require: false
 gem 'wicked_pdf'
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
 gem 'wkhtmltopdf-binary'
+gem 'yui-compressor', '>= 0.12'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
