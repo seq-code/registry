@@ -25,6 +25,46 @@
   <%= f.button :submit, 'Register' %>
 <% end %>
 
-<br/><br/><br/>
+<br/>
+<hr/>
+<h2>Do you need some inspiration?</h2>
+<ul class="mb-5">
+  <%
+    fa_hash = {
+      style: 'min-width: 2em;',
+      class: 'text-center border-right border-dark mr-2 pr-2'
+    }
+  %>
+  <li>
+    <%= fa_icon('drafting-compass', fa_hash) %>
+    <%= link_to(etymology_sandbox_names_url) do %>
+      Try-out some ideas in the etymology sandbox
+    <% end %>
+  </li>
+  <li>
+    <%= fa_icon('question-circle', fa_hash) %>
+    <%= link_to(help_url(:etymology)) do %>
+      Read our etymology guide and explore additional resources
+    <% end %>
+  </li>
+  <li>
+    <%= fa_icon('compass', fa_hash) %>
+    <%= link_to(names_url(status: :SeqCode)) do %>
+      Explore names that have already been validly published under the SeqCode
+    <% end %>
+  </li>
+  <li>
+    <%= fa_icon('robot', fa_hash) %>
+    Explore automated name generation tools like
+    <%= link_to('https://github.com/telatin/gan', target: '_blank') do %>
+      GAN <%= fa_icon('external-link-alt') %>
+    <% end %> and
+    <%= link_to('https://github.com/quadram-institute-bioscience/namingGTDB',
+            target: '_blank') do %>
+      namingGTDB <%= fa_icon('external-link-alt') %>
+    <% end %>
+  </li>
+</ul>
+
 <%= render(partial: 'shared/cc') %>
 
