@@ -155,7 +155,7 @@
           <li>
             <% id = modal('Correspondence with curators', size: 'lg') do %>
               <%= render(
-                    partial: 'shared/correspondence',
+                    partial: 'correspondences/correspondence',
                     locals: { correspondence_history: true, object: @name }) %>
             <% end %>
           <%= modal_button(id, as_anchor: true) do %>

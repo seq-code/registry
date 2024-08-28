@@ -1,6 +1,6 @@
 <% object.correspondences.each do |correspondence| %>
   <%= render(
-        partial: 'shared/correspondence_message',
+        partial: 'correspondences/message',
         locals: { correspondence: correspondence }) %>
 <% end %>
 <% if object.correspondences.empty? %>

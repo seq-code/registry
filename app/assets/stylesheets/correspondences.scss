@@ -1,0 +1,23 @@
+@import "application";
+
+dl[data-behavior="correspondence-templates"] {
+  dt {
+    margin: 0;
+    padding: 0.5rem;
+    &:has(+ dd:hover) {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+  }
+  dd {
+    margin: 0 0 0.25rem 0;
+    padding: 0.5rem;
+    border: 1px solid white;
+    &:hover {
+      background-color: var(--light);
+      cursor: pointer;
+      border: 1px solid var(--dark);
+    }
+  }
+}
+

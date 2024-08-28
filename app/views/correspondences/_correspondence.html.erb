@@ -3,7 +3,7 @@
   <dl id="correspondence" class="main-section name-details">
     <% if correspondence_history %>
       <%= render(
-            partial: 'shared/correspondence_history',
+            partial: 'correspondences/history',
             locals: { object: object }) %>
     <% else %>
       <h2>
@@ -13,7 +13,7 @@
       <% if object.correspondences.count > 3 %>
         <% id = modal('Full correspondence history', size: 'lg') do %>
           <%= render(
-                partial: 'shared/correspondence_history',
+                partial: 'correspondences/history',
                 locals: { object: object }) %>
         <% end %>
         <%= modal_button(id, class: 'my-3 btn btn-secondary') do %>
@@ -23,7 +23,7 @@
       <% end %>
       <% object.correspondences.last(3).each do |correspondence| %>
         <%= render(
-              partial: 'shared/correspondence_message',
+              partial: 'correspondences/message',
               locals: { correspondence: correspondence }) %>
       <% end %>
 
@@ -49,6 +49,20 @@
           <%= f.button(:submit, 'Send message') %>
           &raquo; The messages will be in the permanent record,
           visible only to submitter and curators
+          <hr/>
+          <% if current_curator? && !object.user?(current_user) %>
+            <%
+              id = modal(
+                'Correspondence templates',
+                size: 'lg', async: template_correspondences_url(content: true)
+              )
+            %>
+            <%= modal_button(id, class: 'btn btn-secondary') do %>
+              Load template
+            <% end %>
+            &raquo; Browse and use pre-formatted template messages
+            <hr/>
+          <% end %>
         <% end %>
       </dd>
     <% end %>

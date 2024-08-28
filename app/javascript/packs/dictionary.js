@@ -107,8 +107,8 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
       });
     }
     modal_body.children('.analyses').html('<h2>Grammatical analyses</h2>');
-    modal_body.children(".analyses").append(help);
-    modal_body.children(".analyses").append(list);
+    modal_body.children('.analyses').append(help);
+    modal_body.children('.analyses').append(list);
     if (!lemmata.includes(part)) lemmata.push(part);
     dictionary_search_definition(dict_id, comp, modal_body, lemmata[0], 1);
   }).fail(function() {

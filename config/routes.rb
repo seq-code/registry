@@ -170,6 +170,11 @@ Rails.application.routes.draw do
   # Other resources
   resources(:subjects, concerns: :autocompletable)
   resources(:tutorials, :publication_names)
+  resources(:correspondences, only: []) do
+    collection do
+      get  :template
+    end
+  end
 
   # General Application
   get  'link' => 'application#short_link'

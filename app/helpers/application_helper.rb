@@ -157,9 +157,16 @@ module ApplicationHelper
   def modal(title, opts = {})
     @modals ||= []
     id = opts[:id] || "modal-#{SecureRandom.uuid}"
+    if opts[:async]
+      opts[:container_data] ||= {}
+      opts[:container_data][:async] = opts[:async]
+    end
+    opts[:body_class] ||= ''
+    opts[:body_class] += ' modal-body'
     @modals <<
       content_tag(
-        :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog'
+        :div, id: id, class: 'modal fade', tabindex: '-1', role: 'dialog',
+        data: opts[:container_data]
       ) do
         dialog_class = 'modal-dialog modal-dialog-centered'
         dialog_class += " modal-#{opts[:size]}" if opts[:size]
@@ -176,8 +183,13 @@ module ApplicationHelper
                     :span, '&times;'.html_safe, aria: { hidden: true }
                   )
                 end
-            end + content_tag(:div, class: 'modal-body') { yield } +
-              (content_tag(:div, opts[:footer], class: 'modal-footer') if opts[:footer])
+            end +
+            content_tag(:div, class: opts[:body_class]) do
+              yield if block_given?
+            end +
+            if opts[:footer]
+              content_tag(:div, opts[:footer], class: 'modal-footer')
+            end
           end
         end
       end
@@ -205,17 +217,22 @@ module ApplicationHelper
   end
 
   def help_topic(topic, title = '', opts = {})
-    footer = link_to('View help message as individual page', help_url(topic))
-    id = modal(title, opts.merge(footer: footer)) do
-      render(partial: 'page/help_inline', locals: { topic: topic })
-    end
+    footer = link_to(
+      'View help message as individual page', help_url(topic),
+      class: 'btn btn-light w-100 m-0 p-2'
+    )
+    new_opts = opts.merge(
+      footer: footer, async: help_url(topic, content: true), body_class: 'm-3'
+    )
+    id = modal(title, new_opts)
     modal_button(id, class: 'btn btn-info') do
       fa_icon('question-circle', class: 'mr-2') + title
     end
   end
 
   def yield_modals
-    (@modals ||= []).inject(:+)
+    @modals ||= []
+    @modals.inject(:+)
   end
 
   def download_buttons(list)

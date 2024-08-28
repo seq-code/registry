@@ -1,0 +1,59 @@
+<dl data-behavior="correspondence-templates">
+  <h2>Name curation &raquo; genomic</h2>
+  <hr/>
+  <dt>Too many tRNA AAs</dt>
+  <dd>
+    Please indicate the method used to detect tRNAs in the submitter comments.
+    Note that tRNAscan-SE v2.0.9 detects tRNAs for <b>XXXX</b> canonical amino
+    acids. If you want to adopt the automated annotation, simply remove the
+    value from the genome submission form.
+  </dd>
+  <dt>Discrepant 16S</dt>
+  <dd>
+    Please indicate the method used to detect 16S rRNA genes in the submitter
+    comments. Note that barrnap 0.9 detects <b>XXXX</b> copies
+    (up to <b>XXXX</b> complete). If you want to adopt the automated annotation,
+    simply remove the value from the genome submission form.
+  </dd>
+  <dt>Discrepant quality</dt>
+  <dd>
+    Please indicate the method used to calculate genome quality (completeness
+    and contamination) in the submitter comments. Note that MiGA 1.3 detects
+    <b>XXXX</b> contamination and <b>XXXX</b> completeness. If you want to
+    adopt the automated annotation, simply remove the value from the genome
+    submission form.
+  </dd>
+  <dt>Low quality genome</dt>
+  <dd>
+    Note that the genome quality does not meet the minimum criteria for SeqCode
+    (<i>i.e.</i>, completeness &gt; 90%, contamination &lt; 5%). If you believe
+    the provided metric is underestimating the real value for the assembly
+    (<i>i.e.</i>, if you think your assembly is actually more complete or less
+    contaminated than reported) please indicate this, together with the evidence
+    for it, in the submitter comments (go to Edit genome data, and scroll to the
+    bottom). Otherwise, remove any taxa based on genomes with quality below the
+    minimum criteria established by SeqCode, or contact us if you believe we
+    should consider an exception on the basis of historical use of the taxon.
+    Please read and follow the recommendations from
+    <%= link_to('When and how do I request a genome quality exception?',
+          help_url('exceptions')) %>
+  </dd>
+
+  <br/><br/>
+  <h2>Name curation &raquo; other checks</h2>
+  <hr/>
+  <dt>Incomplete description</dt>
+  <dd>
+    Please provide the description reported in <b>XXXX</b>.
+  </dd>
+</dl>
+
+<script>
+<%# This snippet must be here since the templates are asynchronously loaded %>
+<% if params[:content].present? %>
+  correspondence_templates();
+<% else %>
+  $(document).on("turbolinks:load", function() { correspondence_templates(); });
+<% end %>
+</script>
+
