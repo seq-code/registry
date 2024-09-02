@@ -32,7 +32,7 @@ class Contact < ApplicationRecord
     (<a href="https://registry.seqco.de/">https://registry.seqco.de/</a>), with
     details of the effective publication (your paper) and the MAGs that are the
     type genome. More details on this are available in the article <i>mLife</i>,
-    <a href="https://doi.org/10.1002/mlf2.12092">DOI: 10.1002/mlf2.12092</a>)
+    <a href="https://doi.org/10.1002/mlf2.12092">DOI: 10.1002/mlf2.12092</a>
     and at the Registry website.
     <br/>
     <br/>It is a limitation of <i>Candidatus</i> names that they lack formal
