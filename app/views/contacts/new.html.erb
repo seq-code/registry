@@ -21,12 +21,11 @@
     ) do |f| %>
   <dl class='main-section name-details'>
     <h2><%= fa_icon('envelope', class: 'float-right') %> Contact authors</h2>
-    <hr/>
     <dt><%= fa_icon('file') %> Publication</dt>
     <dd>
       <%= link_to(@publication) do %>
         <%= fa_icon('arrow-circle-right') %> <%= @publication.citation %>
-      <% end %><br/>
+      <% end %> /
       <%= link_to(@publication.link, target: '_blank') do %>
         DOI: <%= @publication.doi %>
         <%= fa_icon('external-link-alt') %>

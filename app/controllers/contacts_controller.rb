@@ -1,7 +1,14 @@
 class ContactsController < ApplicationController
   before_action :authenticate_curator!
-  before_action :set_publication
+  before_action :set_publication, except: %i[user]
   before_action :set_contact, only: %i[show]
+
+  # GET /contacts/user
+  def user
+    @contacts =
+      current_user.contacts.paginate(page: params[:page], per_page: 30)
+    render :index
+  end
 
   # GET /publications/1/contacts
   def index
@@ -17,7 +24,7 @@ class ContactsController < ApplicationController
   def new
     @contact = Contact.new(
       publication: @publication, user: current_user, cc: current_user.email,
-      subject: '[SeqCode Registry] Regarding your recent publication'
+      subject: '[SeqCode Registry] Valid publication of names'
     )
     @contact.message = @contact.default_message
   end

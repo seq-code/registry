@@ -45,6 +45,12 @@
 
       <li class="nav-item mt-3"><h2>Other Tasks</h2></li>
       <li class="nav-item">
+        <%= link_to(user_contacts_path) do %>
+          <%= fa_icon('envelope') %>
+          Authors contacted through the Registry
+        <% end %>
+      </li>
+      <li class="nav-item">
         <%= link_to(unranked_names_path) do %>
           <%= fa_icon('check-circle') %>
           Names with unconfirmed ranks

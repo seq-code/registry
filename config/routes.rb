@@ -162,6 +162,11 @@ Rails.application.routes.draw do
     resources(:contacts, only: %i[new create show index])
   end
   get  'doi/:doi' => 'publications#show', as: :doi, doi: /.+/
+  resources(:contacts, only: []) do
+    collection do
+      get  :user
+    end
+  end
 
   # Publication Names (n:m relationship)
   get  'publications/:id/link_name' => 'publication_names#link_name', as: :link_publication_name
