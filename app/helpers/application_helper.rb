@@ -209,6 +209,10 @@ module ApplicationHelper
 
   def help_message(title = '', opts = {})
     id = modal(title) { yield }
+    help_button(id, opts)
+  end
+
+  def help_button(id, opts)
     opts[:class] ||= ''
     modal_button(id, opts) do
       content_tag(:b, opts[:text], class: 'text-info') +
@@ -225,8 +229,12 @@ module ApplicationHelper
       footer: footer, async: help_url(topic, content: true), body_class: 'm-3'
     )
     id = modal(title, new_opts)
-    modal_button(id, class: 'btn btn-info') do
-      fa_icon('question-circle', class: 'mr-2') + title
+    if opts[:as_help]
+      help_button(id, opts)
+    else
+      modal_button(id, class: 'btn btn-info') do
+        fa_icon('question-circle', class: 'mr-2') + title
+      end
     end
   end
 

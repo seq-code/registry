@@ -17,6 +17,16 @@
     <% end %>
   <% end %>
 
+  <% case warn.type %>
+  <% when :missing_effective_publication %>
+    <% if !@name.after_submission? %>
+      <div>
+        <b>This message can be ignored if following Path 1</b>
+        <%= help_topic(:paths, 'SeqCode paths to validation', as_help: true) %>
+      </div>
+    <% end %>
+  <% end %>
+
   <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
     <div class="text-muted">
       <b>§ Contravenes SeqCode</b>:

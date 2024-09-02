@@ -102,7 +102,8 @@ class PageController < ApplicationController
         },
         explanation: {
           register: 'What are Register Lists?',
-          open_data: 'What data is publicly released and how?'
+          open_data: 'What data is publicly released and how?',
+          paths: 'What are the paths to validation?'
         }
       }
     end
