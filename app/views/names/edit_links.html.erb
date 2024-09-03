@@ -4,8 +4,8 @@
 <%= simple_form_for(@name) do |f| %>
   <%= f.input(:ncbi_taxonomy, label: 'NCBI Taxonomy ID',
         hint: 'An integer uniquely identifying this taxon in NCBI Taxonomy') %>
-  <%= f.input(:lpsn_url, label: 'LPSN Cannonical URL',
-        hint: 'The cannonical URL in LPSN corresponding to this name') %>
+  <%= f.input(:lpsn_url, label: 'LPSN Canonical URL',
+        hint: 'The canonical URL in LPSN corresponding to this name') %>
   <%= f.input(:gtdb_accession, label: 'GTDB taxon accession',
         hint: 'The GTDB label to the name in the format d__Archaea') %>
   <% if @name.inferred_rank == 'species' %>
