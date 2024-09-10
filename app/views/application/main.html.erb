@@ -41,8 +41,8 @@
                 data: { toggle: 'pill' }, role: 'tab',
                 aria: { controls: "#{k}-content", selected: v[2] },
                 class: 'p-3 w-100 h-100 rounded border w-100 text-primary ' \
-                       'border-primary btn btn-light nav-link tab-button' \
-                       ' ' + (v[2] ? 'active' : '')
+                       'border-primary btn btn-light nav-link tab-button ' \
+                       'main-tab-button ' + (v[2] ? 'active' : '')
               ) do %>
             <%= fa_icon(v[0], style: 'font-size: 300%;', class: 'mb-3') %><br/>
             <b><%= v[1] %></b>
@@ -52,8 +52,9 @@
     </ul>
   </div>
   <!-- Dynamic content -->
-  <div class="tab-content mt-3" style="font-size: 150%;" id="lead-tabContent">
-    <div class="tab-pane fade jumbotron p-5" id="register-content" role="tabpanel" aria-labelledby="register-tab">
+  <div class="tab-content mt-0" style="font-size: 150%;" id="lead-tabContent">
+    <div class="tab-pane fade jumbotron border border-primary p-5"
+          id="register-content" role="tabpanel" aria-labelledby="register-tab">
       <% if !user_signed_in? %>
         In order to contribute to SeqCode Registry,
         <%= link_to('Create a User', new_user_registration_path) %> or
@@ -74,7 +75,8 @@
         <% end %>
       <% end %>
     </div>
-    <div class="tab-pane fade show active jumbotron p-5" id="search-content" role="tabpanel" aria-labelledby="search-tab">
+    <div class="tab-pane fade show active border border-primary jumbotron p-5"
+          id="search-content" role="tabpanel" aria-labelledby="search-tab">
       <div class='mx-2'>
         <%= render(partial: 'shared/search_bar') %>
       </div>
@@ -98,7 +100,8 @@
         %>.
       </p>
     </div>
-    <div class="tab-pane fade jumbotron p-5" id="read-content" role="tabpanel" aria-labelledby="read-tab">
+    <div class="tab-pane fade border border-primary jumbotron p-5"
+          id="read-content" role="tabpanel" aria-labelledby="read-tab">
       Interested in learning more about the SeqCode?
       <br/>
       <%= link_to(page_about_url) do %>

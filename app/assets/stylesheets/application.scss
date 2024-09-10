@@ -60,3 +60,37 @@ $theme-colors: (
   height: 3px;
 }
 
+/*
+  Application / main
+*/
+.main-tab-button {
+  @include media-breakpoint-up(md) {
+    &.active {
+      border-bottom: 3px solid var(--primary) !important;
+      background: theme-color-level(light, 0.6666) !important;
+      *:has(> &) {
+        &::after {
+          content: '|';
+          color: var(--primary);
+          margin-top: -0.5rem;
+          font-size: 110%;
+          display: block;
+          font-weight: bolder;
+        }
+      }
+    }
+    *:has(> &) {
+      margin-bottom: 0.9rem;
+    }
+  } 
+  @include media-breakpoint-only(sm) {
+    *:has(> &) {
+      padding: 0.5rem 0 !important;
+      &:last-child {
+        padding-bottom: 1rem !important;
+      }
+    }
+  }
+}
+
+
