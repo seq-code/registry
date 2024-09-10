@@ -36,3 +36,6 @@ drfz.de
 mails.ucas.ac.cn
 um6p.ma
 sanger.ac.uk
+lnbr.cnpem.br
+umces.edu
+ufz.de

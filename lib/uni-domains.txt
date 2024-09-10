@@ -1,3 +1,6 @@
+regent.edu.gh
+student.wab.edu.pl
+wab.edu.pl
 atharvacoe.ac.in
 tbs.edu
 unochapeco.edu.br
@@ -10403,6 +10406,7 @@ escp.eu
 escp.eu
 stmarytx.edu
 southflorida.edu
+pass26.edu.mk
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10441,3 +10445,6 @@ drfz.de
 mails.ucas.ac.cn
 um6p.ma
 sanger.ac.uk
+lnbr.cnpem.br
+umces.edu
+ufz.de
