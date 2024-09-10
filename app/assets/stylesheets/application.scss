@@ -63,34 +63,34 @@ $theme-colors: (
 /*
   Application / main
 */
-.main-tab-button {
+.main-page-box {
   @include media-breakpoint-up(md) {
-    &.active {
-      border-bottom: 3px solid var(--primary) !important;
-      background: theme-color-level(light, 0.6666) !important;
-      *:has(> &) {
-        &::after {
-          content: '|';
-          color: var(--primary);
-          margin-top: -0.5rem;
-          font-size: 110%;
-          display: block;
-          font-weight: bolder;
-        }
+    .main-tab-button {
+      &.active {
+        border: 1px solid var(--primary) !important;
+        border-bottom: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-bottom-left-radius:  0 !important;
+        background: theme-color-level(light, 0.6666) !important;
       }
     }
-    *:has(> &) {
-      margin-bottom: 0.9rem;
+    *:has(> .main-tab-button:not(.active)) {
+      margin-bottom: 1rem !important;
     }
-  } 
-  @include media-breakpoint-only(sm) {
-    *:has(> &) {
-      padding: 0.5rem 0 !important;
-      &:last-child {
-        padding-bottom: 1rem !important;
+    .tab-content .jumbotron {
+      border-top: 3px solid var(--primary);
+      border-top-right-radius: 0 !important;
+      border-top-left-radius:  0 !important;
+    }
+  }
+  @include media-breakpoint-down(sm) {
+    .main-tab-button {
+      *:has(> &) {
+        padding: 0.5rem 0 !important;
+        &:last-child {
+          padding-bottom: 1rem !important;
+        }
       }
     }
   }
 }
-
-
