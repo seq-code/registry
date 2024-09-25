@@ -8,7 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'addressable'
-gem 'bootstrap', '~> 4.6'
+gem 'bootstrap', '= 4.6.2'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
 gem 'd3-rails'
