@@ -1,0 +1,10 @@
+<%= %w[taxonomy name database accession].join("\t") %>
+<% @names.except(:limit, :offset).each do |name| %>
+<%= 
+     genome = name.type_genome or next
+     [
+       name.lineage.map { |i| "#{i.rank}: #{i.name}" }.join('; '),
+       name.name, genome.database, genome.accession
+     ].join("\t")
+%>
+<% end %>
