@@ -83,6 +83,7 @@ class Genome < ApplicationRecord
         ],
         other: %i[
           host ph depth temp temperature rel_to_oxygen geographic_location_depth
+          chlorophyll
         ],
         package: %i[
           ncbi_package ena_checklist ncbi_submission_package biosamplemodel
