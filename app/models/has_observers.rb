@@ -3,10 +3,12 @@ module HasObservers
   # ============ --- EMAIL NOTIFICATIONS --- ============
 
   def notify_user(action, user, title)
-    Notification.create(
+    par = {
       user: user, notifiable: self, linkeable: self,
       action: action, title: title
-    )
+    }
+    $stderr.puts par
+    Notification.create(par)
   end
 
   ##

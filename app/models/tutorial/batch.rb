@@ -287,11 +287,11 @@ module Tutorial::Batch
         # Claim/update or create
         name = Name.find_by_variants(par['name'])
         if name
-          name.claim(user)
+          name.claim(user, false)
           name.update!(par)
         else
           name = Name.create!(par)
-          name.claim(user)
+          name.claim(user, false)
         end
       end
 

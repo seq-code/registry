@@ -107,7 +107,8 @@ module Name::Status
   # Claim the name
   #
   # user: The user claiming the name (usually the current user)
-  def claim(user)
+  # notify: Should user(s) be notified of status change?
+  def claim(user, notify = true)
     if !can_claim?(user)
       @status_alert = 'User cannot claim name'
       return false
@@ -118,7 +119,7 @@ module Name::Status
     update_status_with_alert(par) or return false
 
     add_observer(user)
-    notify_status_change(:claim, user)
+    notify_status_change(:claim, user) if notify
     true
   end
 
