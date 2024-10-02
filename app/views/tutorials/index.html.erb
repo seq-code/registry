@@ -21,7 +21,7 @@
             <%= link_to_name(tutorial.names.first) %>
           <% end %>
         <% elsif tutorial.symbol == :batch %>
-          <% names = tutorial.value(:names).map { |i| i['name'] } %>
+          <% names = (tutorial.value(:names) || []).map { |i| i['name'] } %>
           <b><%= pluralize(names.size, 'Name') %></b>
           <%= 'including' if names.size > 3 %>
           <%= names[0, 3].to_sentence %>
