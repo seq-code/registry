@@ -11,14 +11,20 @@
       <div class="list-group-item list-group-item-action pb-3">
         <h5><%= tutorial.title %></h5>
         <b>Status:</b>
-        <%= tutorial.ongoing ? 'Active' : 'Complete' %><br/>
+        <%= tutorial.ongoing? ? 'Active' : 'Complete' %><br/>
         <% if tutorial.names.any? %>
-          <b>Name:</b>
+          <b><%= pluralize(tutorial.names.size, 'Name') %></b>
+          <%= 'including' if tutorial.names.size > 1 %>
           <% if tutorial.current_name %>
             <%= link_to_name(tutorial.current_name) %>
           <% else %>
             <%= link_to_name(tutorial.names.first) %>
           <% end %>
+        <% elsif tutorial.symbol == :batch %>
+          <% names = tutorial.value(:names).map { |i| i['name'] } %>
+          <b><%= pluralize(names.size, 'Name') %></b>
+          <%= 'including' if names.size > 3 %>
+          <%= names[0, 3].to_sentence %>
         <% else %>
           <i>No names yet</i>
         <% end %>
