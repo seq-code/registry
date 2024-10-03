@@ -856,7 +856,9 @@ class Name < ApplicationRecord
   # Attempts to add an observer while silently ignoring it if the user
   # already observes the name
   def add_observer(user)
-    self.observers << user
+    self.observers << user unless observers.include?(user)
+    # Note that rescuing should make the "unless" unnecessary, but this
+    # prevents breaking large transactions, as in batch uploads
   rescue ActiveRecord::RecordNotUnique
     true
   end
