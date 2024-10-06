@@ -49,7 +49,7 @@ gem 'whenever', require: false
 gem 'wicked_pdf'
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
-gem 'wkhtmltopdf-binary'
+gem 'wkhtmltopdf-binary', '<= 0.12.6.6' # TODO Temporary fix for large gem
 gem 'yui-compressor', '>= 0.12'
 
 group :development, :test do
