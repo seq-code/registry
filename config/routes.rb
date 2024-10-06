@@ -129,6 +129,7 @@ Rails.application.routes.draw do
       get  :table
       get  :list
       get  :cite
+      get  :certificate_image
       # --> Register edit
       post :submit
       get  :return

@@ -1,6 +1,7 @@
 <div class="container main-section name-details">
   <% if @register.title? %>
-    <h3 class="mb-4 mx-3 border-bottom pb-1">
+    <h2 class="mb-4 mx-3 border-bottom pb-1">
+      <%= fa_icon('list-alt', class: 'float-right') %>
       <%= @register.title %>
       <% if @register.modal_form_id %>
         <sup style="font-size: 1rem;" class="mx-1">
@@ -10,7 +11,7 @@
         <% end %>
         </sup>
       <% end %>
-    </h3>
+    </h2>
   <% end %>
 
   <div class="row pl-3">
@@ -49,63 +50,32 @@
         </dd>
       <% end %>
 
-      <%# TODO Once publication is sorted out, this should be `published?` %>
       <% if @register.validated? %>
         <dt><%= fa_icon('book-open') %> How to cite</dt>
         <dd>
           <%= @register.user.display_name %>
           (<%= @register.validated_at.year %>).
-          <%= @register.propose_title %>.
+          <%= @register.propose_title.gsub(/\.\z/, '') %>.
           <i>The SeqCode Registry</i>
           <%= @register.accession %>.
-          https://doi.org/<%= @register.propose_doi %>
+          <% if @register.published? %>
+            https://doi.org/<%= @register.propose_doi %>
+          <% else %>
+            Pending DOI.
+          <% end %>
         </dd>
       <% end %>
     </dl>
+
     <!-- Right column -->
     <dl class="col-md-5 border-left border-secondary">
-      <dt><%= fa_icon('table') %>&nbsp; Download Table &raquo;</dt>
-      <dd>
-        <%= link_to(
-              table_register_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-pdf') %> PDF
-        <% end %>
-        <%= link_to(
-              table_register_url(@register),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-code') %> HTML
-        <% end %>
-      </dd>
-
-      <dt><%= fa_icon('list-ul') %>&nbsp; Download List &raquo;</dt>
-      <dd>
-        <%= link_to(
-              list_register_url(@register, format: :pdf),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-pdf') %> PDF
-        <% end %>
-        <%= link_to(
-              list_register_url(@register),
-              class: 'btn btn-sm btn-secondary'
-            ) do %>
-          <%= fa_icon('file-code') %> HTML
-        <% end %>
-      </dd>
-
       <% if @register.publication %>
-        <dt>
-          <%= fa_icon('file-signature') %>&nbsp;
-          Effective publication &raquo;
-        </dt>
-        <dd>
-          <p>
-            <%= link_to(@register.publication) do %>
+        <dt><%= fa_icon('file-signature') %> Effective publication</dt>
+        <dd class="mb-4">
+          <p class="mb-1">
+            <%= link_to(@register.publication, class: 'mr-1') do %>
               <%= fa_icon('arrow-circle-right') %><% end %>
-            &nbsp;<%= @register.publication.long_citation_html %>
+            <%= @register.publication.long_citation_html %>
           </p>
           <% if @register.can_view_publication?(current_user) %>
             <% %i[publication_pdf supplementary_pdf].each do |attach| %>
@@ -123,6 +93,84 @@
           <% end %>
         </dd>
       <% end %>
+
+      <dt><%= fa_icon('download') %> Downloads</dt>
+      <dd class="pt-2">
+        <div class="btn-group btn-group-sm" role="group"
+              aria-label="Table downloads">
+          <div class="input-group-prepend">
+            <div class="input-group-text" id="btnGroupAddon">
+              <%= fa_icon('table', title: 'Table downloads') %>
+            </div>
+          </div>
+          <%= link_to(
+                table_register_url(@register, format: :pdf),
+                class: 'btn btn-secondary'
+              ) do %>
+            <%= fa_icon('file-pdf') %> Table PDF
+          <% end %>
+          <%= link_to(
+                table_register_url(@register),
+                class: 'btn btn-secondary'
+              ) do %>
+            <%= fa_icon('file-code') %> Table HTML
+          <% end %>
+        </div>
+        <%= help_message('Register Table') do %>
+          The Register Table is the PDF or HTML version of the register
+          list including all its names with their most up-to-date information
+          in the system, in table format.
+        <% end %>
+        <br/>
+        <div class="btn-group btn-group-sm mt-1" role="group"
+              aria-label="List downloads">
+          <div class="input-group-prepend">
+            <div class="input-group-text" id="btnGroupAddon">
+              <%= fa_icon('list-ul', title: 'List downloads') %>
+            </div>
+          </div>
+          <%= link_to(
+                list_register_url(@register, format: :pdf),
+                class: 'btn btn-secondary'
+              ) do %>
+            <%= fa_icon('file-pdf') %> List PDF
+          <% end %>
+          <%= link_to(
+                list_register_url(@register),
+                class: 'btn btn-secondary'
+              ) do %>
+            <%= fa_icon('file-code') %> List HTML
+          <% end %>
+        </div>
+        <%= help_message('Live Register List') do %>
+          The Live Register List is the PDF or HTML version of the register
+          list including all its names with their most up-to-date information
+          in the system.
+        <% end %>
+        <% if @register.certificate_image? %>
+          <br/>
+          <div class="btn-group btn-group-sm mt-1" role="group"
+                aria-label="Certificate of record">
+            <div class="input-group-prepend">
+              <div class="input-group-text" id="btnGroupAddon">
+                <%= fa_icon('archive', title: 'Certificate of record') %>
+              </div>
+            </div>
+            <%= link_to(
+                  certificate_image_register_url(@register, format: :pdf),
+                  class: 'btn btn-sm btn-secondary'
+                ) do %>
+              <%= fa_icon('file-pdf') %> Certificate of Record PDF
+            <% end %>
+          </div>
+          <%= help_message('Certificate of Record') do %>
+            A certificate of record is the PDF version of the register list
+            saved immediately upon validation. If later changes in taxonomy,
+            format, or modifications of the name are recorded, the live list
+            might change, but this version will remain unchanged.
+          <% end %>
+        <% end %>
+      </dd>
     </div>
   </dl>
 </div>

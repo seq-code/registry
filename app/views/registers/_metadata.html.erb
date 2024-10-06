@@ -63,6 +63,18 @@
     <dd><%= @register.notes %></dd>
   <% end %>
 
+  <% if @register.validated? %>
+    <dt><%= fa_icon('certificate') %> Validated by</dt>
+    <dd>
+      <% if @register.validated_by %>
+        <%= display_link(@register.validated_by) %>
+      <% else %>
+        Unknown curator
+      <% end %>
+      <%= time_ago_with_date(@register.validated_at) %>
+    </dd>
+  <% end %>
+
   <% if @register.published? %>
     <dt><%= fa_icon('newspaper') %> Edited by</dt>
     <dd>

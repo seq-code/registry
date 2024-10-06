@@ -2,7 +2,7 @@ class RegistersController < ApplicationController
   before_action(
     :set_register,
     only: %i[
-      show table list cite edit update destroy
+      show table list certificate_image cite edit update destroy
       submit return return_commit endorse notify notify_commit
       validate editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review
@@ -25,9 +25,10 @@ class RegistersController < ApplicationController
     :authenticate_editor!, only: %i[editorial_checks publish publish_commit]
   )
   before_action(
-    :authenticate_can_view!, only: %i[show table list new_correspondence]
+    :authenticate_can_view!,
+    only: %i[show table list certificate_image new_correspondence]
   )
-  before_action(:ensure_valid!, only: %i[list])
+  before_action(:ensure_valid!, only: %i[list certificate_image])
   before_action(
     :authenticate_can_edit!,
     only: %i[edit update destroy submit notify notify_commit]
@@ -256,6 +257,20 @@ class RegistersController < ApplicationController
           header: { html: { template: 'layouts/_pdf_header' } },
           footer: { html: { template: 'layouts/_pdf_footer' } },
           page_size: 'A4'
+        )
+      end
+    end
+  end
+
+  # GET /registers/r:abc/certificate_image.pdf
+  def certificate_image
+    respond_to do |format|
+      format.pdf do
+        send_data(
+          @register.certificate_image,
+          disposition: 'inline',
+          filename: 'seqcode-%s.pdf' % @register.accession.gsub(':', '-'),
+          type: 'application/pdf'
         )
       end
     end
