@@ -8,10 +8,11 @@ git_source(:github) do |repo_name|
 end
 
 gem 'addressable'
-gem 'bootstrap', '4.6.2.1'
+gem 'bootstrap', '~> 4.6.2'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
 gem 'd3-rails'
+gem 'dartsass-sprockets' # Sass engine (required by bootstrap
 gem 'devise'
 gem 'dkim', '~> 1.1'
 gem 'font_awesome5_rails', '~> 1.5'

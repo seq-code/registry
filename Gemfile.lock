@@ -96,6 +96,12 @@ GEM
     d3-rails (7.8.5)
       railties (>= 3.1)
     daemons (1.4.1)
+    dartsass-sprockets (3.1.0)
+      railties (>= 4.0.0)
+      sassc-embedded (~> 1.69)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     date (3.3.4)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -121,6 +127,12 @@ GEM
       railties (>= 4.2)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    google-protobuf (4.28.2-x86_64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.28.2-x86_64-linux)
+      bigdecimal
+      rake (>= 13)
     hashery (2.1.2)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
@@ -153,7 +165,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     method_source (1.1.0)
-    miga-base (1.3.20.11)
+    miga-base (1.3.21.3)
       daemons (~> 1.3)
       json (~> 2)
       net-ftp
@@ -164,7 +176,7 @@ GEM
     mini_mime (1.1.5)
     minitest (5.25.1)
     multi_json (1.15.0)
-    net-ftp (0.3.7)
+    net-ftp (0.3.8)
       net-protocol
       time
     net-http (0.4.1)
@@ -245,7 +257,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.3.7)
+    rexml (3.3.8)
     roo (2.9.0)
       nokogiri (~> 1)
       rubyzip (>= 1.3.0, < 3.0.0)
@@ -279,6 +291,10 @@ GEM
     rubyzip (2.3.2)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
+    sass-embedded (1.79.4-x86_64-darwin)
+      google-protobuf (~> 4.27)
+    sass-embedded (1.79.4-x86_64-linux-gnu)
+      google-protobuf (~> 4.27)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -288,6 +304,8 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    sassc-embedded (1.79.0)
+      sass-embedded (~> 1.79)
     selenium-webdriver (4.25.0)
       base64 (~> 0.2)
       logger (~> 1.4)
@@ -370,11 +388,12 @@ PLATFORMS
 
 DEPENDENCIES
   addressable
-  bootstrap (= 4.6.2.1)
+  bootstrap (~> 4.6.2)
   byebug
   capybara (~> 2.13)
   coffee-rails (~> 5.0)
   d3-rails
+  dartsass-sprockets
   devise
   dkim (~> 1.1)
   font_awesome5_rails (~> 1.5)
