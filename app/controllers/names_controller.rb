@@ -8,8 +8,8 @@ class NamesController < ApplicationController
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       edit_redirect autofill_etymology edit_parent
-      return validate endorse claim unclaim demote new_correspondence
-      observe unobserve
+      return validate endorse claim unclaim demote temporary_editable
+      new_correspondence observe unobserve
     ]
   )
   before_action(
@@ -27,7 +27,7 @@ class NamesController < ApplicationController
     :authenticate_owner_or_curator!, only: %i[unclaim new_correspondence]
   )
   before_action(:authenticate_contributor!, only: %i[new create claim])
-  before_action(:authenticate_admin!, only: %i[demote])
+  before_action(:authenticate_admin!, only: %i[demote temporary_editable])
   before_action(
     :authenticate_curator!,
     only: %i[
@@ -473,6 +473,15 @@ class NamesController < ApplicationController
   # POST /names/1/demote
   def demote
     change_status(:demote, 'Name successfully demoted', current_user)
+  end
+
+  # POST /names/1/temporary_editable
+  def temporary_editable
+    to_time = DateTime.now + (params[:stop] ? 0 : 10.minutes)
+    unless @name.update_column(:temporary_editable_at, to_time)
+      flash[:alert] = 'Impossible to temporary update name'
+    end
+    redirect_to(@name)
   end
 
   # POST /names/1/new_correspondence

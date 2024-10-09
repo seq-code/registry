@@ -33,3 +33,21 @@
     </div>
   <% end %>
 <% end %>
+
+<% if @name.validated? && (current_curator? || current_admin?) &&
+      @name.temporary_editable?%>
+  <div class="alert alert-info">
+    This name is temporarily editable by curators for
+    <%= distance_of_time_in_words(DateTime.now, @name.temporary_editable_at) %>,
+    please use this time window carefully and responsibly
+    <% if current_admin? %>
+      <hr/>
+      <%= link_to(
+            temporary_editable_name_url(@name, stop: true),
+            method: :post, class: 'btn btn-primary'
+          ) do %>
+        <%= fa_icon('stopwatch') %> Close editable window now
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

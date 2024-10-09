@@ -83,6 +83,7 @@ Rails.application.routes.draw do
       post :return
       post :validate
       post :endorse
+      post :temporary_editable
       # --> Edit user relationship to name
       get  :observe
       get  :unobserve

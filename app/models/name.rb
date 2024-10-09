@@ -442,6 +442,11 @@ class Name < ApplicationRecord
     end
   end
 
+  def temporary_editable?
+    return false unless temporary_editable_at?
+    DateTime.now < temporary_editable_at
+  end
+
   # ============ --- NOMENCLATURE --- ============
 
   def sanitize(str)
@@ -762,7 +767,8 @@ class Name < ApplicationRecord
   def can_edit?(user)
     return false if only_display
     return false if user.nil?
-    return false if validated?
+    return true if temporary_editable? && user.try(:curator?)
+    return false if validated? # Except if temporary editable, covered above
     return true if user.curator?
     return true if draft? && user?(user)
     false
