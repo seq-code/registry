@@ -992,6 +992,7 @@ class Name < ApplicationRecord
   def type_name(check_material = true)
     if !check_material || type_is_name?
       @type_name ||= self.class.where(id: type_accession).first
+      @type_name == self ? nil : @type_name # Avoid self-referencing issues
     end
   end
 
