@@ -515,17 +515,19 @@ class Name < ApplicationRecord
 
   def name_wiki(opts = {})
     y = base_name
+    if opts[:link] && opts[:eol] && validated? && rank == 'genus'
+      return "{{gbr|#{y}}}"
+    end
+
     y = "[[#{y}]]" if opts[:link]
     y = "''Candidatus'' #{y}" if !opts[:no_candidatus] && candidatus?
     return "\"#{y}\"" unless validated?
-
-    return "{{gbr|#{y}}}" if opts[:eol] && rank == 'genus'
 
     y = "''#{y}''"
     if rank == 'species' && parent&.type_accession&.==(id.to_s)
       y += " (T#{'s' unless icnp? || icn?})"
     end
-    opts[:eol] ? "#{y} &lt;br/&gt;" : y
+    opts[:eol] ? "#{y} <br/>" : y
   end
 
   def abbr_corr_name
