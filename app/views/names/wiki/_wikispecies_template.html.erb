@@ -18,8 +18,9 @@
 <%= Name.rank_variant(@name.rank_above, latin: true, title: true) %>: - &lt;br/&gt;
 <%   end %>
 <% end %>
-<%= Name.rank_variant(@name.inferred_rank, latin: true, title: true)
-  %>: <%= @name.name_wiki(link: true) %> &lt;br/&gt;
+<%=
+  Name.rank_variant(@name.inferred_rank, latin: true, title: true)
+%>: <%= @name.name_wiki(link: true, eol: true) %>
 
 &lt;noinclude&gt;[[Category:Taxonavigation templates]]&lt;/noinclude&gt;
 &lt;includeonly&gt;[[Category:Pages with taxonavigation templates]]&lt;/includeonly&gt;

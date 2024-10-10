@@ -519,11 +519,13 @@ class Name < ApplicationRecord
     y = "''Candidatus'' #{y}" if !opts[:no_candidatus] && candidatus?
     return "\"#{y}\"" unless validated?
 
+    return "{{gbr|#{y}}}" if opts[:eol] && rank == 'genus'
+
     y = "''#{y}''"
     if rank == 'species' && parent&.type_accession&.==(id.to_s)
       y += " (T#{'s' unless icnp? || icn?})"
     end
-    y
+    opts[:eol] ? "#{y} &lt;br/&gt;" : y
   end
 
   def abbr_corr_name
