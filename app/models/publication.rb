@@ -206,11 +206,15 @@ class Publication < ApplicationRecord
   end
 
   def citation
-    "#{short_citation}, #{journal || pub_type.tr('-', ' ')}"
+    "#{short_citation}, #{journal_raw || pub_type.tr('-', ' ')}"
   end
 
   def journal_html
-    ERB::Util.h(journal || '[%s]' % pub_type.tr('-', ' '))
+    ERB::Util.h(journal_raw || '[%s]' % pub_type.tr('-', ' '))
+  end
+
+  def journal_raw
+    CGI.unescapeHTML(journal)
   end
 
   def long_citation(format = :text)
@@ -222,10 +226,10 @@ class Publication < ApplicationRecord
       HTML
     when :wikispecies
       "#{authors_array(format).join(', ')}. #{journal_date.year}: " \
-        "#{title.gsub(/[\n\r\s]+/, ' ')}. #{journal}. {{Doi|#{doi}}}"
+        "#{title.gsub(/[\n\r\s]+/, ' ')}. #{journal_raw}. {{Doi|#{doi}}}"
     else
       "#{authors_et_al(format)} (#{journal_date.year}). " \
-        "#{title}. #{journal}. DOI:#{doi}"
+        "#{title}. #{journal_raw}. DOI:#{doi}"
     end
   end
 
