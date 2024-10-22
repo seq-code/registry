@@ -21,13 +21,12 @@
 %>
 <% users.each_with_index do |user, k| %>
   <div class="main-section mb-4">
+    <h2>
+      <%= fa_icon('user-check', class: 'float-right') %>
+      <%= user[1].to_s.capitalize %>
+      <%= display_link(user[0]) %>
+    </h2>
     <%= simple_form_for(user[0], method: :post) do |f| %>
-      <h2>
-        <%= fa_icon('user-check', class: 'float-right') %>
-        <%= user[1].to_s.capitalize %>
-        <%= display_link(user[0]) %>
-      </h2>
-      <hr/>
       <dl>
         <% required.each do |req| %>
           <% good  = user[0].send(req[1])%>
