@@ -22,10 +22,11 @@
 <% users.each_with_index do |user, k| %>
   <div class="main-section mb-4">
     <%= simple_form_for(user[0], method: :post) do |f| %>
-      <h3>
+      <h2>
+        <%= fa_icon('user-check', class: 'float-right') %>
         <%= user[1].to_s.capitalize %>
         <%= display_link(user[0]) %>
-      </h3>
+      </h2>
       <hr/>
       <dl>
         <% required.each do |req| %>
@@ -78,7 +79,10 @@
 
 <!-- OTHER CHECKS -->
 <div class="main-section mb-4">
-  <h3>Additional Checks</h3>
+  <h2>
+    <%= fa_icon('check-circle', class: 'float-right') %>
+    Additional Checks
+  </h2>
   <dt>DOI Status</dt>
   <dd>
     <div id="doi-check" class="mb-2"></div>

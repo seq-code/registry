@@ -219,6 +219,11 @@ class RegistersController < ApplicationController
 
   # GET /registers/r:abc/publish
   def publish
+    @crumbs = [
+      ['Register Lists', registers_url],
+      [@register.acc_url, @register],
+      'Publish'
+    ]
   end
 
   # POST /registers/r:abc/publish
