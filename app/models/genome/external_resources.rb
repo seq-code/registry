@@ -55,10 +55,27 @@ module Genome::ExternalResources
           'XREF_LINK[DB[text() = "ENA-SAMPLE"]]/ID'
       ).map(&:text)
     elsif ng.xpath('//EXPERIMENT_SET').present?
-      ng.xpath(
-        '//EXPERIMENT_SET/EXPERIMENT/DESIGN/SAMPLE_DESCRIPTOR/' \
-          'IDENTIFIERS/PRIMARY_ID'
-      ).map(&:text)
+      # Unfortunately, we should prefer external IDs over primary IDs because
+      # NCBI E-Utils has a strange tendency to return the wrong biosample when
+      # using SRS... accessions. For example, see:
+      # 
+      # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample
+      #   &id=SRS22988103&rettype=xml&retmode=text
+      # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample
+      #   &id=SAMN13193749&rettype=xml&retmode=text
+      # 
+      # The first is using the accession SRS22988103 but it (wrongly) retrieves
+      # data for SAMN22988103 (= SRS11001113). Apparently the backend code
+      # simply strips off the alphabetic prefix and uses the numeric part
+      # without checking
+      sample_id =
+        ng.xpath(
+          '//EXPERIMENT_SET/EXPERIMENT/DESIGN/SAMPLE_DESCRIPTOR/IDENTIFIERS'
+        )
+      biosample_id =
+        sample_id.xpath('EXTERNAL_ID[@namespace="BioSample"]').map(&:text)
+      biosample_id.present? ? biosample_id :
+        sample_id.xpath('PRIMARY_ID').map(&:text)
     else
       [] # Unknown XML specification
     end
@@ -82,7 +99,7 @@ module Genome::ExternalResources
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
-      h = {}
+      h = { api: 'EBI' }
       h[:title] = ng.xpath('//SAMPLE_SET/SAMPLE/TITLE').text
       h[:description] = ng.xpath('//SAMPLE_SET/SAMPLE/DESCRIPTION').text
       h[:attributes] = Hash[
@@ -103,7 +120,7 @@ module Genome::ExternalResources
 
     ng = Nokogiri::XML(body)
     {}.tap do |hash|
-      h = {}
+      h = { api: 'NCBI' }
       h[:title] = ng.xpath('//BioSampleSet/BioSample/Description/Title').text
       h[:description] =
         ng.xpath('//BioSampleSet/BioSample/Description/Comment/Paragraph').text

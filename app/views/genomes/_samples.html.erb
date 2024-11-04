@@ -108,9 +108,16 @@
         <ul>
           <% @genome.source_hash[:samples].each do |acc, sample| %>
             <% id = modal(acc, size: 'lg') do %>
-              <% if sample[:from_sra] %>
+              <% if sample[:from_sra] || sample[:api] %>
                 <div class="alert alert-info">
-                  Retrieved via <%= to_sentence(sample[:from_sra]) %>
+                  Metadata retrieved
+                  <% if sample[:api] %>
+                    using the <%= sample[:api] %> API
+                  <% end %>
+                  <% if sample[:from_sra] %>
+                    via <%= to_sentence(sample[:from_sra]) %>
+                    (linked through the EBI API)
+                  <% end %>
                 </div>
               <% end %>
               <p class="lead mx-2">
