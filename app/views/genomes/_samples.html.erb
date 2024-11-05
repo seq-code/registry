@@ -19,6 +19,7 @@
             <div>
               <b><%= k.to_s.tr('_', ' ').titleize %>:</b>
               <%
+                # Key-based formatting
                 case group
                 when :environment
                   osl4 = 'https://www.ebi.ac.uk/ols4/ontologies/envo/classes/'
@@ -63,6 +64,17 @@
                   end
                 else
                   v.map! { |i| sanitize(i) }
+                end
+              %>
+              <%
+                # Value-based formatting
+                v.map! do |i|
+                  case i
+                  when /\Anot applicable\z/i, 'N/A'
+                    content_tag(:span, i, class: 'text-danger')
+                  else
+                    i
+                  end
                 end
               %>
               <%= v.join(' • ').html_safe %>
