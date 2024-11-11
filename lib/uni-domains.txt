@@ -1,3 +1,7 @@
+student.eit.edu.au
+nusaputra.ac.id
+std.kyrenia.edu.tr
+kyrenia.edu.tr
 regent.edu.gh
 student.wab.edu.pl
 wab.edu.pl
@@ -2083,6 +2087,7 @@ ue-varna.bg
 uft-plovdiv.bg
 uni-plovdiv.bg
 uni-sofia.bg
+uni-ruse.bg
 uni-svishtov.bg
 uni-sz.bg
 uni-vt.bg
@@ -3273,6 +3278,7 @@ ensai.fr
 ensait.fr
 ensam.inra.fr
 ensat.fr
+ens-paris-saclay.fr
 ens-cachan.fr
 ensccf.univ-bpclermont.fr
 ensc-lille.fr
@@ -3490,6 +3496,7 @@ www-ulp.u-strasbg.fr
 www-urs.u-strasbg.fr
 unistra.fr
 etu.unistra.fr
+dpt-info.u-strasbg.fr
 epitech.eu
 epitech.net
 epita.fr
@@ -3798,7 +3805,6 @@ uni-osnabrueck.de
 uni-paderborn.de
 uni-passau.de
 uni-potsdam.de
-uni-polsdam.de
 uni-regensburg.de
 uni-rostock.de
 uni-saarland.de
@@ -4832,6 +4838,7 @@ tcd.ie
 ucc.ie
 ucd.ie
 ucdconnect.ie
+universityofgalway.ie
 nuigalway.ie
 ucg.ie
 ul.ie
@@ -5300,6 +5307,7 @@ ocha.ac.jp
 ohkagakuen-u.ac.jp
 ohtani-w.ac.jp
 ohu-u.ac.jp
+oist.jp
 oit.ac.jp
 oita-med.ac.jp
 oita-nhs.ac.jp
@@ -6008,6 +6016,7 @@ iuil.lu
 uni.lu
 ipm.edu.mo
 um.edu.mo
+must.edu.mo
 usj.edu.mo
 fon.edu.mk
 seeu.edu.mk
@@ -8286,6 +8295,7 @@ stamford.edu
 stjohn.ac.th
 stou.ac.th
 su.ac.th
+silpakorn.edu
 sut.ac.th
 swu.ac.th
 tsu.ac.th
@@ -8811,7 +8821,7 @@ hau.edu.vn
 hcmuaf.edu.vn
 hcmuarc.edu.vn
 hcmulaw.edu.vn
-hcmuns.edu.vn
+hcmus.edu.vn
 hcmupeda.edu.vn
 hcmussh.edu.vn
 hcmut.edu.vn
@@ -10407,6 +10417,20 @@ escp.eu
 stmarytx.edu
 southflorida.edu
 pass26.edu.mk
+jjtu.ac.in
+singhaniauniversity.ac.in
+th-rosenheim.de
+alvernia.edu
+kristiania.no
+en.sjtu.edu.cn
+manavrachna.edu.in
+mitwpu.edu.in
+turiba.lv
+swps.pl
+hauniv.edu
+uhcno.edu
+upike.edu
+westernsydney.edu.au
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10448,3 +10472,5 @@ sanger.ac.uk
 lnbr.cnpem.br
 umces.edu
 ufz.de
+teagasc.ie
+ms.xjb.ac.cn
