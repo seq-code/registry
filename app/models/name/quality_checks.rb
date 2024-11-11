@@ -633,6 +633,11 @@ module Name::QualityChecks
         message: 'The longest contig in the type genome should have at least ' \
                  '100 kbp',
         recommendations: %w[appendix-i]
+      }.merge(@@link_to_edit_genome),
+      missing_source_data: {
+        message: 'The raw data should be available in INSDC databases ' \
+                 '(e.g., Sequence Read Archive)',
+        rules: %w[appendix-i]
       }.merge(@@link_to_edit_genome)
     }
 
@@ -908,6 +913,28 @@ module Name::QualityChecks
       if type_genome.largest_contig_any? &&
             type_genome.largest_contig_any <= 100_000
         @qc_warnings.add(:short_largest_contig)
+      end
+
+      if type_genome.sequencing_experiments.empty?
+        # Before this date, source metadata is not linked to SRA and it should
+        # be re-retrieved
+        link_date = [DateTime.parse('2024-11-12'), 2.hours.ago].min
+        if type_genome.source_hash.present? &&
+            type_genome.source_hash[:retrieved_at] > link_date
+          if proposed_in.present? && proposed_in.journal_date.year < 2023
+            # Only a warning for publications before 1st January 2023
+            @qc_warnings.add(
+              :missing_source_data,
+              rules: [],
+              recommendations: %w[appendix-i]
+            )
+          else
+            @qc_warnings.add(:missing_source_data)
+          end
+        else
+          # Update the metadata and try again later if it has a source
+          type_genome.queue_for_external_resources if type_genome.source?
+        end
       end
 
       # Measure discrepancy with automated checks

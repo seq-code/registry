@@ -73,12 +73,20 @@
   </div>
 
   <div class="form-actions mt-5">
-    <% if @tutorial %>
-      <%= hidden_field_tag(:return_to, tutorial_path(@tutorial, next: true)) %>
-    <% end %>
-    <%= link_to(
-          'Cancel', @tutorial || @name || @genome,
-          class: 'btn btn-secondary') %>
+    <%
+      return_to =
+        @tutorial ? tutorial_path(@tutorial, next: true) :
+        case params[:from]
+        when 'genome'
+          genome_path(@genome)
+        when 'name'
+          name_path(@name)
+        else
+          @name ? name_path(@name) : genome_path(@genome)
+        end
+    %>
+    <%= hidden_field_tag(:return_to, return_to) %>
+    <%= link_to('Cancel', return_to, class: 'btn btn-secondary') %>
     <%= f.button(:submit) %>
   </div>
 <% end %>

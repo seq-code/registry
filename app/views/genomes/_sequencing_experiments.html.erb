@@ -1,0 +1,44 @@
+<% if @genome.try(:sequencing_experiments).present? %>
+  <dl name="sequencing_experiments" class="main-section name-details">
+    <h2>
+      <%= fa_icon('vials', class: 'float-right') %>
+      Sequencing Experiments
+    </h2>
+
+    <% @genome.sequencing_experiments.each do |se| %>
+      <dt><%= fa_icon('vial') %> <%= se.title %></dt>
+      <dd>
+        <ul>
+          <li>
+            <%= link_to(se.link, target: '_blank') do %>
+              SRA: <%= se.sra_accession %> <%= fa_icon('external-link-alt')
+              %>
+            <% end %>
+          </li>
+          <% if se.bioproject_accession.present? %>
+            <li>
+              <%= link_to(se.bioproject_link, target: '_blank') do %>
+                BioProject: <%= se.bioproject_accession %>
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+          <li>
+            <% id = modal('Metadata', size: 'lg') do %>
+              <h1>Metadata as EBI XML</h1><hr/>
+              <pre class="bg-dark text-light p-2"
+                ><%= se.metadata_xml %></pre>
+              <hr/>
+              <span class="text-muted">
+                Metadata retrieved <%= time_ago_with_date(se.retrieved_at) %>
+              </span>
+            <% end %>
+            <%= modal_button(id, as_anchor: true) do %>
+              See source metadata as EBI XML
+            <% end %>
+          </li>
+        </ul>
+      </dd>
+    <% end %>
+  </dl>
+<% end %>

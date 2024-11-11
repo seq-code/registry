@@ -46,6 +46,25 @@ module ApplicationHelper
     end
   end
 
+  def longer_list(title = '', hide_over = 3, elements = nil, &blk)
+    content_tag(:div) { elements = blk.call } if block_given?
+    content_tag(:ul, class: 'mb-1') do
+      if hide_over && elements.count > hide_over
+        id = modal(title) { longer_list('', nil, elements) }
+        content_tag(:li) { elements[0] } +
+        content_tag(:li) do
+          modal_button(id, as_anchor: true) do
+            "And #{elements.count - 1} more&hellip;".html_safe
+          end
+        end
+      else
+        elements.each_with_index.map do |content, k|
+          content_tag(:li) { content }
+        end.inject(:+)
+      end
+    end
+  end
+
   def current_contributor?
     current_user.try :contributor?
   end

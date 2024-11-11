@@ -3,9 +3,12 @@ class Genome < ApplicationRecord
     :updated_by, optional: true,
     class_name: 'User', foreign_key: 'updated_by_id'
   )
+  has_many(:genome_sequencing_experiments, dependent: :destroy)
+  has_many(:sequencing_experiments, through: :genome_sequencing_experiments)
 
   before_validation(:standardize_source)
   after_save(:monitor_source_changes)
+  after_save(:link_sequencing_experiments!)
 
   validates(:database, presence: true)
   validates(:accession, presence: true)
@@ -255,6 +258,30 @@ class Genome < ApplicationRecord
     @source_attributes
   end
 
+  def biosample_accessions
+    case source_database.try(:to_sym)
+    when :sra
+      source_hash.try(:dig, :samples).try(:keys) || []
+    when :biosample
+      source_accessions
+    end
+  end
+
+  def sra_accessions
+    case source_database.to_sym
+    when :sra
+      source_accessions.unique
+    when :biosample
+      SequencingExperiment.by_biosample(source_accessions)
+        .pluck(:sra_accession).unique
+    end
+  end
+
+  #def sequencing_experiments
+  #  @sequencing_experiments ||=
+  #    SequencingExperiment.by_biosample(biosample_accessions)
+  #end
+
   def link(acc = nil)
     acc ||= accession
     case database
@@ -367,6 +394,24 @@ class Genome < ApplicationRecord
     err = remove_miga!
     # return false if err.is_a? Exception
     update(auto_scheduled_at: nil, auto_failed: nil, auto_check: false)
+  end
+
+  def link_sequencing_experiments!
+    self.class.transaction do
+      # Unlink experiments that shouldn't be here
+      sequencing_experiments.each do |experiment|
+        unless biosample_accessions.include?(experiment.biosample_accession)
+          GenomeSequencingExperiment
+            .where(genome: self, sequencing_experiment: experiment)
+            .map(&:destroy!)
+        end
+      end
+
+      # Link experiments that should be here
+      self.sequencing_experiments +=
+        SequencingExperiment.where(biosample_accession: biosample_accessions)
+                            .where.not(id: sequencing_experiments.pluck(:id))
+    end
   end
 
   private

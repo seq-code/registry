@@ -146,35 +146,14 @@ end
     <% end %>
 
     <% if @genome.source? %>
-      <% def show_genome_sources(n = nil) %>
-        <% content_tag(:ul, class: 'mb-1') do %>
-          <% @genome.source_links.each_with_index.map do |link, k| %>
-            <li>
-              <%= link_to(link[0], target: '_blank', title: link[2]) do %>
-                <%= link[1] %> <%= fa_icon('external-link-alt') %>
-              <% end %>
-            </li>
-            <% if n && k >= n %>
-              <li>
-                And <%= @genome.source_links.count - n - 1 %> more&hellip;
-              </li>
-              <% break %>
-            <% end %>
-          <% end %>
-        <% end %>
-      <% end %>
       <dt><%= fa_icon('flask') %> Source</dt>
       <dd>
-        <% if @genome.source_links.count > 3 %>
-          <%= show_genome_sources(1) %>
-          <% id = modal('Genome sources') do %>
-            <%= show_genome_sources %>
+        <%= longer_list('All sources') do %>
+          <% @genome.source_links.map do |link| %>
+            <%= link_to(link[0], target: '_blank', title: link[2]) do %>
+              <%= link[1] %> <%= fa_icon('external-link-alt') %>
+            <% end %>
           <% end %>
-          <%= modal_button(id, class: 'btn btn-sm btn-secondary') do %>
-            <%= fa_icon('ellipsis-h') %> See all sources
-          <% end %>
-        <% else %>
-          <%= show_genome_sources %>
         <% end %>
       </dd>
     <% end %>
@@ -248,8 +227,9 @@ end
 
         <% if @name.try(:can_edit?, current_user) %>
           <%= link_to(
-                edit_genome_path(@genome, name: @name.id),
-                class: 'btn btn-info'
+                edit_genome_path(
+                  @genome, name: @name.id, from: inline ? :genome : :name
+                ), class: 'btn btn-info'
               ) do %>
             <%= fa_icon('edit') %> Edit genome data
           <% end %>

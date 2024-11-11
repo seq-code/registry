@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sra_accession: MyString
+  biosample_accession: MyString
+  sra_runs_string: MyString
+  metadata_xml: MyText
+  queued_external: 2024-11-06 10:50:59
+
+two:
+  sra_accession: MyString
+  biosample_accession: MyString
+  sra_runs_string: MyString
+  metadata_xml: MyText
+  queued_external: 2024-11-06 10:50:59

@@ -7,19 +7,27 @@ module HasExternalResources
   end
 
   ##
-  # Queue name for +NameExternalResourcesJob+
-  def queue_for_external_resources
+  # Queue name for +NameExternalResourcesJob+, possibly forcing queue even if
+  # it was recently submitted (+force+)
+  def queue_for_external_resources(force = false)
     return if Rails.configuration.bypass_external_apis
-    return if queued_for_external_resources
+    return if !force && queued_for_external_resources
 
     external_resources_job.perform_later(self)
     update_column(:queued_external, DateTime.now)
   end
 
   ##
+  # Forget about interrupted updates
+  def force_reset_external_resources
+    update_column(:queued_external, nil)
+  end
+
+  ##
   # Generate a request to the external +uri+, and return the reponse body
-  # if successful or +nil+ otherwise (fails silently)
-  def external_request(uri)
+  # if successful or +nil+ otherwise (fails silently). If the return code
+  # is 204 (empty contents), returns +empty+
+  def external_request(uri, empty = nil)
     return if Rails.configuration.bypass_external_apis
 
     require 'uri'
@@ -30,7 +38,9 @@ module HasExternalResources
       Rails.logger.error "External Request #{uri} returned #{res}"
       return nil
     end
-    res.body ? normalize_encoding(res.body) : nil
+
+    res.is_a?(Net::HTTPNoContent) ? empty :
+      res.body ? normalize_encoding(res.body) : nil
   rescue
     nil
   end

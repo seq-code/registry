@@ -20,7 +20,7 @@ module Name::ExternalResources
     end
 
     uri = send("#{service}_search_uri")
-    body = external_request(uri)
+    body = external_request(uri, '{}')
 
     if body.present?
       send("#{service}_json=", body)

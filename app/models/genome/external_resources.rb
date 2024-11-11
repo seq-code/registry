@@ -22,62 +22,47 @@ module Genome::ExternalResources
     case source_database.to_sym
     when :sra
       source_accessions.each do |acc|
-        external_sra_to_biosamples(acc).each do |biosample|
-          data[biosample] ||=
-            { from_sra: [] }.merge(external_biosample_hash(biosample))
-          data[biosample][:from_sra] << acc
-        end
+        biosample = external_sra_to_biosample(acc)
+        data[biosample] ||=
+          { from_sra: [] }.merge(external_biosample_hash(biosample))
+        data[biosample][:from_sra] << acc
       end
     when :biosample
       source_accessions.each do |acc|
         data[acc] = external_biosample_hash(acc)
+        external_biosample_to_sra(acc)
       end
     end
 
-    update_column(:queued_external, nil)
-    update_column(
-      :source_json, { retrieved_at: DateTime.now, samples: data }.to_json
-    )
+    self.queued_external = nil
+    self.source_json = { retrieved_at: DateTime.now, samples: data }.to_json
+    save
   end
 
   ##
-  # Find all BioSample accessions linked to the SRA entry +acc+ and return as
-  # Array (typically one value)
-  def external_sra_to_biosamples(acc)
-    uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
+  # Find BioSample accession linked to the SRA entry +acc+ and return as
+  # String (or +nil+)
+  def external_sra_to_biosample(acc)
+    SequencingExperiment.by_sra(acc).try(:biosample_accession)
+  end
+
+  ##
+  # Find SRA entries linked to the BioSample +acc+ and return as Array
+  def external_biosample_to_sra(acc)
+    uri = "https://www.ebi.ac.uk/ena/browser/api/xml/ebisearch?" +
+          "query=BIOSAMPLE:#{acc}&includeLinks=true&domain=sra-experiment"
     body = external_request(uri)
-    return [] unless body && body != '{}'
+    return unless body.present?
 
     ng = Nokogiri::XML(body)
-    if ng.xpath('//RUN_SET').present?
-      ng.xpath(
-        '//RUN_SET/RUN/RUN_LINKS/RUN_LINK/' \
-          'XREF_LINK[DB[text() = "ENA-SAMPLE"]]/ID'
-      ).map(&:text)
-    elsif ng.xpath('//EXPERIMENT_SET').present?
-      # Unfortunately, we should prefer external IDs over primary IDs because
-      # NCBI E-Utils has a strange tendency to return the wrong biosample when
-      # using SRS... accessions. For example, see:
-      # 
-      # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample
-      #   &id=SRS22988103&rettype=xml&retmode=text
-      # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample
-      #   &id=SAMN13193749&rettype=xml&retmode=text
-      # 
-      # The first is using the accession SRS22988103 but it (wrongly) retrieves
-      # data for SAMN22988103 (= SRS11001113). Apparently the backend code
-      # simply strips off the alphabetic prefix and uses the numeric part
-      # without checking
-      sample_id =
-        ng.xpath(
-          '//EXPERIMENT_SET/EXPERIMENT/DESIGN/SAMPLE_DESCRIPTOR/IDENTIFIERS'
-        )
-      biosample_id =
-        sample_id.xpath('EXTERNAL_ID[@namespace="BioSample"]').map(&:text)
-      biosample_id.present? ? biosample_id :
-        sample_id.xpath('PRIMARY_ID').map(&:text)
-    else
-      [] # Unknown XML specification
+    ng.xpath('//EXPERIMENT_SET/EXPERIMENT').map do |exp|
+      sra_acc = exp['accession'] || exp.xpath('IDENTIFIERS/PRIMARY_ID').text
+      SequencingExperiment.find_or_create_by(sra_accession: sra_acc) do |se|
+        se.external_reuse_metadata_xml = true
+        se.queued_external = nil
+        se.retrieved_at = DateTime.now
+        se.metadata_xml = "<EXPERIMENT_SET>\n#{exp.to_s}\n</EXPERIMENT_SET>"
+      end
     end
   end
 

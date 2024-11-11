@@ -54,7 +54,7 @@ class GenomesController < ApplicationController
 
   # POST /genomes/1/update_external
   def update_external
-    if @genome.queue_for_external_resources
+    if @genome.queue_for_external_resources(true) # Force: trust curators
       flash[:notice] = 'Update has been queued'
       sleep(2)
     else

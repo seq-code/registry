@@ -5,6 +5,20 @@
       Sample Metadata
     </h2>
 
+    <% if @genome.biosample_accessions.present? %>
+      <dt><%= fa_icon('database') %> BioSample entries</dt>
+      <dd>
+        <%= longer_list('All entries') do %>
+          <% @genome.biosample_accessions.map do |acc| %>
+            <%= link_to("https://www.ncbi.nlm.nih.gov/biosample/#{acc}",
+                        target: '_blank') do %>
+              BioSample: <%= acc %> <%= fa_icon('external-link-alt') %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
+
     <%
       attributes_icon = {
         date: 'calendar', location: 'map-marked', toponym: 'map-signs',

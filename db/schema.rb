@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_09_130310) do
+ActiveRecord::Schema.define(version: 2024_11_11_163435) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -81,6 +81,16 @@ ActiveRecord::Schema.define(version: 2024_10_09_130310) do
     t.index ["author_id"], name: "index_contacts_on_author_id"
     t.index ["publication_id"], name: "index_contacts_on_publication_id"
     t.index ["user_id"], name: "index_contacts_on_user_id"
+  end
+
+  create_table "genome_sequencing_experiments", force: :cascade do |t|
+    t.integer "genome_id", null: false
+    t.integer "sequencing_experiment_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["genome_id", "sequencing_experiment_id"], name: "genome_sequencing_experiments_uniqueness", unique: true
+    t.index ["genome_id"], name: "index_genome_sequencing_experiments_on_genome_id"
+    t.index ["sequencing_experiment_id"], name: "index_genome_sequencing_experiments_on_sequencing_experiment_id"
   end
 
   create_table "genomes", force: :cascade do |t|
@@ -370,6 +380,17 @@ ActiveRecord::Schema.define(version: 2024_10_09_130310) do
     t.index ["validated"], name: "index_registers_on_validated"
   end
 
+  create_table "sequencing_experiments", force: :cascade do |t|
+    t.string "sra_accession"
+    t.string "biosample_accession"
+    t.text "metadata_xml"
+    t.datetime "queued_external"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "retrieved_at"
+    t.index ["sra_accession"], name: "index_sequencing_experiments_on_sra_accession", unique: true
+  end
+
   create_table "subjects", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -445,6 +466,8 @@ ActiveRecord::Schema.define(version: 2024_10_09_130310) do
   add_foreign_key "contacts", "authors"
   add_foreign_key "contacts", "publications"
   add_foreign_key "contacts", "users"
+  add_foreign_key "genome_sequencing_experiments", "genomes"
+  add_foreign_key "genome_sequencing_experiments", "sequencing_experiments"
   add_foreign_key "name_correspondences", "names"
   add_foreign_key "name_correspondences", "users"
   add_foreign_key "names", "genomes"
