@@ -72,9 +72,9 @@ module SequencingExperiment::ExternalResources
         self.biosample_accession_2 =
           sample_id.xpath('PRIMARY_ID').first.try(:text)
       else
-        self.biosample_accession = 
+        self.biosample_accession =
           sample_id.xpath('PRIMARY_ID').first.try(:text)
-        self.biosample_accession = nil
+        self.biosample_accession_2 = nil
       end
     else
       # Unknown XML specification
