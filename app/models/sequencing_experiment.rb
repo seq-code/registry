@@ -57,6 +57,6 @@ class SequencingExperiment < ApplicationRecord
   private
 
   def load_from_sra_accession
-    reload_metadata!
+    reload_metadata! if sra_accession_changed? || metadata_xml.empty?
   end
 end
