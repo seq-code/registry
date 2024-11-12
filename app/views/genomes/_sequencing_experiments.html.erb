@@ -15,7 +15,7 @@
             <% end %>
             <% [se.biosample_accession, se.biosample_accession_2].each do |i| %>
               <% if i.present? %>
-                <%= fa_icon('ellipsis-h') %>
+                <%= fa_icon('ellipsis-h', class: 'mx-2') %>
                 <%= link_to(
                       "https://www.ncbi.nlm.nih.gov/biosample/#{i}",
                       target: '_blank'
