@@ -400,7 +400,8 @@ class Genome < ApplicationRecord
     self.class.transaction do
       # Unlink experiments that shouldn't be here
       sequencing_experiments.each do |experiment|
-        unless biosample_accessions.include?(experiment.biosample_accession)
+        unless biosample_accessions.include?(experiment.biosample_accession) ||
+               biosample_accessions.include?(experiment.biosample_accession_2)
           GenomeSequencingExperiment
             .where(genome: self, sequencing_experiment: experiment)
             .map(&:destroy!)
@@ -410,6 +411,9 @@ class Genome < ApplicationRecord
       # Link experiments that should be here
       self.sequencing_experiments +=
         SequencingExperiment.where(biosample_accession: biosample_accessions)
+                            .where.not(id: sequencing_experiments.pluck(:id))
+      self.sequencing_experiments +=
+        SequencingExperiment.where(biosample_accession_2: biosample_accessions)
                             .where.not(id: sequencing_experiments.pluck(:id))
     end
   end

@@ -40,36 +40,46 @@ module SequencingExperiment::ExternalResources
     return unless metadata_xml.present?
 
     ng = Nokogiri::XML(metadata_xml)
-    self.biosample_accession =
-      if ng.xpath('//RUN_SET').present?
+    if ng.xpath('//RUN_SET').present?
+      self.biosample_accession =
         ng.xpath(
           '//RUN_SET/RUN/RUN_LINKS/RUN_LINK/' \
             'XREF_LINK[DB[text() = "ENA-SAMPLE"]]/ID'
-        ).map(&:text).first
-      elsif ng.xpath('//EXPERIMENT_SET').present?
-        # Unfortunately, we should prefer external IDs over primary IDs because
-        # NCBI E-Utils has a strange tendency to return the wrong biosample when
-        # using SRS... accessions. For example, see:
-        # 
-        # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
-        #   db=biosample&id=SRS22988103&rettype=xml&retmode=text
-        # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
-        #   db=biosample&id=SAMN13193749&rettype=xml&retmode=text
-        # 
-        # The first is using the accession SRS22988103 but it (wrongly)
-        # retrieves data for SAMN22988103 (= SRS11001113). Apparently the
-        # backend code simply strips off the alphabetic prefix and uses the
-        # numeric part without checking
-        sample_id =
-          ng.xpath(
-            '//EXPERIMENT_SET/EXPERIMENT/DESIGN/SAMPLE_DESCRIPTOR/IDENTIFIERS'
-          )
-        biosample_id =
-          sample_id.xpath('EXTERNAL_ID[@namespace="BioSample"]').map(&:text)
-        biosample_id.present? ? biosample_id.first :
-          sample_id.xpath('PRIMARY_ID').map(&:text).first
+        ).first.try(:text)
+      self.biosample_accession_2 = nil
+    elsif ng.xpath('//EXPERIMENT_SET').present?
+      # Unfortunately, we should prefer external IDs over primary IDs because
+      # NCBI E-Utils has a strange tendency to return the wrong biosample when
+      # using SRS... accessions. For example, see:
+      # 
+      # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
+      #   db=biosample&id=SRS22988103&rettype=xml&retmode=text
+      # - https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
+      #   db=biosample&id=SAMN13193749&rettype=xml&retmode=text
+      # 
+      # The first is using the accession SRS22988103 but it (wrongly)
+      # retrieves data for SAMN22988103 (= SRS11001113). Apparently the
+      # backend code simply strips off the alphabetic prefix and uses the
+      # numeric part without checking
+      sample_id =
+        ng.xpath(
+          '//EXPERIMENT_SET/EXPERIMENT/DESIGN/SAMPLE_DESCRIPTOR/IDENTIFIERS'
+        )
+      biosample_id =
+        sample_id.xpath('EXTERNAL_ID[@namespace="BioSample"]').map(&:text)
+      if biosample_id.present?
+        self.biosample_accession = biosample_id.first
+        self.biosample_accession_2 =
+          sample_id.xpath('PRIMARY_ID').first.try(:text)
       else
-        nil # Unknown XML specification
+        self.biosample_accession = 
+          sample_id.xpath('PRIMARY_ID').first.try(:text)
+        self.biosample_accession = nil
       end
+    else
+      # Unknown XML specification
+      self.biosample_accession = nil
+      self.biosample_accession_2 = nil
+    end
   end
 end
