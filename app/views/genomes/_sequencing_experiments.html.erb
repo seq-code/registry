@@ -11,8 +11,18 @@
         <ul>
           <li>
             <%= link_to(se.link, target: '_blank') do %>
-              SRA: <%= se.sra_accession %> <%= fa_icon('external-link-alt')
-              %>
+              SRA: <%= se.sra_accession %> <%= fa_icon('external-link-alt') %>
+            <% end %>
+            <% [se.biosample_accession, se.biosample_accession_2].each do |i| %>
+              <% if i.present? %>
+                <%= fa_icon('ellipsis-h') %>
+                <%= link_to(
+                      "https://www.ncbi.nlm.nih.gov/biosample/#{i}",
+                      target: '_blank'
+                    ) do %>
+                  BioSample: <%= i %> <%= fa_icon('external-link-alt') %>
+                <% end %>
+              <% end %>
             <% end %>
           </li>
           <% if se.bioproject_accession.present? %>
