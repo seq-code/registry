@@ -6,7 +6,10 @@
     </h2>
 
     <% @genome.sequencing_experiments.each do |se| %>
-      <dt><%= fa_icon('vial') %> <%= se.title %></dt>
+      <dt>
+        <%= fa_icon('vial') %>
+        <%= se.title.present? ? se.title : se.sra_accession %>
+      </dt>
       <dd>
         <ul>
           <li>
