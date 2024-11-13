@@ -58,7 +58,7 @@ module Genome::ExternalResources
 
     ng = Nokogiri::XML(body)
     ng.xpath('//EXPERIMENT_SET/EXPERIMENT').map do |exp|
-      sra_acc = exp['accession'] || exp.xpath('//IDENTIFIERS/PRIMARY_ID').text
+      sra_acc = exp['accession'] || exp.xpath('./IDENTIFIERS/PRIMARY_ID').text
       SequencingExperiment.find_or_create_by(sra_accession: sra_acc) do |se|
         se.external_reuse_metadata_xml = true
         se.queued_external = nil
@@ -88,17 +88,17 @@ module Genome::ExternalResources
     sample = ng.xpath('//SAMPLE_SET/SAMPLE').first or return
     {}.tap do |hash|
       h = { api: 'EBI' }
-      h[:title] = sample.xpath('//TITLE').text
-      h[:description] = sample.xpath('//DESCRIPTION').text
+      h[:title] = sample.xpath('./TITLE').text
+      h[:description] = sample.xpath('./DESCRIPTION').text
       h[:attributes] = Hash[
-        sample.xpath('//SAMPLE_ATTRIBUTES/SAMPLE_ATTRIBUTE')
+        sample.xpath('./SAMPLE_ATTRIBUTES/SAMPLE_ATTRIBUTE')
           .map { |attr| [attr.xpath('TAG').text, attr.xpath('VALUE').text] }
       ]
       h[:biosample_accessions] = [
         acc, sample['accession'],
-        sample.xpath('//IDENTIFIERS/PRIMARY_ID').text,
-        sample.xpath('//IDENTIFIERS/SECONDARY_ID').text,
-        sample.xpath('//EXTERNAL_ID[@namespace="BioSample"]').text
+        sample.xpath('./IDENTIFIERS/PRIMARY_ID').text,
+        sample.xpath('./IDENTIFIERS/SECONDARY_ID').text,
+        sample.xpath('./EXTERNAL_ID[@namespace="BioSample"]').text
       ].select(&:present?).uniq
       h.each { |k, v| hash[k] = h[k] if h[k].present? }
     end
@@ -116,18 +116,18 @@ module Genome::ExternalResources
     sample = ng.xpath('//BioSampleSet/BioSample').first or return
     {}.tap do |hash|
       h = { api: 'NCBI' }
-      h[:title] = sample.xpath('//Description/Title').text
-      h[:description] = sample.xpath('//Description/Comment/Paragraph').text
+      h[:title] = sample.xpath('./Description/Title').text
+      h[:description] = sample.xpath('./Description/Comment/Paragraph').text
       h[:attributes] = Hash[
-        sample.xpath('//Attributes/Attribute')
+        sample.xpath('./Attributes/Attribute')
           .map do |attr|
             [attr['harmonized_name'] || attr['attribute_name'], attr.text]
           end
       ]
-      package = sample.xpath('//Package').text
+      package = sample.xpath('./Package').text
       h[:attributes][:ncbi_package] = package if package.present?
       h[:biosample_accessions] = [
-        acc, sample['accession'], sample.xpath('//Ids/Id[@db="BioSample"]').text
+        acc, sample['accession'], sample.xpath('./Ids/Id[@db="BioSample"]').text
       ].compact.uniq
       h.each { |k, v| hash[k] = h[k] if h[k].present? }
     end

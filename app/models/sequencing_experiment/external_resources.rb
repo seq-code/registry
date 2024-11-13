@@ -64,19 +64,19 @@ module SequencingExperiment::ExternalResources
       sample_id =
         ng.xpath(
           '//EXPERIMENT_SET/EXPERIMENT/DESIGN/SAMPLE_DESCRIPTOR/IDENTIFIERS'
-        )
+        ).first
       biosample_id =
-        sample_id.xpath('//EXTERNAL_ID[@namespace="BioSample"]')
+        sample_id.xpath('./EXTERNAL_ID[@namespace="BioSample"]')
           .first.try(:text)
       if biosample_id.present?
         self.biosample_accession = biosample_id
         self.biosample_accession_2 =
-          sample_id.xpath('//PRIMARY_ID').first.try(:text)
+          sample_id.xpath('./PRIMARY_ID').first.try(:text)
       else
         self.biosample_accession =
-          sample_id.xpath('//PRIMARY_ID').first.try(:text)
+          sample_id.xpath('./PRIMARY_ID').first.try(:text)
         self.biosample_accession_2 =
-          sample_id.xpath('//SECONDARY_ID').first.try(:text)
+          sample_id.xpath('SECONDARY_ID').first.try(:text)
       end
     else
       # Unknown XML specification
