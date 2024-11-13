@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_11_163435) do
+ActiveRecord::Schema.define(version: 2024_11_12_170318) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -388,6 +388,7 @@ ActiveRecord::Schema.define(version: 2024_11_11_163435) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "retrieved_at"
+    t.string "biosample_accession_2"
     t.index ["sra_accession"], name: "index_sequencing_experiments_on_sra_accession", unique: true
   end
 

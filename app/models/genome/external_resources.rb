@@ -30,12 +30,14 @@ module Genome::ExternalResources
     when :biosample
       source_accessions.each do |acc|
         data[acc] = external_biosample_hash(acc)
-        external_biosample_to_sra(acc)
+        data[acc][:biosample_accessions].each do |acc_alt|
+          external_biosample_to_sra(acc_alt)
+        end
       end
     end
 
-    self.queued_external = nil
     self.source_json = { retrieved_at: DateTime.now, samples: data }.to_json
+    self.queued_external = nil
     save
   end
 
@@ -56,7 +58,7 @@ module Genome::ExternalResources
 
     ng = Nokogiri::XML(body)
     ng.xpath('//EXPERIMENT_SET/EXPERIMENT').map do |exp|
-      sra_acc = exp['accession'] || exp.xpath('IDENTIFIERS/PRIMARY_ID').text
+      sra_acc = exp['accession'] || exp.xpath('//IDENTIFIERS/PRIMARY_ID').text
       SequencingExperiment.find_or_create_by(sra_accession: sra_acc) do |se|
         se.external_reuse_metadata_xml = true
         se.queued_external = nil
@@ -80,17 +82,24 @@ module Genome::ExternalResources
   def external_biosample_hash_ebi(acc)
     uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
     body = external_request(uri)
-    return unless body && body != '{}'
+    return unless body.present?
 
     ng = Nokogiri::XML(body)
+    sample = ng.xpath('//SAMPLE_SET/SAMPLE').first or return
     {}.tap do |hash|
       h = { api: 'EBI' }
-      h[:title] = ng.xpath('//SAMPLE_SET/SAMPLE/TITLE').text
-      h[:description] = ng.xpath('//SAMPLE_SET/SAMPLE/DESCRIPTION').text
+      h[:title] = sample.xpath('//TITLE').text
+      h[:description] = sample.xpath('//DESCRIPTION').text
       h[:attributes] = Hash[
-        ng.xpath('//SAMPLE_SET/SAMPLE/SAMPLE_ATTRIBUTES/SAMPLE_ATTRIBUTE')
+        sample.xpath('//SAMPLE_ATTRIBUTES/SAMPLE_ATTRIBUTE')
           .map { |attr| [attr.xpath('TAG').text, attr.xpath('VALUE').text] }
       ]
+      h[:biosample_accessions] = [
+        acc, sample['accession'],
+        sample.xpath('//IDENTIFIERS/PRIMARY_ID').text,
+        sample.xpath('//IDENTIFIERS/SECONDARY_ID').text,
+        sample.xpath('//EXTERNAL_ID[@namespace="BioSample"]').text
+      ].select(&:present?).uniq
       h.each { |k, v| hash[k] = h[k] if h[k].present? }
     end
   end
@@ -101,22 +110,25 @@ module Genome::ExternalResources
     uri = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' \
           "db=biosample&id=#{acc}&rettype=xml&retmode=text"
     body = external_request(uri)
-    return unless body && body != '{}'
+    return unless body.present?
 
     ng = Nokogiri::XML(body)
+    sample = ng.xpath('//BioSampleSet/BioSample').first or return
     {}.tap do |hash|
       h = { api: 'NCBI' }
-      h[:title] = ng.xpath('//BioSampleSet/BioSample/Description/Title').text
-      h[:description] =
-        ng.xpath('//BioSampleSet/BioSample/Description/Comment/Paragraph').text
+      h[:title] = sample.xpath('//Description/Title').text
+      h[:description] = sample.xpath('//Description/Comment/Paragraph').text
       h[:attributes] = Hash[
-        ng.xpath('//BioSampleSet/BioSample/Attributes/Attribute')
+        sample.xpath('//Attributes/Attribute')
           .map do |attr|
             [attr['harmonized_name'] || attr['attribute_name'], attr.text]
           end
       ]
-      package = ng.xpath('//BioSampleSet/BioSample/Package').text
+      package = sample.xpath('//Package').text
       h[:attributes][:ncbi_package] = package if package.present?
+      h[:biosample_accessions] = [
+        acc, sample['accession'], sample.xpath('//Ids/Id[@db="BioSample"]').text
+      ].compact.uniq
       h.each { |k, v| hash[k] = h[k] if h[k].present? }
     end
   end

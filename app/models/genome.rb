@@ -258,6 +258,10 @@ class Genome < ApplicationRecord
     @source_attributes
   end
 
+  ##
+  # Returns registered BioSample accessions, directly from the database
+  # if the source database is +:biosample+, or through the external links
+  # if it is +:sra+
   def biosample_accessions
     case source_database.try(:to_sym)
     when :sra
@@ -265,6 +269,15 @@ class Genome < ApplicationRecord
     when :biosample
       source_accessions
     end
+  end
+
+  ##
+  # Returns all BioSample accessions, including secondary (alternative)
+  # accessions
+  def biosample_accessions_all
+    (source_hash.try(:dig, :samples) || {}).values.map do |sample|
+      sample[:biosample_accessions] || []
+    end.flatten.uniq
   end
 
   def sra_accessions
@@ -276,11 +289,6 @@ class Genome < ApplicationRecord
         .pluck(:sra_accession).unique
     end
   end
-
-  #def sequencing_experiments
-  #  @sequencing_experiments ||=
-  #    SequencingExperiment.by_biosample(biosample_accessions)
-  #end
 
   def link(acc = nil)
     acc ||= accession
@@ -410,11 +418,13 @@ class Genome < ApplicationRecord
 
       # Link experiments that should be here
       self.sequencing_experiments +=
-        SequencingExperiment.where(biosample_accession: biosample_accessions)
-                            .where.not(id: sequencing_experiments.pluck(:id))
+        SequencingExperiment
+          .where(biosample_accession: biosample_accessions_all)
+          .where.not(id: sequencing_experiments.pluck(:id))
       self.sequencing_experiments +=
-        SequencingExperiment.where(biosample_accession_2: biosample_accessions)
-                            .where.not(id: sequencing_experiments.pluck(:id))
+        SequencingExperiment
+          .where(biosample_accession_2: biosample_accessions_all)
+          .where.not(id: sequencing_experiments.pluck(:id))
     end
   end
 

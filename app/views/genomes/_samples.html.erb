@@ -146,10 +146,12 @@
                   <% end %>
                 </div>
               <% end %>
-              <p class="lead mx-2">
-                <%= sample[:description] %>
-              </p>
+              <p class="lead mx-2"><%= sample[:description] %></p>
               <dl class="main-section">
+                <% if sample[:biosample_accessions].present? %>
+                  <dt>BioSample Accession(s)</dt>
+                  <dd><%= sample[:biosample_accessions].join(', ') %></dd>
+                <% end %>
                 <% sample[:attributes].each do |k, v| %>
                   <dt><%= k %></dt>
                   <dd><%= v %></dd>
