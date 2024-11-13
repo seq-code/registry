@@ -236,5 +236,9 @@ end
         <% end %>
       </dd>
     <% end %>
+    <hr/>
+    <span class="text-muted">
+      Last modified <%= time_ago_with_date(@genome.updated_at) %>
+    </span>
   </dl>
 <% end %>
