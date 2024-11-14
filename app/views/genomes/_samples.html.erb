@@ -80,17 +80,6 @@
                   v.map! { |i| sanitize(i) }
                 end
               %>
-              <%
-                # Value-based formatting
-                v.map! do |i|
-                  case i
-                  when /\Anot applicable\z/i, 'N/A'
-                    content_tag(:span, i, class: 'text-danger')
-                  else
-                    i
-                  end
-                end
-              %>
               <%= v.join(' • ').html_safe %>
             </div>
           <% end %>
