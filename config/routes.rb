@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   namespace :page do
     %i[
       api about committee connect initiative join
-      news prize publications seqcode linkout
+      news prize publications seqcode linkout status
     ].each { |i| get(i) }
   end
   get  'help' => 'page#help_index', as: :help_index

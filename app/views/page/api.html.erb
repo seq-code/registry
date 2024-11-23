@@ -100,6 +100,38 @@ end
 }</pre>
   </div>
 
+  <!-- GET /page/status.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-27" aria-expanded="false"
+          aria-controls="actions-accordion-27" id="actions-accordion-h-27">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= page_status_path(format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-27" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-27"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>
+      Checks that the API is accessible
+    </dd>
+    <dt>Parameters</dt>
+    <dd>
+      None
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{ "status": "ok" }</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% url = api_url('/page/status.json') %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
   <h2 class="py-3">Names</h2>
 
   <!-- Model name_item -->

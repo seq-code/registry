@@ -7,6 +7,17 @@ class PageController < ApplicationController
   def about
   end
 
+  # GET /page/status
+  # GET /page/status.json
+  def status
+    respond_to do |format|
+      format.html do
+        redirect_to 'https://stats.uptimerobot.com/OcQhKQJ19N'
+      end
+      format.json
+    end
+  end
+
   # GET /page/seqcode
   def seqcode
     render = SeqCodeDown.new(with_toc_data: true)
