@@ -5743,6 +5743,7 @@ hanlyo.ac.kr
 hanzhong.ac.kr
 htus.ac.kr
 iccu.ac.kr
+inu.ac.kr
 iuk.ac.kr
 icu.ac.kr
 inchon.ac.kr
@@ -10474,3 +10475,4 @@ umces.edu
 ufz.de
 teagasc.ie
 ms.xjb.ac.cn
+cea.fr
