@@ -69,8 +69,8 @@ module Name::Wiki
         if xml.xpath("//a[@href='/wiki/#{parent.wiki_url_name}']").empty?
           issues << "parent not linked: #{parent.name}"
         end
-        if parent.issues.present?
-          issues << "#{parent.issues.count} issues with parent: #{parent.name}"
+        if parent.wikispecies_issues.present?
+          issues << "issues with parent: #{parent.name}"
         end
       end
       children.each do |child|
