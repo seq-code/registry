@@ -65,7 +65,7 @@ module Name::Wiki
       issues << 'missing page'
     else
       xml = Nokogiri::HTML.parse(doc)
-      if parent && parent == self
+      if parent && parent != self
         if xml.xpath("//a[@href='/wiki/#{parent.wiki_url_name}']").empty?
           issues << "parent not linked: #{parent.name}"
         end
