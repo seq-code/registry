@@ -238,7 +238,7 @@ class NamesController < ApplicationController
   # GET /names/1/wiki
   def wiki
     @crumbs = [['Names', names_path], [@name.name_html, @name], 'Wiki source']
-    @name.check_wikispecies if current_curator? # Force re-check
+    @name.check_wikispecies if current_user.try(:curator?) # Force re-check
   end
 
   # GET /names/new
