@@ -2,6 +2,17 @@
 <h1><%= @name.name_html %></h1>
 <hr/>
 
+<% if @name.wikispecies_issues.present? %>
+  <div class="alert alert-warning">
+    Issues detected in Wikispecies page:
+    <ul>
+      <% @name.wikispecies_issues.each do |issue| %>
+        <li><%= issue %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <% unless %w[species subspecies].include?(@name.inferred_rank) %>
   <h3>Wikispecies template source</h3>
   <p>

@@ -110,6 +110,7 @@ class Name < ApplicationRecord
   include Name::ExternalResources
   include Name::Inferences
   include Name::Network
+  include Name::Wiki
 
   attr_accessor :only_display
 
@@ -513,23 +514,6 @@ class Name < ApplicationRecord
     end
   end
 
-  def name_wiki(opts = {})
-    y = base_name
-    if opts[:link] && opts[:eol] && validated? && rank == 'genus'
-      return "{{gbr|#{y}}}"
-    end
-
-    y = "[[#{y}]]" if opts[:link]
-    y = "''Candidatus'' #{y}" if !opts[:no_candidatus] && candidatus?
-    return "\"#{y}\"" unless validated?
-
-    y = "''#{y}''"
-    if rank == 'species' && parent&.type_accession&.==(id.to_s)
-      y += " (T#{'s' unless icnp? || icn?})"
-    end
-    opts[:eol] ? "#{y} <br/>" : y
-  end
-
   def abbr_corr_name
     abbr_name(corrigendum_from)
   end
@@ -563,29 +547,6 @@ class Name < ApplicationRecord
 
   def formal_txt
     sanitize(formal_html.gsub(/&#822[01];/, "'"))
-  end
-
-  def formal_wiki
-    y = name_wiki
-    y += ' corrig.' if corrigendum_from?
-    if not_validly_proposed_in.any?
-      y += ' (ex'
-      y += not_validly_proposed_in
-             .map { |i| " #{sanitize(i.short_citation(:wikispecies))}" }
-             .join('; ')
-      y += ')'
-    end
-    if authority || proposed_in
-      y += " #{sanitize(authority || proposed_in.short_citation(:wikispecies))}"
-    end
-    if priority_date && priority_date.year != proposed_in&.journal_date&.year
-      y += " (valid #{priority_date.year})"
-    end
-    if emended_in.any?
-      cit = emended_in.map { |p| p.short_citation(:wikispecies) }.join('; ')
-      y += " emend. #{cit}"
-    end
-    sanitize(y.gsub(/{{aut\|/, '{{a|'))
   end
 
   def display(html = true)
@@ -685,19 +646,6 @@ class Name < ApplicationRecord
     end
 
     nil
-  end
-
-  def edit_wikispecies_page_link
-    'https://species.wikimedia.org/w/index.php?title=%s&action=edit' % base_name
-  end
-
-  def edit_wikispecies_template_link
-    'https://species.wikimedia.org/w/index.php?title=Template:%s&action=edit' %
-      base_name
-  end
-
-  def wikispecies_url
-    'https://species.wikimedia.org/wiki/%s' % base_name
   end
 
   def ncbi_taxonomy_url
