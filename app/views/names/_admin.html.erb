@@ -4,17 +4,6 @@
     <dd class="pt-2">
       <% if @name.validated? %>
         <%= link_to(
-              demote_name_url(@name),
-              method: :post, class: 'btn btn-primary btn-sm',
-              data: {
-                confirm: 'Are you sure? This can have unintended consequences'
-              }
-            ) do %>
-          <%= fa_icon('frown-open') %> Demote name
-        <% end %>
-        &raquo; Send name back to the status of automated discovery
-        <hr/>
-        <%= link_to(
               temporary_editable_name_url(@name),
               method: :post, class: 'btn btn-primary btn-sm',
               data: {
@@ -24,6 +13,17 @@
           <%= fa_icon('stopwatch') %> Temporary editable name
         <% end %>
         &raquo; Make name editable by curators for 10 minutes
+        <hr/>
+        <%= link_to(
+              demote_name_url(@name),
+              method: :post, class: 'btn btn-danger btn-sm',
+              data: {
+                confirm: 'Are you sure? This can have unintended consequences'
+              }
+            ) do %>
+          <%= fa_icon('frown-open') %> Demote name
+        <% end %>
+        &raquo; Send name back to the status of automated discovery
         <hr/>
       <% end %>
     </dd>
