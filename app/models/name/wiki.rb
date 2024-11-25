@@ -70,7 +70,7 @@ module Name::Wiki
           issues << "parent not linked: #{parent.name}"
         end
       end
-      children.each do |child|
+      valid_children.each do |child|
         if xml.xpath("//a[@href='/wiki/#{child.wiki_url_name}']").empty?
           issues << "child not linked: #{child.name}"
         end
