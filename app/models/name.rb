@@ -78,6 +78,7 @@ class Name < ApplicationRecord
   before_validation(:standardize_etymology)
   before_validation(:prevent_self_parent)
   before_validation(:monitor_name_changes)
+  before_save(:reset_name_order)
   after_save(:clear_cached_objects)
   after_save(:ensure_consistent_placement)
 
@@ -1037,12 +1038,16 @@ class Name < ApplicationRecord
     lineage.find { |par| par.rank == rank.to_s }
   end
 
+  def rank_index
+    self.class.ranks.index(inferred_rank)
+  end
+
   def rank_above
-    self.class.ranks[self.class.ranks.index(inferred_rank) - 1]
+    self.class.ranks[rank_index - 1]
   end
 
   def rank_below
-    self.class.ranks[self.class.ranks.index(inferred_rank) + 1]
+    self.class.ranks[rank_index + 1]
   end
 
   def propose_lineage_name(rank)
@@ -1150,6 +1155,32 @@ class Name < ApplicationRecord
     checks.find { |check| check.kind == type.to_s }
   end
 
+  def fresh_name_order
+    y = ''
+    if parent && parent.rank_index < rank_index
+      # Use parent name_order if available
+      parent.update_name_order
+      y = parent.name_order + '~'
+    else
+      # If no parent, fill-up ranks with '{}' up to the root
+      y = (0 .. rank_index - 1).map { |i| '%02i|{}' % i }.join('~') + '~'
+    end
+    y += '%02i' % rank_index
+
+    # Sort valid names first
+    y += validated? ? '@' : '|'
+
+    # Sort by type genus (or name for genera) if available,
+    # ortherwise sort by name *after* those with type name
+    y += inferred_rank == 'genus' ? wiki_url_name :
+         type_is_name? ? type_name.wiki_url_name : "{#{wiki_url_name}}"
+  end
+
+  def update_name_order
+    no = fresh_name_order
+    update_column(:name_order, no) unless name_order == no
+  end
+
   private
 
   def prevent_self_parent
@@ -1198,6 +1229,10 @@ class Name < ApplicationRecord
       # Conservatively preserve as alternative placement
       placements.update(preferred: false)
     end
+  end
+
+  def reset_name_order
+    self.name_order = fresh_name_order
   end
 
   def clear_cached_objects

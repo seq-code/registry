@@ -84,7 +84,8 @@ class RegistersController < ApplicationController
   # GET /registers/r:abcd
   # GET /registers/r:abcd.json
   def show
-    @names = @register.names.order(created_at: :desc)
+    @register.update_name_order if @register.names.first.name_order.nil?
+    @names = @register.names
     @count = @names.count
     @names &&= @names.where(rank: params[:rank]) if params[:rank].present?
     @names &&= @names.paginate(page: params[:page], per_page: 30)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_24_184000) do
+ActiveRecord::Schema.define(version: 2024_11_26_065923) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -222,8 +222,10 @@ ActiveRecord::Schema.define(version: 2024_11_24_184000) do
     t.datetime "temporary_editable_at"
     t.datetime "wikispecies_checked_at"
     t.text "wikispecies_issues_text"
+    t.text "name_order"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
+    t.index ["name_order"], name: "index_names_on_name_order"
     t.index ["parent_id"], name: "index_names_on_parent_id"
     t.index ["register_id"], name: "index_names_on_register_id"
     t.index ["tutorial_id"], name: "index_names_on_tutorial_id"

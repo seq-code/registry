@@ -12,7 +12,7 @@ class Register < ApplicationRecord
   has_one_attached(:publication_pdf)
   has_one_attached(:supplementary_pdf)
   has_one_attached(:certificate_pdf)
-  has_many(:names, -> { order('updated_at') })
+  has_many(:names, -> { order(:name_order, created_at: :desc) })
   has_many(
     :register_correspondences, -> { order(:created_at) }, dependent: :destroy
   )
@@ -29,6 +29,7 @@ class Register < ApplicationRecord
   before_create(:assign_accession)
   before_validation(:propose_and_save_title, if: :submitted?)
   before_destroy(:return_names_to_draft)
+  before_save(:update_name_order)
 
   validates(:publication_id, presence: true, if: :validated?)
   validates(:publication_pdf, presence: true, if: :validated?)
@@ -292,6 +293,10 @@ class Register < ApplicationRecord
 
   def all_review?
     genomics_review && nomenclature_review
+  end
+
+  def update_name_order
+    names.map(&:update_name_order)
   end
 
   private
