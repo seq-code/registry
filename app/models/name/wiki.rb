@@ -65,6 +65,9 @@ module Name::Wiki
       issues << 'missing page'
     else
       xml = Nokogiri::HTML.parse(doc)
+      if xml.xpath("//a[@href='#{seqcode_url(true)}']").empty?
+        issues << "SeqCode entry not linked"
+      end
       if parent && parent != self
         if xml.xpath("//a[@href='/wiki/#{parent.wiki_url_name}']").empty?
           issues << "parent not linked: #{parent.name}"
