@@ -69,12 +69,16 @@ module Name::Wiki
         issues << "SeqCode entry not linked"
       end
       if parent && parent != self
-        if xml.xpath("//a[@href='/wiki/#{parent.wiki_url_name}']").empty?
+        i = parent.wiki_url_name
+        unless xml.xpath("//a[@href='/wiki/#{i}']").any? ||
+            xml.xpath("//a[starts-with(@href,'/w/index.php?title=#{i}&')]").any?
           issues << "parent not linked: #{parent.name}"
         end
       end
       valid_children.each do |child|
-        if xml.xpath("//a[@href='/wiki/#{child.wiki_url_name}']").empty?
+        i = child.wiki_url_name
+        unless xml.xpath("//a[@href='/wiki/#{i}']").any? ||
+            xml.xpath("//a[starts-with(@href,'/w/index.php?title=#{i}&')]").any?
           issues << "child not linked: #{child.name}"
         end
       end
