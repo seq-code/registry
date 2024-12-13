@@ -37,8 +37,14 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
       '{{fam' + last + '|' + name.base_name + '}}'
     when 'order'
       '{{ordo' + last + '|' + name.base_name + '}}'
+    when 'class'
+      '{{class' + last + '|' + name.base_name + '}}'
+    when 'phylum'
+      '{{phyl' + last + '|' + name.base_name + '}}'
     else
-      '[[' + name.base_name + ']]' + (last.present? ? '' : '&nbsp;- ')
+      fmt = '[[' + name.base_name + ']]'
+      fmt = "''#{fmt}''" if name.validated?
+      fmt + (last.present? ? ' <br/>' : '&nbsp;- ')
     end
 %>
 <%= wiki_link %>
