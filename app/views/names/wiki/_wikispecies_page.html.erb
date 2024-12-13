@@ -33,12 +33,17 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
       '{{sp' + last + '|' + fmt + '}}'
     when 'genus'
       '{{g' + last + '|' + name.base_name + '}}'
-    when 'family'
-      '{{fam' + last + '|' + name.base_name + '}}'
-    when 'order'
-      '{{ordo' + last + '|' + name.base_name + '}}'
-    when 'class'
-      '{{class' + last + '|' + name.base_name + '}}'
+    # See https://species.wikimedia.org/wiki/Wikispecies:Templates
+    # Sections
+    # - Taxon formatting templates
+    # - Taxa formatting: General rules
+    # 
+    # when 'family'
+    #   '{{fam' + last + '|' + name.base_name + '}}'
+    # when 'order'
+    #   '{{ordo' + last + '|' + name.base_name + '}}'
+    # when 'class'
+    #   '{{class' + last + '|' + name.base_name + '}}'
     when 'phylum'
       '{{phyl' + last + '|' + name.base_name + '}}'
     else
