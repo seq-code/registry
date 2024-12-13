@@ -49,7 +49,8 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
     else
       fmt = '[[' + name.base_name + ']]'
       fmt = "''#{fmt}''" if name.validated?
-      fmt + (last.present? ? ' <br/>' : '&nbsp;- ')
+      fmt += '&nbsp;- ' if last.present?
+      fmt
     end
 %>
 <%= wiki_link %>
