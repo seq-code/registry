@@ -12,7 +12,7 @@ module PlacementsHelper
     tax = {
       ncbi: [
         'NCBI Taxonomy', 'https://www.ncbi.nlm.nih.gov/taxonomy',
-        'July / 2024'
+        'December / 2024'
       ],
       gtdb: [
         'Genome Taxonomy Database', 'https://gtdb.ecogenomic.org/',

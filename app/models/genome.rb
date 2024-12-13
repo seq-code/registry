@@ -243,7 +243,7 @@ class Genome < ApplicationRecord
 
     not_provided = [
       'not provided', 'unavailable', 'missing', 'not applicable',
-      '-', 'n/a'
+      '-', 'n/a', 'null'
     ]
     @source_attributes = {}
     source_hash[:samples].each_value do |sample|
