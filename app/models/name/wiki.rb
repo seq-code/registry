@@ -68,7 +68,7 @@ module Name::Wiki
       if xml.xpath("//a[@href='#{seqcode_url(true)}']").empty?
         issues << "SeqCode entry not linked"
       end
-      if parent && parent != self
+      if parent && parent.validated? && parent != self
         i = parent.wiki_url_name
         unless xml.xpath("//a[@href='/wiki/#{i}']").any? ||
             xml.xpath("//a[starts-with(@href,'/w/index.php?title=#{i}&')]").any?
