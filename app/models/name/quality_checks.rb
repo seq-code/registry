@@ -412,7 +412,7 @@ module Name::QualityChecks
       #   the rules of SeqCode. {Includes two notes}
       # - Rules 23b and 23c are automatically enforced by the SeqCode Registry
       #   or require no additional checks
-      # - Rule 23d [TODO: issue #97]
+      # - Rule 23d [TODO: issue#196, see also issue #97 (closed)]
       # - Rule 23e is implied by the SeqCode Registry, but a comprehensive list
       #   of names should be automatically imported [TODO: issue #90]
       # - Rule 24a
@@ -565,7 +565,7 @@ module Name::QualityChecks
       corrigendum_affecting_initials: {
         message: 'A corrigendum should be issued with reserve when affecting ' \
                  'the first letter of a name',
-        rule_notes: %w[48]
+        rule_notes: %w[48#1]
       }.merge(@@link_to_edit_spelling),
       # - Rule 49 [TODO: Checklist, see also § Recommendation 9.2 and issue #6]:
       #   The genitive and adjectival forms of a personal name are treated as
