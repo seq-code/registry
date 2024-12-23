@@ -552,6 +552,7 @@ ipfw.edu
 iupui.edu
 ius.edu
 indwes.edu
+ias.edu
 iwp.edu
 iona.edu
 iastate.edu
@@ -3819,6 +3820,7 @@ uni-wh.de
 uni-wuerzburg.de
 uni-wuppertal.de
 whu-koblenz.de
+whu.edu
 atu.edu.gh
 acighana.org
 anuc.edu.gh
@@ -7541,6 +7543,7 @@ spsmma.com
 ssaa.ru
 ssaba.smr.ru
 ssau.ru
+samara.university
 ssea.runnet.ru
 sseu.ru
 ssmu.ru
@@ -8311,6 +8314,8 @@ univ-lome.tg
 usc.edu.tt
 utt.edu.tt
 uwi.tt
+sta.uwi.edu
+my.sta.uwi.edu
 disfm.rnu.tn
 isetr.rnu.tn
 isg.rnu.tn
@@ -10432,6 +10437,11 @@ hauniv.edu
 uhcno.edu
 upike.edu
 westernsydney.edu.au
+sancarlos.edu.py
+mycambrian.ca
+cambriancollege.ca
+mlsbu.ac.uk
+stonehill.edu
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10476,3 +10486,4 @@ ufz.de
 teagasc.ie
 ms.xjb.ac.cn
 cea.fr
+iae.ac.cn
