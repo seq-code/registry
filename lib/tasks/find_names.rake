@@ -13,14 +13,14 @@ namespace :names do
       across activates? affiliated after an? and appears? archaea archaeon are
       as associated at bacteria bacterium be belonging belongs? by
       can chromosomes? cla clades? class class[ei]s communities community
-      contains? cultures? detection distinct do enrichment
+      contains? cultures? decreased? detection distinct do enrichment
       facilitate[ds]? fam families family for forms? found from
       gen genes? genomes? genus genera has have
       imply in includes? incorporate? infected infecting inhabiting instead into
       is lacks? lineages? like list living members? names?
       of on ord orders? ordo
-      particles? pathosystems? phyla phylum predominantly predominate[ds]?
-      preferred provided
+      particles? pathosystems? phyla phylum populations? predominantly
+      predominate[ds]? preferred provided
       recovered related remained remains? represents? resulted reveals revised
       shares shuttles? species spp? symbiont
       taxa taxon that the through to transmitted

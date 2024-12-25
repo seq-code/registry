@@ -43,10 +43,16 @@ namespace :ltp do
         if leaf.rank == 'subspecies'
           sp = save_taxonomy(leaf.name.sub(/ subsp?\. .*/, ''))
           sp.update(parent: node)
-          node.update(type_material: 'name', type_accession: sp.id) if type
+          node.update(
+            nomenclatural_type_type: 'Name',
+            nomenclatural_type_id: sp.id
+          ) if type
           node = sp
         elsif leaf.rank == 'species'
-          node.update(type_material: 'name', type_accession: leaf.id) if type
+          node.update(
+            nomenclatural_type_type: 'Name',
+            nomenclatural_type_id: leaf.id
+          ) if type
         end
         leaf.update(parent: node)
       end

@@ -9,8 +9,8 @@ unless name.description.empty?
 end
 json.formal_styling(raw: name.formal_txt, html: name.formal_html)
 json.etymology(name.full_etymology(false))
-json.type_material do
-  json.partial!('names/type_material', object: name.type_object)
+json.nomenclatural_type do
+  json.partial!('names/nomenclatural_type', object: name.nomenclatural_type)
 end
 unless name.notes.empty?
   json.notes(raw: name.notes.body.to_plain_text, html: name.notes.body)

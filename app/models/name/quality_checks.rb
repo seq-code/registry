@@ -458,12 +458,14 @@ module Name::QualityChecks
         rules: %w[26.2 appendix-i]
       }.merge(@@link_to_edit_genome),
       missing_genome_completeness: {
-        message: 'The completeness of the type genome has not been specified',
-        rules: %w[26.2 appendix-i]
+        message: 'The completeness of the type genome has not been ' \
+                 'specified and will be automatically filled',
+        recommendations: %w[appendix-i]
       }.merge(@@link_to_edit_genome),
       missing_genome_contamination: {
-        message: 'The contamination of the type genome has not been specified',
-        rules: %w[26.2 appendix-i]
+        message: 'The contamination of the type genome has not been' \
+                 'specified and will be automatically filled',
+        recommendations: %w[appendix-i]
       }.merge(@@link_to_edit_genome),
       # - Rule 26.3 covered in § Rule 16 and § Rule 18a
       # - Rule 26.4 covered in § Recommendation 7
@@ -727,7 +729,8 @@ module Name::QualityChecks
     end
 
     def set
-      @set_h.values
+      return @set_h.values unless name.qc_for_tutorial
+      @set_h.values.select(&:is_tutorial_error?)
     end
 
     def checks
@@ -812,8 +815,7 @@ module Name::QualityChecks
 
     if !type?
       @qc_warnings.add(:missing_type)
-    elsif %w[species subspecies].include?(inferred_rank) &&
-          !%w[nuccore assembly].include?(type_material)
+    elsif nomenclatural_type_type != expected_type_type
       @qc_warnings.add(:unrecognized_type_material)
     end
 

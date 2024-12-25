@@ -169,7 +169,7 @@ end
     "rank": <i>str</i>,
     "status_name": <i>str</i>,
     "priority_date": <i>date_time</i>,
-    "type_material": <i>type_material</i>,
+    "nomenclatural_type": <i>nomenclatural_type</i>,
     "created_at": <i>date_time</i>,
     "updated_at": <i>date_time</i>,
     "url": <i>str</i>,
@@ -186,12 +186,12 @@ end
     </ul>
   </div>
 
-  <!-- Model type_material -->
+  <!-- Model nomenclatural_type -->
   <button class="btn btn-block btn-light text-left"
           type="button" data-toggle="collapse"
           data-target="#actions-accordion-19" aria-expanded="false"
           aria-controls="actions-accordion-19" id="actions-accordion-h-19">
-    <h4>Model: <code>type_material</code></h4>
+    <h4>Model: <code>nomenclatural_type</code></h4>
   </button>
   <div id="actions-accordion-19" class="collapse p-3"
       aria-labelledby="actions-accordion-h-19"
@@ -337,7 +337,7 @@ end
   "description": <i>text_with_format</i>,
   "formal_styling": <i>text_with_format</i>,
   "etymology": <i>str</i>,
-  "type_material": <i>type_material</i>,
+  "nomenclatural_type": <i>nomenclatural_type</i>,
   "notes": <i>text_with_format</i>,
   "proposed_in": <i>publication_item</i>,
   "not_validly_proposed_in": [
@@ -567,9 +567,9 @@ end
       "rank": <i>str</i>,
       "status_name": <i>str</i>,
       "priority_date": <i>date_time</i>,
-      "type_material": {
+      "nomenclatural_type": {
         <i>str</i>: <i>str</i>,
-        <i>type_material</i>
+        <i>nomenclatural_type</i>
       },
       "classification": <i>classification</i>,
       "created_at": <i>date_time</i>,
@@ -582,7 +582,7 @@ end
       <ul>
         <li>
           The first key-value pair in
-          <b><code>values[*].type_material</code></b> corresponds to
+          <b><code>values[*].nomenclatural_type</code></b> corresponds to
           database and accession, where the database (key) is 
           <code>"nuccore"</code> or <code>"assembly"</code>
         </li>

@@ -31,7 +31,12 @@ class Name < ApplicationRecord
   )
   has_many(:observe_names, dependent: :destroy)
   has_many(:observers, through: :observe_names, source: :user)
+  has_many(
+    :typified_names, class_name: 'Name',
+    as: :nomenclatural_type, dependent: :nullify
+  )
 
+  belongs_to(:nomenclatural_type, polymorphic: true, optional: true)
   belongs_to(
     :proposed_in, optional: true,
     class_name: 'Publication', foreign_key: 'proposed_in_id'
@@ -74,6 +79,7 @@ class Name < ApplicationRecord
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
 
+  before_validation(:observe_nomenclatural_type_entry)
   before_validation(:harmonize_register_and_status)
   before_validation(:standardize_etymology)
   before_validation(:prevent_self_parent)
@@ -101,6 +107,13 @@ class Name < ApplicationRecord
       message: 'cannot be declared if the parent taxon is set'
     }
   )
+  validates(
+    :nomenclatural_type_type,
+    presence: {
+      if: -> { nomenclatural_type_id? || nomenclatural_type_entry.present? }
+    }
+  )
+  validates(:nomenclatural_type_id, presence: { if: :nomenclatural_type_type? })
 
   include HasObservers
   include HasExternalResources
@@ -114,6 +127,8 @@ class Name < ApplicationRecord
   include Name::Wiki
 
   attr_accessor :only_display
+  attr_accessor :nomenclatural_type_entry
+  attr_accessor :qc_for_tutorial
 
   # ============ --- CLASS --- ============
 
@@ -291,18 +306,14 @@ class Name < ApplicationRecord
       status_hash.select { |_, v| v[:valid] }.keys
     end
 
-    def type_material_hash
+    def nomenclatural_type_type_hash
       {
-        name: { name: 'Name', sp: false },
-        nuccore: { name: 'INSDC Nucleotide', sp: true },
-        assembly: { name: 'NCBI Assembly', sp: true },
-        strain: { name: 'Strain', sp: true },
-        other: { name: 'Other', sp: true }
+        name: { name: 'Name', class: 'Name', sp: false },
+        nuccore: { name: 'INSDC Nucleotide', class: 'Genome', sp: true },
+        assembly: { name: 'NCBI Assembly', class: 'Genome', sp: true },
+        strain: { name: 'Strain', class: 'Strain', sp: true },
+        other: { name: 'Other', class: 'GenericTypeMaterial', sp: true }
       }
-    end
-
-    def type_material_name(type)
-      type_material_hash[type.to_sym]&.[](:name)
     end
 
     ##
@@ -463,6 +474,17 @@ class Name < ApplicationRecord
     name.gsub(/^Candidatus /, '')
   end
 
+  # TODO - Performance issue
+  # This loads the full parent, which causes N+1 issues when simply rendering
+  # a list of names
+  def is_parent_type?
+    parent&.nomenclatural_type_id&.==(id)
+  end
+
+  def is_type_species?
+    rank == 'species' && is_parent_type?
+  end
+
   def abbr_name(name = nil, assume_valid = false)
     name ||= self.name
     if candidatus?
@@ -471,7 +493,7 @@ class Name < ApplicationRecord
       "<i>#{$1}</i> subsp. <i>#{$2}</i>".html_safe
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
-        if rank == 'species' && parent&.type_accession&.==(id.to_s)
+        if is_type_species?
           " <sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
         else
           ''
@@ -489,7 +511,7 @@ class Name < ApplicationRecord
       "#{$1} subsp. #{$2}"
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "#{name}" +
-        if rank == 'species' && parent&.type_accession&.==(id.to_s)
+        if is_type_species?
           " (T#{'s' unless icnp? || icn?})"
         else
           ''
@@ -507,7 +529,7 @@ class Name < ApplicationRecord
       "<i>#{$1}</i> subsp. <i>#{$2}</i>".html_safe
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
-        if rank == 'species' && parent&.type_accession&.==(id.to_s)
+        if is_type_species?
           "<sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
         end
     else
@@ -616,13 +638,13 @@ class Name < ApplicationRecord
   end
 
   def gtdb_genome?
-    type? && type_material == 'assembly'
+    type_is_genome? && type_genome.database == 'assembly'
   end
 
   def gtdb_genome_url
     return unless gtdb_genome?
 
-    'https://gtdb.ecogenomic.org/genome?gid=%s' % type_accession
+    'https://gtdb.ecogenomic.org/genome?gid=%s' % type_genome.accession
   end
 
   def gtdb_tree_url
@@ -728,10 +750,12 @@ class Name < ApplicationRecord
   end 
 
   def can_edit_validated?(user)
+    return false if only_display
     can_edit?(user) || user.try(:curator?)
   end
 
   def can_edit_type?(user)
+    return false if only_display
     can_edit?(user) || (can_edit_validated?(user) && !type?)
   end
 
@@ -905,34 +929,19 @@ class Name < ApplicationRecord
   end
 
   def type?
-    return false unless type_material? && type_accession?
-
-    # TODO
-    # This uggly bit is to account for type names that have been
-    # eliminated after setting them as type. This causes a mostly
-    # unnecessary DB query, so a more efficient solution would be
-    # to trigger unlinking on name destruction
-    if type_material == 'name' && type_name(false).nil?
-      # TODO
-      # Set but don't save for now, until this is properly addressed
-      self.type_material = nil
-      self.type_accession = nil
-      false
-    else
-      true
-    end
+    nomenclatural_type.present?
   end
 
   def type_is_name?
-    type? && type_material == 'name'
+    type? && nomenclatural_type_type == 'Name'
   end
 
   def type_is_genome?
-    type? && %w[assembly nuccore].include?(type_material)
+    type? && nomenclatural_type_type == 'Genome'
   end
 
   def type_is_strain?
-    type? && type_material == 'strain'
+    type? && nomenclatural_type_type == 'Strain'
   end
 
   def type_link
@@ -942,38 +951,34 @@ class Name < ApplicationRecord
       end
   end
 
-  def type_name(check_material = true)
-    if !check_material || type_is_name?
-      @type_name ||= self.class.where(id: type_accession).first
-      @type_name == self ? nil : @type_name # Avoid self-referencing issues
-    end
+  def type_name
+    nomenclatural_type if type_is_name?
   end
-
-  def type_object
-    type_is_genome? ? genome : type_is_name? ? type_name : nil
-  end
-
-  attr_writer :type_name
 
   def type_genome
-    if type_is_genome?
-      @type_genome ||= Genome.find_or_create(type_material, type_accession)
-    end
+    nomenclatural_type if type_is_genome?
+  end
+
+  def type_strain
+    nomenclatural_type if type_is_strain?
   end
 
   ##
   # Attempts to update the accession of the type genome reusing the same genome
   # entry. If passed, it can also update the database. Please use with caution!
+  # Note that MiGA objects are not automatically updated
   def update_type_genome(new_accession, new_database = nil)
-    g = genome
-    new_database ||= g.database
-    g.update(accession: new_accession, database: new_database) &&
-      update(type_accession: new_accession, type_material: new_database)
+    par = { accession: new_accession }
+    par[:database] = new_database unless new_database.nil?
+    type_genome&.update(par)
   end
 
+  ##
+  # TODO
+  # This should be migrated to +Strain+
   def type_strain_parsed
     return {} unless type_is_strain?
-    strain_parsed(type_accession)
+    strain_parsed(type_strain.numbers_string)
   end
 
   def genome_strain_parsed
@@ -1006,26 +1011,53 @@ class Name < ApplicationRecord
       .compact.uniq.count
   end
 
+  ##
+  # Returns the expected type of type as the String representation of the
+  # expected class
+  # 
+  # Note that this differs from +expected_type_rank+ in that the current
+  # function uses +inferred_rank+ regardless of defined +rank+
+  def expected_type_type
+    return 'Name' unless %w[species subspecies].include?(inferred_rank)
+
+    if icnp? || icn?
+      # Treat with care, as both could also support 'GenericTypeMaterial'
+      'Strain'
+    else
+      'Genome'
+    end
+  end
+
+  ##
+  # Returns the expected rank of nomenclatural type if that's a name, or
+  # +nil+ otherwise
+  #
+  # Note that this differs from +expected_type_type+ in that the current
+  # function strictly relies on +rank+ and does not try to +infer_rank+
   def expected_type_rank
-    return nil if !rank? || %w[species subspecies domain].include?(rank)
+    return nil if !rank? || %w[species subspecies].include?(rank)
     return 'species' if rank == 'genus'
     'genus'
   end
 
-  def type_material_name
-    self.class.type_material_name(type_material) if type?
+  def nomenclatural_type_type_name
+    nomenclatural_type.try(:type_of_type)
   end
 
-  def type_accession_text
-    type_accession.gsub(/,(?!\s)/, ', ')
+  def type_of_type
+    'Name'
   end
 
   def type_text
-    "#{type_material_name}: #{type_accession_text}" if type?
+    if type_is_name?
+      'Name: ' + type_name.display
+    else
+      nomenclatural_type.try(:display)
+    end
   end
 
-  def possible_type_materials
-    self.class.type_material_hash.select do |_, v|
+  def possible_nomenclatural_type_types
+    self.class.nomenclatural_type_type_hash.select do |_, v|
       v[:sp] == (%w[species subspecies].include?(inferred_rank))
     end
   end
@@ -1130,7 +1162,7 @@ class Name < ApplicationRecord
   end
 
   def notified?
-    register.try(:notified?)
+    !!register.try(:notified?)
   end
 
   def priority_date
@@ -1181,6 +1213,30 @@ class Name < ApplicationRecord
     update_column(:name_order, no) unless name_order == no
   end
 
+  def nomenclatural_type_from_entry
+    acc = nomenclatural_type_entry.to_s.strip
+    return nil unless acc.present?
+
+    case nomenclatural_type_type.to_s.downcase
+    when 'name'
+      acc =~ /\A[0-9]+\z/ ?
+        Name.where(id: acc).first :
+        Name.find_by_variants(acc)
+    when 'genome'
+      Genome.where(id: acc).first
+    when 'strain'
+      Strain.find_or_create_by(numbers_string: acc)
+    when *Genome.db_names.keys.map(&:to_s)
+      Genome.find_or_create(nomenclatural_type_type, acc)
+    else
+      GenericTypeMaterial.find_or_create_by(text: acc)
+    end
+  end
+
+  def old_type_definition
+    ['name', id]
+  end
+
   private
 
   def prevent_self_parent
@@ -1201,6 +1257,12 @@ class Name < ApplicationRecord
 
     self.name.strip!
     self.name.gsub!(/\s+/, ' ')
+  end
+
+  def observe_nomenclatural_type_entry
+    return if nomenclatural_type_entry.nil?
+
+    self.nomenclatural_type = nomenclatural_type_from_entry
   end
 
   def harmonize_register_and_status
@@ -1240,8 +1302,6 @@ class Name < ApplicationRecord
     @reviewers = nil
     @curators  = nil
     @lineage   = nil
-    @type_name = nil
-    @type_genome = nil
     @alt_placements = nil
     @alt_child_placements = nil
     @placement = nil

@@ -1,7 +1,7 @@
 
 <%= render(partial: 'tutorials/lineage/header', locals: { f: f }) %>
 
-<% if @name.qc_warnings.errors? %>
+<% if @name.qc_warnings.tutorial_errors? %>
   <div class="alert alert-warning">
     Please check the warnings below. If you believe any of the warnings
     should be bypassed, please indicate the reason(s) in the box for
@@ -10,6 +10,7 @@
 <% end %>
 
 <% @name.only_display = true %>
+<% @name.qc_for_tutorial = true %>
 <%= render(partial: 'names/quality_checks', locals: { force_qc_view: true }) %>
 <!-- To be reviewed -->
 <%= render(partial: 'names/taxonomy') %>

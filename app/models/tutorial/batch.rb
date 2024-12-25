@@ -16,7 +16,8 @@ module Tutorial::Batch
 
     def name_keys_base
       %i[
-        name rank description syllabication parent type_material type_accession
+        name rank description syllabication parent
+        nomenclatural_type_type nomenclatural_type_entry
       ]
     end
 
@@ -44,6 +45,12 @@ module Tutorial::Batch
             end
           end
 
+          # Deal with older type definitions
+          if j['type_material'].present? || j['type_accession'].present?
+            j['nomenclatural_type_type'] = j.delete('type_material')
+            j['nomenclatural_type_entry'] = j.delete('type_accession')
+          end
+
           # Deal with foreign keys
           if j['parent'] &&
                j['parent'] =~ /^incertae sedis( \((Archaea|Bacteria)\))?/
@@ -51,8 +58,10 @@ module Tutorial::Batch
             j['parent'] = nil
           end
           j['parent'] &&= Name.new(name: j['parent'])
-          if j['type_material'] == 'name' && j['type_accession']
-            j['type_name'] = Name.new(name: j['type_accession'])
+          if j['nomenclatural_type_type'].to_s.downcase == 'name' &&
+                j['nomenclatural_type_entry'].present?
+            j['nomenclatural_type'] =
+              Name.new(name: j['nomenclatural_type_entry'])
           end
 
           # Additional modifications
@@ -75,23 +84,28 @@ module Tutorial::Batch
   end
 
   def name_exists?(name)
-    return false unless name
+    return false unless name.present?
     return true if ephemeral_names.map(&:name).include? name
-    !Name.find_by_variants(name).nil?
+    Name.find_by_variants(name).present?
+  end
+
+  def genome_definition_from_name(name)
+    name.type? ?
+      [name.type_genome.database, name.type_genome.accession] :
+      [name.nomenclatural_type_type, name.nomenclatural_type_entry]
   end
 
   def genome_exists?(name)
-    genome = [name.type_material, name.type_accession]
+    genome = genome_definition_from_name(name)
     ephemeral_genomes.map { |g| [g.database, g.accession] }.include? genome
   end
 
   def genome_is_unique?(name)
-    g = Genome.find_by(
-      database: name.type_material, accession: name.type_accession
-    )
-    return true if g.nil? || g.names.empty?
+    genome = genome_definition_from_name(name)
+    g = Genome.find_by(database: genome[0], accession: genome[1])
+    return true unless g.present?
 
-    g.names.map(&:name).include?(name.name)
+    g.typified_names.pluck(&:name).include?(name.name)
   end
 
   def check_ephemeral_names(user)
@@ -130,22 +144,23 @@ module Tutorial::Batch
       end
 
       # Is the type name already registered?
-      if name.type_material == 'name'
-        if !name_exists?(name.type_name.try(:name))
+      if name.nomenclatural_type_type.to_s.downcase == 'name'
+        if !name_exists?(
+               name.nomenclatural_type_entry || name.type_name.try(:name))
           name.errors.add(
-            :type_accession, :does_not_exist,
+            :nomenclatural_type_entry, :does_not_exist,
             message: 'is not an existing name and is not proposed in this list'
           )
         end
       else
        if !genome_exists?(name)
          name.errors.add(
-           :type_accession, :does_not_exist,
+           :nomenclatural_type_entry, :does_not_exist,
            message: 'is not an existing genome and is not described here'
          )
        elsif !genome_is_unique?(name)
          name.errors.add(
-           :type_accession, :is_a_type,
+           :nomenclatyral_type_entry, :is_a_type,
            message: 'is already the type genome for a different name'
          )
        end
@@ -282,7 +297,9 @@ module Tutorial::Batch
         # Remove foreign keys in first pass
         par = par_ori.dup
         par['parent'] = nil
-        par['type_accession'] = nil if par['type_material'] == 'name'
+        if par['nomenclatural_type_type'].to_s.downcase == 'name'
+          par['nomenclatural_type_entry'] = nil
+        end
 
         # Claim/update or create
         name = Name.find_by_variants(par['name'])
@@ -296,7 +313,7 @@ module Tutorial::Batch
       end
 
       # Link foreign keys
-      default_pars = {status: 0, created_by: user}
+      default_pars = { status: 0, created_by: user }
       param_names.each do |par|
         new_par = {}
 
@@ -311,9 +328,10 @@ module Tutorial::Batch
         end
 
         # Type names
-        if par['type_material'] == 'name' && par['type_material']
-          new_par[:type_accession] =
-            Name.find_by_variants(par['type_accession']).try(:id)
+        if par['nomenclatural_type_type'].to_s.downcase == 'name' &&
+              par['nomenclatural_type_entry'].present?
+          new_par[:nomenclatural_type] =
+            Name.find_by_variants(par['nomenclatural_type_entry'])
           unless new_par[:type_accession]
             name = Name.new(default_pars.merge(name: par['type_material']))
             name.save!

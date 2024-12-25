@@ -34,8 +34,8 @@ namespace :lpsn do
       if pars[:rank] == 'genus'
         type_name = row['nomenclatural_type']
       else
-        pars[:type_material] = 'strain'
-        pars[:type_accession] = row['nomenclatural_type'].gsub('; ', ' = ')
+        pars[:nomenclatural_type_type] = 'Strain'
+        pars[:nomenclatural_type_entry] = row['nomenclatural_type'].gsub('; ', ' = ')
       end
 
       # All additional data
@@ -77,9 +77,9 @@ namespace :lpsn do
       if entry[:correct_name].present?
         pars[:correct_name_id] = parsed_names[entry[:correct_name]][:name_id]
       end
-      if entry[:type_material].present?
-        pars[:type_material] = 'name'
-        pars[:type_accession] = parsed_names[entry[:type_material]][:name_id]
+      if entry[:type_name].present?
+        pars[:nomenclatural_type_type] = 'Name'
+        pars[:nomenclatural_type_id] = parsed_names[entry[:type_name]][:name_id]
       end
       Name.find(entry[:name_id]).update(pars) unless pars.empty?
     end

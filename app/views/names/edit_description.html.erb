@@ -4,7 +4,8 @@
 <%= simple_form_for(@name) do |f| %>
   <%= f.input(
         :description, as: :rich_text_area,
-        hint: 'Indicate the properties of the taxon (not the etymology)'
+        hint: 'Indicate the properties of the taxon and the circumscription ' \
+              '(not the etymology)'
       ) %>
 
   <br/>

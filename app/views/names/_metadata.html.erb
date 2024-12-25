@@ -17,7 +17,7 @@
         <% if @name.gtdb_genome? %>
           <li>
             <%= link_to(@name.gtdb_genome_url, target: '_blank') do %>
-              GTDB Genome: <%= @name.type_accession %>
+              GTDB Genome: <%= @name.nomenclatural_type.accession %>
               <%= fa_icon('external-link-alt') %>
             <% end %>
           </li>

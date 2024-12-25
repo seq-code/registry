@@ -10,7 +10,7 @@ module Name::Wiki
     return "\"#{y}\"" unless validated?
 
     y = "''#{y}''"
-    if rank == 'species' && parent&.type_accession&.==(id.to_s)
+    if rank == 'species' && parent&.nomenclatural_type_id&.==(id)
       y += " (T#{'s' unless icnp? || icn?})"
     end
     opts[:eol] ? "#{y} <br/>" : y

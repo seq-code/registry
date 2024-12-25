@@ -163,11 +163,14 @@
           <li>
             <%= display_link(child) %>
             <%= placement_preference(child.placement) %>
-            <% if set_type && @name.type_accession.to_i != child.id %>
+            <% if set_type && @name.nomenclatural_type != child %>
               <%= link_to(
                     name_url(
                       @name,
-                      name: { type_material: :name, type_accession: child.id }
+                      name: {
+                        nomenclatural_type_type: 'Name',
+                        nomenclatural_type_id: child.id
+                      }
                     ),
                     method: :patch,
                     class: 'badge badge-pill badge-primary',

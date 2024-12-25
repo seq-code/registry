@@ -105,9 +105,14 @@ module Tutorial::Lineage
         when 'species'
           # Do nothing
         when 'genus'
-          name.update!(type_material: :name, type_accession: types[:species])
+          name.update!(
+            nomenclatural_type_type: 'Name',
+            nomenclatural_type_id: types[:species]
+          )
         else
-          name.update!(type_material: :name, type_accession: types[:genus])
+          name.update!(
+            nomenclatural_type_type: 'Name',
+            nomenclatural_type_id: types[:genus])
         end
       end
 
@@ -160,7 +165,7 @@ module Tutorial::Lineage
     if current_name.description? && params[:next]
       update!(step: step + 1)
     else
-      @next_action = [:edit, current_name, tutorial: self]
+      @next_action = [:edit_description, current_name, tutorial: self]
     end
   end
 

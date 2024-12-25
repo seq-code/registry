@@ -46,6 +46,7 @@ class NamesController < ApplicationController
     @names =
       Name.where('LOWER(name) LIKE ?', "#{name}%")
           .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
+          .limit(20)
     @names = @names.where(rank: rank) if rank
   end
 
@@ -107,7 +108,7 @@ class NamesController < ApplicationController
   # GET /type-genomes
   # GET /type-genomes.json
   def type_genomes
-    @names = Name.where(status: 15, type_material: [:nuccore, :assembly])
+    @names = Name.where(status: 15, nomenclatural_type_type: :Genome)
                  .reorder(priority_date: :desc, updated_at: :desc)
                  .paginate(page: params[:page], per_page: 50)
     @crumbs = [['Genomes', genomes_path], 'Type']
@@ -308,22 +309,8 @@ class NamesController < ApplicationController
     name_params[:syllabication_reviewed] = true if name_params[:syllabication]
     name_params[:register] = nil if name_params[:register]&.==('')
 
-    if name_params[:type_material]&.==('name')
+    if name_params[:nomenclatural_type_type]&.==('Name')
       name_params[:genome_strain] = nil
-      acc = name_params[:type_accession]
-      type_name =
-        if acc.empty?
-          nil
-        elsif acc =~ /\A[0-9]+\z/
-          Name.where(id: acc).first
-        else
-          Name.where(name: acc).first
-        end
-      name_params[:type_accession] = type_name.try(:id)
-
-      if !acc.empty? && type_name.nil?
-        flash[:alert] = 'Type name does not exist'
-      end
     end
 
     if params[:edit].==('redirect')
@@ -578,13 +565,19 @@ class NamesController < ApplicationController
           notes ncbi_taxonomy lpsn_url gtdb_accession algaebase_species
           algaebase_taxonomy
         ]
-        fields += %i[type_material type_accession] unless @name.type?
+        unless @name.type?
+          fields += %i[
+            nomenclatural_type_type nomenclatural_type_id
+            nomenclatural_type_entry
+          ]
+        end
       end
 
       if @name.can_edit?(current_user)
         fields += %i[
           name rank description syllabication syllabication_reviewed
-          type_material type_accession etymology_text register genome_strain
+          nomenclatural_type_type nomenclatural_type_id nomenclatural_type_entry
+          etymology_text register genome_strain
         ] + etymology_pars
       end
 

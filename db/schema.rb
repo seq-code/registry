@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_26_065923) do
+ActiveRecord::Schema.define(version: 2024_12_16_162736) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -81,6 +81,12 @@ ActiveRecord::Schema.define(version: 2024_11_26_065923) do
     t.index ["author_id"], name: "index_contacts_on_author_id"
     t.index ["publication_id"], name: "index_contacts_on_publication_id"
     t.index ["user_id"], name: "index_contacts_on_user_id"
+  end
+
+  create_table "generic_type_materials", force: :cascade do |t|
+    t.string "text", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "genome_sequencing_experiments", force: :cascade do |t|
@@ -223,9 +229,12 @@ ActiveRecord::Schema.define(version: 2024_11_26_065923) do
     t.datetime "wikispecies_checked_at"
     t.text "wikispecies_issues_text"
     t.text "name_order"
+    t.string "nomenclatural_type_type"
+    t.integer "nomenclatural_type_id"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["name_order"], name: "index_names_on_name_order"
+    t.index ["nomenclatural_type_type", "nomenclatural_type_id"], name: "index_names_on_nomenclatural_type"
     t.index ["parent_id"], name: "index_names_on_parent_id"
     t.index ["register_id"], name: "index_names_on_register_id"
     t.index ["tutorial_id"], name: "index_names_on_tutorial_id"
@@ -394,6 +403,12 @@ ActiveRecord::Schema.define(version: 2024_11_26_065923) do
     t.datetime "retrieved_at"
     t.string "biosample_accession_2"
     t.index ["sra_accession"], name: "index_sequencing_experiments_on_sra_accession", unique: true
+  end
+
+  create_table "strains", force: :cascade do |t|
+    t.string "numbers_string", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "subjects", force: :cascade do |t|

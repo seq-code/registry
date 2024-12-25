@@ -2,33 +2,37 @@
 <hr/>
 
 <%= simple_form_for(@name) do |f| %>
-  <% if @name.possible_type_materials.size == 1 %>
+  <% if @name.expected_type_type == 'Name' %>
     <%=
       f.input(
-        :type_material, as: :hidden,
-        input_html: { value: @name.possible_type_materials.keys.first }
+        :nomenclatural_type_type, as: :hidden, input_html: { value: 'Name' }
       )
     %>
     <%=
       f.input(
-        :type_accession, as: :string, label: 'Type name', autofocus: true,
+        :nomenclatural_type_entry, as: :string, label: 'Type name',
+        autofocus: true,
         input_html: {
           data: { behavior: 'autocomplete', autocomplete: 'names' },
           value: @name.type_name&.name
         }
       )
     %>
+    <%= @name.type? %>
   <% else %>
+    <% legacy =  @name.nomenclatural_type.try(:old_type_definition) || [] %>
     <%=
       f.input(
-        :type_material, label: 'Type material',
-        collection: @name.possible_type_materials.map { |k, v| [v[:name], k] }
+        :nomenclatural_type_type, label: 'Type material',
+        collection:
+          @name.possible_nomenclatural_type_types.map { |k, v| [v[:name], k] },
+        selected: legacy[0]
       )
     %>
     <%=
       f.input(
-        :type_accession, as: :string, label: 'Sequence accession',
-        hint: 'Type accession'
+        :nomenclatural_type_entry, as: :string, label: 'Sequence accession',
+        hint: 'Type accession', input_html: { value: legacy[1] }
       )
     %>
     <div id="name_genome_strain_container">
@@ -43,25 +47,30 @@
       %>
     </div>
     <script>
-      $('#name_type_material').change(function() {
+      $('#name_nomenclatural_type_type').change(function() {
         var container = $('#name_genome_strain_container');
         var selected  = $(this).val();
-        var is_genome = selected != "strain" && selected != "";
-        var acc_label = $('label[for=name_type_accession]');
-        var acc_hint  = $('.name_type_accession small.form-text')
+        var is_genome = !["strain", "other", ""].includes(selected);
+        var acc_label = $('label[for=name_nomenclatural_type_entry]');
+        var acc_hint  = $('.name_nomenclatural_type_entry small.form-text');
         if (is_genome) {
           container.show();
           acc_label.html('Sequence accession');
-          acc_hint.html('Use "," to separate multiple accessions.');
+          acc_hint.html('Use "," to separate multiple accessions');
+        } else if (selected == "other") {
+          container.hide();
+          $('#name_genome_strain').val('');
+          acc_label.html('Text');
+          acc_hint.html('Describe in full the type material');
         } else {
           container.hide();
           $('#name_genome_strain').val('');
           acc_label.html('Accession');
-          acc_hint.html('Use "=" to separate multiple equivalent accessions.');
+          acc_hint.html('Use "=" to separate multiple equivalent accessions');
         }
-        if (selected == "" || selected == "other") acc_hint.html('');
+        if (selected == "") acc_hint.html('');
       });
-      $('#name_type_material').change();
+      $('#name_nomenclatural_type_type').change();
     </script>
   <% end %>
   <br/>

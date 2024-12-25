@@ -5,6 +5,10 @@ class Genome < ApplicationRecord
   )
   has_many(:genome_sequencing_experiments, dependent: :destroy)
   has_many(:sequencing_experiments, through: :genome_sequencing_experiments)
+  has_many(
+    :typified_names, class_name: 'Name',
+    as: :nomenclatural_type, dependent: :nullify
+  )
 
   before_validation(:standardize_source)
   after_save(:monitor_source_changes)
@@ -34,6 +38,13 @@ class Genome < ApplicationRecord
       if database.present? && accession.present?
         find_or_create_by(database: database, accession: accession)
       end
+    end
+
+    def db_names
+      {
+        nuccore: 'INSDC Nucleotide',
+        assembly: 'NCBI Assembly'
+      }
     end
 
     def kinds
@@ -86,7 +97,7 @@ class Genome < ApplicationRecord
         ],
         other: %i[
           host ph depth temp temperature rel_to_oxygen geographic_location_depth
-          chlorophyll
+          chlorophyll isol_growth_condt
         ],
         package: %i[
           ncbi_package ena_checklist ncbi_submission_package biosamplemodel
@@ -112,8 +123,11 @@ class Genome < ApplicationRecord
   end
 
   def names
+    # TODO
+    # This could be replaced with something like a join of `typified_names`
+    # and `referenced_names` once the latter is implemented
     @names ||=
-      Name.where(type_material: database, type_accession: accession)
+      Name.where(nomenclatural_type_type: 'Genome', nomenclatural_type_id: id)
       .or(Name.where(genome_id: id))
   end
 
@@ -124,11 +138,13 @@ class Genome < ApplicationRecord
   ##
   # Attempts to update the accession of the genome and all associated names.
   # If passed, it can also update the database. Please use with caution!
+  # 
+  # TODO
+  # This function should be deprecated, as the new system of nomenclatural types
+  # makes it superfluous
   def update_accession(new_accession, new_database = nil)
     new_database = database unless new_database.present?
     self.class.transaction do
-      g_par = { type_accession: new_accession, type_material: new_database }
-      names.each { |name| name.update(g_par) or return false }
       update(accession: new_accession, database: new_database)
     end
   end
@@ -307,12 +323,16 @@ class Genome < ApplicationRecord
     @links ||= Hash[accession.split(/ *, */).map { |i| [i, link(i)] }]
   end
 
-  def db_text
-    Name.type_material_name(database)
+  def db_name
+    self.class.db_names[database.to_sym]
+  end
+
+  def type_of_type
+    db_name
   end
 
   def text
-    "#{db_text}: #{accession}"
+    "#{db_name}: #{accession}"
   end
 
   def display(_html = true)
@@ -429,6 +449,10 @@ class Genome < ApplicationRecord
           .where(biosample_accession_2: biosample_accessions_all)
           .where.not(id: sequencing_experiments.pluck(:id))
     end
+  end
+
+  def old_type_definition
+    [database, accession]
   end
 
   private

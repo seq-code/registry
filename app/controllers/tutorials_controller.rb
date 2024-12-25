@@ -63,12 +63,18 @@ class TutorialsController < ApplicationController
     @tutorial.destroy
 
     respond_to do |format|
-      format.html { redirect_to tutorials_url, notice: 'Guided registration was successfully destroyed' }
+      format.html do
+        redirect_to(
+          tutorials_url,
+          notice: 'Guided registration was successfully destroyed'
+        )
+      end
       format.json { head :no_content }
     end
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_tutorial
       @tutorial = Tutorial.find(params[:id])

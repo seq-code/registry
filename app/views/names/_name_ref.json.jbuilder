@@ -1,7 +1,7 @@
 # Basic data
 json.(name, :id, :name, :rank, :status_name, :priority_date)
-json.type_material do
-  json.partial!('names/type_material', object: name.type_object)
+json.nomenclatural_type do
+  json.partial!('names/nomenclatural_type', object: name.nomenclatural_type)
 end
 
 # Local metadata

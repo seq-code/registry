@@ -28,7 +28,10 @@ module NamesHelper
             content_tag(:span, ')')
         end
       else
-        content_tag(:span, "Illegal name: #{name.type_accession}", class: 'text-danger')
+        content_tag(
+          :span, "Illegal name: #{name.nomenclatural_type_id}",
+          class: 'text-danger'
+        )
       end
     elsif name.type_genome
       link_to(name.type_genome.text, name.type_genome)
