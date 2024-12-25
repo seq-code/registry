@@ -27,7 +27,7 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
     when 'species'
       fmt = (name.genus&.base_name || '').split(//, 2).join('|')
       fmt += '|' + (name.last_epithet || '')
-      if is_type_species?
+      if name.is_type_species?
         fmt += '|T' + (name.seqcode? ? 's' : '')
       end
       '{{sp' + last + '|' + fmt + '}}'
