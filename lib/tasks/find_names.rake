@@ -17,7 +17,7 @@ namespace :names do
       facilitate[ds]? fam families family for forms? found from
       gen genes? genomes? genus genera has have
       imply in includes? incorporate? infected infecting inhabiting instead into
-      is lacks? lineages? like list living members? names?
+      is lacks? lineages? like list living may members? names?
       of on ord orders? ordo
       particles? pathosystems? phyla phylum populations? predominantly
       predominate[ds]? preferred provided
