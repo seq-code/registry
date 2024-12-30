@@ -1,0 +1,14 @@
+<% provide(:title, @strain.title) %>
+<%=
+  download_buttons([
+    [strain_url(@strain, format: :json), 'file-code', 'JSON']
+  ])
+%>
+<h1><%= @strain.title %></h1>
+<hr/>
+<%= render(partial: 'warnings') %>
+<%= render(partial: 'name_box') %>
+<%= render(partial: 'strain_info', locals: { stand_alone: true }) %>
+<%= render(partial: 'metadata') %>
+<%= render(partial: 'shared/cc') %>
+

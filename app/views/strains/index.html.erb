@@ -1,0 +1,15 @@
+<div class="text-right pt-4 float-right"><%= list_type_selector %></div>
+<h1>
+  Strains
+  <div class="badge badge-count"><%= @strains.count %></div>
+</h1>
+<hr/>
+
+<%= adaptable_list(set: @strains) do |list| %>
+  <% @strains.each do |strain| %>
+    <%= render(
+          partial: 'strain_item', locals: { list: list, strain: strain }
+        ) %>
+  <% end %>
+<% end %>
+

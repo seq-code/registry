@@ -119,6 +119,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # Strains
+  resources(:strains, only: %i[index show]) do
+    member do
+      get  :strain_info
+    end
+  end
+
   # Checks
   post 'check/:name_id(.:format)' => 'checks#update', as: :check
 

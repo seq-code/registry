@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_12_16_162736) do
+ActiveRecord::Schema.define(version: 2024_12_28_000712) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -409,6 +409,8 @@ ActiveRecord::Schema.define(version: 2024_12_16_162736) do
     t.string "numbers_string", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "strain_info_json"
+    t.datetime "queued_external"
   end
 
   create_table "subjects", force: :cascade do |t|

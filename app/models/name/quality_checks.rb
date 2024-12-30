@@ -398,7 +398,7 @@ module Name::QualityChecks
       #   TODO: An automated test could be included, but it would rely on the
       #         preferred taxonomy and would require estimates of priority dates
       #         for ICNP and ICN names. This would be very useful as the number
-      #         of taxa grows larger.
+      #         of taxa grows larger. [see issue #90]
       later_taxon_as_type: {
         checklist: :nomenclature,
         message: 'The nomenclatural type must be the earliest legitimate taxon',

@@ -1,0 +1,176 @@
+<% name_name = @name.try(:name) %>
+<% stand_alone ||= false %>
+
+<% if @strain.strain_info_data.present? %>
+  <% @strain.strain_info_data.map do |data_entry| %>
+    <%
+      data = data_entry[:strain] || {}
+      name = (
+        data.dig(:relation, :culture) || []
+      ).map { |i| i[:strain_number] }.join(' = ')
+    %>
+    <dl class="mb-3 mt-1 main-section name-details">
+      <h2 class="border-bottom <%= 'no-sticky' unless stand_alone %>">
+        <%= 'StrainInfo: ' if stand_alone %>
+        <%= name %>
+        <% if data[:type_strain] %>
+          <sup>T</sup>
+        <% end %>
+      </h2>
+
+      <% if data[:taxon] %>
+        <dt>
+          <%= fa_icon(:bacterium) %>
+          Taxon
+        </dt>
+        <dd>
+          <% if !name_name.present? %>
+            <i><%= data[:taxon][:name] %></i>
+          <% elsif data[:taxon][:name] == name_name %>
+            <%= link_to_name(@name) %>
+          <% else %>
+            <i><%= data[:taxon][:name] %></i> (not <%= link_to_name(@name) %>)
+          <% end %>
+        </dd>
+      <% end %>
+
+      <% if data[:sample] %>
+        <dt>
+          <%= fa_icon('leaf') %>
+          Sample
+        </dt>
+        <dd>
+          <%= data[:sample][:source] %>
+          <% if data[:sample][:country_code] %>
+            (<%= data[:sample][:country_code] %>)
+          <% end %>
+        </dd>
+      <% end %>
+
+      <% if data[:relation][:designation] %>
+        <dt>
+          <%= fa_icon('tags') %>
+          Other Designations
+          <span class="text-muted">
+            (<%= data[:relation][:designation].count %>)
+          </span>
+        </dt>
+        <dd><%= data[:relation][:designation].join(' = ') %></dd>
+      <% end %>
+
+      <% if data[:sequence].present? %>
+        <dt>
+          <%= fa_icon('dna') %>
+          Sequences
+          <span class="text-muted">(<%= data[:sequence].count %>)</span>
+        </dt>
+        <dd><ul>
+          <% data[:sequence].each do |seq| %>
+            <li>
+              <% base_url = 'https://www.ncbi.nlm.nih.gov/nuccore/%s'%>
+              <%= link_to(
+                    base_url % seq[:accession_number], target: '_blank'
+                  ) do %>
+                <%=
+                  case seq[:type]
+                  when 'rnaop', 'rrnaop' # The documentation is wrong
+                    'rRNA Operon'
+                  else
+                    seq[:type].capitalize
+                  end
+                %>
+                Nuccore:<%= seq[:accession_number] %>
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+              <% if seq[:description] %>
+                <div class="small"><%= seq[:description] %></div>
+              <% end %>
+            </li>
+          <% end %>
+        </ul></dd>
+      <% end %>
+
+      <% if data[:literature] %>
+        <dt>
+          <%= fa_icon('newspaper') %>
+          Associated Publications
+          <span class="text-muted">(<%= data[:literature].count %>)</span>
+        </dt>
+        <dd><ul>
+          <% data[:literature].each do |lit| %>
+            <li>
+              <% if lit[:doi] %>
+                <%= link_to(
+                      publications_url('publication[doi]' => lit[:doi]),
+                      method: 'post',
+                      class: 'badge badge-pull badge-primary'
+                    ) do %>
+                  DOI: <%= lit[:doi] %>
+                <% end %>
+              <% end %>
+              <div class="small">
+                <%= (lit[:author] || 'Anonymous').gsub(',', ', ') %>
+                (<%= lit[:year] %>).
+                <%= lit[:title] %>
+              </div>
+            </li>
+          <% end %>
+        </ul></dd>
+      <% end %>
+
+      <dt>
+        <%= fa_icon('link') %>
+        Outside links and data sources
+      </dt>
+      <dd><ul>
+        <li>
+          <%= link_to('https://doi.org/%s' % data[:doi], target: '_blank') do %>
+            StrainInfo DOI: <%= data[:doi] %>
+            <%= fa_icon('external-link-alt') %>
+          <% end %>
+        </li>
+      </ul></dd>
+
+      <% if @strain.strain_info_hash &&
+              @strain.strain_info_hash[:retrieved_at] %>
+        <div class="text-muted small border-top mt-4 pt-2">
+          Retrieved
+          <%= time_ago_with_date(@strain.strain_info_hash[:retrieved_at]) %> via
+          <%= link_to(
+                'https://straininfo.dsmz.de/service', target: '_blank'
+              ) do %>
+            StrainInfo API
+          <% end %>
+          (CC BY 4.0)
+        </div>
+      <% end %>
+    </dl>
+  <% end %>
+<% else # if @strain.strain_info_data.present? %>
+  <dl class="jumbotron py-4 mb-3 mt-1 main-section name-details">
+    <h4>
+      <%= fa_icon('frown-open', type: 'far', class: 'mr-2') %>
+      No entries found in StrainInfo
+    </h4>
+    <% if @strain.strain_info_hash &&
+            @strain.strain_info_hash[:retrieved_at] %>
+      <div class="text-muted small border-top mt-4 pt-2">
+        Searched
+        <%= time_ago_with_date(@strain.strain_info_hash[:retrieved_at]) %> via
+        <%= link_to(
+              'https://straininfo.dsmz.de/service', target: '_blank'
+            ) do %>
+          StrainInfo API
+        <% end %>
+        (CC BY 4.0)
+      </div>
+    <% end %>
+  </dl>
+<% end %>
+
+<% unless stand_alone %>
+  <hr/>
+  <%= fa_icon('hand-point-right', class: 'ml-4 mr-2') %>
+  <%= link_to('See full strain page', @strain) %>
+<% end %>
+

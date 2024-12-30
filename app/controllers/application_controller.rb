@@ -95,6 +95,9 @@ class ApplicationController < ActionController::Base
       redirect_to(genome_path(genome, par))
     when /\Ah:(.+)\z/i
       redirect_to(help_path($1, par))
+    when /\As:(\d+)\z/i
+      strain = Strain.where(id: $1).first or not_found
+      redirect_to(strain_path(strain, par))
     else
       redirect_to(root_path)
     end

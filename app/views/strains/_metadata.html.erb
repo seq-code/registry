@@ -1,0 +1,23 @@
+<dl name="metadata" class="main-section name-details">
+  <h2><%= fa_icon('table', class: 'float-right') %> Metadata</h2>
+
+  <dt><%= fa_icon('barcode') %> Cannonical URL</dt>
+  <dd><%= @strain.seqcode_url %></dd>
+
+  <dt><%= fa_icon('calendar') %> Local history</dt>
+  <dd>
+    <ul>
+      <li>
+        Registered <%= time_ago_with_date(@strain.created_at) %>
+      </li>
+      <li>
+        <% if @strain.created_at == @strain.updated_at %>
+          This strain has not been modified since creation
+        <% else %>
+          Last modified
+          <%= time_ago_with_date(@strain.updated_at) %>
+        <% end %>
+      </li>
+    </ul>
+  </dd>
+</dl>

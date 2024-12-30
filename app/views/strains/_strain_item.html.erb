@@ -1,0 +1,10 @@
+<%= adaptable_entry(list, strain.title, strain) do |entry| %>
+  <%= adaptable_value(entry, 'Name(s)') do %>
+    <% strain.typified_names.each do |name| %>
+      <%= display_link(name) %><br/>
+    <% end %>
+  <% end %>
+  <%= adaptable_value(entry, 'Strain numbers') do %>
+    <%= strain_html(strain, no_strain_info: true) %>
+  <% end %>
+<% end %>

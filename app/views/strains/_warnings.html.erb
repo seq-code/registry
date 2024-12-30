@@ -1,0 +1,19 @@
+<% unless @name.present? %>
+  <div class="alert alert-warning">
+    <h4>Marked for deletion</h4>
+    This genome is currently not registered as the nomenclatural type or the
+    reference genome of any names in the Registry, and it will be purged from
+    the database soon unless it is linked to a name
+  </div>
+<% end %>
+
+<% if @strain.typified_names.count > 1 %>
+  <div class="alert alert-warning">
+    This strain is associated as type material for multiple names:
+    <ul>
+      <% @strain.typified_names.each do |name| %>
+        <li><%= link_to(name) { %><%= name.name_html %><% } %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -1,19 +1,4 @@
 module NamesHelper
-  def strain_html(name, opts = {})
-    opts[:ext] = true if opts[:ext].nil?
-    ext = opts[:ext] ? '<sup class="fas fa-external-link-alt "> </sup>' : ''
-    parsed = name.type_is_strain? ? :type_strain_parsed : :genome_strain_parsed
-    name.send(parsed).map do |str|
-      if str.is_a? Hash
-        '<a href="%s" target="_blank">%s %s</a>' % [
-          str[:url], sanitize(str[:accession]), ext
-        ]
-      else
-        str
-      end
-    end.join(' = ').html_safe
-  end
-
   def link_to_name_type(name)
     if name.type_is_name?
       if name.type_name

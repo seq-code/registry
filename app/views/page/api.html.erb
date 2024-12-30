@@ -678,7 +678,7 @@ end
       data-parent="#actions-accordion">
     <dt>Description</dt>
     <dd>
-      Retrieve a data from register list <code>(acc)</code> [<code>str</code>]
+      Retrieve data from register list <code>(acc)</code> [<code>str</code>]
     </dd>
     <dt>Parameters</dt>
     <dd>
@@ -1130,6 +1130,54 @@ end
     <dt>Example</dt>
     <dd>
       <% url = api_url('/subjects/1.json') %>
+      <%= link_to(url, url, target: '_blank') %>
+    </dd>
+  </dl>
+
+  <h2 class="py-3">Strains</h2>
+
+  <!-- GET /strains/1.json -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-28" aria-expanded="false"
+          aria-controls="actions-accordion-28" id="actions-accordion-h-28">
+    <h4><code>
+      <span class="badge badge-primary">GET</span>
+      <%= strain_path('(id)', format: :json) %>
+    </code></h4>
+  </button>
+  <dl id="actions-accordion-28" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-28"
+      data-parent="#actions-accordion">
+    <dt>Description</dt>
+    <dd>
+      Retrieve data from strain <code>(id)</code> [<code>int</code>]
+    </dd>
+    <dt>Parameters</dt>
+    <dd>
+      None
+    </dd>
+    <dt>Response</dt>
+    <dd>
+<pre class=json>{
+  "response": <i>response</i>,
+  "id": <i>int</i>,
+  "strain_numbers": [
+    <i>str</i>,
+    <i>...</i>
+  ],
+  "url": <i>str</i>,
+  "uri": <i>str</i>,
+  "typified_names": [
+    <i>name_item</i>,
+    <i>...</i>
+  ]
+}</pre>
+    </dd>
+    <dt>Example</dt>
+    <dd>
+      <% example_acc = 'r:sy5jeiw2' %>
+      <% url = api_url('/registers/r:sy5jeiw2.json') %>
       <%= link_to(url, url, target: '_blank') %>
     </dd>
   </dl>
