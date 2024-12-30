@@ -5,14 +5,12 @@
   <% @strain.strain_info_data.map do |data_entry| %>
     <%
       data = data_entry[:strain] || {}
-      name = (
-        data.dig(:relation, :culture) || []
-      ).map { |i| i[:strain_number] }.join(' = ')
+      cultures = data.dig(:relation, :culture) || []
     %>
     <dl class="mb-3 mt-1 main-section name-details">
       <h2 class="border-bottom <%= 'no-sticky' unless stand_alone %>">
         <%= 'StrainInfo: ' if stand_alone %>
-        <%= name %>
+        SI-ID <%= data[:id] %>
         <% if data[:type_strain] %>
           <sup>T</sup>
         <% end %>
@@ -46,6 +44,15 @@
           <% end %>
         </dd>
       <% end %>
+
+      <dt>
+        <%= fa_icon('vials') %>
+        Cultures
+        <span class="text-muted">(<%= cultures.count %>)</span>
+      </dt>
+      <dd>
+        <%= cultures.map { |i| i[:strain_number] }.join(' = ') %>
+      </dd>
 
       <% if data[:relation][:designation] %>
         <dt>
