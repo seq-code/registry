@@ -33,11 +33,11 @@
         state of <b><%= @name.status_name %></b>.
         The entry and all of its metadata is currently not public, only visible
         to the submitter and the system curators.
-        <% unless @name.created_at < 1.year.ago %>
+        <% unless @name.embargo_expired? %>
           <hr/>
           This name has no standing or validity but it is reserved for up to a
           year, so no homonyms can be proposed until
-          <%= (@name.created_at + 1.year).strftime('%b %-d / %Y') %>
+          <%= @name.embargo_until.strftime('%b %-d / %Y') %>
         <% end %>
       </div>
       <hr/>

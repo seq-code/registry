@@ -1021,7 +1021,7 @@ class Name < ApplicationRecord
     self.register = register
     unless created_by
       self.created_by = user
-      self.created_at = Time.now
+      self.claimed_at = Time.now
     end
     save
   end
@@ -1044,6 +1044,26 @@ class Name < ApplicationRecord
   end
 
   # ============ --- INTERNAL CHECKS --- ============
+
+  ##
+  # Return the relevant embargo date, be it created_at or claimed_at
+  def embargo_at
+    return claimed_at if claimed_at.present?
+    created_at
+  end
+
+  ##
+  # Calculate when the embargo of this name would expire
+  def embargo_until
+    embargo_at + 1.year
+  end
+
+  ##
+  # Evaluate if the embargo time for this name has already expired
+  def embargo_expired?
+    return(false) unless public?
+    embargo_at < 1.year.ago
+  end
 
   ##
   # Return the manual check of type +type+ if set (or nil)

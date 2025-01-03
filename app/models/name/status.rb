@@ -114,7 +114,7 @@ module Name::Status
       return false
     end
 
-    par = { created_by: user, created_at: Time.now }
+    par = { created_by: user, claimed_at: Time.now }
     par[:status] = 5 if auto?
     update_status_with_alert(par) or return false
 

@@ -183,8 +183,11 @@
   <dt><%= fa_icon('user') %> Registered by</dt>
   <dd>
     <%= @name.created_by ?
-          display_link(@name.created_by) : 'Excubia bot' %>
-    <%= time_ago_with_date(@name.created_at) %>
+          display_link(@name.created_by) : 'Excubia bot' %>,
+    created <%= time_ago_with_date(@name.created_at) %>
+    <% if @name.claimed_at %>
+      and claimed <%= time_ago_with_date(@name.claimed_at) %>
+    <% end %>
   </dd>
 
   <% if @name.submitted_by %>

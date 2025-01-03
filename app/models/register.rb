@@ -12,7 +12,6 @@ class Register < ApplicationRecord
   has_one_attached(:publication_pdf)
   has_one_attached(:supplementary_pdf)
   has_one_attached(:certificate_pdf)
-  #has_many(:names, -> { order(:name_order, created_at: :desc) })
   has_many(:names)
   has_many(
     :register_correspondences, -> { order(:created_at) }, dependent: :destroy

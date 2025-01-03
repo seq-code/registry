@@ -94,7 +94,7 @@ class Tutorial < ApplicationRecord
       # Claim and correct
       n.status = 5 if n.status == 0
       n.created_by = user
-      n.created_at = Time.now
+      n.claimed_at = Time.now
       n.name.gsub!(/^Candidatus /, '')
     end
     n ||= Name.new(name: name, status: 5, created_by: user)

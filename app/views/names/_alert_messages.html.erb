@@ -26,12 +26,10 @@
       this name.
     <% end %>
   </div>
-<% elsif !@name.public? %>
-  <% if @name.created_at < 1.year.ago %>
-    <div class="alert alert-danger">
-      This name was registered over a year ago and it's no longer reserved
-    </div>
-  <% end %>
+<% elsif @name.embargo_expired? %>
+  <div class="alert alert-danger">
+    This name was registered over a year ago and it's no longer reserved
+  </div>
 <% end %>
 
 <% if @name.validated? && (current_curator? || current_admin?) &&
