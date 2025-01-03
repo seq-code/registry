@@ -9,7 +9,7 @@
 
 <% if @name.present? && @genome.strain.present? &&
       @genome.strain.typified_names.any? { |name| name != @name } %>
-  <div class="alert alert-warning">
+  <div class="alert alert-info">
     This genome is derived from <%= display_link(@genome.strain) %>, which
     serves as the nomenclatural type for:
     <ul>

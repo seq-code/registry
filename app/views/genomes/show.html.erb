@@ -6,8 +6,8 @@
 <h1><%= @genome.title %></h1>
 <hr/>
 
-<%= render(partial: 'warnings') %>
 <%= render(partial: 'name_box') %>
+<%= render(partial: 'warnings') %>
 <%= render(partial: 'genome', locals: { inline: true }) %>
 <%= render(partial: 'samples') %>
 <%= render(partial: 'sequencing_experiments') %>

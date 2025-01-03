@@ -6,8 +6,8 @@
 %>
 <h1><%= @strain.title %></h1>
 <hr/>
-<%= render(partial: 'warnings') %>
 <%= render(partial: 'name_box') %>
+<%= render(partial: 'warnings') %>
 <%= render(partial: 'strain_info', locals: { stand_alone: true }) %>
 <%= render(partial: 'genomics') %>
 <%= render(partial: 'metadata') %>
