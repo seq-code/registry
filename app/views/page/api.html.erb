@@ -507,6 +507,7 @@ end
     <i>name_item</i>,
     <i>...</i>
   ],
+  "strain": <i>strain_item</i>,
   "created_at": <i>date_time</i>,
   "updated_at": <i>date_time</i>
 }</pre>
@@ -1136,6 +1137,27 @@ end
 
   <h2 class="py-3">Strains</h2>
 
+  <!-- Model text_with_format -->
+  <button class="btn btn-block btn-light text-left"
+          type="button" data-toggle="collapse"
+          data-target="#actions-accordion-29" aria-expanded="false"
+          aria-controls="actions-accordion-29" id="actions-accordion-h-29">
+    <h4>Model: <code>strain_item</code></h4>
+  </button>
+  <div id="actions-accordion-29" class="collapse p-3"
+      aria-labelledby="actions-accordion-h-29"
+      data-parent="#actions-accordion">
+<pre class=json>{
+  "id": <i>int</i>,
+  "strain_numbers": [
+    <i>str</i>,
+    <i>...</i>
+  ],
+  "url": <i>str</i>,
+  "uri": <i>str</i>
+}</pre>
+  </div>
+
   <!-- GET /strains/1.json -->
   <button class="btn btn-block btn-light text-left"
           type="button" data-toggle="collapse"
@@ -1161,15 +1183,13 @@ end
     <dd>
 <pre class=json>{
   "response": <i>response</i>,
-  "id": <i>int</i>,
-  "strain_numbers": [
-    <i>str</i>,
-    <i>...</i>
-  ],
-  "url": <i>str</i>,
-  "uri": <i>str</i>,
+  <i>strain_item</i>,
   "typified_names": [
     <i>name_item</i>,
+    <i>...</i>
+  ],
+  "genomes": [
+    <i>genome_item</i>,
     <i>...</i>
   ],
   "strain_info_dois": [

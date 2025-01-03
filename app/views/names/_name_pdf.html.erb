@@ -41,11 +41,11 @@
         <% end %>
       </dd>
     </div>
-    <% if name.genome_strain? %>
+    <% if name.type_genome.try(:strain).present? %>
       <div class="avoid-page-break">
         <dt>Reference Strain</dt>
         <dd>
-          <%= strain_html(name, ext: false) %>
+          <%= strain_html(name, ext: false, no_strain_info: true) %>
         </dd>
       </div>
     <% end %>

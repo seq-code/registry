@@ -9,6 +9,10 @@ class ApplicationRecord < ActiveRecord::Base
     as: :linkeable, dependent: :nullify
   )
 
+  def qualified_id
+    '%s:%i' % [self.class.to_s, id]
+  end
+
   def notifications(user)
     notified_notifications.where(user: user).order(created_at: :desc)
   end

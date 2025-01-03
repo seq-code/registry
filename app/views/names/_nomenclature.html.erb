@@ -72,7 +72,7 @@
     </dd>
   <% end %>
 
-  <% if @name.genome_strain? %>
+  <% if @name.type_genome.try(:strain).present? %>
     <dt>
       <%= fa_icon('flask') %> Reference strain
       <%= help_message('Reference Strain') do %>
@@ -82,7 +82,25 @@
       <% end %>
     </dt>
     <dd>
-      <%= strain_html(@name) %>
+      <%= strain_html(@name.type_genome.strain, name: @name) %>
+    </dd>
+  <% end %>
+
+  <% if @name.type_strain.try(:genomes).present? %>
+    <dt>
+      <%= fa_icon('dna') %> Type strain genomes
+      <%= help_message('Type Strain Genomes') do %>
+        The genomes linked to this cultured strain serve as reference material
+        for the characterization of the taxon. However, the genome itself is not
+        considered type material and does not have standing in nomenclature.
+      <% end %>
+    </dt>
+    <dd>
+      <ul>
+        <% @name.type_strain.genomes.each do |genome| %>
+          <li><%= display_link(genome) %></li>
+        <% end %>
+      </ul>
     </dd>
   <% end %>
 

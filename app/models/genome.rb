@@ -3,6 +3,7 @@ class Genome < ApplicationRecord
     :updated_by, optional: true,
     class_name: 'User', foreign_key: 'updated_by_id'
   )
+  belongs_to(:strain, optional: true)
   has_many(:genome_sequencing_experiments, dependent: :destroy)
   has_many(:sequencing_experiments, through: :genome_sequencing_experiments)
   has_many(
@@ -122,17 +123,15 @@ class Genome < ApplicationRecord
     end
   end
 
-  def names
-    # TODO
-    # This could be replaced with something like a join of `typified_names`
-    # and `referenced_names` once the latter is implemented
-    @names ||=
-      Name.where(nomenclatural_type_type: 'Genome', nomenclatural_type_id: id)
-      .or(Name.where(genome_id: id))
+  ##
+  # Returns names linked to the strain of the genome (but not directly typified
+  # by the genome)
+  def referenced_names
+    @referenced_names ||= strain.try(:typified_names) || []
   end
 
-  def multiple_names?
-    names.count > 1
+  def names
+    @names ||= typified_names + referenced_names
   end
 
   ##
@@ -397,7 +396,8 @@ class Genome < ApplicationRecord
   end
 
   def can_edit?(user)
-    names.all? { |name| name.can_edit?(user) }
+    (names.empty? && user.present?) ||
+      names.all? { |name| name.can_edit?(user) }
   end
 
   # MiGA Checks

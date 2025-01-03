@@ -831,10 +831,10 @@ module Name::QualityChecks
     end
     if type_is_genome?
       @qc_warnings.add(:ambiguous_type_genome) # check
-      if genome.isolate? && !genome_strain?
+      if genome.isolate? && !genome.strain.present?
         @qc_warnings.add(:missing_reference_strain)
       end
-      if genome_strain? && genome_strain_collections < 2
+      if genome.strain.present? && genome.strain.collections.count < 2
         @qc_warnings.add(:unavailable_reference_strain)
       end
       @qc_warnings.add(:missing_genome_kind) unless type_genome.kind.present?

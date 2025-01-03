@@ -6,3 +6,17 @@
     the database soon unless it is linked to a name
   </div>
 <% end %>
+
+<% if @name.present? && @genome.strain.present? &&
+      @genome.strain.typified_names.any? { |name| name != @name } %>
+  <div class="alert alert-warning">
+    This genome is derived from <%= display_link(@genome.strain) %>, which
+    serves as the nomenclatural type for:
+    <ul>
+      <% @genome.strain.typified_names.each do |name| %>
+        <li><%= display_link(name) %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+

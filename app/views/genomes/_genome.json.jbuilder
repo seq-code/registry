@@ -15,5 +15,6 @@ json.names(
     { id: i.id, name: i.name, url: name_url(i, format: :json) }
   end
 )
+json.strain(@genome.strain, partial: 'strains/strain_item', as: :strain)
 json.created_at(genome.created_at)
 json.updated_at(genome.updated_at)

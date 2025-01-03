@@ -1,0 +1,21 @@
+<% provide(:title, @strain.title) %>
+<h1><%= display_link(@strain) %> &raquo; Link genome</h1>
+<hr/>
+
+<%= simple_form_for(
+      @genome,
+      url: link_genome_commit_strain_path(@strain),
+      html: { method: :post }
+    ) do |f| %>
+  <%= f.input(:database, collection: Genome.db_names.map { |k, v| [v, k] }) %>
+  <%= f.input(:accession) %>
+  <%= f.input(:kind, collection: Genome.kinds.map { |k, v| [v[:name], k] }) %>
+
+  <br/>
+  <%= f.submit('Submit', class: 'btn btn-primary') %>
+  <%= link_to('Cancel', @strain, class: 'btn btn-secondary') %>
+<% end %>
+
+<br/><br/><br/><br/>
+<%= render(partial: 'shared/cc') %>
+

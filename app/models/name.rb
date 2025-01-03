@@ -87,6 +87,7 @@ class Name < ApplicationRecord
   before_save(:reset_name_order)
   after_save(:clear_cached_objects)
   after_save(:ensure_consistent_placement)
+  after_save(:observe_genome_strain)
 
   has_rich_text(:description)
   has_rich_text(:notes)
@@ -876,47 +877,6 @@ class Name < ApplicationRecord
   end
 
   ##
-  # Parsed type strain numbers with URLs (when available)
-  def type_strain_parsed
-    return {} unless type_is_strain?
-    type_strain.numbers_parsed
-  end
-
-  def genome_strain_parsed
-    return {} unless genome_strain?
-    strain_parsed(genome_strain)
-  end
-
-  ##
-  # TODO
-  # This should be removed when genome strains are properly defined,
-  # see +type_strain_parsed+ and +genome_strain_parsed+
-  def strain_parsed(strain)
-    strain.split(/ *= */).map do |str|
-      parts = str.split(/[ :-]+/, 2)
-      coll = parts.count == 2 ? parts[0].upcase.to_sym : nil
-
-      if url_base = Strain.culture_collections[coll]
-        {
-          collection: coll,
-          accession: parts.join(' '),
-          url: url_base % parts[1]
-        }
-      else
-        str
-      end
-    end
-  end
-
-  def genome_strain_collections
-    return unless genome_strain?
-
-    genome_strain_parsed
-      .map { |i| i.is_a?(Hash) ? i[:collection] : nil }
-      .compact.uniq.count
-  end
-
-  ##
   # Returns the expected type of type as the String representation of the
   # expected class
   # 
@@ -1168,6 +1128,15 @@ class Name < ApplicationRecord
     return if nomenclatural_type_entry.nil?
 
     self.nomenclatural_type = nomenclatural_type_from_entry
+  end
+
+  def observe_genome_strain
+    return unless type_genome.present?
+
+    type_genome.update(
+      strain: genome_strain.present? ?
+        Strain.find_or_create_by(numbers_string: genome_strain) : nil
+    )
   end
 
   def harmonize_register_and_status

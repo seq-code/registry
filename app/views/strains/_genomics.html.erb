@@ -1,0 +1,36 @@
+<% if @strain.genomes.present? || @strain.can_edit?(current_user) %>
+  <dl name="genomics" class="main-section name-details">
+    <h2><%= fa_icon('dna', class: 'float-right') %> Genomics</h2>
+    <dt>
+      <%= fa_icon('dna') %> Genomes
+      <span class="text-muted">(<%= @strain.genomes.count %>)</span>
+    </dt>
+    <dd>
+      <ul>
+        <% @strain.genomes.each do |genome| %>
+          <li>
+            <%= display_link(genome) %>
+            <% if @strain.can_edit?(current_user) %>
+              <%= link_to(
+                    unlink_genome_strain_url(@strain, genome: genome),
+                    method: :post, class: 'badge badge-primary badge-pill'
+                  ) do %>
+                <%= fa_icon('unlink') %> Unlink genome
+              <% end %>
+            <% end %>
+          </li>
+        <% end %>
+        <% if @strain.can_edit?(current_user) %>
+          <li>
+            <%= link_to(
+                  link_genome_strain_url(@strain),
+                  class: 'badge badge-primary badge-pill'
+                ) do %>
+              <%= fa_icon('plus') %> Add genome
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </dd>
+  </dl>
+<% end %>

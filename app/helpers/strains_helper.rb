@@ -1,7 +1,7 @@
 module StrainsHelper
   def strain_html(obj, opts = {})
     strain = nil
-    name = nil
+    name = opts[:name]
     parsed =
       case obj
       when Strain
@@ -11,9 +11,10 @@ module StrainsHelper
         name = obj
         if obj.type_is_strain?
           strain = obj.type_strain
-          obj.type_strain_parsed
+          strain.try(:numbers_parsed)
         else
-          obj.genome_strain_parsed
+          strain = obj.type_genome.try(:strain)
+          strain.try(:numbers_parsed)
         end
       else
         obj

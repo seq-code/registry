@@ -54,11 +54,11 @@ end
   <dl name="genomics" class="main-section name-details">
     <h2><%= fa_icon('dna', class: 'float-right') %> Genomics</h2>
 
-    <% if @genome.multiple_names? %>
+    <% if @genome.typified_names.count > 1 %>
       <div class="alert alert-danger">
         This genome has been associated as type material for multiple names:
         <ul>
-          <% @genome.names.each do |name| %>
+          <% @genome.typified_names.each do |name| %>
             <li><%= link_to(name) { %><%= name.name_html %><% } %></li>
           <% end %>
         </ul>
@@ -76,6 +76,11 @@ end
         <% end %>
       <% end %>
     </dd>
+
+    <% if @genome.strain.present? %>
+      <dt><%= fa_icon('bacterium') %> Cultures</dt>
+      <dd><%= display_link(@genome.strain) %></dd>
+    <% end %>
 
     <% if @genome.kind.present? %>
       <dt><%= fa_icon('microscope') %> Type</dt>
@@ -217,7 +222,7 @@ end
       <% end %>
     </dd>
 
-    <% if @name.try(:can_edit?, current_user) || !inline %>
+    <% if @genome.can_edit?(current_user) || !inline %>
       <dd class="mt-4">
         <% if !inline %>
           <%= link_to(@genome, class: 'btn btn-secondary') do %>
@@ -225,10 +230,10 @@ end
           <% end %>
         <% end %>
 
-        <% if @name.try(:can_edit?, current_user) %>
+        <% if @genome.can_edit?(current_user) %>
           <%= link_to(
                 edit_genome_path(
-                  @genome, name: @name.id, from: inline ? :genome : :name
+                  @genome, name: @name, from: inline ? :genome : :name
                 ), class: 'btn btn-info'
               ) do %>
             <%= fa_icon('edit') %> Edit genome data

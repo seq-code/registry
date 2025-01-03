@@ -1,6 +1,6 @@
 
 function move_network(id, direction) {
-  const select = "[data-behavior='network'][data-id=" + id + "]";
+  const select = "[data-behavior='network'][data-id='" + id + "']";
   const svg = $(select + " > div.network > svg");
   const k = 15, z = 0.1;
   var box = svg.attr("viewBox").split(",");
@@ -60,7 +60,7 @@ function taxonomic_network(id) {
   // Create container and add controls
   const width = 1024; // 928;
   const height = 600;
-  const select = "[data-behavior='network'][data-id=" + id + "]";
+  const select = "[data-behavior='network'][data-id='" + id + "']";
   const cont_id = "network-" + id;
   var container = $(select);
   container.attr("id", cont_id);
@@ -139,12 +139,17 @@ function taxonomic_network(id) {
         .join("g");
 
     link.append("line")
-          .attr("stroke-opacity", 0.7)
-          .attr("stroke-width", 2.5)
-          .attr("stroke",
-            d => d.preferred ? "#000" : d.kind == "is_type" ? "#d33" : "#ccc"
-          )
-          .attr("stroke-dasharray", d => d.kind == "is_type" ? "5,3" : null);
+        .attr("stroke-opacity", 0.7)
+        .attr("stroke-width", 2.5)
+        .attr("stroke",
+          d => d.preferred ? "#000" :
+            d.kind == "is_type" ? "#d33" :
+            d.kind == "is_synonym" ? "#33d" : "#ccc"
+        )
+        .attr("stroke-dasharray",
+          d => d.kind == "is_type" ? "5,3" :
+            d.kind == "is_synonym" ? "1,1" : null
+        );
 
     link.insert("circle")
         .classed("gtdb", true)
@@ -169,8 +174,10 @@ function taxonomic_network(id) {
     function gotoNode(d, i) {
       $(select + " > h1 > a").html(i.styling);
       $(select + " > h1 > a").attr("href", i.url);
-      $(select).attr("data-id", i.id);
-      taxonomic_network(i.id);
+      if (i.is_name) {
+        $(select).attr("data-id", i.id);
+        taxonomic_network(i.id);
+      }
     }
     const node = svg.selectAll(".node")
       .data(data.nodes)

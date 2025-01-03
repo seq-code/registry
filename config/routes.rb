@@ -123,6 +123,9 @@ Rails.application.routes.draw do
   resources(:strains, only: %i[index show]) do
     member do
       get  :strain_info
+      get  :link_genome
+      post :link_genome_commit
+      post :unlink_genome
     end
   end
 

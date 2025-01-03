@@ -10,6 +10,10 @@ module Name::Network
     @network_nodes += network_up_nodes
     @network_edges += network_up_edges
 
+    # Sides
+    @network_nodes += network_side_nodes
+    @network_edges += network_side_edges
+
     # Down
     @network_nodes += network_down_nodes
     @network_edges += network_down_edges
@@ -20,6 +24,7 @@ module Name::Network
 
     # Other (already included) types
     @network_nodes.each do |i|
+      next unless i.is_a? Name
       next unless i.type_is_name?
       next unless @network_nodes.include? i.type_name
 
@@ -35,14 +40,29 @@ module Name::Network
 
     @network_type_nodes = Set.new
     @network_type_edges = Set.new
-    return @network_type_nodes unless type_is_name?
 
-    @network_type_nodes << type_name
-    @network_type_nodes += type_name.network_up_nodes
-    @network_type_nodes += type_name.network_type_nodes
-    @network_type_edges << { source: id, target: type_name.id, kind: :is_type }
-    @network_type_edges += type_name.network_up_edges
-    @network_type_edges += type_name.network_type_edges
+    if type_is_name?
+      @network_type_nodes << type_name
+      @network_type_nodes += type_name.network_up_nodes
+      @network_type_nodes += type_name.network_type_nodes
+      @network_type_edges << {
+        source: id, target: type_name.id, kind: :is_type
+      }
+      @network_type_edges += type_name.network_up_edges
+      @network_type_edges += type_name.network_type_edges
+    elsif type?
+      @network_type_nodes << nomenclatural_type
+      nomenclatural_type.typified_names.each do |up_name|
+        @network_type_nodes << up_name
+        @network_type_nodes += up_name.network_up_nodes
+        @network_type_edges += up_name.network_up_edges
+        @network_type_edges << {
+          source: up_name.id,
+          target: nomenclatural_type.qualified_id,
+          kind: :is_type
+        }
+      end
+    end
     @network_type_nodes
   end
 
@@ -75,6 +95,37 @@ module Name::Network
   def network_up_edges
     network_up_nodes
     @network_up_edges
+  end
+
+  def network_side_nodes
+    return @network_side_nodes unless @network_side_nodes.nil?
+
+    @network_side_nodes = Set.new
+    @network_side_edges = Set.new
+    if correct_name.present?
+      @network_side_nodes << correct_name
+      @network_side_nodes += correct_name.network_up_nodes
+      @network_side_edges += correct_name.network_up_edges
+      @network_side_edges << {
+        source: id, target: correct_name.id, kind: :is_synonym
+      }
+    end
+
+    synonyms.each do |synonym|
+      @network_side_nodes << synonym
+      @network_side_nodes += synonym.network_up_nodes
+      @network_side_edges += synonym.network_up_edges
+      @network_side_edges << {
+        source: synonym.id, target: id, kind: :is_synonym
+      }
+    end
+
+    @network_side_nodes
+  end
+
+  def network_side_edges
+    network_side_nodes
+    @network_side_edges
   end
 
   def network_down_nodes

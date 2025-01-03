@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_12_28_000712) do
+ActiveRecord::Schema.define(version: 2025_01_02_204455) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -137,7 +137,9 @@ ActiveRecord::Schema.define(version: 2024_12_28_000712) do
     t.datetime "queued_external"
     t.text "source_json"
     t.integer "largest_contig_auto"
+    t.integer "strain_id"
     t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
+    t.index ["strain_id"], name: "index_genomes_on_strain_id"
     t.index ["updated_by_id"], name: "index_genomes_on_updated_by_id"
   end
 
@@ -490,6 +492,7 @@ ActiveRecord::Schema.define(version: 2024_12_28_000712) do
   add_foreign_key "contacts", "users"
   add_foreign_key "genome_sequencing_experiments", "genomes"
   add_foreign_key "genome_sequencing_experiments", "sequencing_experiments"
+  add_foreign_key "genomes", "strains"
   add_foreign_key "name_correspondences", "names"
   add_foreign_key "name_correspondences", "users"
   add_foreign_key "names", "genomes"

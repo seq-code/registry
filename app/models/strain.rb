@@ -3,6 +3,7 @@ class Strain < ApplicationRecord
     :typified_names, class_name: 'Name',
     as: :nomenclatural_type, dependent: :nullify
   )
+  has_many(:genomes, dependent: :nullify)
 
   validates(:numbers_string, presence: true)
 
@@ -140,6 +141,12 @@ class Strain < ApplicationRecord
     end
   end
 
+  def collections
+    numbers_parsed
+      .map { |i| i.is_a?(Hash) ? i[:collection] : nil }
+      .compact.uniq
+  end
+
   def type_of_type
     'Strain'
   end
@@ -163,6 +170,21 @@ class Strain < ApplicationRecord
 
   def uri
     seqcode_url
+  end
+
+  def referenced_names
+    @names ||= genomes.map(&:typified_names).flatten.compact.uniq
+  end
+
+  def names
+    typified_names + referenced_names
+  end
+
+  def can_edit?(user)
+    return false unless user
+    return true if user.curator?
+    return true unless typified_names.present?
+    typified_names.all? { |name| name.can_edit?(user) }
   end
 
   private

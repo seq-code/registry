@@ -73,10 +73,15 @@
         </dt>
         <dd><ul>
           <% data[:sequence].each do |seq| %>
+            <%
+              base_url = 'https://www.ncbi.nlm.nih.gov'
+              link_def = seq[:type] == 'genome' ?
+                [base_url + '/datasets/genome/%s', 'Assembly'] :
+                [base_url + '/nuccore/%s', 'Nucleotide']
+            %>
             <li>
-              <% base_url = 'https://www.ncbi.nlm.nih.gov/nuccore/%s'%>
               <%= link_to(
-                    base_url % seq[:accession_number], target: '_blank'
+                    link_def[0] % seq[:accession_number], target: '_blank'
                   ) do %>
                 <%=
                   case seq[:type]
@@ -86,8 +91,31 @@
                     seq[:type].capitalize
                   end
                 %>
-                Nuccore:<%= seq[:accession_number] %>
+                <%= link_def[1] %>:<%= seq[:accession_number] %>
                 <%= fa_icon('external-link-alt') %>
+              <% end %>
+              <%
+                genome_par = {
+                  database: 'assembly',
+                  accession: seq[:accession_number]
+                }
+                genome_par_2 = genome_par.dup.tap do |i|
+                 i[:accession] = [i[:accession], i[:accession] + '.1']
+                end
+                genome = Genome.where(genome_par_2).first
+                genome_par = { genome: genome } if genome
+              %>
+              <% if genome %>
+                - <%= display_link(genome, :title) %>
+              <% end %>
+              <% if seq[:type] == 'genome' && @strain.can_edit?(current_user) &&
+                    !@strain.genomes.include?(genome) %>
+                <%= link_to(
+                      link_genome_strain_url(@strain, genome_par),
+                      class: 'badge badge-primary badge-pill'
+                    ) do %>
+                  <%= fa_icon('plus') %> Add as strain genome
+                <% end %>
               <% end %>
               <% if seq[:description] %>
                 <div class="small"><%= seq[:description] %></div>
