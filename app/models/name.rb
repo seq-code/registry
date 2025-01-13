@@ -1061,7 +1061,7 @@ class Name < ApplicationRecord
   ##
   # Evaluate if the embargo time for this name has already expired
   def embargo_expired?
-    return(false) unless public?
+    return(false) if public?
     embargo_at < 1.year.ago
   end
 
