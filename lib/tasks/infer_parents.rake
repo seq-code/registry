@@ -10,26 +10,15 @@ namespace :parents do
       case name.rank
       when 'subspecies'
         expected = name.base_name.sub(/ subsp?\. .*/, '')
-        parent = Name.where(name: [expected, "Candidatus #{expected}"]).first
+        parent = Name.find_by_variants(expected)
       when 'species'
         expected = name.base_name.sub(/ .*/, '')
-        parent = Name.where(name: [expected, "Candidatus #{expected}"]).first
-      when 'genus'
-        if suff = Name.rank_suffixes[name.expected_parent_rank.to_sym]
-          3.times do |i|
-            root = name.base_name.sub(/.{#{i}}$/, '')
-            parent = Name.where('name LIKE ?', "#{root}%#{suff}").first
-            parent ||=
-              Name.where('name LIKE ?', "Candidatus #{root}%#{suff}").first
-            break if parent
-          end
-        end
+        parent = Name.find_by_variants(expected)
       else
-        root = name.base_name.sub(/#{name.rank_suffix}$/, '')
-        if suff = Name.rank_suffixes[name.expected_parent_rank.to_sym]
-          parent = Name.where('name LIKE ?', "#{root}%#{suff}").first
-          parent ||=
-            Name.where('name LIKE ?', "Candidatus #{root}%#{suff}").first
+        stem = name.stem
+        suff = Name.rank_suffixes[name.expected_parent_rank.to_sym]
+        if stem.present? && suff.present?
+          parent = Name.find_by_variants("#{stem}#{suff}")
         end
       end
 
