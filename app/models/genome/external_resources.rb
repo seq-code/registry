@@ -73,7 +73,7 @@ module Genome::ExternalResources
   def external_biosample_hash(acc)
     y = external_biosample_hash_ebi(acc)
     y = external_biosample_hash_ncbi(acc) unless y.present?
-    y = {} unless y.present?
+    y = { biosample_accessions: [acc] } unless y.present?
     y
   end
 
