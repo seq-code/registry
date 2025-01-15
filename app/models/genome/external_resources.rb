@@ -127,7 +127,9 @@ module Genome::ExternalResources
       package = sample.xpath('./Package').text
       h[:attributes][:ncbi_package] = package if package.present?
       h[:biosample_accessions] = [
-        acc, sample['accession'], sample.xpath('./Ids/Id[@db="BioSample"]').text
+        acc, sample['accession'],
+        sample.xpath('./Ids/Id[@db="BioSample"]').text,
+        sample.xpath('./Ids/Id[@db="SRA"]').text
       ].compact.uniq
       h.each { |k, v| hash[k] = h[k] if h[k].present? }
     end
