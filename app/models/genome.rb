@@ -295,7 +295,7 @@ class Genome < ApplicationRecord
   def biosample_accessions_all
     (source_hash.try(:dig, :samples) || {}).values.map do |sample|
       sample[:biosample_accessions] || []
-    end.flatten.uniq
+    end.flatten.uniq.select(&:present?)
   end
 
   def sra_accessions
