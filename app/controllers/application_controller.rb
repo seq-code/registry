@@ -195,7 +195,7 @@ class ApplicationController < ActionController::Base
            )
           table.where("#{field} LIKE ?", value)
         else
-          table.where("to_char(#{field}, 'mm yyyy') LIKE ?", value)
+          table.where("to_char(#{field}, 'YYYY-MM-DD') LIKE ?", value)
         end
       else
         table.where("LOWER(#{field}) LIKE ?", value)
