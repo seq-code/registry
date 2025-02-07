@@ -159,21 +159,20 @@ class ApplicationController < ActionController::Base
 
       if q =~ /^(\S+)::(.+)/ && obj[1].include?($1)
         # Search only in this field if specified (only for direct fields)
-        o = o.or(obj[0].where("LOWER(#{$1}) = ?", $2.downcase))
+        o = o.or(search_by_field(obj[0], $1, $2.downcase))
       else
         q_like = "%#{q.downcase}%"
 
         # Search in direct fields
         obj[1].each do |i|
-          o = o.or(obj[0].where("LOWER(#{i}) LIKE ?", q_like))
+          o = o.or(search_by_field(obj[0], i, q_like))
         end
 
         # Search in relationships
         obj[2].each do |table, fields|
           o = o.or(
             obj[0].where(
-              id: table.where("LOWER(#{fields[0]}) LIKE ?", q_like)
-                       .pluck(fields[1])
+              id: search_by_field(table, fields[0], q_like).pluck(fields[1])
             )
           )
         end
@@ -186,6 +185,15 @@ class ApplicationController < ActionController::Base
         end
       end
       o
+    end
+
+    def search_by_field(table, field, value)
+      case table.columns_hash[field.to_s].try(:type)
+      when 'date'
+        table.where("#{field} LIKE ?", value)
+      else
+        table.where("LOWER(#{field}) LIKE ?", value)
+      end
     end
 
     def authenticate_role!(role)
