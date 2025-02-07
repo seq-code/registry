@@ -6,20 +6,24 @@ class ApplicationController < ActionController::Base
   before_action(:store_user_location!, if: :storable_location?)
 
   @@search_obj = {
-    publications: [Publication, %w[title doi journal abstract], {}],
-    authors: [Author, %w[given family], {}],
+    publications: [
+      Publication, %i[title doi journal abstract journal_date], {
+       PublicationAuthor.joins(:author) => %i[family publication_id]
+      }
+    ],
+    authors: [Author, %i[given family], {}],
     names: [
-      Name, %w[name corrigendum_from],
+      Name, %i[name corrigendum_from],
       {
-        Pseudonym => %i[pseudonym name_id],
+        # TODO
         # This is ready to work, but it could return too much "trash", so
         # I'm holding off until we have advanced search options:
-        # ActionText::RichText.where(record_type: 'Name') => %i[body record_id]
+        # ActionText::RichText.where(record_type: 'Name') => %i[body record_id],
+        Pseudonym => %i[pseudonym name_id]
       },
       { rank: :rank }
     ],
-    # TODO Include description (rich-text) as field of names
-    subjects: [Subject, %w[name], {}]
+    subjects: [Subject, %i[name], {}]
   }
 
   def main
@@ -136,16 +140,35 @@ class ApplicationController < ActionController::Base
   private
 
     def search_by(k, q)
+      search = nil
+      q.scan(/(?:\w|"[^"]*")+/).map do |term|
+        and_term = search_by_term(k, term.gsub(/^"|"$/, ''))
+        if search.nil?
+          search = and_term
+        else
+          search = search.and(and_term)
+        end
+      end
+      search
+    end
+
+    def search_by_term(k, q)
       obj = @@search_obj[k]
       o = obj[0].none
       q = q.strip
+
       if q =~ /^(\S+)::(.+)/ && obj[1].include?($1)
+        # Search only in this field if specified (only for direct fields)
         o = o.or(obj[0].where("LOWER(#{$1}) = ?", $2.downcase))
       else
         q_like = "%#{q.downcase}%"
+
+        # Search in direct fields
         obj[1].each do |i|
           o = o.or(obj[0].where("LOWER(#{i}) LIKE ?", q_like))
         end
+
+        # Search in relationships
         obj[2].each do |table, fields|
           o = o.or(
             obj[0].where(
@@ -154,10 +177,12 @@ class ApplicationController < ActionController::Base
             )
           )
         end
-        if obj[3].present?
-          obj[3].each do |par, field|
-            o = o.where(field => params[par]) if params[par].present?
-          end
+      end
+
+      # Filter by additional parameters
+      if obj[3].present?
+        obj[3].each do |par, field|
+          o = o.where(field => params[par]) if params[par].present?
         end
       end
       o
