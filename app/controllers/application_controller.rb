@@ -190,9 +190,7 @@ class ApplicationController < ActionController::Base
     def search_by_field(table, field, value)
       case table.columns_hash[field.to_s].try(:type)
       when :date
-        if ActiveRecord::Base.connection.instance_of?(
-             ActiveRecord::ConnectionAdapters::SQLite3Adapter
-           )
+        if ActiveRecord::Base.connection.adapter_name.downcase == 'sqlite'
           table.where("#{field} LIKE ?", value)
         else
           table.where("to_char(#{field}, 'YYYY-MM-DD') LIKE ?", value)
