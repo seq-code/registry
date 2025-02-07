@@ -189,7 +189,7 @@ class ApplicationController < ActionController::Base
 
     def search_by_field(table, field, value)
       case table.columns_hash[field.to_s].try(:type)
-      when 'date'
+      when :date
         table.where("#{field} LIKE ?", value)
       else
         table.where("LOWER(#{field}) LIKE ?", value)
