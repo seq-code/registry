@@ -17,6 +17,8 @@ end
 
 every 1.month do
   runner 'ReminderMail.register_reminder'
+  rake 'genomes:clean'
+  rake 'strains:clean'
 end
 
 # IF CHANGED, don't forget to run:
