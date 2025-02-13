@@ -84,7 +84,9 @@ class RegistersController < ApplicationController
   # GET /registers/r:abcd
   # GET /registers/r:abcd.json
   def show
-    @register.update_name_order if @register.names.first.name_order.nil?
+    if @register.names.any? { |n| n.name_order.nil? }
+      @register.update_name_order
+    end
     @names = @register.names.order(:name_order, created_at: :desc)
     @count = @names.count
     @names &&= @names.where(rank: params[:rank]) if params[:rank].present?
