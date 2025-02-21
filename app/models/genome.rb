@@ -293,7 +293,7 @@ class Genome < ApplicationRecord
               if m = v[1].match(/^(\d) *°(?: *(\d+) *'(?: *(\d+) *(?:"|''))?)?/)
                 m[1].to_f + (m[2].to_f + m[3].to_f / 60) / 60
               else
-                v[1].to_f
+                v[1].gsub(',', '.').to_f
               end
 
             if %w[S s W w].include?(v[2]) || v[0] == '-'
