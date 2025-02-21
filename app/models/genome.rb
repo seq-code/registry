@@ -311,21 +311,25 @@ class Genome < ApplicationRecord
 
   ##
   # Finds the rectangular bounds of all sample locations, with a minimum range
-  # of latitudes of +minlat+ and longitudes of +minlon+, and returns it as an
-  # array in the [south, west, north, east] order
-  def source_sample_area(minlat = 0.1, minlon = 0.1)
+  # of latitudes and longitudes of +min+ after padding both with +pad+,
+  # and returns it as an Array in the [south, west, north, east] order
+  def source_sample_area(min = 0.1, pad = 0.02)
     loc = source_sample_locations.compact
     return unless loc.present?
 
-    min = { lat: minlat, lon: minlon }
-    rng = { lat: loc.map { |i| i[0] }.minmax, lon: loc.map { |i| i[1] }.minmax }
+    rng = {
+      lat: loc.map { |i| i[0] }.minmax,
+      lon: loc.map { |i| i[1] }.minmax
+    }
 
     rng.each do |k, v|
+      v[0] -= pad
+      v[1] += pad
       width = v.inject(:-).abs
-      if width < min[k]
-        pad = (min[k] - width) / 2
-        rng[k][0] -= pad
-        rng[k][1] += pad
+      if width < min
+        pad_extra = (min - width) / 2
+        rng[k][0] -= pad_extra
+        rng[k][1] += pad_extra
       end
     end
 
