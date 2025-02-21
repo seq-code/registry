@@ -314,8 +314,8 @@ class Genome < ApplicationRecord
     return @source_attributes if @source_attributes
 
     not_provided = [
-      'not provided', 'unavailable', 'missing', 'not applicable',
-      '-', 'n/a', 'null'
+      'not provided', 'not collected', 'unavailable', 'not applicable',
+      'missing', '-', 'n/a', 'null'
     ]
     @source_attributes = {}
     source_hash[:samples].each_value do |sample|
