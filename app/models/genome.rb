@@ -284,7 +284,7 @@ class Genome < ApplicationRecord
         end
 
         # Parse each coordinate
-        if coords.any?(&:nil?)
+        if coords.values.any?(&:nil?)
           nil
         else
           coords.map do |k, v|
