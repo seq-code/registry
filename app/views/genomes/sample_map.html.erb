@@ -1,19 +1,23 @@
 
-<% if params[:content].present? %>
-  <div id="map" style="width: 400px; height: 300px;" class="mx-auto"></div>
-  <hr/>
-  <%= link_to(sample_map_genome_path(@genome)) do %>
-    View in full page
-  <% end %>
-<% else %>
+<% unless params[:content].present? %>
   <h2><%= display_link(@genome, :title) %> - Sample location</h2>
   <hr/>
-  <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
-  <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
-  <div id="map" style="width: 800px; height: 600px;" class="mx-auto"></div>
 <% end %>
+
 <% locs = @genome.source_sample_locations.compact %>
 <% if locs.present? %>
+  <% if params[:content].present? %>
+    <div id="map" style="width: 400px; height: 300px;" class="mx-auto"></div>
+    <hr/>
+    <%= link_to(sample_map_genome_path(@genome)) do %>
+      View in full page
+    <% end %>
+  <% else %>
+    <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
+    <div id="map" style="width: 800px; height: 600px;" class="mx-auto"></div>
+  <% end %>
+
   <script>
     function load_map(lat, lon) {
       return(
