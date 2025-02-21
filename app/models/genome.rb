@@ -252,6 +252,9 @@ class Genome < ApplicationRecord
     @source_attribute_groups
   end
 
+  ##
+  # Finds the locations of all source samples associated to this genome, and
+  # returns them as an Array of 2-element Arrays ([lat, lon]) or +nil+
   def source_sample_locations
     coord = /([-+] *)?(\d+(?:[\.\,]\d+)?|\d+°(?:\d+['"])*)( *[NSEW])?/
     keys = {
@@ -259,8 +262,8 @@ class Genome < ApplicationRecord
       lon: %i[lon geographic_location_longitude longitude_start longitude_end]
     }
 
+    coords = { lat: nil, lon: nil }
     @_source_sample_locations ||=
-      coords = { lat: nil, lon: nil }
       source_cannonical_samples.map do |sample|
         # Try joint keys
         if sample[:lat_lon]
@@ -304,6 +307,29 @@ class Genome < ApplicationRecord
           end
         end
       end
+  end
+
+  ##
+  # Finds the rectangular bounds of all sample locations, with a minimum range
+  # of latitudes of +minlat+ and longitudes of +minlon+, and returns it as an
+  # array in the [south, west, north, east] order
+  def source_sample_area(minlat = 0.1, minlon = 0.1)
+    loc = source_sample_locations.compact
+    return unless loc.present?
+
+    min = { lat: minlat, lon: minlon }
+    rng = { lat: loc.map { |i| i[0] }.minmax, lon: loc.map { |i| i[1] }.minmax }
+
+    rng.each do |k, v|
+      width = v.inject(:-).abs
+      if width < min[k]
+        pad = (min[k] - width) / 2
+        rng[k][0] -= pad
+        rng[k][1] += pad
+      end
+    end
+
+    [rng[:lat][0], rng[:lon][0], rng[:lat][1], rng[:lon][1]]
   end
 
   ##

@@ -19,15 +19,15 @@
   <% end %>
 
   <script>
-    function load_map(lat, lon) {
+    function load_map(lat1, lon1, lat2, lon2) {
       return(
         new maplibregl.Map({
           container: 'map',
           style:
             'https://api.maptiler.com/maps/hybrid/style.json?' +
-              'key=<%= ENV["RAILS_SEQCODE_MAPTILER_KEY"] %>',
-          center: [lon, lat], // starting position [lng, lat]
-          zoom: 9 // starting zoom
+              'key=<%= ENV["RAILS_SEQCODE_MAPTILER_KEY"] ||
+                         "get_your_own_OpIi9ZULNHzrESv6T2vL" %>',
+          bounds: [lon1, lat1, lon2, lat2]
         })
       );
     }
@@ -38,7 +38,8 @@
           .addTo(map)
       );
     }
-    var map = load_map(<%= locs.first[0] %>, <%= locs.first[1] %>);
+    <% bounds = @genome.source_sample_area %>
+    var map = load_map(<%= bounds.join(', ') %>);
     <% locs.each do |lat_lon| %>
       var marker = add_marker(map, <%= lat_lon[0] %>, <%= lat_lon[1] %>);
     <% end %>
