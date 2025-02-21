@@ -299,6 +299,15 @@ class Register < ApplicationRecord
     names.map(&:update_name_order)
   end
 
+  def registers_with_shared_publication
+    return unless publication.present?
+    if validated?
+      publication.registers.where(validated: true) - [self]
+    else
+      publication.registers - [self]
+    end
+  end
+
   def merge_into(main_register, user)
     # Assertions
     errors.add(
