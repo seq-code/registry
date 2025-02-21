@@ -33,7 +33,7 @@
         <li><%= display_link(register) %>: <%= register.propose_title %></li>
       <% end %>
     </ul>
-    <% unless @register.validated? %>
+    <% if !@register.validated? && @register.can_edit?(current_user) %>
       <%= link_to(
             merge_register_path(@register), class: 'btn btn-primary'
           ) do %>
