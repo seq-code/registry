@@ -313,7 +313,7 @@ class Genome < ApplicationRecord
   # Finds the rectangular bounds of all sample locations, with a minimum range
   # of latitudes and longitudes of +min+ after expanding both by a factor of
   # +pad+, and returns it as an Array in the [south, west, north, east] order
-  def source_sample_area(min = 0.1, pad = 0.1)
+  def source_sample_area(min = 0.1, pad = 0.2)
     loc = source_sample_locations.compact
     return unless loc.present?
 
