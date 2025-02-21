@@ -116,6 +116,7 @@ Rails.application.routes.draw do
       post  :update_external
       post  :recalculate_miga
       patch :update_accession
+      get   :sample_map
     end
   end
 

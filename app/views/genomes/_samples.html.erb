@@ -83,6 +83,15 @@
               <%= v.join(' • ').html_safe %>
             </div>
           <% end %>
+          <% if group == :location %>
+            <% id = modal(
+                      'Sampling location', size: :lg,
+                      async: sample_map_genome_url(@genome, content: true)
+                    ) {} %>
+            <%= modal_button(id, as_anchor: true) do %>
+              View sampling location map
+            <% end %>
+          <% end %>
         <% else %>
           <%= fa_icon('exclamation-triangle', class: 'text-warning mr-1') %>
           Not detected

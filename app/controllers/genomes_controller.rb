@@ -1,7 +1,10 @@
 class GenomesController < ApplicationController
   before_action(
     :set_genome,
-    only: %i[show edit update update_external update_accession recalculate_miga]
+    only: %i[
+      show edit update update_external update_accession recalculate_miga
+      sample_map
+    ]
   )
   before_action(:set_name, only: %i[show edit update update_accession])
   before_action(:set_tutorial)
@@ -71,6 +74,11 @@ class GenomesController < ApplicationController
       flash[:alert] = 'Genome recalculation was not queued, something failed'
     end
     redirect_back(fallback_location: @genome)
+  end
+
+  # GET /genomes/1/sample_map
+  def sample_map
+    render('sample_map', layout: !params[:content].present?)
   end
 
   private

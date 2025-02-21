@@ -252,6 +252,63 @@ class Genome < ApplicationRecord
     @source_attribute_groups
   end
 
+  def source_sample_locations
+    coord = /([-+] *)?(\d+(?:[\.\,]\d+)?|\d+°(?:\d+['"])*)( *[NSEW])?/
+    keys = {
+      lat: %i[lat geographic_location_latitude latitude_start latitude_end],
+      lon: %i[lon geographic_location_longitude longitude_start longitude_end]
+    }
+
+    @_source_sample_locations ||=
+      coords = { lat: nil, lon: nil }
+      source_cannonical_samples.map do |sample|
+        # Try joint keys
+        if sample[:lat_lon]
+          m = sample[:lat_lon].match(/^ *(#{coord})[ ,;\/\-]+(#{coord}) *$/i)
+          m ||= []
+          coords[:lat] = m[2..4]
+          coords[:lon] = m[6..8]
+        end
+
+        # Try individual keys
+        if coords.values.any?(&:nil?)
+          keys.each do |dim, list|
+            list.each do |key|
+              if sample[key]
+                m = sample[key].match(/^#{coord}$/i) || []
+                coords[dim] = m[1..3]
+              end
+              break unless coords[dim].nil?
+            end
+          end
+        end
+
+        # Parse each coordinate
+        if coords.any?(&:nil?)
+          nil
+        else
+          coords.map do |k, v|
+            v.map!(&:to_s).map!(&:strip)
+            decimal =
+              if m = v[1].match(/^(\d) *°(?: *(\d+) *'(?: *(\d+) *(?:"|''))?)?/)
+                m[1].to_f + (m[2].to_f + m[3].to_f / 60) / 60
+              else
+                v[1].to_f
+              end
+
+            if %w[S s W w].include?(v[2]) || v[0] == '-'
+              -decimal
+            else
+              decimal
+            end
+          end
+        end
+      end
+  end
+
+  ##
+  # TODO
+  # Use source_cannonical_samples instead!
   def source_attributes
     return unless source_hash
     return @source_attributes if @source_attributes
@@ -274,6 +331,26 @@ class Genome < ApplicationRecord
     end
     @source_attributes.each_value(&:uniq!)
     @source_attributes
+  end
+
+  def source_cannonical_samples
+    not_provided = [
+      'not provided', 'unavailable', 'missing', 'not applicable',
+      '-', 'n/a', 'null'
+    ]   
+    @_source_cannonical_samples ||=
+      source_hash[:samples].each_value.map do |sample|
+        Hash[
+          sample[:attributes].map do |key, value|
+            value.strip!
+            nice_key = key.to_s.downcase.gsub(/[^A-Za-z0-9]/, '_')
+                          .gsub(/_+/, '_').gsub(/^_|_$/, '').to_sym
+            if value.present? && !not_provided.include?(value.downcase)
+              [nice_key, value]
+            end
+          end.compact
+        ]
+      end
   end
 
   ##
