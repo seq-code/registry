@@ -23,7 +23,8 @@
   </div>
 <% end %>
 
-<% if @register.publication.try(:registers).present? %>
+<% if @register.publication.try(:registers).present? &&
+        @register.publication.registers.count > 1 %>
   <div class="alert alert-<%= @register.validated? ? :info : :warning %>">
     <h4>Effective publication associated to multiple register lists</h4>
     The effective publication of this list
