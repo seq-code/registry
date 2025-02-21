@@ -12,6 +12,7 @@ class Publication < ApplicationRecord
   has_many(:authors, through: :publication_authors)
   has_many(:subjects, through: :publication_subjects)
   has_many(:names, through: :publication_names)
+  has_many(:registers)
   has_many(
     :proposed_names, class_name: 'Name',
     foreign_key: 'proposed_in_id', inverse_of: :proposed_in,

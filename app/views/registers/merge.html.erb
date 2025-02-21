@@ -1,0 +1,62 @@
+<% provide(:title, @register.propose_title) %>
+<%= render(partial: 'title') %>
+
+<% if @register.errors.any? %>
+  <div class="alert alert-danger">
+    <h2>Errors in the attempted transfer</h2>
+    <hr/>
+    <dl>
+      <% @register.errors.each do |k, v| %>
+        <dt><%= k.to_s.capitalize %></dt>
+        <dd><%= v %></dd>
+      <% end %>
+    </dl>
+  </div>
+<% end %>
+
+<dl class="main-section name-details">
+  <h2>
+    <%= fa_icon('dolly', class: 'float-right') %>
+    Transfer names to a different register list
+  </h2>
+  <% @target_registers.each do |register| %>
+    <dt>
+      <%= display_link(register) %>:
+      <%= register.propose_title %>
+    </dt>
+    <dd>
+      <%= pluralize(register.names.count, 'name') %>
+      <% case register.names.count %>
+      <% when 0 %>
+        (empty list)
+      <% when 1..3 %>
+        -
+      <% else %>
+        including
+      <% end %>
+      <%= to_sentence(
+            register.names.limit(3).map { |name| display_link(name) }
+          ) %>
+      <br/>
+      <%= link_to(
+            merge_register_path(target: register.accession),
+            method: :post, class: 'btn btn-primary mt-2'
+          ) do %>
+        <%# fa_icon('dolly', class: 'mr-1') %>
+        <%= @register.acc_url %>
+        <%= fa_icon('arrow-alt-circle-right', class: 'mx-1') %>
+        <%= register.acc_url %>
+      <% end %>
+    </dd>
+    <hr/>
+  <% end.empty? and begin %>
+    <h4 class="mt-4">
+      <%= fa_icon('frown-open', type: 'far', class: 'mr-2') %>
+      No compatible target lists were found
+    </h4>
+  <% end %>
+</dl>
+<br/>
+<%= link_to(@register, class: 'btn btn-secondary') do %>
+  Cancel
+<% end %>

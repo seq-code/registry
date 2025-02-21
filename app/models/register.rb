@@ -299,6 +299,49 @@ class Register < ApplicationRecord
     names.map(&:update_name_order)
   end
 
+  def merge_into(main_register, user)
+    # Assertions
+    errors.add(
+      :accession, 'can\'t merge non-register object with a register'
+    ) unless main_register.is_a? self.class
+    errors.add(
+      :accession, 'can\'t merge register with itself'
+    ) if self == main_register
+    errors.add(
+      :validated, 'can\'t merge validated registers'
+    ) unless !validated? && !main_register.validated?
+    errors.add(
+      :user, 'user doesn\'t have sufficient register privileges'
+    ) unless can_edit?(user) && main_register.can_edit?(user)
+    errors.add(
+      :user, 'can\'t merge register lists from different users'
+    ) unless self.user == main_register.user
+    errors.add(
+      :publication,
+      'can\'t merge registers with different effective publications'
+    ) unless publication == main_register.publication
+    errors.add(
+      :names, 'nothing to merge, empty register'
+    ) unless names.present?
+    errors.add(
+      :names, 'user doesn\'t have sufficient name privileges'
+    ) unless names.all? { |name| name.can_edit?(user) }
+    return if errors.any?
+
+    # Transfer names and comment in both registers
+    self.class.transaction do
+      names.each { |name| name.update(register: main_register) }
+      RegisterCorrespondence.new(
+        message: 'Register list transferred to: %s' % main_register.acc_url,
+        notify: '0', automatic: true, user: user, register: self
+      ).save
+      RegisterCorrespondence.new(
+        message: 'Register list imported: %s' % self.acc_url,
+        notify: '0', automatic: true, user: user, register: main_register
+      ).save
+    end
+  end
+
   private
 
   def assign_accession

@@ -23,3 +23,25 @@
   </div>
 <% end %>
 
+<% if @register.publication.try(:registers).present? %>
+  <div class="alert alert-<%= @register.validated? ? :info : :warning %>">
+    <h4>Effective publication associated to multiple register lists</h4>
+    The effective publication of this list
+    (<%= @register.publication.short_citation %>) is also associated with:
+    <ul>
+      <% @register.publication.registers.each do |register| %>
+        <% next if register == @register %>
+        <li><%= display_link(register) %>: <%= register.propose_title %></li>
+      <% end %>
+    </ul>
+    <% unless @register.validated? %>
+      <%= link_to(
+            merge_register_path(@register), class: 'btn btn-primary'
+          ) do %>
+        <%= fa_icon('dolly', class: 'mr-1') %>
+        Transfer register names
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+

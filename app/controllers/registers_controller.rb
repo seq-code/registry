@@ -6,7 +6,7 @@ class RegistersController < ApplicationController
       submit return return_commit endorse notify notify_commit
       validate editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review
-      observe unobserve
+      observe unobserve merge merge_commit
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -31,7 +31,7 @@ class RegistersController < ApplicationController
   before_action(:ensure_valid!, only: %i[list certificate_image])
   before_action(
     :authenticate_can_edit!,
-    only: %i[edit update destroy submit notify notify_commit]
+    only: %i[edit update destroy submit notify notify_commit merge merge_commit]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve])
 
@@ -360,6 +360,29 @@ class RegistersController < ApplicationController
       add_automatic_correspondence('Genomics review complete')
     end
     redirect_back(fallback_location: @register)
+  end
+
+  # GET /registers/r:abc/merge
+  def merge
+    @crumbs = [
+      ['Register Lists', registers_url],
+      [@register.acc_url, @register],
+      'Merge'
+    ]
+    @target_registers =
+      @register.user.registers.where(validated: false) - [@register]
+  end
+
+  # POST /registers/r:abc/merge
+  def merge_commit
+    @target_register = Register.find_by(accession: params[:target])
+    if @register.merge_into(@target_register, current_user)
+      flash[:notice] = 'Register list successfully transferred'
+      redirect_to(@register)
+    else
+      merge
+      render(:merge)
+    end
   end
 
   private

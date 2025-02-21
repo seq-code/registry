@@ -155,6 +155,8 @@ Rails.application.routes.draw do
       patch :internal_notes
       post :nomenclature_review
       post :genomics_review
+      get  :merge
+      post :merge, action: :merge_commit
       # --> Edit user relationship to register list
       get  :observe
       get  :unobserve
