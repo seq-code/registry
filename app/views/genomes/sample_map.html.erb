@@ -21,7 +21,7 @@
           container: 'map',
           style:
             'https://api.maptiler.com/maps/streets/style.json?' +
-              'key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+              'key=<%= ENV["RAILS_SEQCODE_MAPTILER_KEY"] %>',
           center: [lon, lat], // starting position [lng, lat]
           zoom: 9 // starting zoom
         })
