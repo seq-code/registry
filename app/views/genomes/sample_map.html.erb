@@ -8,10 +8,12 @@
 <% if locs.present? %>
   <% if params[:content].present? %>
     <div id="map" style="width: 400px; height: 300px;" class="mx-auto"></div>
+    <!--
     <hr/>
     <%= link_to(sample_map_genome_path(@genome)) do %>
       View in full page
     <% end %>
+    -->
   <% else %>
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
@@ -40,6 +42,7 @@
     }
     <% bounds = @genome.source_sample_area %>
     var map = load_map(<%= bounds.join(', ') %>);
+    map.addControl(new maplibregl.FullscreenControl());
     <% locs.each do |lat_lon| %>
       var marker = add_marker(map, <%= lat_lon[0] %>, <%= lat_lon[1] %>);
     <% end %>
