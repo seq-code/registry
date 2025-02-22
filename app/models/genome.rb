@@ -31,6 +31,7 @@ class Genome < ApplicationRecord
 
   include HasExternalResources
   include Genome::ExternalResources
+  include Genome::SampleSet
 
   attr_accessor :queue_for_source_update
 
@@ -76,34 +77,6 @@ class Genome < ApplicationRecord
       %i[
         kind? source_database? source_accession?
       ]
-    end
-
-    def important_sample_attributes
-      {
-        date: %i[collection_date event_date_time_start event_date_time_end],
-        location: %i[
-          lat_lon lat lon
-          geographic_location_latitude geographic_location_longitude
-          latitude_start latitude_end longitude_start longitude_end
-        ],
-        toponym: %i[
-          geo_loc_name geographic_location_country_and_or_sea marine_region
-        ],
-        environment: %i[
-          env_material sample_type env_biome isolation_source analyte_type
-          env_broad_scale env_local_scale env_medium
-          environment_biome environment_feature gold_ecosystem_classification
-          broad_scale_environmental_context local_environmental_context
-          environmental_medium
-        ],
-        other: %i[
-          host ph depth temp temperature rel_to_oxygen geographic_location_depth
-          chlorophyll isol_growth_condt
-        ],
-        package: %i[
-          ncbi_package ena_checklist ncbi_submission_package biosamplemodel
-        ]
-      }
     end
   end
   
@@ -216,174 +189,6 @@ class Genome < ApplicationRecord
     source_accessions.map do |acc|
       [source_link(acc), source_text(acc), source_database_name]
     end
-  end
-
-  def source_extra_biosamples
-    return [] unless source_hash
-    return @source_extra_biosamples if @source_extra_biosamples
-
-    @source_extra_biosamples = []
-    %i[derived_from sample_derived_from].each do |attribute|
-      next unless attr = source_attributes[attribute]
-
-      attr.each do |i|
-        @source_extra_biosamples +=
-          i.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *,(?: and)? */)
-      end
-    end
-    @source_extra_biosamples.uniq!
-    @source_extra_biosamples -= source_hash[:samples].keys.map(&:to_s)
-    @source_extra_biosamples -= source_accessions
-    @source_extra_biosamples
-  end
-
-  def source_attribute_groups
-    return {} unless source_hash
-    return @source_attribute_groups if @source_attribute_groups
-
-    @source_attribute_groups = {}
-    self.class.important_sample_attributes.each do |group, attributes|
-      @source_attribute_groups[group] = {}
-      attributes.each do |attribute|
-        attr = source_attributes[attribute]
-        @source_attribute_groups[group][attribute] = attr if attr.present?
-      end
-    end
-    @source_attribute_groups
-  end
-
-  ##
-  # Finds the locations of all source samples associated to this genome, and
-  # returns them as an Array of 2-element Arrays ([lat, lon]) or +nil+
-  def source_sample_locations
-    coord = /([-+] *)?(\d+(?:[\.\,]\d+)?|\d+°(?:\d+['"])*)( *[NSEW])?/
-    keys = {
-      lat: %i[lat geographic_location_latitude latitude_start latitude_end],
-      lon: %i[lon geographic_location_longitude longitude_start longitude_end]
-    }
-
-    coords = { lat: nil, lon: nil }
-    @_source_sample_locations ||=
-      source_cannonical_samples.map do |sample|
-        # Try joint keys
-        if sample[:lat_lon]
-          m = sample[:lat_lon].match(/^ *(#{coord})[ ,;\/\-]+(#{coord}) *$/i)
-          m ||= []
-          coords[:lat] = m[2..4]
-          coords[:lon] = m[6..8]
-        end
-
-        # Try individual keys
-        if coords.values.any?(&:nil?)
-          keys.each do |dim, list|
-            list.each do |key|
-              if sample[key]
-                m = sample[key].match(/^#{coord}$/i) || []
-                coords[dim] = m[1..3]
-              end
-              break unless coords[dim].nil?
-            end
-          end
-        end
-
-        # Parse each coordinate
-        if coords.values.any?(&:nil?)
-          nil
-        else
-          coords.map do |k, v|
-            v.map!(&:to_s).map!(&:strip)
-            decimal =
-              if m = v[1].match(/^(\d) *°(?: *(\d+) *'(?: *(\d+) *(?:"|''))?)?/)
-                m[1].to_f + (m[2].to_f + m[3].to_f / 60) / 60
-              else
-                v[1].gsub(',', '.').to_f
-              end
-
-            if %w[S s W w].include?(v[2]) || v[0] == '-'
-              -decimal
-            else
-              decimal
-            end
-          end
-        end
-      end
-  end
-
-  ##
-  # Finds the rectangular bounds of all sample locations, with a minimum range
-  # of latitudes and longitudes of +min+ after expanding both by a factor of
-  # +pad+. Since +pad+ is a multiplicative factor, no padding is added if only
-  # one location is found (but the +min+ is still applied). It returns the
-  # bounds as an Array in the [south, west, north, east] order
-  def source_sample_area(min = 0.1, pad = 0.5)
-    loc = source_sample_locations.compact
-    return unless loc.present?
-
-    rng = {
-      lat: loc.map { |i| i[0] }.minmax,
-      lon: loc.map { |i| i[1] }.minmax
-    }
-
-    rng.each do |k, v|
-      width = v.inject(:-).abs
-      v[0] -= width * pad / 2
-      v[1] += width * pad / 2
-      width = v.inject(:-).abs
-      if width < min
-        pad_extra = (min - width) / 2
-        rng[k][0] -= pad_extra
-        rng[k][1] += pad_extra
-      end
-    end
-
-    [rng[:lat][0], rng[:lon][0], rng[:lat][1], rng[:lon][1]]
-  end
-
-  ##
-  # TODO
-  # Use source_cannonical_samples instead!
-  def source_attributes
-    return unless source_hash
-    return @source_attributes if @source_attributes
-
-    not_provided = [
-      'not provided', 'not collected', 'unavailable', 'not applicable',
-      'missing', '-', 'n/a', 'null'
-    ]
-    @source_attributes = {}
-    source_hash[:samples].each_value do |sample|
-      sample[:attributes].each do |key, value|
-        value.strip!
-        nice_key = key.to_s.downcase.gsub(/[^A-Za-z0-9]/, '_')
-                      .gsub(/_+/, '_').gsub(/^_|_$/, '').to_sym
-        if value.present? && !not_provided.include?(value.downcase)
-          @source_attributes[nice_key] ||= []
-          @source_attributes[nice_key] << value
-        end
-      end if sample[:attributes].present?
-    end
-    @source_attributes.each_value(&:uniq!)
-    @source_attributes
-  end
-
-  def source_cannonical_samples
-    not_provided = [
-      'not provided', 'unavailable', 'missing', 'not applicable',
-      '-', 'n/a', 'null'
-    ]   
-    @_source_cannonical_samples ||=
-      source_hash[:samples].each_value.map do |sample|
-        Hash[
-          sample[:attributes].map do |key, value|
-            value.strip!
-            nice_key = key.to_s.downcase.gsub(/[^A-Za-z0-9]/, '_')
-                          .gsub(/_+/, '_').gsub(/^_|_$/, '').to_sym
-            if value.present? && !not_provided.include?(value.downcase)
-              [nice_key, value]
-            end
-          end.compact
-        ]
-      end
   end
 
   ##

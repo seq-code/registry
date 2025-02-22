@@ -4,7 +4,7 @@
   <hr/>
 <% end %>
 
-<% locs = @genome.source_sample_locations.compact %>
+<% locs = @genome.sample_set.locations.compact %>
 <% if locs.present? %>
   <% if params[:content].present? %>
     <div id="map" style="width: 400px; height: 300px;" class="mx-auto"></div>
@@ -40,7 +40,7 @@
           .addTo(map)
       );
     }
-    <% bounds = @genome.source_sample_area %>
+    <% bounds = @genome.sample_set.locations_area %>
     var map = load_map(<%= bounds.join(', ') %>);
     map.addControl(new maplibregl.FullscreenControl());
     <% locs.each do |lat_lon| %>

@@ -28,8 +28,9 @@
     <% attributes_icon.each do |group, icon| %>
       <dt><%= fa_icon(icon) %> <%= group.to_s.capitalize %></dt>
       <dd>
-        <% if @genome.source_attribute_groups[group].present? %>
-          <% @genome.source_attribute_groups[group].each do |k, v| %>
+        <% if @genome.sample_set.grouped_attributes[group].present? %>
+          <% @genome.sample_set.grouped_attributes[group].each do |k, v_att| %>
+            <% v = v_att.map(&:value_to_s) %>
             <div>
               <b><%= k.to_s.tr('_', ' ').titleize %>:</b>
               <%
@@ -99,17 +100,17 @@
       </dd>
     <% end%>
 
-    <% if @genome.source_extra_biosamples.present? %>
+    <% if @genome.sample_set.extra_biosamples.present? %>
       <dt><%= fa_icon('link') %> Additional Accessions</dt>
       <dd>
-        <%= @genome.source_extra_biosamples.join(', ') %>
+        <%= @genome.sample_set.extra_biosamples.join(', ') %>
         <% if @genome.can_edit?(current_user) &&
               @genome.source_database == 'biosample' %>
           <%
             par = { genome: {}, return_to: genome_path(@genome) }
             par[:genome][:source_accession] =
               @genome.source_accession + ', ' +
-              @genome.source_extra_biosamples.join(', ')
+              @genome.sample_set.extra_biosamples.join(', ')
           %>
           <%= link_to(
                 genome_url(@genome, par),
