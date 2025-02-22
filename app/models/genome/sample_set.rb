@@ -22,7 +22,8 @@ class GenomeSampleSet
         ],
         other: %i[
           host ph depth temp temperature rel_to_oxygen geographic_location_depth
-          chlorophyll isol_growth_condt
+          chlorophyll isol_growth_condt salinity turbidity dissolved_solids
+          conductivity dissolved_oxygen
         ],
         package: %i[
           ncbi_package ena_checklist ncbi_submission_package biosamplemodel
