@@ -44,3 +44,11 @@
   </div>
 <% end %>
 
+<% if @register.title_has_wrong_number_of_names? &&
+      @register.can_edit?(current_user) %>
+  <div class="alert alert-warning">
+    <h4>Wrong number of names indicated in the title</h4>
+    The title of this register list indicates a wrong number of names being
+    proposed (it should be <%= @register.size %>)
+  </div>
+<% end %>

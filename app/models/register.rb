@@ -199,6 +199,13 @@ class Register < ApplicationRecord
     end
   end
 
+  def title_has_wrong_number_of_names?
+    return false unless title?
+    m = title.match(/\s(\d+)\s+(new\s+)?names?\s/) or return false
+    in_title = m[1].to_i
+    in_title != 0 && in_title != names.size
+  end
+
   ##
   # The list contains *only* a novel species and (optionally)
   # their parent taxa. If one or more subspecies within the species
