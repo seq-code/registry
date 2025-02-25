@@ -811,6 +811,7 @@ presby.edu
 prescott.edu
 princeton.edu
 providence.edu
+purdueglobal.edu
 purdue.edu
 purduecal.edu
 pnc.edu
@@ -4143,6 +4144,7 @@ iitg.ac.in
 iith.ac.in
 iitk.ac.in
 iitkgp.ernet.in
+iitkgp.ac.in
 iitm.ac.in
 itu.edu.pk
 mitindia.edu
@@ -4151,7 +4153,7 @@ iitp.ac.in
 iiti.ac.in
 iitj.ac.in
 iksvv.com
-ilidelhi.org
+ili.ac.in
 indusuni.ac.in
 integraluniversity.ac.in
 ipu.ac.in
@@ -4584,7 +4586,7 @@ yarsi.ac.id
 acmt.ac.ir
 adiban.ac.ir
 ajums.ac.ir
-aliabadiau.ac.ir
+aliabad.iau.ir
 miu.ac.ir
 arakmu.ac.ir
 araku.ac.ir
@@ -4595,17 +4597,17 @@ arums.ac.ir
 atu.ac.ir
 aums.ac.ir
 aut.ac.ir
-azad.ac.ir
+stb.iau.ir
 alzahra.ac.ir
 basu.ac.ir
 bihe.org
 birjand.ac.ir
 bmsu.ac.ir
-bojnourdiau.ac.ir
+bojnourd.iau.ir
 bpums.ac.ir
 bums.ac.ir
 scu.ac.ir
-dehaghan.ac.ir
+dehaghan.iau.ir
 delijanpnu.ac.ir
 deylaman.ac.ir
 du.ac.ir
@@ -5835,6 +5837,7 @@ puts.ac.kr
 ptu.ac.kr
 paichai.ac.kr
 pknu.ac.kr
+pukyong.ac.kr
 postech.ac.kr
 postech.edu
 ptuniv.ac.kr
@@ -6394,7 +6397,7 @@ edhec.ac.ma
 emi.ac.ma
 enameknes.ac.ma
 esca.ac.ma
-esta.ac.ma
+uiz.ac.ma
 groupeiscae.ma
 hec.ac.ma
 hem.ac.ma
@@ -6409,6 +6412,7 @@ rumi.ac.ma
 suptelecom.net.ma
 uae.ac.ma
 ucam.ac.ma
+upm.ac.ma
 ucd.ac.ma
 uh1.ac.ma
 uh2m.ac.ma
@@ -7258,6 +7262,7 @@ ut.pr
 qatar.northwestern.edu
 qu.edu.qa
 oryxschool.qa
+hbku.edu.qa
 univ-reunion.fr
 aistedaab.ro
 amgd.eu
@@ -9933,6 +9938,7 @@ koc.alaska.edu
 alaskapacific.edu
 wbu.edu
 hust.edu.vn
+usth.edu.vn
 bhtafe.edu.au
 boxhill.edu.au
 linuwel.nsw.edu.au
@@ -10442,6 +10448,25 @@ mycambrian.ca
 cambriancollege.ca
 mlsbu.ac.uk
 stonehill.edu
+svu.edu
+dawsoncollege.qc.ca
+lsus.edu
+maricopa.edu
+ksbk-do.de
+wingate.edu
+cuhk.edu.cn
+sruc.ac.uk
+univap.br
+anhembi.br
+inpg.edu.br
+unigoias.com.br
+fecap.br
+facens.br
+toledoprudente.edu.br
+impacta.edu.br
+inteli.edu.br
+utaipei.edu.tw
+techniqueedu.com
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10487,3 +10512,4 @@ teagasc.ie
 ms.xjb.ac.cn
 cea.fr
 iae.ac.cn
+qdio.ac.cn
