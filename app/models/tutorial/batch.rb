@@ -160,7 +160,7 @@ module Tutorial::Batch
          )
        elsif !genome_is_unique?(name)
          name.errors.add(
-           :nomenclatyral_type_entry, :is_a_type,
+           :nomenclatural_type_entry, :is_a_type,
            message: 'is already the type genome for a different name'
          )
        end
