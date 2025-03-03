@@ -215,7 +215,7 @@ class GenomeSampleAttribute
     end
 
     def parse_location_coordinate(string, type)
-      coord = /([-+] *)?(\d+(?:[\.\,]\d+)?|\d+°(?:\d+['"])*)( *[NSEW])?/
+      coord = /([-+] *)?(\d+(?:[\.\,]\d+)?|\d+°(?:\d+['"′])*)( *[NSEW])?/
       match = string.match(/^#{coord}$/i) or return
       m = match[1..3].map(&:to_s).map(&:strip)
 
