@@ -263,7 +263,7 @@ class GenomeSampleAttribute
         min = (base * 60).floor
         y += ' %i′' % min
         base -= min.to_f / 60
-        y += ' %.2g″' % (base * 60 * 60) unless base.zero?
+        y += ' %.2g″' % (base * 60 * 60).round(2) unless base.zero?
       end
       y + ' ' + dir
     end
