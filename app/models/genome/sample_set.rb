@@ -221,7 +221,7 @@ class GenomeSampleAttribute
       # 1. Degrees
       # 2. Minutes
       # 3. Seconds
-      sg_coord = /(#{num}) *°(?: *(#{num}) *['′](?: *(#{num}) *(?:"|''|′′))?)?/
+      sg_coord = /(#{num}) *°(?: *(#{num}) *['′](?: *(#{num}) *(?:"|″|''|′′))?)?/
       # A generic coordinate (complete), captures:
       # 1. Sign (plus, minus, or nil)
       # 2. The numeric part of the coordinate (decimal or sexagesimal)
@@ -250,6 +250,22 @@ class GenomeSampleAttribute
       else
         decimal
       end
+    end
+
+    def location_coordinate_to_string(float, type)
+      return 'Not parsed: %s' % float unless float.is_a?(Float)
+      dir = { lat: %w[N S], lon: %w[E W] }[type.to_sym][float.positive? ? 0 : 1]
+      base = float.abs
+      deg = base.floor
+      base -= deg.to_f
+      y = '%i°' % deg
+      unless base.zero?
+        min = (base * 60).floor
+        y += ' %i′' % min
+        base -= min / 60
+        y += ' %.2g″' % (base * 60 * 60) unless base.zero?
+      end
+      y + ' ' + dir
     end
   end
 
@@ -304,20 +320,14 @@ class GenomeSampleAttribute
   def as_location_s
     case location_type
     when :lat_lon
-      unless value.is_a?(Array) && value.all? { |i| i.is_a?(Float) }
-        return 'Not parsed: %s' % value.to_s
-      end
+      return 'Not parsed: %s' % value.to_s unless value.is_a?(Array)
 
-      '%.4g %s %.4g %s' % [
-        value[0].abs, value[0].positive? ? 'N' : 'S',
-        value[1].abs, value[1].positive? ? 'E' : 'W'
+      '%s, %s' % [
+        self.class.location_coordinate_to_string(value[0], :lat),
+        self.class.location_coordinate_to_string(value[1], :lon)
       ]
-    when :lat
-      return 'Not parsed: %s' % value.to_s unless value.is_a?(Float)
-      '%.4g %s' % [value.abs, value.positive? ? 'N' : 'S']
-    when :lon
-      return 'Not parsed: %s' % value.to_s unless value.is_a?(Float)
-      '%.4g %s' % [value.abs, value.positive? ? 'E' : 'W']
+    when :lat, :lon
+      self.class.location_coordinate_to_string(value, location_type)
     end
   end
 
