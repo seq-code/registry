@@ -292,13 +292,19 @@ class GenomeSampleAttribute
   def as_location_s
     case location_type
     when :lat_lon
+      unless value.is_a?(Array) && value.all? { |i| i.is_a?(Float) }
+        return 'Not parsed: %s' % value.to_s
+      end
+
       '%.4g %s %.4g %s' % [
         value[0].abs, value[0].positive? ? 'N' : 'S',
         value[1].abs, value[1].positive? ? 'E' : 'W'
       ]
     when :lat
+      return 'Not parsed: %s' % value.to_s unless value.is_a?(Float)
       '%.4g %s' % [value.abs, value.positive? ? 'N' : 'S']
     when :lon
+      return 'Not parsed: %s' % value.to_s unless value.is_a?(Float)
       '%.4g %s' % [value.abs, value.positive? ? 'E' : 'W']
     end
   end
