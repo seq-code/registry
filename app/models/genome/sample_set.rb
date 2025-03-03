@@ -221,7 +221,8 @@ class GenomeSampleAttribute
       # 1. Degrees
       # 2. Minutes
       # 3. Seconds
-      sg_coord = /(#{num}) *°(?: *(#{num}) *['′](?: *(#{num}) *(?:"|″|''|′′))?)?/
+      sg_coord =
+        /(#{num}) *°(?: *(#{num}) *['′](?: *(#{num}) *(?:"|″|''|′′))?)?/
       # A generic coordinate (complete), captures:
       # 1. Sign (plus, minus, or nil)
       # 2. The numeric part of the coordinate (decimal or sexagesimal)
@@ -263,7 +264,8 @@ class GenomeSampleAttribute
         min = (base * 60).floor
         y += ' %i′' % min
         base -= min.to_f / 60
-        y += ' %.2g″' % (base * 60 * 60).round(2) unless base.zero?
+        sec = (base * 60 * 60).round(2)
+        y += ' %.2g″' % sec unless sec.zero?
       end
       y + ' ' + dir
     end
