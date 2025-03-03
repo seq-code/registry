@@ -219,8 +219,9 @@ class GenomeSampleAttribute
       match = string.match(/^#{coord}$/i) or return
       m = match[1..3].map(&:to_s).map(&:strip)
 
+      num = /^(\d) *°(?: *(\d+) *['′](?: *(\d+) *(?:"|''|′′))?)?/
       decimal =
-        if sg = m[1].match(/^(\d) *°(?: *(\d+) *'(?: *(\d+) *(?:"|''))?)?/)
+        if sg = m[1].match(num)
           sg[1].to_f + (sg[2].to_f + sg[3].to_f / 60) / 60
         else
           m[1].gsub(',', '.').to_f
