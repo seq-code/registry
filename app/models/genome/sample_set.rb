@@ -215,14 +215,26 @@ class GenomeSampleAttribute
     end
 
     def parse_location_coordinate(string, type)
-      coord = /([-+] *)?(\d+(?:[\.\,]\d+)?|\d+°(?:\d+['"′])*)( *[NSEW])?/
+      # A simple (positive) number, no captures
+      num = /[\d\.,]+/
+      # A sexagesimal coordinate (without direction), captures:
+      # 1. Degrees
+      # 2. Minutes
+      # 3. Seconds
+      sg_coord = /(#{num}) *°(?: *(#{num}) *['′](?: *(#{num}) *(?:"|''|′′))?)?/
+      # A generic coordinate (complete), captures:
+      # 1. Sign (plus, minus, or nil)
+      # 2. The numeric part of the coordinate (decimal or sexagesimal)
+      # 3-5. Degrees, minutes, seconds (only if sexagesimal)
+      # 6. Direction (N, S, E, W, nil), can be lowercase too
+      coord = /([-+])? *(#{num}|#{sg_coord}) *([NSEW])?/
       match = string.match(/^#{coord}$/i) or return
-      m = match[1..3].map(&:to_s).map(&:strip)
+      m = match.values_at(1, 2, 6).map(&:to_s).map(&:strip)
 
-      num = /^(\d) *°(?: *(\d+) *['′](?: *(\d+) *(?:"|''|′′))?)?/
       decimal =
-        if sg = m[1].match(num)
-          sg[1].to_f + (sg[2].to_f + sg[3].to_f / 60) / 60
+        if sg = m[1].match(/^#{sg_coord}/i)
+          sg = sg.to_a.map { |i| i&.gsub(',', '.').to_f }
+          sg[1] + (sg[2] + sg[3] / 60) / 60
         else
           m[1].gsub(',', '.').to_f
         end
