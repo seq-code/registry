@@ -1,4 +1,7 @@
 <% provide(:title, @name.abbr_name_raw) %>
+<% provide(:canonical_url, url_for(only_path: false, protocol: 'https')) %>
+<% provide(:description, @name.page_description) %>
+
 <%= render(partial: 'title') %>
 <%= render(partial: 'tutorial') %>
 <%= render(partial: 'alert_messages') %>

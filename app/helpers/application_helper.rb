@@ -31,7 +31,7 @@ module ApplicationHelper
   end
 
   def full_title(page_title = '')
-    page_title + (' | ' unless page_title.empty?) + 'SeqCode Registry'
+    (page_title.to_s + ' | ' if page_title.present?).to_s + 'SeqCode Registry'
   end
 
   def list_type_selector

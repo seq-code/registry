@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= full_title(yield :title) %></title>
-    <%= csrf_meta_tags %>
+    <!-- Page identity -->
+    <title><%= full_title(content_for(:title)) %></title>
+    <% if content_for?(:canonical_url) %>
+      <%= tag(:link, rel: 'canonical', href: content_for(:canonical_url)) %>
+    <% end %>
+    <% if content_for?(:description) %>
+      <%= tag(:meta, name: 'description', content: content_for(:description)) %>
+    <% end %>
+    <%= tag(:meta, charset: 'utf-8') %>
 
+    <!-- Base infrastructure -->
+    <%= csrf_meta_tags %>
     <%= stylesheet_link_tag(
           'application', media: 'all', 'data-turbolinks-track': 'reload') %>
     <%= javascript_include_tag(
@@ -14,6 +23,7 @@
             'jquery-ui.min.css'
         ) %>
 
+    <!-- Plausible -->
     <% if Rails.configuration.try(:plausible_server).present? %>
       <script
         defer
@@ -23,17 +33,23 @@
       ></script>
     <% end %>
 
-    <script defer src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
-    <link defer href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
+    <!-- MapLibre -->
+    <script
+      defer
+      src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"
+    ></script>
+    <link rel="stylesheet" defer
+          href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" />
 
-    <link rel="apple-touch-icon" sizes="180x180"
-          href="<%= File.join(root_path, 'apple-touch-icon.png') %>">
-    <link rel="icon" type="image/png" sizes="32x32"
-          href="<%= File.join(root_path, 'favicon-32x32.png') %>">
-    <link rel="icon" type="image/png" sizes="16x16"
-          href="<%= File.join(root_path, 'favicon-16x16.png') %>">
-    <link rel="manifest"
-          href="<%= File.join(root_path, 'site.webmanifest') %>">
+    <!-- Favicons -->
+    <%= tag(:link, rel: 'apple-touch-icon', sizes: '180x180',
+            href: File.join(root_path, 'apple-touch-icon.png')) %>
+    <%= tag(:link, rel: 'icon', type: 'image/png', sizes: '32x32',
+            href: File.join(root_path, 'favicon-32x32.png')) %>
+    <%= tag(:link, rel: 'icon', type: 'image/png', sizes: '16x16',
+            href: File.join(root_path, 'favicon-16x16.png')) %>
+    <%= tag(:link, rel: 'manifest',
+            href: File.join(root_path, 'site.webmanifest')) %>
   </head>
 
   <body>

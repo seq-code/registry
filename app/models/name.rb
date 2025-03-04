@@ -369,6 +369,10 @@ class Name < ApplicationRecord
     name.gsub(/^Candidatus /, '')
   end
 
+  def abbr_base_name
+    base_name.gsub(/^([A-Z])\S+ /, '\\1. ')
+  end
+
   ##
   # Determines if if this name is the nomenclatural type of the parent name,
   # which is only possible (under the SeqCode) for genera and species but rank
@@ -473,6 +477,37 @@ class Name < ApplicationRecord
 
   def formal_txt
     sanitize(formal_html.gsub(/&#822[01];/, "'"))
+  end
+
+  def page_description
+    y  = base_name + ' is a'
+    y += ' candidate' if candidatus?
+    y += ' ' + rank if rank?
+    y += ' name'
+    y += ' ' + validly_published_string
+    if !validated? && after_submission?
+      y += ' under registration in the SeqCode Registry'
+    end
+    if proposed_in.present?
+      y += ', proposed by ' + proposed_in.short_citation
+    end
+    y += '.'
+    if etymology(:xx, :description).present?
+      y += ' The name'
+      y += ' (%s)' % last_epithet if sp_or_subsp?
+      y += ' stands for: ' + etymology(:xx, :description)
+      y += '.' unless y =~ /\.$/
+    end
+    if is_parent_type?
+      y += ' %s is the type %s of the %s %s.' % [
+        abbr_base_name, inferred_rank, parent.inferred_rank, parent.base_name
+      ]
+    elsif !sp_or_subsp? && parent.present?
+      y += ' %s is classified as part of the %s %s.' % [
+        abbr_base_name, parent.inferred_rank, parent.base_name
+      ]
+    end
+    y
   end
 
   def display(html = true)
@@ -831,6 +866,10 @@ class Name < ApplicationRecord
       end
   end
 
+  def sp_or_subsp?
+    %w[species subspecies].include?(inferred_rank)
+  end
+
   def type?
     nomenclatural_type.present?
   end
@@ -883,7 +922,7 @@ class Name < ApplicationRecord
   # Note that this differs from +expected_type_rank+ in that the current
   # function uses +inferred_rank+ regardless of defined +rank+
   def expected_type_type
-    return 'Name' unless %w[species subspecies].include?(inferred_rank)
+    return 'Name' unless sp_or_subsp?
 
     if icnp? || icn?
       # Treat with care, as both could also support 'GenericTypeMaterial'
@@ -923,7 +962,7 @@ class Name < ApplicationRecord
 
   def possible_nomenclatural_type_types
     self.class.nomenclatural_type_type_hash.select do |_, v|
-      v[:sp] == (%w[species subspecies].include?(inferred_rank))
+      v[:sp] == sp_or_subsp?
     end
   end
 

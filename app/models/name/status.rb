@@ -59,6 +59,14 @@ module Name::Status
     after_submission? && !validated?
   end
 
+  def validly_published_string
+    return 'without standing in nomenclature' unless validated?
+    'validly published under ' + (
+      seqcode? ? 'the SeqCode' : icnp? ? 'the ICNP' : icn? ? 'the ICNafp' :
+      'an unregistered code of nomenclature'
+    )
+  end
+
   # ============ --- CHANGE STATUS --- ============
 
   ##
