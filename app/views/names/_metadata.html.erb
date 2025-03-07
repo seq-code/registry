@@ -72,7 +72,7 @@
           </li>
         <% end %>
 
-        <% if @name.public? %>
+        <% if @name.public? && user_signed_in? %>
           <li>
             <%= link_to(@name.wikispecies_url, target: '_blank') do %>
               Wikispecies: <%= @name.base_name %>
