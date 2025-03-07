@@ -53,12 +53,15 @@
       <h5 class="mt-2 text-info">Next step:</h5>
       <ul>
         <li>
-          This name has not been claimed yet. You can
-          <%= link_to(
-                'claim it now', claim_name_url(@name),
-                method: :post,
-                data: { confirm: 'Are you sure? This action cannot be undone' }
-              ) %>.
+          This name has not been claimed yet.
+          <% if user_signed_in? %>
+            You can
+            <%= link_to(
+                  'claim it now', claim_name_url(@name),
+                  method: :post,
+                  data: { confirm: 'Are you sure? This action cannot be undone' }
+                ) %>.
+          <% end %>
         </li>
       </ul>
     <% end %>
