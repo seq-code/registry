@@ -72,12 +72,14 @@
           </li>
         <% end %>
 
-        <% if @name.public? && user_signed_in? %>
+        <% if @name.public? %>
           <li>
             <%= link_to(@name.wikispecies_url, target: '_blank') do %>
               Wikispecies: <%= @name.base_name %>
               <%= fa_icon('external-link-alt') %><% end %>
-            (<%= link_to('see reference source', wiki_name_url(@name)) %>)
+            <% if user_signed_in? %>
+              (<%= link_to('see reference source', wiki_name_url(@name)) %>)
+            <% end %>
           </li>
         <% end %>
       </ul>
