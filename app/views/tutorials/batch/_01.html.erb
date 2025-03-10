@@ -51,7 +51,9 @@
               </p>
               <hr/>
               <p><b>Description:</b> <%= name.description %></p>
-              <p><b>Nomenclatural type:</b> <%= name.type_text %></p>
+              <p>
+                <b>Nomenclatural type:</b> <%= name.type_text.try(:html_safe) %>
+              </p>
               <% if name.errors.any? %>
                 <div class="alert alert-danger">
                   <h4>Issues detected in preliminary check:</h4>

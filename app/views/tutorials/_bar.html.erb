@@ -21,10 +21,17 @@
 
 <% if @tutorial.invalid_record %>
   <div class="alert alert-danger">
-    Errors detected for <%= display_link(@tutorial.invalid_record.record) %>:
+    Errors detected for <%= display_link(@tutorial.invalid_record.record) %>
+    <% id = modal('Record details', size: 'lg') do %>
+      <% r = @tutorial.invalid_record.record %>
+      <pre><%= JSON.pretty_generate(JSON.parse(r.to_json)) %></pre>
+    <% end %>
+    <%= modal_button(id, as_anchor: true) do %>(record details)<% end %>:
     <ul>
       <% @tutorial.invalid_record.record.errors.full_messages.each do |error| %>
-        <li><%= error %></li>
+        <li>
+          <%= error %>
+        </li>
       <% end %>
     </ul>
   </div>

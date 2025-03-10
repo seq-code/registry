@@ -123,7 +123,9 @@ module Tutorial::Batch
 
       # Is the etymology present?
       unless name.etymology?
-        name.errors.add(:etymology_xx_description, :missing, message: 'is missing')
+        name.errors.add(
+          :etymology_xx_description, :missing, message: 'is missing'
+        )
       end
 
       # Is the name already registered?
@@ -158,11 +160,16 @@ module Tutorial::Batch
            :nomenclatural_type_entry, :does_not_exist,
            message: 'is not an existing genome and is not described here'
          )
-       elsif !genome_is_unique?(name)
-         name.errors.add(
-           :nomenclatural_type_entry, :is_a_type,
-           message: 'is already the type genome for a different name'
-         )
+       # TODO
+       # REVISE THIS: Note that a given genome could indeed be the type of two
+       # different names. For example, a new position could be proposed (a
+       # species name transferred to a different genus), or a species and a
+       # subspecies could share the same type genome 
+       #elsif !genome_is_unique?(name)
+       #  name.errors.add(
+       #    :nomenclatural_type_entry, :is_a_type,
+       #    message: 'is already the type genome for a different name'
+       #  )
        end
       end
     end
@@ -297,9 +304,6 @@ module Tutorial::Batch
         # Remove foreign keys in first pass
         par = par_ori.dup
         par['parent'] = nil
-        if par['nomenclatural_type_type'].to_s.downcase == 'name'
-          par['nomenclatural_type_entry'] = nil
-        end
 
         # Claim/update or create
         name = Name.find_by_variants(par['name'])
@@ -332,7 +336,8 @@ module Tutorial::Batch
               par['nomenclatural_type_entry'].present?
           new_par[:nomenclatural_type] =
             Name.find_by_variants(par['nomenclatural_type_entry'])
-          unless new_par[:type_accession]
+          # Deal with legacy type accession definitions
+          if new_par[:type_accession].present?
             name = Name.new(default_pars.merge(name: par['type_material']))
             name.save!
             new_par[:type_accession] = name.id

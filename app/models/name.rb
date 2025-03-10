@@ -114,7 +114,10 @@ class Name < ApplicationRecord
       if: -> { nomenclatural_type_id? || nomenclatural_type_entry.present? }
     }
   )
-  validates(:nomenclatural_type_id, presence: { if: :nomenclatural_type_type? })
+  validates(
+    :nomenclatural_type_id,
+    presence: { if: :nomenclatural_type_type? }
+  )
 
   include HasObservers
   include HasExternalResources
