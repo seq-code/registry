@@ -96,6 +96,11 @@ class PageController < ApplicationController
     end
   end
 
+  # GET /page/sandbox
+  def sandbox
+    redirect_to(etymology_sandbox_names_path)
+  end
+
   private
 
     def help_topics
