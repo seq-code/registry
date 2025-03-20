@@ -454,4 +454,4 @@ DEPENDENCIES
   yui-compressor (>= 0.12)
 
 BUNDLED WITH
-   2.6.6
+   2.3.14
