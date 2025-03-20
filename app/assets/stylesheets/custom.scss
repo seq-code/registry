@@ -83,6 +83,10 @@ trix-editor {
   }
 }
 
+.tooltip-text {
+  text-decoration: underline dotted theme-color(secondary);
+}
+
 /* Header Bar */
 .bg-dark-ce, .bg-vdark-ce {
   a {

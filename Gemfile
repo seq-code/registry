@@ -37,6 +37,7 @@ gem 'serrano', '~> 1.0'
 # loaded (see https://github.com/heartcombo/simple_form/issues/1824)
 gem 'simple_form', '~> 5.2.0'
 gem 'sqlite3'
+gem 'strain-code', '~> 0.3'
 # Turbolinks makes navigating your web application faster.
 # Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'

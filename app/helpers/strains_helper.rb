@@ -30,9 +30,13 @@ module StrainsHelper
     ext = opts[:ext] ? '<sup class="fas fa-external-link-alt "> </sup>' : ''
 
     numbers.map do |str|
-      if str.is_a? Hash
-        '<a href="%s" target="_blank">%s %s</a>' % [
-          str[:url], sanitize(str[:accession]), ext
+      if str.is_a?(StrainCode::Number) && str.url.present?
+        '<a href="%s" title="%s" target="_blank">%s %s</a>' % [
+          str.url, sanitize(str.catalogue&.name), sanitize(str.number), ext
+        ]
+      elsif str.is_a?(StrainCode::Number) && str.catalogue&.name.present?
+        '<span class="tooltip-text" title="%s">%s</span>' % [
+          sanitize(str.catalogue.name), sanitize(str.number)
         ]
       else
         str
