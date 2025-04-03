@@ -917,7 +917,8 @@ module Name::QualityChecks
         @qc_warnings.add(:short_largest_contig)
       end
 
-      if type_genome.sequencing_experiments.empty?
+      if type_genome.sequencing_experiments.empty? ||
+            type_genome.sequencing_experiments.all?(&:amplicon?)
         # Before this date, source metadata is not linked to SRA and it should
         # be re-retrieved
         link_date = [DateTime.parse('2024-11-12'), 2.hours.ago].min
