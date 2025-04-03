@@ -54,6 +54,13 @@ class SequencingExperiment < ApplicationRecord
     "https://www.ncbi.nlm.nih.gov/bioproject/#{bioproject_accession}"
   end
 
+  def amplicon?
+    strategy = metadata_xpath(
+      '//EXPERIMENT_SET/EXPERIMENT/DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_STRATEGY'
+    )&.text or return
+    %w[amplicon].include? strategy.downcase
+  end
+
   private
 
   def load_from_sra_accession

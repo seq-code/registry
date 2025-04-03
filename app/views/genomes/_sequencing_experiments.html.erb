@@ -8,6 +8,9 @@
     <% @genome.sequencing_experiments.each do |se| %>
       <dt>
         <%= fa_icon('vial') %>
+        <% if se.amplicon? %>
+          <span class="badge badge-pill badge-danger">amplicon</span>
+        <% end %>
         <%= se.title.present? ? se.title : se.sra_accession %>
       </dt>
       <dd>
