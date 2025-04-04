@@ -173,9 +173,12 @@ nav.navbar-dark {
     font-size: 120%;
     dt {
       margin-top: 1em;
+
       .date {
-        display: inline-block;
-        position: absolute;
+        @include media-breakpoint-up(md) {
+          display: inline-block;
+          position: absolute;
+        }
         right: 1rem;
         color: #00000066;
       }
@@ -288,6 +291,13 @@ nav.navbar {
   }
   & > dt, & > dd {
     padding-right: 0.25rem;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .actions-section dd a, .btn-action {
+    display: block !important;
+    margin-top: 1em;
   }
 }
 

@@ -310,7 +310,10 @@ class AdaptableList
   end
 
   def css
-    { cards: { class: 'card-columns' }, table: { class: 'table table-hover' } }[type]
+    {
+      cards: { class: 'card-columns' },
+      table: { class: 'table table-hover table-responsive-md' }
+    }[type]
   end
 
   def tag

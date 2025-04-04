@@ -29,7 +29,6 @@ $theme-colors: (
 @import "bootstrap";
 @import "font_awesome5_webfont";
 
-
 .card-columns {
   @include media-breakpoint-only(sm) { column-count: 1; }
   @include media-breakpoint-only(md) { column-count: 2; }
@@ -92,5 +91,12 @@ $theme-colors: (
         }
       }
     }
+    .nav-pills .nav-link.active {
+      color: #fff !important;
+    }
+    .jumbotron {
+      padding-top: 1em;
+    }
   }
 }
+

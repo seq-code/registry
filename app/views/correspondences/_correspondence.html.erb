@@ -46,7 +46,7 @@
           <%= f.input(:message, as: :rich_text_area, label: false) %>
           <%= f.input(:notify, as: :boolean, label_html: { class: 'text-dark' },
                 label: 'Notify corresponding users by email') %>
-          <%= f.button(:submit, 'Send message') %>
+          <%= f.button(:submit, 'Send message', class: 'btn-action') %>
           &raquo; The messages will be in the permanent record,
           visible only to submitter and curators
           <hr/>
@@ -57,7 +57,7 @@
                 size: 'lg', async: template_correspondences_url(content: true)
               )
             %>
-            <%= modal_button(id, class: 'btn btn-secondary') do %>
+            <%= modal_button(id, class: 'btn btn-secondary btn-action') do %>
               Load template
             <% end %>
             &raquo; Browse and use pre-formatted template messages
