@@ -38,7 +38,7 @@ class RegistersController < ApplicationController
   # GET /registers or /registers.json
   def index(status = :validated)
     @extra_title = ''
-    @crumbs = ['Register Lists']
+    @crumbs = ['Lists']
     @status = params[:status]
     @status ||= status
     @status = @status.to_s
@@ -91,7 +91,7 @@ class RegistersController < ApplicationController
     @count = @names.count
     @names &&= @names.where(rank: params[:rank]) if params[:rank].present?
     @names &&= @names.paginate(page: params[:page], per_page: 30)
-    @crumbs = [['Register Lists', registers_url], @register.acc_url]
+    @crumbs = [['Lists', registers_url], @register.acc_url]
   end
 
   # GET /registers/new
@@ -99,7 +99,7 @@ class RegistersController < ApplicationController
     @register = Register.new
     @registers =
       current_user.registers.where(submitted: false, validated: false)
-    @crumbs = ['Register Lists']
+    @crumbs = ['Lists']
   end
 
   # GET /registers/r:abcd/edit
@@ -223,7 +223,7 @@ class RegistersController < ApplicationController
   # GET /registers/r:abc/publish
   def publish
     @crumbs = [
-      ['Register Lists', registers_url],
+      ['Lists', registers_url],
       [@register.acc_url, @register],
       'Publish'
     ]
@@ -365,7 +365,7 @@ class RegistersController < ApplicationController
   # GET /registers/r:abc/merge
   def merge
     @crumbs = [
-      ['Register Lists', registers_url],
+      ['Lists', registers_url],
       [@register.acc_url, @register],
       'Merge'
     ]

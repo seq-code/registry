@@ -295,7 +295,7 @@ nav.navbar {
 }
 
 @include media-breakpoint-down(sm) {
-  .actions-section dd a, .btn-action {
+  .actions-section dd .btn, .btn-action {
     display: block !important;
     margin-top: 1em;
   }
