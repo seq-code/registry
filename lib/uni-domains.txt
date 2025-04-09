@@ -812,6 +812,7 @@ prescott.edu
 princeton.edu
 providence.edu
 purdueglobal.edu
+student.purdueglobal.edu
 purdue.edu
 purduecal.edu
 pnc.edu
@@ -1421,7 +1422,7 @@ uhsa.ag
 atlantida.edu.ar
 austral.edu.ar
 caece.edu.ar
-cema.edu.ar
+ucema.edu.ar
 iese.edu.ar
 inun.edu.ar
 itba.edu.ar
@@ -1431,7 +1432,7 @@ iuna.edu.ar
 kennedy.edu.ar
 maimonides.edu.ar
 mdp.edu.ar
-palermo.edu.ar
+palermo.edu
 salvador.edu.ar
 uade.edu.ar
 uader.edu.ar
@@ -3446,6 +3447,7 @@ u-pem.fr
 etud.u-pem.fr
 univ-montp1.fr
 univ-montp2.fr
+umontpellier.fr
 univ-montp3.fr
 univ-mulhouse.fr
 uha.fr
@@ -3469,6 +3471,7 @@ univ-st-etienne.fr
 univ-tln.fr
 univ-tlse1.fr
 univ-tlse2.fr
+univ-tlse3.fr
 univ-toulouse.fr
 univ-tours.fr
 univ-ubs.fr
@@ -3524,6 +3527,7 @@ sangu.ge
 tiaa.edu.ge
 tsmu.edu
 tsu.edu.ge
+iubh-fernstudium.de
 akad.de
 asfh-berlin.de
 augustana.de
@@ -5961,6 +5965,7 @@ rtu.lv
 ru.lv
 sseriga.edu.lv
 tsi.lv
+venta.lv
 va.lv
 arabou-lb.edu.lb
 aub.edu.lb
@@ -6016,6 +6021,7 @@ mruni.eu
 su.lt
 vdu.lt
 vgtu.lt
+stud.vilniustech.lt
 vpu.lt
 vu.lt
 iuil.lu
@@ -10414,7 +10420,6 @@ merrimack.edu
 nebrwesleyan.edu
 nymc.edu
 pnwu.edu
-purdueglobal.edu
 rcsj.edu
 sofia.edu
 downstate.edu
@@ -10467,6 +10472,16 @@ impacta.edu.br
 inteli.edu.br
 utaipei.edu.tw
 techniqueedu.com
+uth.edu.pl
+uth.pl
+iitrpr.ac.in
+citystgeorges.ac.uk
+student.staffs.ac.uk
+sgul.ac.uk
+trinitycollegebristol.ac.uk
+trinitycollegebristol.ac.uk
+cca.edu
+student.kuleuven.be
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10513,3 +10528,4 @@ ms.xjb.ac.cn
 cea.fr
 iae.ac.cn
 qdio.ac.cn
+inrae.fr
