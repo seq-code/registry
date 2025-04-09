@@ -12,6 +12,7 @@ class GenomeSampleSet
         location: GenomeSampleAttribute.location_keys.values.flatten,
         toponym: %i[
           geo_loc_name geographic_location_country_and_or_sea marine_region
+          geographic_location_country_and_or_sea_region
         ],
         environment: %i[
           env_material sample_type env_biome isolation_source analyte_type
