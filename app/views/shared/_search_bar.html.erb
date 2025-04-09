@@ -4,7 +4,7 @@
     <div class="input-group-prepend">
       <select class="form-control custom-select btn bg-light"
             name="what" id="search-bar-what">
-        <% %w[names publications authors subjects].each do |i| %>
+        <% %w[names genomes publications authors subjects].each do |i| %>
           <option value="<%= i %>" <%= 'selected' if @what.to_s == i %>>
             <%= i.capitalize %>
           </option>

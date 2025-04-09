@@ -17,7 +17,12 @@
   <%= adaptable_list(set: @results) do |list| %>
     <div class="<%= 'text-center' if %i[authors subjects].include?(@what) %>">
       <% @results.each do |i| %>
-        <%= render(partial: i, locals: { list: list }) %>
+        <% if i.is_a? Genome %>
+          <%= render(partial: 'genomes/genome_item',
+                locals: { list: list, genome: i }) %>
+        <% else %>
+          <%= render(partial: i, locals: { list: list }) %>
+        <% end %>
       <% end %>
     </div>
   <% end %>

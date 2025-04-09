@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
       },
       { rank: :rank }
     ],
+    genomes: [Genome, %i[accession source_accession source_json], {}],
     subjects: [Subject, %i[name], {}]
   }
 
