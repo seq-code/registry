@@ -12,6 +12,7 @@ class StrainsController < ApplicationController
   # GET /strains
   def index
     @strains = Strain.all.paginate(page: params[:page], per_page: 30)
+    @crumbs  = ['Strains']
   end
 
   # GET /strains/1

@@ -2,6 +2,7 @@ module StrainsHelper
   def strain_html(obj, opts = {})
     strain = nil
     name = opts[:name]
+    opts[:no_title] ||= false
     parsed =
       case obj
       when Strain
@@ -21,7 +22,11 @@ module StrainsHelper
       end
 
     y = strain_numbers_html(parsed, opts)
-    y += strain_info_button(strain, name) if strain && !opts[:no_strain_info]
+    y = display_link(strain) + ': ' + y unless strain.nil? || opts[:no_title]
+    if strain && !opts[:no_strain_info]
+      y += content_tag(:span, ' ', class: 'mx-1') +
+           strain_info_button(strain, name)
+    end
     y
   end
 
@@ -35,8 +40,10 @@ module StrainsHelper
           str.url, sanitize(str.catalogue&.name), sanitize(str.number), ext
         ]
       elsif str.is_a?(StrainCode::Number) && str.catalogue&.name.present?
-        '<span class="tooltip-text" title="%s">%s</span>' % [
-          sanitize(str.catalogue.name), sanitize(str.number)
+        '<abbr title="%s - %s">%s</abbr>' % [
+          sanitize(str.catalogue.name),
+          sanitize(str.accession),
+          sanitize(str.number)
         ]
       else
         str
@@ -44,14 +51,14 @@ module StrainsHelper
     end.join(' = ').html_safe
   end
 
-  def strain_info_button(strain, name = nil)
+  def strain_info_button(strain, name = nil, text = 'Lookup StrainInfo')
     id = modal(
       'StrainInfo data', size: 'lg',
       async: strain_info_strain_url(strain, name: name, content: true)
     )
 
-    modal_button(id, class: 'badge badge-pill badge-info mx-2') do
-      fa_icon('info-circle', class: 'mr-2') + 'StrainInfo data'
+    modal_button(id, class: 'badge badge-pill badge-info mr-2') do
+      fa_icon('info-circle', class: 'mr-2') + text
     end
   end
 end

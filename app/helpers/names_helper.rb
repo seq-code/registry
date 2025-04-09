@@ -28,7 +28,7 @@ module NamesHelper
           fa_icon('external-link-alt', class: 'ml-1')
       end
     elsif name.type_is_strain?
-      content_tag(:span, 'Strain: ') + strain_html(name)
+      strain_html(name)
     else
       name.type_text
     end

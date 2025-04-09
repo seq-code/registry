@@ -5,6 +5,9 @@
     <% end %>
   <% end %>
   <%= adaptable_value(entry, 'Strain numbers') do %>
-    <%= strain_html(strain, no_strain_info: true) %>
+    <%= strain_html(strain, no_strain_info: true, no_title: true) %>
+  <% end %>
+  <%= adaptable_value(entry, 'Lookups') do %>
+    <%= strain_info_button(strain, nil, 'StrainInfo') %>
   <% end %>
 <% end %>
