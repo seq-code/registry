@@ -33,9 +33,10 @@
   </div>
 </nav>
 <% if @crumbs %>
-  <nav class="navbar small sticky-top navbar-expand navbar-dark bg-dark-ce justify-content-between">
+  <nav class="navbar small sticky-top navbar-expand navbar-dark bg-dark-ce
+              justify-content-between overflow-hidden">
     <div class="navbar-nav">
-      <div class="collapse navbar-collapse">
+      <div class="collapse navbar-collapse crumbs">
         <%= link_to(root_url,
               class: 'nav-item nav-link only-stuck', title: 'Home') do %>
           <%= fa_icon('university') %>

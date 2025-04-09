@@ -145,6 +145,29 @@ nav.navbar-dark {
     .navbar-lemma {
       background: #ffffff50;
     }
+    @include media-breakpoint-down(md) {
+      background: theme-color-level(primary, 5);
+      text-align: center;
+      margin: 0;
+      padding: 0.5em 0;
+      .nav-text {
+        border-top: 1px solid white;
+        height: 1px;
+        overflow: hidden;
+        margin: 0.5em 3em;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .crumbs {
+    & > span {
+      display: none;
+    }
+    & > a {
+      color: white !important;
+    }
   }
 }
 

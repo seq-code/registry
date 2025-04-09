@@ -17,6 +17,7 @@
   <% if user_signed_in? %>
     <li class="nav-item">
       <%= link_to(notifications_path, title: 'Alerts') do %>
+        <span class="d-lg-none">Notifications</span>
         <% if current_user.unseen_notifications.any? %>
           <span
             class="nav-item-text badge badge-pill badge-info py-1 px-2 mr-1">
