@@ -91,7 +91,7 @@ class RegistersController < ApplicationController
     @count = @names.count
     @names &&= @names.where(rank: params[:rank]) if params[:rank].present?
     @names &&= @names.paginate(page: params[:page], per_page: 30)
-    @crumbs = [['Lists', registers_url], @register.accession]
+    @crumbs = [['Lists', registers_url], @register.acc_url]
   end
 
   # GET /registers/new
