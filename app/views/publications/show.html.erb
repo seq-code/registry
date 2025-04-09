@@ -23,7 +23,12 @@
   <dt>Publication date</dt>
   <dd><%= @publication.journal_date %></dd>
   <dt>DOI</dt>
-  <dd><%= link_to(@publication.doi, @publication.url, target: '_blank') %></dd>
+  <dd>
+    <%= link_to(@publication.url, target: '_blank') do %>
+      <%= @publication.doi %>
+      <%= fa_icon('external-link-alt') %>
+    <% end %>
+  </dd>
 </dl>
 <%= render(partial: 'curator') %>
 <br/>
