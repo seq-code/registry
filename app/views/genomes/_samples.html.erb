@@ -40,11 +40,18 @@
                   osl4 = 'https://www.ebi.ac.uk/ols4/ontologies/envo/classes/'
                   purl = 'http://purl.obolibrary.org/obo/ENVO_'
                   envo = osl4 + ERB::Util.u(purl)
+                  purl = 'http://purl.obolibrary.org/obo/PCO_'
+                  pco = osl4 + ERB::Util.u(purl)
                   v.map! do |i|
-                    sanitize(i).gsub(
-                      /(^\s*|[^A-Z\d])ENVO:(\d{8})(\s*$|[^A-Z\d])/i,
-                      "\\1<a href='#{envo}\\2' target='_blank'>ENVO:\\2</a>\\3"
-                    )
+                    sanitize(i)
+                      .gsub(
+                        /(^\s*|[^A-Z\d])ENVO:(\d{8})(\s*$|[^A-Z\d])/i,
+                        "\\1<a href='#{envo}\\2' target=_blank>ENVO:\\2</a>\\3"
+                      )
+                      .gsub(
+                        /(^\s*|[^A-Z\d])PCO:(\d{7})(\s*$|[^A-Z\d])/i,
+                        "\\1<a href='#{pco}\\2' target=_blank>PCO:\\2</a>\\3"
+                      )
                   end
                 when :toponym
                   mrg = 'http://marineregions.org/mrgid/'
