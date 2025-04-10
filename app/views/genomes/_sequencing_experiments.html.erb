@@ -4,7 +4,7 @@
       <%= fa_icon('vials', class: 'float-right') %>
       Sequencing Experiments
     </h2>
-    <# First non-amplicons, then unknown strategy, and amplicons last %>
+    <%# First non-amplicons, then unknown strategy, and amplicons last %>
     <% [false, nil, true].each do |amplicon| %>
       <% @genome.sequencing_experiments.each do |se| %>
         <% next unless se.amplicon? == amplicon %>
@@ -14,8 +14,16 @@
             <span class="badge badge-pill badge-danger">amplicon</span>
           <% end %>
           <%= se.title.present? ? se.title : se.sra_accession %>
+          <% if se.amplicon? %>
+            <%= link_to("#seq-exp-#{se.id}",
+                  role: 'button',
+                  data: { toggle: 'collapse' }
+                ) do %>
+              <%= fa_icon('plus-circle') %>
+            <% end %>
+          <% end %>
         </dt>
-        <dd>
+        <dd id="seq-exp-<%= se.id %>" class="<%= 'collapse' if se.amplicon? %>">
           <ul>
             <li>
               <%= link_to(se.link, target: '_blank') do %>
