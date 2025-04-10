@@ -46,7 +46,8 @@
                 ><%= se.metadata_xml %></pre>
               <hr/>
               <span class="text-muted">
-                Metadata retrieved <%= time_ago_with_date(se.retrieved_at) %>
+                Metadata retrieved <%= time_ago_with_date(se.retrieved_at) %>,
+                sequencing experiment <%= se.id %>
               </span>
             <% end %>
             <%= modal_button(id, as_anchor: true) do %>
