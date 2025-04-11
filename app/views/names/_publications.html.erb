@@ -50,79 +50,23 @@
           </td>
           <td>
             <% if @name.can_edit?(current_user) %>
-              <% if publication_name.proposes? ||
-                    publication_name.not_valid_proposal? %>
-                <div class="badge badge-pill badge-light text-secondary"
-                     title="Invalid option"><%= fa_icon('star') %></div>
-              <% else %>
-                <%= link_to(
-                      proposed_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-primary',
-                      method: :post, title: 'Effective publication',
-                      data: { confirm: 'Are you sure?' }
-                    ) do %>
-                  <%= fa_icon('star') %>
-                <% end %>
+              <% id = modal('Edit publication relationship') do %>
+                <%= render(
+                      partial: 'publication_names/edit',
+                      locals: {
+                        publication_name: publication_name,
+                        name: @name,
+                        publication: publication
+                      }
+                    ) %>
               <% end %>
 
-              <% if publication_name.corrigendum? %>
-                <div class="badge badge-pill badge-light text-secondary"
-                     title="Invalid option"><%= fa_icon('pen-fancy') %></div>
-              <% else %>
-                <%= link_to(
-                      corrigendum_in_name_url(
-                        @name, publication_id: publication.id
-                      ),
-                      class: 'badge badge-pill badge-primary',
-                      title: 'Corrigendum'
-                    ) do %>
-                  <%= fa_icon('pen-fancy') %>
-                <% end %>
-              <% end %>
-
-              <% if publication_name.emends? %>
-                <div class="badge badge-pill badge-light text-secondary"
-                     title="Invalid option"><%= fa_icon('asterisk') %></div>
-              <% else %>
-                <%= link_to(
-                      emended_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-primary',
-                      method: :post, title: 'Emended this name',
-                      data: { confirm: 'Are you sure?' }
-                    ) do %>
-                  <%= fa_icon('asterisk') %>
-                <% end %>
-              <% end %>
-
-              <% if publication_name.assigns? %>
-                <div class="badge badge-pill badge-light text-secondary"
-                     title="Invalid option">
-                     <%= fa_icon('arrow-alt-circle-up') %></div>
-              <% else %>
-                <%= link_to(
-                      assigned_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-primary',
-                      method: :post, title: 'Taxonomically assigned this name',
-                      data: { confirm: 'Are you sure?' }
-                    ) do %>
-                  <%= fa_icon('arrow-alt-circle-up') %>
-                <% end %>
-              <% end %>
-
-              <% if publication_name.not_valid_proposal? ||
-                    publication_name.proposes? %>
-                <div class="badge badge-pill badge-light text-secondary"
-                     title="Invalid option">
-                     <%= fa_icon('firstdraft', type: :fab) %></div>
-              <% else %>
-                <%= link_to(
-                      not_validly_proposed_in_name_url(@name, publication),
-                      class: 'badge badge-pill badge-primary', method: :post,
-                      title: 'Original (not valid) publication',
-                      data: { confirm: 'Are you sure?' }
-                    ) do %>
-                  <%= fa_icon('firstdraft', type: :fab) %>
-                <% end %>
+              <%= modal_button(
+                    id,
+                    class: 'badge badge-pill badge-primary'
+                  ) do %>
+                <%= fa_icon('edit') %>
+                Edit relationship
               <% end %>
 
               <%= link_to(
@@ -132,6 +76,7 @@
                     data: { confirm: 'Are you sure?' }
                   ) do %>
                 <%= fa_icon('unlink') %>
+                Unlink
               <% end %>
             <% end %>
           </td>

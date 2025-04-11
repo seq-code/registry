@@ -1,0 +1,97 @@
+<%
+  publication_name ||= @publication_name
+  name ||= publication_name.name
+  publication ||= publication_name.publication
+%>
+
+<p>
+  Role of <%= display_link(publication, :short_citation) %> with respect to
+  to <%= display_link(name) %>:
+</p>
+
+<%
+  def link_or_unlink(url, link, icon, text, method = 'post')
+    content_tag('div', class: 'container') do
+      content_tag('div', class: 'row mb-1') do
+        content_tag(
+          'div',
+          class: 'col-8 text-right py-2 px-0'
+        ) { content_tag('span', text, class: 'mr-2') + fa_icon(*icon) } +
+        content_tag('div', class: 'col-4 pr-2') do
+          if url.nil?
+            content_tag(
+              'span', 'Not compatible',
+              class: 'text-secondary input-group-text bg-white border-0'
+            )
+          else
+            cc  = 'btn rounded-pill btn-' + (link ? 'primary' : 'secondary')
+            link_to(
+              url, method: method, class: cc, data: { confirm: 'Are you sure?' }
+            ) do
+              fa_icon("toggle-#{link ? 'off' : 'on'}") + ' ' + 
+              content_tag('span', link ? 'Link' : 'Unlink')
+            end
+          end
+        end
+      end
+    end
+  end
+%>
+
+<%
+  url, link =
+    if publication_name.proposes?
+      [proposed_in_name_url(name, publication, not: true), false]
+    elsif publication_name.not_valid_proposal?
+      [nil, false]
+    else
+      [proposed_in_name_url(name, publication), true]
+    end
+%>
+<%= link_or_unlink(url, link, 'star', 'Effective publication') %>
+
+<%=
+  if publication_name.corrigendum?
+    url = corrigendum_name_url(name, delete_corrigenda: true)
+    link_or_unlink(url, false, 'pen-fancy', 'Corrigendum')
+  else
+    url = corrigendum_in_name_url(name, publication_id: publication.id)
+    link_or_unlink(url, true, 'pen-fancy', 'Corrigendum', 'get')
+  end
+%>
+
+<%
+  url, link =
+    if publication_name.emends?
+      [emended_in_name_url(name, publication, not: true), false]
+    else
+      [emended_in_name_url(name, publication), true]
+    end
+%>
+<%= link_or_unlink(url, link, 'asterisk', 'Emended this name') %>
+
+<%
+  url, link =
+    if publication_name.assigns?
+      [nil, false]
+    else
+      [assigned_in_name_url(name, publication), true]
+    end
+%>
+<%= link_or_unlink(url, link,
+      'arrow-alt-circle-up', 'Taxonomically assigned this name') %>
+
+<%
+  url, link =
+    if publication_name.not_valid_proposal?
+      [not_validly_proposed_in_name_url(name, publication, not: true), false]
+    elsif publication_name.proposes?
+      [nil, false]
+    else
+      [not_validly_proposed_in_name_url(name, publication), true]
+    end
+%>
+<%= link_or_unlink(url, link,
+      [ 'firstdraft', type: 'fab' ],
+      'Original (not valid) publication') %>
+
