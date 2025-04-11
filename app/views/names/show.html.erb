@@ -1,5 +1,5 @@
 <% provide(:title, @name.abbr_name_raw) %>
-<% provide(:canonical_url, url_for(only_path: false, protocol: 'https')) %>
+<% provide(:canonical_url, cannonical_url) %>
 <% provide(:description, @name.page_description) %>
 
 <%= render(partial: 'title') %>

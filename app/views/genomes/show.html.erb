@@ -1,3 +1,6 @@
+<% provide(:title, @genome.title) %>
+<% provide(:canonical_url, cannonical_url) %>
+
 <%=
   download_buttons([
     [genome_url(@genome, format: :json), 'file-code', 'JSON']

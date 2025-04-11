@@ -1,4 +1,8 @@
 module ApplicationHelper
+  def cannonical_url
+    url_for(only_path: false, protocol: 'https', host: 'registry.seqco.de')
+  end
+
   def list_preference
     cookies[:list] || 'cards'
   end

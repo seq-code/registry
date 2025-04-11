@@ -1,4 +1,6 @@
 <% provide(:title, @strain.title) %>
+<% provide(:canonical_url, cannonical_url) %>
+
 <%=
   download_buttons([
     [strain_url(@strain, format: :json), 'file-code', 'JSON']
