@@ -241,6 +241,34 @@
 
   <% if @name.valid? && @name.priority_date %>
     <dt><%= fa_icon('calendar-check') %> Date of priority</dt>
-    <dd><%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %></dd>
+    <dd>
+      <%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %>
+      <% if @name.affected_by_23d_amendment? %>
+        <% id = modal('Priority date notice') do %>
+          <% amendment = Publication.by_doi('10.1038/s43705-023-00303-y') %>
+          This name falls under the protection of
+          <%= amendment ? display_link(amendment) : 'Whitman et al 2023' %>,
+          which pushes the priority date back to<br/>
+          <b><%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %></b>.
+          <br/><br/>
+
+          Without this protection, the priority date would have been determined
+          <% if @name.genus_affected_by_23d_amendment? %>
+            by the validation date of the name:<br/>
+            <b><%= @name.register.priority_date
+                        .strftime('%F %I:%M %p (%Z)') %></b>.
+          <% elsif @name.type_name&.register&.priority_date.present? %>
+            by the validation date of the type genus:<br/>
+            <b><%= @name.type_name.register.priority_date
+                        .strftime('%F %I:%M %p (%Z)') %></b>.
+          <% else %>
+            by the validation date of the type genus.
+          <% end %>
+        <% end %>
+        <%= modal_button(id, class: 'badge badge-pill badge-info') do %>
+          <%= fa_icon('info-circle') %>&nbsp; Important note
+        <% end %>
+      <% end %>
+    </dd>
   <% end %>
 </dl>
