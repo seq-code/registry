@@ -1077,12 +1077,46 @@ class Name < ApplicationRecord
     if !@priority_date && seqcode?
       if above_rank?(:family)
         @priority_date = type_name.try(:priority_date)
+      elsif genus_affected_by_23d_amendment?
+        # Whitman amendment to Rule 23d
+        @priority_date = proposed_in.try(:journal_date).try(:to_datetime)
       else
         @priority_date = register.try(:priority_date)
       end
       update_column(:priority_date, @priority_date)
     end
     @priority_date
+  end
+
+  ##
+  # Would this genus be affected by the protection of Rule 23d
+  # if validly published? Note that an additional check for the
+  # current date might be necessary (i.e., before 2027)
+  def genus_would_be_affected_by_23d_amendment?
+    (seqcode? || !validated?) &&
+      inferred_rank == 'genus' &&
+      proposed_in&.journal_date&.year.present? &&
+      proposed_in.journal_date.year < 2022
+  end
+
+  ##
+  # Is this a genus falling under the protection of Rule 23d?
+  def genus_affected_by_23d_amendment?
+    seqcode? &&
+      genus_would_be_affected_by_23d_amendment? &&
+      register&.priority_date&.year.present? &&
+      register.priority_date.year < 2027
+  end
+
+  ##
+  # Is this name affected directly (genus) or indirectly (family and above)
+  # by the protection of Rule 23d?
+  def affected_by_23d_amendment?
+    return true if genus_affected_by_23d_amendment?
+
+    seqcode? &&
+      type_is_name? &&
+      type_name.genus_affected_by_23d_amendment?
   end
 
   # ============ --- INTERNAL CHECKS --- ============
