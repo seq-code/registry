@@ -27,4 +27,5 @@ import "packs/autocomplete";
 import "packs/dictionary";
 import "packs/network";
 import "packs/styling";
+import "packs/copyable";
 
