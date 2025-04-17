@@ -22,6 +22,9 @@ namespace :works do
         'from_pub_date' => (Date.today - 3.months).to_s,
         'until_pub_date' => (Date.today).to_s
       }
-    ) { |pub| $stderr.puts "o #{pub.doi}" }
+    ) do |_pub|
+      # $stderr.puts "o #{pub.doi}"
+      # Do nothing, too many publications are regularly added
+    end
   end
 end
