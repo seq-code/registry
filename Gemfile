@@ -11,6 +11,7 @@ gem 'addressable'
 gem 'bootstrap', '~> 4.6.2'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
+gem 'csv'
 gem 'd3-rails'
 gem 'dartsass-sprockets' # Sass engine (required by bootstrap
 gem 'devise'
