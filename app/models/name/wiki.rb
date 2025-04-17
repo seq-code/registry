@@ -79,7 +79,8 @@ module Name::Wiki
         i = child.wiki_url_name
         unless xml.xpath("//a[@href='/wiki/#{i}']").any? ||
             xml.xpath("//a[starts-with(@href,'/w/index.php?title=#{i}&')]").any?
-          issues << "child not linked: #{child.name}"
+          issues <<
+            "child not linked: #{child.name}#{' (SeqCode)' if child.seqcode?}"
         end
       end
     end
