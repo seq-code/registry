@@ -469,7 +469,7 @@ class Name < ApplicationRecord
       y += " #{sanitize(authority || proposed_in.short_citation)}"
     end
     if priority_date && priority_date.year != proposed_in&.journal_date&.year
-      y += " (valid #{priority_date.year})"
+      y += " (priority #{priority_date.year})"
     end
     if emended_in.any?
       cit = emended_in.map(&:short_citation).join('; ')
