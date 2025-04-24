@@ -223,23 +223,25 @@ end
     </dd>
 
     <% if @genome.can_edit?(current_user) || !inline %>
-      <dd class="mt-4">
-        <% if !inline %>
-          <%= link_to(@genome, class: 'btn btn-secondary') do %>
-            <%= fa_icon('search-plus') %> See additional details
+      <div class="actions-section">
+        <dd class="mt-4">
+          <% if !inline %>
+            <%= link_to(@genome, class: 'btn btn-secondary') do %>
+              <%= fa_icon('search-plus') %> See additional details
+            <% end %>
           <% end %>
-        <% end %>
 
-        <% if @genome.can_edit?(current_user) %>
-          <%= link_to(
-                edit_genome_path(
-                  @genome, name: @name, from: inline ? :genome : :name
-                ), class: 'btn btn-info'
-              ) do %>
-            <%= fa_icon('edit') %> Edit genome data
+          <% if @genome.can_edit?(current_user) %>
+            <%= link_to(
+                  edit_genome_path(
+                    @genome, name: @name, from: inline ? :genome : :name
+                  ), class: 'btn btn-info'
+                ) do %>
+              <%= fa_icon('edit') %> Edit genome data
+            <% end %>
           <% end %>
-        <% end %>
-      </dd>
+        </dd>
+      </div>
     <% end %>
     <hr/>
     <span class="text-muted">
