@@ -89,7 +89,7 @@
   <% if @name.can_edit?(current_user) %>
     <div class="text-right">
       <%= link_to(new_publication_url(link_name: @name.id),
-            class: 'btn btn-primary') do %>
+            class: 'btn btn-primary btn-action') do %>
         <%= fa_icon('plus-square') %>
         Link additional publications
       <% end %>
