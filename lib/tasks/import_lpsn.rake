@@ -78,8 +78,13 @@ namespace :lpsn do
         pars[:correct_name_id] = parsed_names[entry[:correct_name]][:name_id]
       end
       if entry[:type_name].present?
-        pars[:nomenclatural_type_type] = 'Name'
-        pars[:nomenclatural_type_id] = parsed_names[entry[:type_name]][:name_id]
+        if parsed_names[entry[:type_name]].present?
+          pars[:nomenclatural_type_type] = 'Name'
+          pars[:nomenclatural_type_id] =
+            parsed_names[entry[:type_name]][:name_id]
+        else
+          warn "- Type name not in parsed names: #{entry[:type_name]}"
+        end
       end
       Name.find(entry[:name_id]).update(pars) unless pars.empty?
     end
