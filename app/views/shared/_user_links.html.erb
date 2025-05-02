@@ -19,7 +19,8 @@
       <%= link_to(notifications_path, title: 'Alerts') do %>
         <span class="d-lg-none">Notifications</span>
         <% if current_user.unseen_notifications.any? %>
-          <span
+          <span id="notification-count-badge"
+            data-count="<%= current_user.unseen_notifications.count %>"
             class="nav-item-text badge badge-pill badge-info py-1 px-2 mr-1">
             <%= current_user.unseen_notifications.count %>
           </span>

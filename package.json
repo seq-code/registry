@@ -4,6 +4,7 @@
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.18.6",
     "@babel/plugin-proposal-private-property-in-object": "^7.2",
+    "@rails/actioncable": "^8.0.200",
     "@rails/actiontext": "^6.1",
     "@rails/webpacker": "^5.4",
     "easy-autocomplete": "^1.3",
