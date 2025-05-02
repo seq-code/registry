@@ -4,8 +4,8 @@ class Notification < ApplicationRecord
   belongs_to :linkeable, polymorphic: true, optional: true
 
   after_create(:send_email_notification)
-  after_create(:broadcast_web_notification)
-  after_save(:broadcast_notification_count)
+  ### after_create(:broadcast_web_notification)
+  ### after_save(:broadcast_notification_count)
 
   private
 
