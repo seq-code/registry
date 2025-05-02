@@ -19,6 +19,7 @@ gem 'dkim', '~> 1.1'
 gem 'font_awesome5_rails', '~> 1.5'
 gem 'image_processing', '~> 1.2'
 gem 'inline_svg', '~> 1.8'
+gem 'redis', '~> 5.4'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11'
 gem 'jquery-rails'
