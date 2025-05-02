@@ -35,7 +35,8 @@ namespace :lpsn do
         type_name = row['nomenclatural_type']
       else
         pars[:nomenclatural_type_type] = 'Strain'
-        pars[:nomenclatural_type_entry] = row['nomenclatural_type'].gsub('; ', ' = ')
+        pars[:nomenclatural_type_entry] =
+          row['nomenclatural_type'].gsub('; ', ' = ')
       end
 
       # All additional data
@@ -83,7 +84,8 @@ namespace :lpsn do
           pars[:nomenclatural_type_id] =
             parsed_names[entry[:type_name]][:name_id]
         else
-          warn "- Type name not in parsed names: #{entry[:type_name]}"
+          warn "- Type name not in parsed names: #{entry[:name_id]} " + 
+               "(#{entry[:type_name]})"
         end
       end
       Name.find(entry[:name_id]).update(pars) unless pars.empty?
