@@ -230,7 +230,7 @@ class GenomeSampleAttribute
       # 3-5. Degrees, minutes, seconds (only if sexagesimal)
       # 6. Direction (N, S, E, W, nil), can be lowercase too
       coord = /([-+])? *(#{num}|#{sg_coord}) *([NSEW])?/
-      match = string.match(/^#{coord}$/i) or return
+      match = string&.match(/^#{coord}$/i) or return
       m = match.values_at(1, 2, 6).map(&:to_s).map(&:strip)
 
       decimal =
