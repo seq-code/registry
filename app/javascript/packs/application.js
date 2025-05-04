@@ -28,8 +28,5 @@ import "packs/dictionary";
 import "packs/network";
 import "packs/styling";
 import "packs/copyable";
-// TODO
-// - Configure `redis` server
-// - Manage subscriptions
-// import "channels/index.js";
+import "channels/index.js";
 
