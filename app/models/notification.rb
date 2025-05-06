@@ -28,14 +28,18 @@ class Notification < ApplicationRecord
     WebNotificationsChannel.broadcast_to(
       user,
       title: title || action,
-      tag: notifiable,
+      tag: '%s:%s' % [notifiable.class.to_s, notifiable.id],
       alert: id
     )
+  rescue => e
+    Rails.logger.error e
   end
 
   def broadcast_notification_count
     NotificationCountsChannel.broadcast_to(
       user, count: user.unseen_notifications.count
     )
+  rescue => e
+    Rails.logger.error e
   end
 end
