@@ -133,7 +133,11 @@ class GenomeSampleSet
   end
 
   def known_biosamples
-    (map(&:accession) + (genome.try(:source_accessions) || [])).compact.uniq
+    [
+      map(&:accession),
+      map(&:biosample_accessions),
+      genome.try(:source_accessions),
+    ].flatten.compact.uniq
   end
 end
 
