@@ -6,7 +6,7 @@ class RegistersController < ApplicationController
       submit return return_commit endorse notify notify_commit
       validate editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review
-      observe unobserve merge merge_commit
+      observe unobserve merge merge_commit sample_map
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -26,7 +26,7 @@ class RegistersController < ApplicationController
   )
   before_action(
     :authenticate_can_view!,
-    only: %i[show table list certificate_image new_correspondence]
+    only: %i[show table list certificate_image new_correspondence sample_map]
   )
   before_action(:ensure_valid!, only: %i[list certificate_image])
   before_action(
@@ -384,6 +384,14 @@ class RegistersController < ApplicationController
       render(:merge)
     end
   end
+
+  # GET /registers/r:abc/sample_map
+  def sample_map
+    @crumbs = [['Lists', registers_url], [@register.acc_url, @register], 'Map']
+    @sample_set = @register.sample_set
+    render('genomes/sample_map', layout: !params[:content].present?)
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

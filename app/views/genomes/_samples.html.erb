@@ -93,11 +93,11 @@
           <% end %>
           <% if group == :location %>
             <% id = modal(
-                      'Sampling location', size: :lg,
+                      'Sampling locations', size: :lg,
                       async: sample_map_genome_url(@genome, content: true)
                     ) {} %>
             <%= modal_button(id, as_anchor: true) do %>
-              View sampling location map
+              View map of sampling locations
             <% end %>
           <% end %>
         <% else %>

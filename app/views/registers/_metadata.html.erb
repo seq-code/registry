@@ -1,6 +1,17 @@
 <dl name="metadata" class="main-section name-details">
   <h2><%= fa_icon('table', class: 'float-right') %> Metadata</h3>
 
+  <dt><%= fa_icon('map-marked') %> Sample locations</dt>
+  <dd>
+    <% id = modal(
+          'Sampling locations', size: :lg,
+          async: sample_map_register_url(@register, content: true)
+        ) {} %>
+    <%= modal_button(id, as_anchor: true) do %>
+      View map of sampling locations
+    <% end %>
+  </dd>
+
   <dt><%= fa_icon(:user) %> Created by</dt>
   <dd>
     <%= display_link(@register.created_by) %>

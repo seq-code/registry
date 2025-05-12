@@ -18,6 +18,18 @@ class Register < ApplicationRecord
   )
   has_many(:checks, through: :names)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
+  has_many(
+    :type_genomes, through: :names, source: :nomenclatural_type,
+    source_type: 'Genome'
+  )
+  has_many(
+    :type_names, through: :names, source: :nomenclatural_type,
+    source_type: 'Name'
+  )
+  has_many(
+    :type_strains, through: :names, source: :nomenclatural_type,
+    source_type: 'Strain'
+  )
   alias :correspondences :register_correspondences
   alias :created_by :user
   has_many(:observe_registers, dependent: :destroy)
@@ -38,6 +50,7 @@ class Register < ApplicationRecord
 
   include HasObservers
   include Register::Status
+  include Register::SampleSet
 
   attr_accessor :modal_form_id
 

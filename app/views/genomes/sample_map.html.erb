@@ -1,22 +1,18 @@
 
 <% unless params[:content].present? %>
-  <h2><%= display_link(@genome, :title) %> - Sample location</h2>
+  <h2>Sample locations</h2>
   <hr/>
 <% end %>
 
-<% locs = @genome.sample_set.locations.compact %>
+<% locs = @sample_set.locations.compact %>
 <% if locs.present? %>
   <% if params[:content].present? %>
     <div id="map" style="width: 400px; height: 300px;" class="mx-auto"></div>
-    <!--
-    <hr/>
-    <%= link_to(sample_map_genome_path(@genome)) do %>
-      View in full page
-    <% end %>
-    -->
   <% else %>
-    <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
-    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"
+      ></script>
+    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css"
+      rel="stylesheet" />
     <div id="map" style="width: 800px; height: 600px;" class="mx-auto"></div>
   <% end %>
 
@@ -40,7 +36,7 @@
           .addTo(map)
       );
     }
-    <% bounds = @genome.sample_set.locations_area %>
+    <% bounds = @sample_set.locations_area %>
     var map = load_map(<%= bounds.join(', ') %>);
     map.addControl(new maplibregl.FullscreenControl());
     <% locs.each do |lat_lon| %>
@@ -49,6 +45,15 @@
   </script>
 <% else %>
   <div class="alert alert-warning">
-    Could not parse location metadata
+    <% if @sample_set.empty? %>
+      There are no available samples to find their location
+    <% else %>
+      Location metadata is missing or could not be parsed
+    <% end %>
   </div>
+<% end %>
+
+<% unless params[:content].present? %>
+  <br/>
+  <%= render(partial: 'shared/cc') %>
 <% end %>

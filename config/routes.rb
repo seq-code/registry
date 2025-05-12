@@ -145,6 +145,7 @@ Rails.application.routes.draw do
       get  :list
       get  :cite
       get  :certificate_image
+      get  :sample_map
       # --> Register edit
       post :submit
       get  :return
