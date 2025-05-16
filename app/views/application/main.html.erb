@@ -12,6 +12,15 @@
 </div>
 -->
 
+<% if user_signed_in? %>
+  <div id="notification-permission" class="text-center" style="display: none;">
+    <%= button_tag(class: 'btn btn-primary', id: 'enable') do %>
+      <%= fa_icon('bell') %>
+      Enable notifications
+    <% end %>
+  </div>
+<% end %>
+
 <div class="main-page-box text-center bg-light rounded-lg border my-5 mx-3 p-5">
   <h1>SeqCode Registry</h1>
   <p class="lead">
