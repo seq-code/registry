@@ -87,6 +87,8 @@
       </div>
     </div>
     <% unless @without_layout ||= false %>
+      <div class="position-fixed bottom-0 right-0 p-3"
+            style="z-index: 5; right: 0; bottom: 0;" id="toastCont"></div>
       <%= render partial: 'layouts/footer' %>
     <% end %>
   </body>
