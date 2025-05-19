@@ -1,5 +1,9 @@
 
+<!-- Hidden container elements -->
+<div class="position-fixed bottom-0 right-0 p-3" id="toastCont"></div>
+<div class="position-fixed bottom-0 left-0 p-3" id="listSentinel"></div>
 <%= yield_modals %>
+
 <script>
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
