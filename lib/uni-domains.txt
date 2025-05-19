@@ -30,6 +30,7 @@ www-en.hnu.edu.cn
 port.ac.uk
 myport.ac.uk
 myport.port.ac.uk
+centralesupelec.fr
 ac-paris.fr
 ac-aix-marseille.fr
 ac-creteil.fr
@@ -3233,7 +3234,6 @@ agro.roazhon.inra.fr
 agrosupdijon.fr
 ags.edu
 aup.fr
-bip.lon.ac.uk
 ceram.edu
 cesi.fr
 cfpj.com
@@ -4276,7 +4276,7 @@ nitw.ernet.in
 nls.ac.in
 nmims.edu
 nmu.ac.in
-nsit.ac.in
+nsut.ac.in
 osmania.ac.in
 padmavatiwomen-univ.org
 pdpu.ac.in
@@ -4989,6 +4989,8 @@ aoyama.ac.jp
 apu.ac.jp
 asahikawa-med.ac.jp
 asahikawa-u.ac.jp
+edu.asahikawa-nct.ac.jp
+asahikawa-nct.ac.jp
 asahi-u.ac.jp
 ashitech.ac.jp
 ashiya-u.ac.jp
@@ -8652,7 +8654,6 @@ lamp.ac.uk
 lancs.ac.uk
 lboro.ac.uk
 student.lboro.ac.uk
-lbs.lon.ac.uk
 lcst.ac
 le.ac.uk
 leeds.ac.uk
@@ -8662,7 +8663,7 @@ lincoln.ac.uk
 liv.ac.uk
 ljmu.ac.uk
 leedsbeckett.ac.uk
-lon.ac.uk
+london.ac.uk
 londonmet.ac.uk
 lsbf.org.uk
 lse.ac.uk
@@ -10529,3 +10530,4 @@ cea.fr
 iae.ac.cn
 qdio.ac.cn
 inrae.fr
+niist.res.in
