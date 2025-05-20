@@ -515,7 +515,7 @@ class NamesController < ApplicationController
     def set_name
       @name = Name.find(params[:id])
       @register ||= @name.register
-      @register.current_reviewer_token = cookies[:reviewer_token]
+      @register.current_reviewer_token = cookies[:reviewer_token] if @register
       current_user
         &.unseen_notifications
         &.where(notifiable: @name)

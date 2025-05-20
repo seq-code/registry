@@ -74,7 +74,7 @@ class StrainsController < ApplicationController
   def set_name
     @name = Name.find(params[:name]) if params[:name]
     @register ||= @name.register
-    @register.current_reviewer_token = cookies[:reviewer_token]
+    @register.current_reviewer_token = cookies[:reviewer_token] if @register
   end
 
   def authenticate_can_edit!
