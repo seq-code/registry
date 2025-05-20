@@ -2,6 +2,7 @@ module Tutorial::Neotype
   class << self
     def hash
       {
+        short_title: 'Neotype',
         title: 'Register new type',
         prompt: 'New type for an existing taxon',
         description: 'If you want to register a different genome as the ' \

@@ -1,0 +1,16 @@
+<% provide(:title, @register.propose_title) %>
+
+<h2><%= fa_icon('user-secret', class: 'mr-2') %> Reviewer Access</h2>
+<hr/>
+You currently have reading access to this register list through
+a reviewer link. When you complete the review, we recommend that you:
+<br/><br/>
+<%= link_to(
+      register_url(@register, token: 'no'), class: 'btn btn-danger'
+    ) do %>
+  Delete reviewer access for the current session
+<% end %>
+<br/><br/>
+This action is equivalent to signing out, and you can regain access
+any time by using the same reviewer link.
+

@@ -1,0 +1,58 @@
+
+<%
+  sentinel_bar = {}
+
+  if !@no_tutorial_sentinel && @tutorial.present? &&
+      @tutorial.user == current_user
+    sentinel_bar[:tutorial] = @tutorial
+  end
+  
+  if !@no_register_sentinel && @register.present? &&
+      @register.persisted? && @register&.can_view?(current_user)
+    sentinel_bar[:register] = @register
+  end
+
+  if !@no_reviewer_sentinel && @register.present? &&
+      @register.current_reviewer_token?
+    sentinel_bar[:reviewer] = reviewer_token_register_url(@register)
+  end
+%>
+
+<% unless sentinel_bar.empty? %>
+  <div class="p-4"></div>
+  <div class="position-fixed p-2 w-100" id="sentinelBar">
+  <% if sentinel_bar[:tutorial] %>
+    <%= link_to(
+          sentinel_bar[:tutorial], class: 'btn btn-primary btn-sm',
+          title: 'Guided Registration', data: { toggle: 'tooltip' }
+        ) do %>
+      <%= fa_icon('shoe-prints') %>
+      <span class="d-none d-sm-inline">
+        <%= sentinel_bar[:tutorial].short_title %>
+      </span>
+    <% end %>
+  <% end %>
+
+  <% if sentinel_bar[:register] %>
+    <%= link_to(
+          sentinel_bar[:register], class: 'btn btn-primary btn-sm',
+          title: 'Register List', data: { toggle: 'tooltip' }
+        ) do %>
+      <%= fa_icon('clipboard-list') %>
+      <span class="d-none d-sm-inline">
+        <%= sentinel_bar[:register].acc_url %>
+      </span>
+    <% end %>
+  <% end %>
+
+  <% if sentinel_bar[:reviewer] %>
+    <%= link_to(
+          sentinel_bar[:reviewer], class: 'btn btn-primary btn-sm',
+          title: 'Reviewer access', data: { toggle: 'tooltip' }
+        ) do %>
+      <%= fa_icon('user-secret') %>
+      <span class="d-none d-sm-inline">Reviewer access</span>
+    <% end %>
+  <% end %>
+<% end %>
+

@@ -93,6 +93,8 @@ class GenomesController < ApplicationController
     def set_name
       @name = params[:name].present? ? Name.find(params[:name]) :
                 @genome.names.first
+      @register ||= @name.register
+      @register.current_reviewer_token = cookies[:reviewer_token]
     end
 
     def set_tutorial

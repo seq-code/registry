@@ -2,6 +2,7 @@ module Tutorial::Parent
   class << self
     def hash
       {
+        short_title: 'Higher taxa',
         title: 'Register higher taxa',
         prompt: 'New taxon above the rank of species',
         description: 'If you want to register the name of a genus, family, ' \

@@ -33,6 +33,30 @@
         <hr/>
       <% end %>
       <% unless @register.validated? %>
+        <% if @register.reviewer_token? %>
+          <%= link_to(
+                reviewer_token_register_url(@register), method: :delete,
+                class: 'btn btn-primary btn-sm',
+                data: {
+                  confirm: 'Are you sure? ' \
+                           'The reviewer link will be permanently deactivated'
+                }
+              ) do %>
+            <%= fa_icon('user-secret') %> Deactivate reviewer link
+          <% end %>
+          &raquo; Destroy reviewer link and remove reviewer reading access
+          <hr/>
+        <% else %>
+          <%= link_to(
+                reviewer_token_register_url(@register), method: :post,
+                class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('user-secret') %> Create reviewer link
+          <% end %>
+          &raquo; Grant reading access to reviewers and editors
+          <hr/>
+        <% end %>
+
         <%= link_to(
               merge_register_url(@register),
               class: 'btn btn-primary btn-sm'

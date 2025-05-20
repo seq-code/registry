@@ -146,6 +146,9 @@ Rails.application.routes.draw do
       get  :cite
       get  :certificate_image
       get  :sample_map
+      get  :reviewer_token
+      post :reviewer_token, action: :reviewer_token_create
+      delete :reviewer_token, action: :reviewer_token_delete
       # --> Register edit
       post :submit
       get  :return

@@ -189,7 +189,6 @@ class NamesController < ApplicationController
            .paginate(page: params[:page], per_page: 10)
     @oldest_publication = @name.publications.last
     @crumbs = [['Names', names_path], @name.abbr_name]
-    @register ||= @name.register
     respond_to do |format|
       format.html
       format.json
@@ -515,12 +514,14 @@ class NamesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions
     def set_name
       @name = Name.find(params[:id])
+      @register ||= @name.register
+      @register.current_reviewer_token = cookies[:reviewer_token]
       current_user
         &.unseen_notifications
         &.where(notifiable: @name)
         &.update(seen: true)
 
-      render 'hidden' unless @name.can_see?(current_user)
+      render 'hidden' unless @name.can_view?(current_user)
     end
 
     def set_tutorial

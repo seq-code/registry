@@ -7,6 +7,7 @@ class RegistersController < ApplicationController
       validate editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review
       observe unobserve merge merge_commit sample_map
+      reviewer_token reviewer_token_create reviewer_token_delete
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -26,12 +27,18 @@ class RegistersController < ApplicationController
   )
   before_action(
     :authenticate_can_view!,
-    only: %i[show table list certificate_image new_correspondence sample_map]
+    only: %i[
+      show table list certificate_image new_correspondence sample_map
+      reviewer_token
+    ]
   )
   before_action(:ensure_valid!, only: %i[list certificate_image])
   before_action(
     :authenticate_can_edit!,
-    only: %i[edit update destroy submit notify notify_commit merge merge_commit]
+    only: %i[
+      edit update destroy submit notify notify_commit merge merge_commit
+      reviewer_token_create reviewer_token_delete
+    ]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve])
 
@@ -402,12 +409,53 @@ class RegistersController < ApplicationController
     render('genomes/sample_map', layout: !params[:content].present?)
   end
 
+  # GET /registers/r:abc/reviewer_token
+  def reviewer_token
+    @crumbs = [
+      ['Lists', registers_url],
+      [@register.acc_url, @register],
+      'Reviewer access'
+    ]
+  end
+
+  # POST /registers/r:abc/reviewer_token
+  def reviewer_token_create
+    require 'securerandom'
+    require 'digest'
+
+    token = SecureRandom.urlsafe_base64(25).downcase
+    if @register.update(reviewer_token: token)
+      flash[:notice] = 'Reviewer link successfully created'
+    else
+      flash[:alert] = 'An unexpected error occurred, please report it'
+    end
+    redirect_to(@register)
+  end
+
+  # DELETE /registers/r:abc/reviewer_token
+  def reviewer_token_delete
+    if @register.update(reviewer_token: nil)
+      flash[:notice] = 'Reviewer link permanently deactivated'
+    else
+      flash[:alert] = 'An unexpected error occurred, please report it'
+    end
+    redirect_to(@register)
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_register
       @no_register_sentinel = true
       @register = Register.find_by(accession: params[:accession])
+      if params[:token]
+        if params[:token] == 'no'
+          cookies[:reviewer_token] = nil
+        elsif @register.reviewer_token == params[:token]
+          cookies[:reviewer_token] = params[:token]
+        end
+      end
+      @register.current_reviewer_token = cookies[:reviewer_token]
       current_user
         &.unseen_notifications
         &.where(notifiable: @register)

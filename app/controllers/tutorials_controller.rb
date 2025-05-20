@@ -77,6 +77,7 @@ class TutorialsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_tutorial
+      @no_tutorial_sentinel = true
       @tutorial = Tutorial.find(params[:id])
     end
 

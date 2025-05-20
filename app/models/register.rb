@@ -53,6 +53,7 @@ class Register < ApplicationRecord
   include Register::SampleSet
 
   attr_accessor :modal_form_id
+  attr_accessor :current_reviewer_token
 
   def to_param
     accession
@@ -126,6 +127,10 @@ class Register < ApplicationRecord
   end
   alias :created_by? :user?
 
+  def current_reviewer_token?
+    current_reviewer_token.present? && current_reviewer_token == reviewer_token
+  end
+
   def can_edit?(user)
     return false if validated?
     return false unless user
@@ -136,6 +141,7 @@ class Register < ApplicationRecord
 
   def can_view?(user)
     return true if submitted? || validated? || notified?
+    return true if current_reviewer_token?
     return false unless user
 
     user.curator? || user?(user)

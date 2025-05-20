@@ -19,6 +19,32 @@
       <dt><%= fa_icon(:barcode) %> SeqCode Registry Accession</dt>
       <dd class="copyable"><%= @register.acc_url %></dd>
 
+      <% if @register.reviewer_token? && @register.can_edit?(current_user) &&
+            !@register.validated? %>
+        <dt>
+          <%= fa_icon('user-secret') %> Confidential reviewer link
+          <%= help_message('Reviewer link') do %>
+            You can share this link confidentially with editors and reviewers
+            during the peer-review process. This link will grant reading access
+            to the entire register list, including all listed names and their
+            associated type genomes and reference strains.<br/><br/>
+            If you have used this link for a peer-review process now concluded
+            (for example, for a manuscript that has now been accepted or
+            rejected) we recommend destroying this link using the action at the
+            bottom of the page. If you are resubmitting your manuscript to a
+            different journal after a rejection, you can destroy the link and
+            create a new one to make sure that only the new reviewers have
+            access.<br/><br/>
+            Do not share this link publicly, and do not include it in the
+            manuscript itself. Include instead the public version:<br/>
+            <b><%= @register.acc_url %></b>
+          <% end %>
+        </dt>
+        <dd class="copyable"><%=
+          register_url(@register, token: @register.reviewer_token)
+        %></dd>
+      <% end %>
+
       <dt><%= fa_icon('clipboard-check') %> Status</dt>
       <dd>
         <%= @register.status_name.capitalize %>: <%= @register.status_help %>

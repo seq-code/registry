@@ -31,7 +31,7 @@ class Tutorial < ApplicationRecord
     @@tutorials_hash[symbol]
   end
 
-  %i[title prompt description steps].each do |i|
+  %i[title short_title prompt description steps].each do |i|
     define_method(i) { tutorial_hash[i] }
   end
 

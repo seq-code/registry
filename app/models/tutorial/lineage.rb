@@ -2,6 +2,7 @@ module Tutorial::Lineage
   class << self
     def hash
       {
+        short_title: 'Lineage',
         title: 'Register species lineage',
         prompt: 'New species and parent taxa',
         description: 'If you want to register a novel species from a novel ' \
