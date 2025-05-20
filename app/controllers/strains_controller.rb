@@ -72,7 +72,8 @@ class StrainsController < ApplicationController
   end
 
   def set_name
-    @name = Name.find(params[:name]) if params[:name]
+    @name = params[:name].present? ?
+              Name.find(params[:name]) : @strain.names.first
     @register ||= @name.try(:register)
     @register.current_reviewer_token = cookies[:reviewer_token] if @register
   end
