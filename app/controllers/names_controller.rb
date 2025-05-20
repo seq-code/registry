@@ -514,14 +514,18 @@ class NamesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions
     def set_name
       @name = Name.find(params[:id])
-      current_user
-        &.unseen_notifications
-        &.where(notifiable: @name)
-        &.update(seen: true)
+
+      if @name.can_view?(current_user) || cookies[:reviewer_token].present?
+        @register = @name.try(:register)
+        @register.current_reviewer_token = cookies[:reviewer_token] if @register
+        @register = nil unless @name.can_view?(current_user)
+      end
 
       if @name.can_view?(current_user)
-        @register ||= @name.register
-        @register.current_reviewer_token = cookies[:reviewer_token] if @register
+        current_user
+          &.unseen_notifications
+          &.where(notifiable: @name)
+          &.update(seen: true)
       else
         render 'hidden'
       end
