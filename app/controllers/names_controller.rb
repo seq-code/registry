@@ -520,10 +520,10 @@ class NamesController < ApplicationController
         &.update(seen: true)
 
       if @name.can_view?(current_user)
-        render 'hidden'
-      else
         @register ||= @name.register
         @register.current_reviewer_token = cookies[:reviewer_token] if @register
+      else
+        render 'hidden'
       end
     end
 
