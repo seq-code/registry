@@ -12,8 +12,8 @@
     sentinel_bar[:register] = @register
   end
 
-  if !@no_reviewer_sentinel && @register.present? &&
-      @register.current_reviewer_token?
+  if !@no_reviewer_sentinel &&
+      @register&.correct_reviewer_token?(cookies[:reviewer_token])
     sentinel_bar[:reviewer] = reviewer_token_register_url(@register)
   end
 %>

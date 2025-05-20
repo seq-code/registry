@@ -515,13 +515,8 @@ class NamesController < ApplicationController
     def set_name
       @name = Name.find(params[:id])
 
-      if @name.can_view?(current_user) || cookies[:reviewer_token].present?
+      if @name&.can_view?(current_user, cookies[:reviewer_token])
         @register = @name.try(:register)
-        @register.current_reviewer_token = cookies[:reviewer_token] if @register
-        @register = nil unless @name.can_view?(current_user)
-      end
-
-      if @name.can_view?(current_user)
         current_user
           &.unseen_notifications
           &.where(notifiable: @name)

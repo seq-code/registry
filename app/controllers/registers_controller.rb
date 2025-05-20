@@ -448,6 +448,7 @@ class RegistersController < ApplicationController
     def set_register
       @no_register_sentinel = true
       @register = Register.find_by(accession: params[:accession])
+
       if params[:token]
         if params[:token] == 'no'
           cookies[:reviewer_token] = nil
@@ -455,7 +456,7 @@ class RegistersController < ApplicationController
           cookies[:reviewer_token] = params[:token]
         end
       end
-      @register.current_reviewer_token = cookies[:reviewer_token]
+
       current_user
         &.unseen_notifications
         &.where(notifiable: @register)
@@ -494,7 +495,7 @@ class RegistersController < ApplicationController
     end
 
     def authenticate_can_view!
-      unless @register&.can_view?(current_user)
+      unless @register&.can_view?(current_user, cookies[:reviewer_token])
         flash[:alert] = 'User cannot access register list'
         redirect_to(root_path)
       end

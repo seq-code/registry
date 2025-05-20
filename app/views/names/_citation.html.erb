@@ -129,7 +129,7 @@
     <%= help_message(@name.status_name) { @name.status_help } %>
   </dd>
 
-  <% if @name.register&.can_view?(current_user) %>
+  <% if @name.register&.can_view?(current_user, cookies[:reviewer_token]) %>
     <dt><%= fa_icon('clipboard-list') %> Register List</dt>
     <dd>
       <%= link_to(@name.register.acc_url, @name.register) %>

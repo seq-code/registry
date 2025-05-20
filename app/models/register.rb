@@ -53,7 +53,6 @@ class Register < ApplicationRecord
   include Register::SampleSet
 
   attr_accessor :modal_form_id
-  attr_accessor :current_reviewer_token
 
   def to_param
     accession
@@ -122,14 +121,14 @@ class Register < ApplicationRecord
     [notified_at, submitted_at].compact.max || names.pluck(:submitted_at).max
   end
 
+  def correct_reviewer_token?(token)
+    token.present? && token == reviewer_token
+  end
+
   def user?(user)
     user && user_id == user.id
   end
   alias :created_by? :user?
-
-  def current_reviewer_token?
-    current_reviewer_token.present? && current_reviewer_token == reviewer_token
-  end
 
   def can_edit?(user)
     return false if validated?
@@ -139,9 +138,9 @@ class Register < ApplicationRecord
     user?(user) # && !submitted
   end
 
-  def can_view?(user)
+  def can_view?(user, token = nil)
     return true if submitted? || validated? || notified?
-    return true if current_reviewer_token?
+    return true if correct_reviewer_token?(token)
     return false unless user
 
     user.curator? || user?(user)

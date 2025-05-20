@@ -74,10 +74,9 @@ class StrainsController < ApplicationController
   def set_name
     @name = params[:name].present? ?
               Name.find(params[:name]) : @strain.names.first
-    if @name.can_view?(current_user) || cookies[:reviewer_token].present?
+
+    if @name&.can_view?(current_user, cookies[:reviewer_token])
       @register = @name.try(:register)
-      @register.current_reviewer_token = cookies[:reviewer_token] if @register
-      @register = nil unless @name.can_view?(current_user)
     end
   end
 

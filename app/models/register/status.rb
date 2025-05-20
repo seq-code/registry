@@ -50,7 +50,7 @@ module Register::Status
   end
 
   def public?
-    can_view? nil
+    can_view?(nil)
   end
 
   def all_endorsed?

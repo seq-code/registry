@@ -670,9 +670,9 @@ class Name < ApplicationRecord
 
   # ============ --- USERS --- ============
 
-  def can_view?(user)
+  def can_view?(user, token = nil)
     return true if public?
-    return true if register.try(:current_reviewer_token?)
+    return true if token.present? && token == register.try(:reviewer_token)
 
     (!user.nil?) && (user.curator? || user?(user))
   end
