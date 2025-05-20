@@ -878,7 +878,7 @@ class Name < ApplicationRecord
   end
 
   def type_is_name?
-    type? && nomenclatural_type_type == 'Name'
+    type? && nomenclatural_type_type == 'Name' && nomenclatural_type_id != id
   end
 
   def type_is_genome?
