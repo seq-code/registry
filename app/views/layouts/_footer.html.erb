@@ -1,7 +1,19 @@
 
 <!-- Hidden container elements -->
-<div class="position-fixed bottom-0 right-0 p-3" id="toastCont"></div>
-<div class="position-fixed bottom-0 left-0 p-3" id="listSentinel"></div>
+<div class="position-fixed bottom-0 right-0 p-2" id="toastCont"></div>
+<% if !@no_register_sentinel && @register.present? %>
+  <% if @register&.can_view?(current_user) %>
+    <div class="position-fixed p-2" id="registerSentinel" data-toggle="tooltip"
+         title="Register List">
+      <%= link_to(@register, class: 'btn btn-primary btn-sm') do %>
+        <%= fa_icon('clipboard-list') %>
+        <span class="d-none d-sm-inline">
+          <%= @register.acc_url %>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
 <%= yield_modals %>
 
 <script>

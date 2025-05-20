@@ -23,6 +23,7 @@ class GenomesController < ApplicationController
 
   # GET /genomes/1 or /genomes/1.json
   def show
+    @register ||= @genome.names.first&.register
     @crumbs = [['Genomes', genomes_path], @genome.title('')]
   end
 

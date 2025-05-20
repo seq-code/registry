@@ -17,7 +17,8 @@
 <dl class="main-section name-details">
   <h2>
     <%= fa_icon('dolly', class: 'float-right') %>
-    Transfer names to a different register list
+    Transfer <%= pluralize(@register.names.count, 'name') %>
+    to a different register list
   </h2>
   <% @target_registers.each do |register| %>
     <dt>

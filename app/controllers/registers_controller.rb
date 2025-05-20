@@ -189,6 +189,11 @@ class RegistersController < ApplicationController
   def notify
     @register.title ||= @register.propose_title
     @publications = @register.proposing_publications
+    @crumbs = [
+      ['Lists', registers_url],
+      [@register.acc_url, @register],
+      'Notification'
+    ]
   end
 
   # POST /registers/r:abc/notify
@@ -218,6 +223,11 @@ class RegistersController < ApplicationController
 
   # GET /registers/r:abc/editorial_checks
   def editorial_checks
+    @crumbs = [
+      ['Lists', registers_url],
+      [@register.acc_url, @register],
+      'Editorial checks'
+    ]
   end
 
   # GET /registers/r:abc/publish
@@ -396,6 +406,7 @@ class RegistersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_register
+      @no_register_sentinel = true
       @register = Register.find_by(accession: params[:accession])
       current_user
         &.unseen_notifications
