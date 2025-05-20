@@ -93,8 +93,11 @@ class GenomesController < ApplicationController
     def set_name
       @name = params[:name].present? ?
                 Name.find(params[:name]) : @genome.names.first
-      @register ||= @name.try(:register)
-      @register.current_reviewer_token = cookies[:reviewer_token] if @register
+      if @name.can_view?(current_user) || cookies[:reviewer_token].present?
+        @register = @name.try(:register)
+        @register.current_reviewer_token = cookies[:reviewer_token] if @register
+        @register = nil unless @name.can_view?(current_user)
+      end
     end
 
     def set_tutorial
