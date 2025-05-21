@@ -424,7 +424,7 @@ class RegistersController < ApplicationController
     require 'digest'
 
     token = SecureRandom.urlsafe_base64(25).downcase
-    if @register.update(reviewer_token: token)
+    if @register.update_column(:reviewer_token, token)
       flash[:notice] = 'Reviewer link successfully created'
     else
       flash[:alert] = 'An unexpected error occurred, please report it'
@@ -434,7 +434,7 @@ class RegistersController < ApplicationController
 
   # DELETE /registers/r:abc/reviewer_token
   def reviewer_token_delete
-    if @register.update(reviewer_token: nil)
+    if @register.update_column(:reviewer_token, nil)
       flash[:notice] = 'Reviewer link permanently deactivated'
     else
       flash[:alert] = 'An unexpected error occurred, please report it'
