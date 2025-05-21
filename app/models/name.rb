@@ -1073,6 +1073,18 @@ class Name < ApplicationRecord
     !!register.try(:notified?)
   end
 
+  # Find the earliest publication date of either the effective publication
+  # or any non-valid "original" publication
+  def earliest_publication_date
+    date = proposed_in.try(:journal_date).try(:to_datetime)
+    not_validly_proposed_in.each do |nv_pub|
+      nv_time = nv_pub.journal_date.try(:to_datetime) or next
+      date ||= nv_time
+      date = nv_time if nv_time < date
+    end
+    date
+  end
+
   def priority_date
     @priority_date ||= self[:priority_date]
     if !@priority_date && seqcode?
@@ -1080,12 +1092,7 @@ class Name < ApplicationRecord
         @priority_date = type_name.try(:priority_date)
       elsif genus_affected_by_23d_amendment?
         # Whitman amendment to Rule 23d
-        @priority_date = proposed_in.try(:journal_date).try(:to_datetime)
-        not_validly_proposed_in.each do |nv_pub|
-          nv_time = nv_pub.journal_date.try(:to_datetime) or next
-          @priority_date ||= nv_time
-          @priority_date = nv_time if nv_time < @priority_date
-        end
+        @priority_date = earliest_publication_date
       else
         @priority_date = register.try(:priority_date)
       end
@@ -1101,8 +1108,8 @@ class Name < ApplicationRecord
   def genus_would_be_affected_by_23d_amendment?
     (seqcode? || !validated?) &&
       inferred_rank == 'genus' &&
-      proposed_in&.journal_date&.year.present? &&
-      proposed_in.journal_date.year < 2022
+      earliest_publication_date.try(:year).present? &&
+      earliest_publication_date.year < 2022
   end
 
   ##
@@ -1110,7 +1117,7 @@ class Name < ApplicationRecord
   def genus_affected_by_23d_amendment?
     seqcode? &&
       genus_would_be_affected_by_23d_amendment? &&
-      register&.priority_date&.year.present? &&
+      register.try(:priority_date).try(:year).present? &&
       register.priority_date.year < 2027
   end
 
