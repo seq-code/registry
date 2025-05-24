@@ -12,10 +12,10 @@
     <% end %>
   </dd>
 
-  <dt><%= fa_icon(:user) %> Created by</dt>
+  <dt><%= fa_icon(:user) %> Created</dt>
   <dd>
-    <%= display_link(@register.created_by) %>
-    <%= time_ago_with_date(@register.created_at) %>
+    <%= time_ago_with_date(@register.created_at, true) %>
+    by <%= display_link(@register.created_by) %>
   </dd>
 
   <dt><%= fa_icon 'calendar' %> Local history</dt>
@@ -75,22 +75,23 @@
   <% end %>
 
   <% if @register.validated? %>
-    <dt><%= fa_icon('certificate') %> Validated by</dt>
+    <dt><%= fa_icon('certificate') %> Validated</dt>
     <dd>
+      <%= time_ago_with_date(@register.validated_at, true) %>
+      by
       <% if @register.validated_by %>
         <%= display_link(@register.validated_by) %>
       <% else %>
-        Unknown curator
+        an unknown curator
       <% end %>
-      <%= time_ago_with_date(@register.validated_at) %>
     </dd>
   <% end %>
 
   <% if @register.published? %>
-    <dt><%= fa_icon('newspaper') %> Edited by</dt>
+    <dt><%= fa_icon('newspaper') %> Edited</dt>
     <dd>
-      <%= display_link(@register.published_by) %>
-      <%= time_ago_with_date(@register.published_at) %>
+      <%= time_ago_with_date(@register.published_at, true) %>
+      by <%= display_link(@register.published_by) %>
     </dd>
   <% end %>
 

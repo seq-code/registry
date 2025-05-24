@@ -18,11 +18,13 @@ module ApplicationHelper
     end
   end
 
-  def time_ago_with_date(date)
+  def time_ago_with_date(date, capitalize = false)
     date  = DateTime.parse(date) if date.is_a?(String)
     fdate = date.strftime('%F %I:%M %p (%Z)')
     content_tag(:u, class: 'hover-help', title: fdate) do
-      time_ago_in_words(date) + ' ago'
+      s = time_ago_in_words(date) + ' ago'
+      s[0] = s[0].upcase if capitalize
+      s
     end
   end
 

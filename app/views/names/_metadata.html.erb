@@ -182,21 +182,22 @@
     </dd>
   <% end %>
 
-  <dt><%= fa_icon('user') %> Registered by</dt>
+  <dt><%= fa_icon('user') %> Registered</dt>
   <dd>
-    <%= @name.created_by ?
-          display_link(@name.created_by) : 'Excubia bot' %>,
-    created <%= time_ago_with_date(@name.created_at) %>
+    <%= time_ago_with_date(@name.created_at, true) %>
     <% if @name.claimed_at %>
       and claimed <%= time_ago_with_date(@name.claimed_at) %>
     <% end %>
+    by
+    <%= @name.created_by ?
+          display_link(@name.created_by) : 'Excubia bot' %>
   </dd>
 
   <% if @name.submitted_by %>
-    <dt><%= fa_icon('paper-plane') %> Submitted by</dt>
+    <dt><%= fa_icon('paper-plane') %> Submitted</dt>
     <dd>
-      <%= display_link(@name.submitted_by) %>
-      <%= time_ago_with_date(@name.submitted_at) %>
+      <%= time_ago_with_date(@name.submitted_at, true) %>
+      by <%= display_link(@name.submitted_by) %>
     </dd>
   <% end %>
 
@@ -220,22 +221,22 @@
   <% end %>
 
   <% if @name.after_endorsement? && @name.endorsed_by %>
-    <dt><%= fa_icon('check-square') %> Endorsed by</dt>
+    <dt><%= fa_icon('check-square') %> Endorsed</dt>
     <dd>
-      <%= display_link(@name.endorsed_by) %>
-      <%= time_ago_with_date(@name.endorsed_at) %>
+      <%= time_ago_with_date(@name.endorsed_at, true) %>
+      by <%= display_link(@name.endorsed_by) %>
     </dd>
   <% end %>
 
   <% if @name.valid? && @name.validated_by %>
     <% if @name.status == 15 %>
-      <dt><%= fa_icon('certificate') %> Validated by</dt>
+      <dt><%= fa_icon('certificate') %> Validated</dt>
     <% else %>
-      <dt><%= fa_icon('stamp') %> Reported valid by</dt>
+      <dt><%= fa_icon('stamp') %> Reported valid</dt>
     <% end %>
     <dd>
-      <%= display_link(@name.validated_by) %>
-      <%= time_ago_with_date(@name.validated_at) %>
+      <%= time_ago_with_date(@name.validated_at, true) %>
+      by <%= display_link(@name.validated_by) %>
     </dd>
   <% end %>
 
