@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
     ],
     authors: [Author, %i[given family], {}],
     names: [
-      Name, %i[name corrigendum_from],
+      Name, %i[name corrigendum_from gtdb_accession],
       {
         # TODO
         # This is ready to work, but it could return too much "trash", so
@@ -90,7 +90,7 @@ class ApplicationController < ActionController::Base
       name = Name.where(id: $2).first or not_found
       redirect_to(name_path(name, par))
     when /\A(n:)?([a-z_\. ]+)\z/i
-      name = Name.find_by_variants($2.gsub('_', ' ')) or not_found
+      name = Name.find_by_variants($2) or not_found
       redirect_to(name_path(name, par))
     when /\A(r:.+)\z/i
       list = Register.where(accession: $1).first or not_found
