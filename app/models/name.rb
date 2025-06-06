@@ -144,11 +144,11 @@ class Name < ApplicationRecord
       name = name.strip.downcase.gsub(/^candidatus /, '')
       vars = [name, "candidatus #{name}"]
       vars += vars.map { |i| i.gsub(/_+/, ' ') }
-      Name.where('LOWER(name) IN (?, ?)', *vars)
-          .or(Name.where('LOWER(corrigendum_from) IN (?, ?)', *vars))
-          .or(Name.where('LOWER(gtdb_accession) IN (?, ?)', *vars))
+      Name.where('LOWER(name) IN (?, ?, ?, ?)', *vars)
+          .or(Name.where('LOWER(corrigendum_from) IN (?, ?, ?, ?)', *vars))
+          .or(Name.where('LOWER(gtdb_accession) IN (?, ?, ?, ?)', *vars))
           .or(Name.where(
-            id: Pseudonym.where('LOWER(pseudonym) IN (?, ?)', *vars)
+            id: Pseudonym.where('LOWER(pseudonym) IN (?, ?, ?, ?)', *vars)
                          .pluck(:name_id)
           ))
     end
