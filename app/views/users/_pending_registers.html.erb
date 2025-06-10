@@ -9,22 +9,18 @@
       <%= r.acc_url %>: <b><%= r.propose_title %></b>
     <% end %>
     <div class="card-body row">
-      <div class="col-md-6">
+      <div class="col-md-7">
         <div class="container row register-metadata">
-          <div class="col-4">
-            <%= fa_icon('th-list') %>&nbsp;
-            <%= pluralize(r.names.count, 'name') %>
-          </div>
-          <div class="col-4 text-center">
-            <%= fa_icon('comment') %>&nbsp;
-            <%= pluralize(r.correspondences.count, 'message') %>
-          </div>
-          <div class="col-4 text-right">
+          <div class="col-6">
             <% status_cl = r.status_name == 'notified' ? 'success' : 'info' %>
             <span class="text-<%= status_cl %>">
               <%= fa_icon('clipboard-check') %>&nbsp;
               <%= r.status_name %>
             </span>
+          </div>
+          <div class="col-6 text-right">
+            <%= fa_icon('th-list') %>&nbsp;
+            <%= pluralize(r.names.count, 'name') %>
           </div>
           <div class="col-6">
             <%= fa_icon('user') %>&nbsp;
@@ -36,7 +32,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6 border-left">
+      <div class="col-md-5 border-left">
         <%= render(partial: 'registers/curator_review_checks',
                    locals: { register: r }) %>
       </div>
