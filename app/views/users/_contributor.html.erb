@@ -1,66 +1,53 @@
 <% if current_contributor? %>
-<div class="col-12 my-3">
-<div class="card">
-  <div class="card-header p-0">
-    <%= link_to('#contributor-dashboard',
-            class: 'btn btn-light w-100 text-left m-0 px-4 py-2',
-            aria: { expanded: 'false', controls: 'contributor-dashboard' },
-            role: 'button', data: { toggle: 'collapse' }) do %>
-      <h1>Contributor Dashboard</h1>
-    <% end %>
-  </div>
-  <div class="card-body collapse show" id="contributor-dashboard">
-    <ul class="nav flex-column">
-      <li class="nav-item">
-        <%= link_to(user_names_path) do %>
-          <%= fa_icon('list-alt') %>
-          My names
-        <% end %>
-      </li>
-      <li class="nav-item">
-        <%= link_to(registers_path(status: :user)) do %>
-          <%= fa_icon('list-alt') %>
-          My register lists
-        <% end %>
-      </li>
-      <li class="nav-item">
-        <%= link_to(observing_names_path) do %>
-          <%= fa_icon('bell') %>
-          Names with active email alerts
-        <% end %>
-      </li>
-      <li class="nav-item">
-        <%= link_to(registers_path(status: :observing)) do %>
-          <%= fa_icon('bell') %>
-          Register lists with active email alerts
-        <% end %>
-      </li>
-      <li class="nav-item">
-        <%= link_to(new_name_path) do %>
-          <%= fa_icon('plus-circle') %>
-          Register a name
-        <% end %>
-      </li>
-      <li class="nav-item">
-        <%= link_to(tutorials_url(pipeline: :lineage), method: :post) do %>
-          <%= fa_icon('plus-circle') %>
-          Register names by lineage
-        <% end %>
-      </li>
-      <li class="nav-item">
-        <%= link_to(tutorials_url(pipeline: :batch), method: :post) do %>
-          <%= fa_icon('plus-circle') %>
-          Register names in batch
-        <% end %>
-      </li>
-      <li class="nav-item">
-        <%= link_to(new_publication_path) do %>
-          <%= fa_icon('plus-circle') %>
-          Register publication
-        <% end %>
-      </li>
-    </ul>
-  </div>
-</div>
-</div>
+  <h2>Actions</h2>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <%= link_to(user_names_path) do %>
+        <%= fa_icon('list-alt') %>
+        My names
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(registers_path(status: :user)) do %>
+        <%= fa_icon('list-alt') %>
+        My register lists
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(observing_names_path) do %>
+        <%= fa_icon('bell') %>
+        Names with active email alerts
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(registers_path(status: :observing)) do %>
+        <%= fa_icon('bell') %>
+        Register lists with active email alerts
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(new_name_path) do %>
+        <%= fa_icon('plus-circle') %>
+        Register a name
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(tutorials_url(pipeline: :lineage), method: :post) do %>
+        <%= fa_icon('plus-circle') %>
+        Register names by lineage
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(tutorials_url(pipeline: :batch), method: :post) do %>
+        <%= fa_icon('plus-circle') %>
+        Register names in batch
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(new_publication_path) do %>
+        <%= fa_icon('plus-circle') %>
+        Register publication
+      <% end %>
+    </li>
+  </ul>
 <% end %>

@@ -1,15 +1,20 @@
+<% which   = params[:tab] %>
+<% which ||= 'main' %>
 <div class="container">
-  <div class="row">
-    <div class="col-md-6 my-3">
-      <%= render(partial: 'about') %>
+  <div class="row mb-3">
+    <div class="col-lg-3">
+      <%= render(partial: 'dashboard_links', locals: { which: which }) %>
     </div>
-    <div class="col-md-6 my-3" id="dashboard-actions">
-      <%= render(partial: 'actions') %>
+    <div class="col-lg-9">
+      <% case which %>
+      <% when 'main' %>
+        <%= render(partial: 'about') %>
+        <hr/>
+        <%= render(partial: 'actions') %>
+      <% when 'admin', 'editor', 'curator', 'contributor' %>
+        <%= render(partial: which) %>
+      <% end %>
     </div>
-    <%= render(partial: 'admin') %>
-    <%= render(partial: 'editor') %>
-    <%= render(partial: 'curator') %>
-    <%= render(partial: 'contributor') %>
   </div>
 </div>
 <br/>

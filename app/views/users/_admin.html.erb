@@ -1,77 +1,63 @@
 <% if current_admin? %>
-<div class="col-12 my-3">
-<div class="card">
-  <div class="card-header p-0">
-    <%= link_to('#admin-dashboard',
-                class: 'btn btn-light w-100 text-left m-0 px-4 py-2',
-                aria: { expanded: 'false', controls: 'admin-dashboard' },
-                role: 'button', data: { toggle: 'collapse' }) do %>
-      <h1>Administrator Dashboard</h1>
-    <% end %>
-  </div>
-  <div class="card-body collapse show" id="admin-dashboard">
-    <h2>Contributor applications</h2>
-    <% if @contributor_applications.empty? %>
-      None pending
-    <% else %>
-      <ul class="nav flex-column">
-        <% @contributor_applications.each do |u| %>
-          <li class="nav-item">
-            <b><%= link_to u.username, u %></b>:
-            <%= u.contributor_statement %>
-            <br/>
-            <%= link_to contributor_grant_path(u), method: :post,
-                  class: 'btn text-info btn-sm',
-                  data: { confirm: 'Are you sure?' } do %>
-              <%= fa_icon 'check-circle' %> Grant
-            <% end %>
-            <%= link_to contributor_deny_path(u), method: :post,
-                  class: 'btn text-danger btn-sm',
-                  data: { confirm: 'Are you sure?' } do %>
-              <%= fa_icon 'ban' %> Deny
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-    <% end %>
-
-    <hr/>
-    <h2>Curator applications</h2>
-    <% if @curator_applications.empty? %>
-      None pending
-    <% else %>
-      <ul class="nav flex-column">
-        <% @curator_applications.each do |u| %>
-          <li class="nav-item">
-            <b><%= link_to u.username, u %></b>:
-            <%= u.curator_statement %>
-            <br/>
-            <%= link_to curator_grant_path(u), method: :post,
-                  class: 'btn text-info btn-sm',
-                  data: { confirm: 'Are you sure?' } do %>
-              <%= fa_icon 'check-circle' %> Grant
-            <% end %>
-            <%= link_to curator_deny_path(u), method: :post,
-                  class: 'btn text-danger btn-sm',
-                  data: { confirm: 'Are you sure?' } do %>
-              <%= fa_icon 'ban' %> Deny
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-    <% end %>
-
-    <hr/>
-    <h2>Actions</h2>
+  <h2>Contributor applications</h2>
+  <% if @contributor_applications.empty? %>
+    None pending
+  <% else %>
     <ul class="nav flex-column">
-      <li class="nav-item">
-        <%= link_to(users_path) do %>
-          <%= fa_icon('users') %>
-          See all registered users
-        <% end %>
-      </li>
+      <% @contributor_applications.each do |u| %>
+        <li class="nav-item">
+          <b><%= link_to u.username, u %></b>:
+          <%= u.contributor_statement %>
+          <br/>
+          <%= link_to contributor_grant_path(u), method: :post,
+                class: 'btn text-info btn-sm',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon 'check-circle' %> Grant
+          <% end %>
+          <%= link_to contributor_deny_path(u), method: :post,
+                class: 'btn text-danger btn-sm',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon 'ban' %> Deny
+          <% end %>
+        </li>
+      <% end %>
     </ul>
-  </div>
-</div>
-</div>
+  <% end %>
+
+  <hr/>
+  <h2>Curator applications</h2>
+  <% if @curator_applications.empty? %>
+    None pending
+  <% else %>
+    <ul class="nav flex-column">
+      <% @curator_applications.each do |u| %>
+        <li class="nav-item">
+          <b><%= link_to u.username, u %></b>:
+          <%= u.curator_statement %>
+          <br/>
+          <%= link_to curator_grant_path(u), method: :post,
+                class: 'btn text-info btn-sm',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon 'check-circle' %> Grant
+          <% end %>
+          <%= link_to curator_deny_path(u), method: :post,
+                class: 'btn text-danger btn-sm',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon 'ban' %> Deny
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <hr/>
+  <h2>Actions</h2>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <%= link_to(users_path) do %>
+        <%= fa_icon('users') %>
+        See all registered users
+      <% end %>
+    </li>
+  </ul>
 <% end %>

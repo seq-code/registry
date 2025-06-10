@@ -18,10 +18,10 @@
       Personal information
     </h4>
     <%= f.input :email, required: true, autofocus: true %>
-    <%= f.input :family, label: 'Family name',
-                input_html: { autocomplete: 'lastname' } %>
     <%= f.input :given, label: 'Given name',
                 input_html: { autocomplete: 'firstname' } %>
+    <%= f.input :family, label: 'Family name',
+                input_html: { autocomplete: 'lastname' } %>
     <%= f.input :affiliation,
                 input_html: { autocomplete: 'affiliation' } %>
     <br/><hr/><br/>

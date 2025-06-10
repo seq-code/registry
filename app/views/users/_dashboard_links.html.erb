@@ -1,0 +1,17 @@
+<%
+  which ||= nil
+  links = {}
+  links[:main]    = ['tachometer-alt', 'Dashboard']
+  links[:admin]   = ['user-astronaut', 'Administrator'] if current_admin?
+  links[:editor]  = ['user-edit', 'Editor']             if current_editor?
+  links[:curator] = ['user-check', 'Curator']           if current_curator?
+  links[:contributor] = ['user-plus', 'Contributor']    if current_contributor?
+%>
+<div class="btn-group-vertical w-100 pb-4">
+  <% links.each do |role, icon| %>
+    <% k = which == role.to_s ? 'btn-light' : 'btn-primary' %>
+    <%= link_to(dashboard_url(tab: role), class: "btn text-left border border-primary #{k}") do %>
+      <%= fa_icon(icon[0]) %> <%= icon[1] %>
+    <% end %>
+  <% end %>
+</div>

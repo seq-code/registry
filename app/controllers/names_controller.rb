@@ -134,7 +134,7 @@ class NamesController < ApplicationController
     end
     @title  = 'Names with active alerts'
     @status = 'user'
-    @names  = user.observing_names.reverse
+    @names  = user.observing_names.reverse_order
     index
     render(:index)
   end

@@ -1,15 +1,9 @@
-<div class="card">
-  <div class="card-header py-2">
-    <h1>About</h1>
-  </div>
-  <div class="card-body">
-    <p>
-      <b>Username:</b> <%= current_user.username %><br/>
-      <b>Full name:</b> <%= current_user.full_name %><br/>
-      <b>Affiliation:</b> <%= current_user.affiliation %><br/>
-      <b>Registered:</b> <%= current_user.created_at.strftime('%B %e, %Y') %>
-      <br/>
-      <b>Roles:</b> <%= current_user.roles.to_sentence %><br/>
-    </p>
-  </div>
-</div>
+<h2>About</h2>
+<p>
+  <b>Username:</b> <%= current_user.username %><br/>
+  <b>Full name:</b> <%= current_user.full_name %><br/>
+  <b>Affiliation:</b> <%= current_user.affiliation %><br/>
+  <b>Registered:</b> <%= current_user.created_at.strftime('%B %e, %Y') %>
+  <br/>
+  <b>Roles:</b> <%= current_user.roles.to_sentence %><br/>
+</p>
