@@ -60,7 +60,7 @@ class UsersController < ApplicationController
     if current_user.editor?
       @unpublished_registers =
         Register.where(validated: true, published: [false, nil])
-      @pending[:curator] = @unpublished_registers.count
+      @pending[:editor] = @unpublished_registers.count
     end
   end
 
