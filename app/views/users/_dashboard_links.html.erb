@@ -18,7 +18,8 @@
         <%= fa_icon(icon[0]) %>
         <%= icon[1] %>
       </div>
-      <div class="badge badge-light badge-pill py-1 px-2"><%=
+      <% k2 = which == role.to_s ? 'badge-primary' : 'badge-light' %>
+      <div class="badge <%= k2 %> badge-pill py-1 px-2"><%=
         @pending[role] if @pending[role] && !@pending[role].zero?
       %></div>
     <% end %>
