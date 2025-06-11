@@ -10,8 +10,13 @@
 <div class="btn-group-vertical w-100 pb-4">
   <% links.each do |role, icon| %>
     <% k = which == role.to_s ? 'btn-light' : 'btn-primary' %>
-    <%= link_to(dashboard_url(tab: role), class: "btn text-left border border-primary #{k}") do %>
-      <%= fa_icon(icon[0]) %> <%= icon[1] %>
+    <%= link_to(dashboard_url(tab: role),
+          class: "btn d-flex border border-primary #{k}") do %>
+      <div class="flex-grow-1 text-left pl-1">
+        <%= fa_icon(icon[0]) %>
+        <%= icon[1] %>
+      </div>
+      <div class="badge badge-light badge-pill py-1 px-2"><%= @pending[role] || '' %></div>
     <% end %>
   <% end %>
 </div>

@@ -1,6 +1,12 @@
 <h2>Actions</h2>
 <ul class="nav flex-column">
   <li class="nav-item">
+    <%= link_to(notifications_path, class: 'nav-link') do %>
+      <%= fa_icon('bell') %>
+      See all user notifications
+    <% end %>
+  </li>
+  <li class="nav-item">
     <%= link_to(edit_user_registration_path, class: 'nav-link') do %>
       <%= fa_icon('user-cog') %>
       Edit profile information and settings

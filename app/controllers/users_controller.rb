@@ -43,19 +43,24 @@ class UsersController < ApplicationController
 
   def dashboard
     redirect_to(root_url) unless user_signed_in?
+    @pending = { main: current_user.unseen_notifications.count }
 
     if current_user.admin?
       @contributor_applications = User.contributor_applications
       @curator_applications = User.curator_applications
+      @pending[:admin] =
+        @contributor_applications.count + @curator_applications.count
     end
 
     if current_user.curator?
       @pending_registers = Register.pending_for_curation
+      @pending[:curator] = @pending_registers.count
     end
 
     if current_user.editor?
       @unpublished_registers =
         Register.where(validated: true, published: [false, nil])
+      @pending[:curator] = @unpublished_registers.count
     end
   end
 
