@@ -214,7 +214,11 @@
         <% elsif syn = @name.type_name_alt_placement %>
           The type <%= @name.type_name.rank %> of this <%= @name.rank %> has
           been placed in a different taxon. If that placement is considered
-          correct, this name is a synonym of <%= display_link(syn) %>.
+          correct, this name is a
+          <% if @name.type_is_name? && syn.type_is_name? %>
+            <%= @name.type_name == syn.type_name ? 'homo' : 'hetero' %>typic
+          <% end %>
+          synonym of <%= display_link(syn) %>.
         <% end %>
       </dd>
     <% end %>
