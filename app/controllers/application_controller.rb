@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
   def main
     @publications = Publication.all.order(journal_date: :desc)
     @authors = Author.all.order(created_at: :desc)
-    @names = Name.where(status: [0, 15]).order(created_at: :desc)
+    @names = Name.where(status: Name.public_status).order(created_at: :desc)
     @validated = {
       names: Name.where(status: 15).order(validated_at: :desc),
       registers: Register.where(validated: true)
