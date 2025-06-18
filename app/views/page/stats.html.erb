@@ -1,0 +1,52 @@
+
+<h2>Names registered in the SeqCode Registry</h2>
+<hr/>
+
+<p class=lead>
+  The following table reports the number of names currently deposited in the
+  SeqCode Registry by status and taxonomic rank. The term "valid" indicates
+  names validly published under each of the three supported codes: 
+  <i>The Code of Nomenclature of Prokaryotes Described from Sequence Data</i>
+  (SeqCode),
+  <i>The International Code of Nomenclature of Prokaryotes</i> (ICNP), and the
+  <i>International Code of Nomenclature for algae, fungi, and plants</i>
+  (ICNafp).
+</p>
+<br/>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope=col>Rank</th>
+      <% @stats['domain'].each_key do |k| %>
+        <th scope=col>
+          <%= k == 'Automated discovery' ? 'Not validly published' : k %>
+        </th>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @stats.each do |rank, counts| %>
+      <tr>
+        <th scope=row><%= rank %></th>
+        <% counts.each do |_cat, n| %>
+          <td><%= n %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <th scope=row>Total</th>
+      <% @stats['domain'].each_key do |k| %>
+        <td><%= @stats.values.map { |i| i[k] }.inject(:+) %></td>
+      <% end %>
+    </tr>
+  </tfoot>
+</table>
+
+<br/>
+<%= render(partial: 'shared/cc') %>
+

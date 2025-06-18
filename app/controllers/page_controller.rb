@@ -101,6 +101,18 @@ class PageController < ApplicationController
     redirect_to(etymology_sandbox_names_path)
   end
 
+  # GET /page/stats
+  def stats
+    @stats = {}
+    Name.ranks.each do |rank|
+      @stats[rank] = Hash[
+        [15, 20, 25, 0].map do |k|
+          [Name.status_hash[k][:name], Name.where(status: k, rank: rank).count]
+        end
+      ]
+    end
+  end
+
   private
 
     def help_topics

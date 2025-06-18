@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     %i[
       api about committee connect initiative join
       news prize publications seqcode linkout status
-      sandbox
+      sandbox stats
     ].each { |i| get(i) }
   end
   get  'help' => 'page#help_index', as: :help_index
