@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
     subjects: [Subject, %i[name], {}]
   }
 
+  # GET /
   def main
     @publications = Publication.all.order(journal_date: :desc)
     @authors = Author.all.order(created_at: :desc)

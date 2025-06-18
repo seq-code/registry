@@ -60,6 +60,7 @@
       <% end %>
     </ul>
   </div>
+
   <!-- Dynamic content -->
   <div class="tab-content mt-0" style="font-size: 150%;" id="lead-tabContent">
     <div class="tab-pane fade jumbotron p-5"
@@ -93,19 +94,14 @@
       </div>
       <p class="small mt-4">
         We have identified
-        <%= link_to(pluralize(@names.count, 'name'), names_path) %> from
+        <%= link_to(pluralize(@names.count, 'name'), names_path) %>, including
         <%= link_to(
-              pluralize(@publications.count, 'publication'),
-              publications_path
-            )
-        %>, including
-        <%= link_to(
-              pluralize(@validated[:names].count, 'validly published name'),
+              pluralize(@validated[:names].count, 'name'),
               names_path(status: 'SeqCode')
             )
-        %> in
+        %> validly published under the SeqCode in
         <%= link_to(
-              pluralize(@validated[:registers].count, 'list'),
+              pluralize(@validated[:registers].count, 'register list'),
               registers_path(status: 'validated')
             )
         %>.
