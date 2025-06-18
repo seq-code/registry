@@ -11,7 +11,7 @@ if name.is_a? Name
   json.rank(name.inferred_rank)
   json.valid(name.validated?)
   json.status_code(name.status_hash[:symbol])
-  json.illegitimate(name.nomenclatural_status&.match? /illegitimate/)
+  json.illegitimate(name.illegitimate?)
 else
   json.id(name.qualified_id)
   json.is_name(false)

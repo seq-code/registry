@@ -50,7 +50,7 @@
             <%= @name.incertae_sedis_explain %>
           </div>
         <% elsif @name.parent %>
-          <%= link_to_name(@name.parent) %>
+          <%= display_link(@name.parent, :name_html_correctness) %>
           <%= placement_preference(@name.placement) %>
         <% end %>
 
@@ -98,7 +98,7 @@
                     <%= placement.incertae_sedis_text %>
                   </div>
                 <% elsif placement.parent %>
-                  <%= link_to_name(placement.parent) %>
+                  <%= display_link(placement.parent, :name_html_correctness) %>
                   <%= placement_preference(placement) %>
                 <% end %>
 
@@ -161,7 +161,7 @@
         %>
         <% @name.children.each do |child| %>
           <li>
-            <%= display_link(child) %>
+            <%= display_link(child, :name_html_correctness) %>
             <%= placement_preference(child.placement) %>
             <% if set_type && @name.nomenclatural_type != child %>
               <%= link_to(
@@ -194,11 +194,12 @@
         <ul>
           <% @name.alt_child_placements.each do |placement| %>
             <li>
-              <%= display_link(placement.name) %>
+              <%= display_link(placement.name, :name_html_correctness) %>
               <%= placement_preference(placement) %>
               <% if placement.name.parent %>
-                (preferred placement in
-                <%= display_link(placement.name.parent) %>)
+                (preferred placement in <%=
+                  display_link(placement.name.parent, :name_html_correctness)
+                %>)
               <% end %>
             </li>
           <% end %>
@@ -225,14 +226,14 @@
 
     <% if @name.correct_name %>
       <dt><%= fa_icon('spell-check') %> Correct name</dt>
-      <dd><%= link_to_name(@name.correct_name) %></dd>
+      <dd><%= display_link(@name.correct_name, :name_html_correctness) %></dd>
     <% end %>
 
     <% if @name.synonyms.present? %>
       <dt><%= fa_icon('exchange-alt') %> Synonyms</dt>
       <dd><ul>
         <% @name.synonyms.each do |synonym| %>
-          <li><%= link_to_name(synonym) %></li>
+          <li><%= display_link(synonym, :name_html_correctness) %></li>
         <% end %>
       </ul></dd>
     <% end %>

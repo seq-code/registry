@@ -2,7 +2,7 @@ module NamesHelper
   def link_to_name_type(name)
     if name.type_is_name?
       if name.type_name
-        link_to(name.type_name) { name.type_name.name_html } +
+        display_link(name.type_name, :name_html_correctness) +
         if rep = name.type_name_alt_placement
           content_tag(:span, ' (alternatively placed in ') +
             display_link(rep) +

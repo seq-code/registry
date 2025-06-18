@@ -433,20 +433,28 @@ class Name < ApplicationRecord
     end
   end
 
-  def name_html(name = nil, assume_valid = false)
+  def name_html(name = nil, assume_valid = false, check_correctness = false)
     name = sanitize(name || self.name)
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
     elsif (assume_valid || validated?) && name =~ /(.+) subsp\. (.+)/
-      "<i>#{$1}</i> subsp. <i>#{$2}</i>".html_safe
+      y = "<i>#{$1}</i> subsp. <i>#{$2}</i>"
+      y = "<b>#{y}</b>" if check_correctness && correct?
+      y.html_safe
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
-      "<i>#{name}</i>".html_safe +
+      y = "<i>#{name}</i>"
+      y = "<b>#{y}</b>" if check_correctness && correct?
+      y.html_safe +
         if is_type_species?
           "<sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
         end
     else
       "&#8220;#{name}&#8221;".html_safe
     end
+  end
+
+  def name_html_correctness
+    name_html(nil, false, true)
   end
 
   def abbr_corr_name
@@ -457,8 +465,8 @@ class Name < ApplicationRecord
     name_html(corrigendum_from)
   end
 
-  def formal_html
-    y = name_html
+  def formal_html(check_correctness = false)
+    y = name_html(nil, false, check_correctness)
     y = "&#8220;#{y}&#8221;" if candidatus?
     y += ' <i>corrig.</i>'.html_safe if corrigendum_from?
     if not_validly_proposed_in.any?
@@ -1046,6 +1054,16 @@ class Name < ApplicationRecord
 
   def ensure_consistent_placement!
     ensure_consistent_placement
+  end
+
+  def illegitimate?
+    nomenclatural_status&.match? /illegitimate/
+  end
+
+  def correct?
+    !illegitimate? &&
+      !correct_name.present? &&
+      !type_name_alt_placement.present?
   end
 
   # ============ --- GENOMICS --- ============
