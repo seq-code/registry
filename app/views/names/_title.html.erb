@@ -23,10 +23,14 @@
     observe
   ].compact)
 %>
-<h1><%= @name.name_html %></h1>
+<h1>
+  <%= @name.name_html %>
+</h1>
+
 <% unless @name.public? %>
-  <span class="text-muted">
-    <%= fa_icon('eye-slash') %> Only visible to you and curators
+  <div class="text-muted">
+    <%= fa_icon('eye-slash', class: 'mr-1') %>
+    Only visible to you and curators
     <%= help_message('Name not public') do %>
       <div class="alert alert-warning">
         This name is undergoing the registration process, currently in the
@@ -45,7 +49,33 @@
         &raquo; Learn more about data release
       <% end %>
     <% end %>
-  </span>
+  </div>
+<% end %>
+
+<% if @name.validated? && !@name.correct? %>
+  <div class="text-muted">
+    <%= fa_icon('times-circle', class: 'mr-1') %>
+    Marked as incorrect name
+    <%= help_message('Incorrect name') do %>
+      <% if @name.illegitimate? %>
+        This name has been marked as illegitimate, likely due to priority
+        conflicts in its lineage.
+      <% elsif @name.correct_name.present? %>
+        This name has been marked as incorrect, with the correct name for this
+        taxon being <%= display_link(@name.correct_name) %>.
+      <% elsif @name.type_name_alt_placement.present? %>
+        This name refers to a taxon that does not contain its nomenclatural
+        type. If that taxonomic placement is correct, this name should be
+        considered a synonym of
+        <%= display_link(@name.type_name_alt_placement) %>.
+      <% else %>
+        This name has been marked as incorrect, but no further information is
+        recorded. Please explore the name's page for additional information.
+      <% end %>
+      If you consider this to be a mistake, please
+      <%= link_to('contact us', page_connect_url) %> to revise this assessment.
+    <% end %>
+  </div>
 <% end %>
 <hr/>
 

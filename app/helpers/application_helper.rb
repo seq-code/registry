@@ -237,11 +237,12 @@ module ApplicationHelper
     help_button(id, opts)
   end
 
-  def help_button(id, opts)
+  def help_button(id, opts = {})
     opts[:class] ||= ''
+    opts[:icon]  ||= 'question-circle'
     modal_button(id, opts) do
       content_tag(:b, opts[:text], class: 'text-info') +
-      fa_icon('question-circle', class: 'hover-help')
+      fa_icon(opts[:icon], class: 'hover-help')
     end
   end
 
