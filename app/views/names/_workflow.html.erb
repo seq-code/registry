@@ -10,7 +10,6 @@
   @downstream = false
   def workflow_step(title, test_fun)
     test = @name.send(test_fun)
-    title = "To Be #{title}" if @downstream || !test
     content_tag(:div, class: 'card my-2') do
       title_class = 'text-' + (
         @downstream ? 'muted' : test ? 'success' : 'info'
@@ -275,7 +274,9 @@
                                 'check-circle' : 'hand-point-right',
                     class: 'h2') %>
               <h4 class="d-sm-block d-lg-none"><%= '%02i' % k %></h4>
-              <b class="d-none d-lg-block"><%= step.to_s.capitalize %></b>
+              <b class="d-none d-lg-block">
+                <%= pass == false ? "To be #{step}" : step.to_s.capitalize %>
+              </b>
             </div>
           <% end %>
         </div>
