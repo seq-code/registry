@@ -10,7 +10,7 @@
   @downstream = false
   def workflow_step(title, test_fun)
     test = @name.send(test_fun)
-    title = "To Be #{title}" unless test
+    title = "To Be #{title}" if @downstream || !test
     content_tag(:div, class: 'card my-2') do
       title_class = 'text-' + (
         @downstream ? 'muted' : test ? 'success' : 'info'
