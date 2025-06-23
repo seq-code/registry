@@ -33,7 +33,7 @@ namespace :lpsn do
       type_name = nil
       if pars[:rank] == 'genus'
         type_name = row['nomenclatural_type']
-      else
+      else # LPSN only has genera, species, and subspecies
         pars[:nomenclatural_type_type] = 'Strain'
         pars[:nomenclatural_type_entry] =
           row['nomenclatural_type'].gsub('; ', ' = ')
@@ -48,7 +48,7 @@ namespace :lpsn do
       pars[:lpsn_url] = row['address']
       pars[:status] = 20
 
-      # Save data
+      # Check first the current name record
       name = Name.find_or_create_by(name: pars[:name])
       if name.status > 5 && name.status < 20
         warn "- Name in SeqCode, bypassing: #{name.name}"
@@ -58,6 +58,17 @@ namespace :lpsn do
         warn "- Name in a different code, bypassing: #{name.name}"
         next
       end
+      if name.redirect_id.present?
+        warn "- Name is deprecated, bypassing: #{name.name}"
+        next
+      end
+      name.protect_from_lpsn.to_s.split(',').each do |i|
+        pars.delete(i.to_sym)
+        parent = nil if i == 'parent'
+        row['record_lnk'] = nil if i == 'correct_name'
+      end
+
+      # Save data
       name.update!(pars)
       parsed_names[row['record_no']] = {
         name_id: name.id, parent: parent, correct_name: row['record_lnk'],
