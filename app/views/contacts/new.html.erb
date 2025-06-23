@@ -38,8 +38,12 @@
             :author, collection: @publication.authors, label_method: :full_name,
             label: 'Corresponding author'
           ) %>
-      <%= f.input(:to, label: 'To (corresponding author\'s email address)') %>
-      <%= f.input(:cc, label: 'Carbon copy (CC)') %>
+      <% email_hint = 'Separate multiple email addresses with semicolons (;)' %>
+      <%= f.input(
+            :to, label: 'To (corresponding author\'s email address)',
+            hint: email_hint
+          ) %>
+      <%= f.input(:cc, label: 'Carbon copy (CC)', hint: email_hint) %>
       <%= f.input(:subject) %>
     </dd>
 
