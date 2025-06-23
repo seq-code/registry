@@ -380,7 +380,7 @@ module Name::QualityChecks
         message: 'Only a validly published name can be used as nomenclatural ' \
                  'type',
         rules: %w[20],
-        can_endorse: true
+        can_endorse: false
       }.merge(@@link_to_edit_type),
       # - Rule 21a [Checklist-N]
       later_species_as_genus_type: {
