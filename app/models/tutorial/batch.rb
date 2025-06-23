@@ -304,7 +304,10 @@ module Tutorial::Batch
       param_names.each do |par_ori|
         # Remove foreign keys in first pass
         par = par_ori.dup
-        par['parent'] = nil
+        %w[
+          parent nomenclatural_type_entry nomenclatural_type_type
+          nomenclatural_type_id nomenclatural_type
+        ].each { |i| par.delete(i) }
 
         # Claim/update or create
         name = Name.find_by_variants(par['name'])
@@ -332,16 +335,21 @@ module Tutorial::Batch
           end
         end
 
-        # Type names
-        if par['nomenclatural_type_type'].to_s.downcase == 'name' &&
-              par['nomenclatural_type_entry'].present?
-          new_par[:nomenclatural_type] =
-            Name.find_by_variants(par['nomenclatural_type_entry'])
-          # Deal with legacy type accession definitions
-          if new_par[:type_accession].present?
-            name = Name.new(default_pars.merge(name: par['type_material']))
-            name.save!
-            new_par[:type_accession] = name.id
+        # Nomenclatural types
+        if par['nomenclatural_type_entry'].present?
+          case par['nomenclatural_type_type'].to_s.downcase
+          when 'name'
+            new_par[:nomenclatural_type] =
+              Name.find_by_variants(par['nomenclatural_type_entry'])
+            # Deal with legacy type accession definitions
+            if new_par[:type_accession].present?
+              name = Name.new(default_pars.merge(name: par['type_material']))
+              name.save!
+              new_par[:type_accession] = name.id
+            end
+          else
+            new_par[:nomenclatural_type_type]  = par['nomenclatural_type_type']
+            new_par[:nomenclatural_type_entry] = par['nomenclatural_type_entry']
           end
         end
 
