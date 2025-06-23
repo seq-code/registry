@@ -54,6 +54,18 @@
               <p>
                 <b>Nomenclatural type:</b> <%= name.type_text.try(:html_safe) %>
               </p>
+
+              <% id = modal('Record details', size: 'lg') do %>
+                <pre><%=
+                  JSON.pretty_generate(
+                    JSON.parse(name.to_json).select { |_k,v| v.present? }
+                  )
+                %></pre>
+                <hr/>
+                Type entry: <%= name.nomenclatural_type_entry.inspect %>
+              <% end %>
+              <%= modal_button(id, as_anchor: true) do %>Record details<% end %>
+
               <% if name.errors.any? %>
                 <div class="alert alert-danger">
                   <h4>Issues detected in preliminary check:</h4>
@@ -152,5 +164,6 @@
 <p class="lead my-5">
   If all the information above seems correct, continue to create the entries.
   Please note that any errors saved will have to be individually resolved.
+  This process may take up to a couple of minutes, please be patient.
 </p>
 

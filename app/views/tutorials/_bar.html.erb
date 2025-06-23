@@ -24,7 +24,11 @@
     Errors detected for <%= display_link(@tutorial.invalid_record.record) %>
     <% id = modal('Record details', size: 'lg') do %>
       <% r = @tutorial.invalid_record.record %>
-      <pre><%= JSON.pretty_generate(JSON.parse(r.to_json)) %></pre>
+      <pre><%=
+        JSON.pretty_generate(
+          JSON.parse(r.to_json).select { |_k,v| v.present? }
+        )
+      %></pre>
     <% end %>
     <%= modal_button(id, as_anchor: true) do %>(record details)<% end %>:
     <ul>
