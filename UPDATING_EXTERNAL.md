@@ -2,12 +2,14 @@
 
 ## Update data using LPSN download
 
-1. Go to https://lpsn.dsmz.de/downloads
-2. Download the CSV file
-3. Run in the app folder:
+1. To protect manually modified data, run in the app folder:
+   `RAILS_ENV=production bundle exec rake lpsn:protect[/path/to/last/data.csv]`
+2. Go to https://lpsn.dsmz.de/downloads
+3. Download the CSV file
+4. Run in the app folder:
    `RAILS_ENV=production bundle exec rake lpsn:import[/path/to/data.csv]`
-4. Review the names with special messages (if any)
-5. Review all newly created names
+5. Review the names with special messages (if any)
+6. Review all newly created names
 
 ## Update data using GTDB release
 
