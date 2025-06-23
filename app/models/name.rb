@@ -141,7 +141,7 @@ class Name < ApplicationRecord
     # ============ --- CLASS > QUERYING --- ============
 
     def find_variants(name)
-      name = name.strip.downcase.gsub(/^candidatus /, '')
+      name = name.strip.downcase.gsub(/^ca(\.|ndidatus) /, '')
       vars = [name, "candidatus #{name}"]
       vars += vars.map { |i| i.gsub(/_+/, ' ') }
       Name.where('LOWER(name) IN (?, ?, ?, ?)', *vars)
@@ -571,6 +571,20 @@ class Name < ApplicationRecord
       proposed_in, not_validly_proposed_in.to_a, corrigendum_in,
       emended_in.to_a, assigned_in
     ].flatten.compact.uniq
+  end
+
+  def is_variant?(alt_spelling)
+    clean =
+      alt_spelling
+        .to_s.strip.downcase
+        .sub(/^ca(\.|ndidatus) /, '')
+        .sub(/^\S__/, '')
+    return true if clean == base_name.downcase
+    return true if clean == corrigendum_from&.downcase&.sub(/^candidatus /, '')
+    return true if clean == gtdb_accession&.downcase&.sub(/^\S__/, '')
+    pse = pseudonyms.map { |i| i.pseudonym.downcase.sub(/^candidatus /, '') }
+    return true if pse.include?(clean)
+    false
   end
 
   # ============ --- OUTLINKS --- ============
