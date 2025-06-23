@@ -1105,9 +1105,9 @@ module Name::QualityChecks
   end
 
   def consistent_type_rank?
-    return true if !rank? || !type_is_name?
+    return true if !rank? || nomenclatural_type_type != 'Name'
 
-    type_name.rank == expected_type_rank
+    nomenclatural_type.try(:rank) == expected_type_rank
   end
 
   def consistent_species_name?
