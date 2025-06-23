@@ -5,6 +5,7 @@
   <%= help_topic('register', 'What are Register Lists?') %>
 </div>
 
+<% name_n = 0 %>
 <% if @name %>
   <p class="lead">
     Add name to register for submission:
@@ -12,11 +13,13 @@
       <%= @name.name_html %>
     <% end %>
   </p>
+  <% name_n = 1 %>
 <% end %>
 
 <% if @tutorial %>
+  <% name_n = @tutorial.names.count %>
   <p class="lead">
-    Add <%= pluralize(@tutorial.names.count, 'name') %>
+    Add <%= pluralize(name_n, 'name') %>
     in <%= link_to('guided registration', @tutorial) %> to this register:
   </p>
 <% end %>
@@ -34,10 +37,11 @@
 
 <%= simple_form_for(@register) do |f| %>
   <div class="form-actions">
-    <%= hidden_field_tag(:name, @name&.id) %>
-    <%= hidden_field_tag(:tutorial, @tutorial&.id) %>
+    <%= hidden_field_tag(:name, @name.try(:id)) %>
+    <%= hidden_field_tag(:tutorial, @tutorial.try(:id)) %>
     <% unless @registers.empty? %>
       <%= label_tag(:existing_register) %>
+      <% selected = @tutorial ? '' : @registers.last.accession %>
       <%=
         select_tag(
           :existing_register,
@@ -50,14 +54,15 @@
                   "#{r.propose_title}",
                 r.accession
               ]
-            end + [['Create a new register', nil]]
+            end + [['Create a new register', nil]],
+            selected # The last by default, a new one for guided registrations
           ),
-          class: "form-control"
+          class: 'form-control'
         )
       %>
       <br/>
     <% end %>
-    <%= f.button(:submit, 'Register name') %>
+    <%= f.button(:submit, "Register #{name_n == 1 ? 'name' : 'names' }") %>
   </div>
 <% end %>
 <br/><br/>
