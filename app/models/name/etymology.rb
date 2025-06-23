@@ -177,6 +177,7 @@ module Name::Etymology
   def standardize_syllabication
     self.syllabication&.gsub!(/[-\.\/]+/, '.')
     self.syllabication&.gsub!(/\.?[‘’ʼ＇´']\.?/, "'")
+    self.syllabication&.gsub!(/(['\.])\.+/, '\\1')
   end
 
   ##
