@@ -3559,6 +3559,7 @@ fernuni-hagen.de
 fh-aachen.de
 fh-aschaffenburg.de
 fh-augsburg.de
+tha.de
 fh-bad-honnef.de
 fh-biberach.de
 fh-bielefeld.de
@@ -10483,6 +10484,15 @@ trinitycollegebristol.ac.uk
 trinitycollegebristol.ac.uk
 cca.edu
 student.kuleuven.be
+knruhs.telangana.gov.in
+mguniversity.ac.in
+nims.edu.in
+palamuruuniversity.ac.in
+pjtau.edu.in
+tsvu.nic.in
+satavahana.ac.in
+skltshu.ac.in
+telanganauniversity.ac.in
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10532,3 +10542,4 @@ qdio.ac.cn
 inrae.fr
 niist.res.in
 myumanitoba.ca
+list.lu
