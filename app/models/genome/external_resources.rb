@@ -51,20 +51,15 @@ module Genome::ExternalResources
   ##
   # Find SRA entries linked to the BioSample +acc+ and return as Array
   def external_biosample_to_sra(acc)
-    uri = "https://www.ebi.ac.uk/ena/browser/api/xml/ebisearch?" +
-          "query=BIOSAMPLE:#{acc}&includeLinks=true&domain=sra-experiment"
+    uri = "https://www.ebi.ac.uk/ebisearch/ws/rest/sra-experiment?" +
+          "query=BIOSAMPLE:#{acc}"
     body = external_request(uri)
     return unless body.present?
 
     ng = Nokogiri::XML(body)
-    ng.xpath('//EXPERIMENT_SET/EXPERIMENT').map do |exp|
-      sra_acc = exp['accession'] || exp.xpath('./IDENTIFIERS/PRIMARY_ID').text
-      SequencingExperiment.find_or_create_by(sra_accession: sra_acc) do |se|
-        se.external_reuse_metadata_xml = true
-        se.queued_external = nil
-        se.retrieved_at = DateTime.now
-        se.metadata_xml = "<EXPERIMENT_SET>\n#{exp.to_s}\n</EXPERIMENT_SET>"
-      end
+    ng.xpath('//result/entries/entry').map do |exp|
+      sra_acc = exp['acc'] || exp['id'] or next
+      SequencingExperiment.find_or_create_by(sra_accession: sra_acc)
     end
   end
 
