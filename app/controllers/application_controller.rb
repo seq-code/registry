@@ -5,6 +5,14 @@ class ApplicationController < ActionController::Base
   before_action(:check_api!)
   before_action(:store_user_location!, if: :storable_location?)
 
+  rescue_from ActionController::InvalidAuthenticityToken do |exception|
+    logger.error "[CSRF ERROR] IP: #{request.remote_ip}, " \
+                 "UA: #{request.user_agent}, " \
+                 "Params: #{params.to_unsafe_h}, " \
+                 "Session: #{session.to_hash}"
+    raise
+  end
+
   @@search_obj = {
     publications: [
       Publication, %i[title doi journal abstract journal_date], {

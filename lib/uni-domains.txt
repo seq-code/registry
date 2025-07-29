@@ -7899,6 +7899,7 @@ uclm.es
 ucm.es
 uco.es
 ucv.es
+udc.gal
 udc.es
 udg.es
 udl.es
@@ -7949,10 +7950,12 @@ url.es
 urv.es
 usal.es
 usc.es
+usc.gal
 us.es
 uva.es
 uv.es
 uvic.es
+uvigo.gal
 uvigo.es
 villanueva.edu
 accimt.ac.lk
@@ -10493,6 +10496,8 @@ tsvu.nic.in
 satavahana.ac.in
 skltshu.ac.in
 telanganauniversity.ac.in
+dallascollege.edu
+untdallas.edu
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10543,3 +10548,5 @@ inrae.fr
 niist.res.in
 myumanitoba.ca
 list.lu
+inserm.fr
+mdc-berlin.de

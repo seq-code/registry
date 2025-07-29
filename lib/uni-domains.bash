@@ -8,4 +8,6 @@ cat ../university-domains-list/world_universities_and_domains.json \
   | perl -pe 's/.*"(.+)".*/$1/' \
   > lib/uni-domains.txt
 cat lib/extra-domains.txt >> lib/uni-domains.txt
+git commit lib/extra-domains.txt lib/uni-domains.txt \
+  -m "Update academic domains"
 
