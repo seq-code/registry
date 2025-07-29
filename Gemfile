@@ -25,7 +25,6 @@ gem 'jbuilder', '~> 2.11'
 gem 'jquery-rails'
 gem 'miga-base', '~> 1.3'
 gem 'mutex_m'
-#gem 'nokogiri', '1.16.7' # TODO temporary fix to accomodate a server-side issue
 gem 'pdf-reader'
 gem 'pg'
 gem 'puma', '~> 5.6'
