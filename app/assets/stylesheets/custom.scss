@@ -124,7 +124,11 @@ nav.navbar-dark {
     }
   }
   /* Collapsed */
-  &:has(#notification-count-badge:not([data-count="0"])) {
+  // TODO
+  // This is a better selector, but currently jQuery does not modify the
+  // DOM's data-count when using .data(key, value)
+  // &:has(#notification-count-badge:not([data-count="0"])) {
+  &:has(#notification-count-badge:not(:empty)) {
     .navbar-toggler[aria-expanded="false"] {
       .navbar-toggler-icon:before {
         content: "•";
