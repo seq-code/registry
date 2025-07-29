@@ -123,6 +123,19 @@ nav.navbar-dark {
       }
     }
   }
+  /* Collapsed */
+  &:has(#notification-count-badge:not([data-count="0"]))
+    .navbar-toggler.collapsed {
+      .navbar-toggler-icon:before {
+        content: "•";
+        font-size: 3.5rem;
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        color: var(--info);
+      }
+    }
+  }
   /* General */
   #navbarNav {
     color: rgba(255, 255, 255, 0.5);
