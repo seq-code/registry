@@ -24,5 +24,8 @@ module CandidatusExcubia
 
     # Make sure Flash is always present even if api_only=true
     config.middleware.use ActionDispatch::Flash
+
+    config.autoload_paths << Rails.root.join('lib')
+    config.eager_load_paths << Rails.root.join('lib')
   end
 end
