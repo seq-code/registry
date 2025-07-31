@@ -29,7 +29,5 @@ module CandidatusExcubia
     config.autoload_paths << Rails.root.join('app/middleware')
     config.eager_load_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('app/middleware')
-
-    config.middleware.use ::JsonSubdomainRedirector if Rails.env.production?
   end
 end
