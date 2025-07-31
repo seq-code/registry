@@ -1,3 +1,5 @@
+require 'uri'
+
 class JsonSubdomainRedirector
   def initialize(app)
     @api_domain = 'api.seqco.de'
