@@ -42,6 +42,7 @@ class Register < ApplicationRecord
   before_validation(:propose_and_save_title, if: :submitted?)
   before_destroy(:return_names_to_draft)
   before_save(:update_name_order)
+  after_save(:unsnooze_curation!)
 
   validates(:publication_id, presence: true, if: :validated?)
   validates(:publication_pdf, presence: true, if: :validated?)
@@ -84,10 +85,16 @@ class Register < ApplicationRecord
     end
 
     def pending_for_curation
-      where(validated: false, notified: true)
-        .or(where(validated: false, submitted: true))
+      where(validated: false)
+        .where('notified = ? OR submitted = ?', true, true)
+        .where('snooze_curation is null or snooze_curation <= ?', Time.now)
         .order(updated_at: :asc)
         .select { |i| i.notified? || !i.endorsed? }
+    end
+
+    def snoozed_for_curation
+      where('snooze_curation > ?', Time.now)
+        .order(updated_at: :asc)
     end
   end
 
@@ -254,6 +261,19 @@ class Register < ApplicationRecord
 
   def doi_url
     'https://doi.org/%s' % doi
+  end
+
+  def snoozed_curation?
+    snooze_curation.present? && snooze_curation > Time.now
+  end
+
+  def snooze_curation!(time)
+    time = nil if time && time <= Time.now
+    update_column(:snooze_curation, time)
+  end
+
+  def unsnooze_curation!
+    snooze_curation!(nil)
   end
 
   def citations

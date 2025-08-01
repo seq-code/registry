@@ -165,6 +165,7 @@ Rails.application.routes.draw do
       post :genomics_review
       get  :merge
       post :merge, action: :merge_commit
+      post :snooze_curation
       # --> Edit user relationship to register list
       get  :observe
       get  :unobserve

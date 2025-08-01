@@ -53,7 +53,9 @@ class UsersController < ApplicationController
     end
 
     if current_user.curator?
-      @pending_registers = Register.pending_for_curation
+      @pending_registers =
+        params[:snoozed] ?
+          Register.snoozed_for_curation : Register.pending_for_curation
       @pending[:curator] = @pending_registers.count
     end
 

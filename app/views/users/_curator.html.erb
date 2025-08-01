@@ -3,6 +3,12 @@
   <ul class="nav flex-column">
     <li class="nav-item mt-3"><h2>Review Register Lists</h2></li>
     <li class="nav-item">
+      <%= link_to(dashboard_path(tab: :curator, snoozed: true)) do %>
+        <%= fa_icon('stopwatch') %>
+        Register lists snoozed for curation
+      <% end %>
+    </li>
+    <li class="nav-item">
       <%= link_to(registers_path(status: :notified)) do %>
         <%= fa_icon('check-circle') %>
         Notifications of effective publication (awaiting review)

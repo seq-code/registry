@@ -481,6 +481,7 @@ class NamesController < ApplicationController
       @name_correspondence.name = @name
       if @name_correspondence.save
         @name.add_observer(current_user)
+        @name.register.try(:unsnooze_curation!)
         flash[:notice] = 'Correspondence recorded'
       else
         flash[:alert] = 'An unexpected error occurred with the correspondence'

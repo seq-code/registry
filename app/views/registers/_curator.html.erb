@@ -109,6 +109,27 @@
     <dl class="main-section name-details">
       <h2>Curator team tracking</h2>
       <dd>
+        <% if @register.snoozed_curation? %>
+          <%= link_to(
+                snooze_curation_register_url(@register),
+                method: :post, class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('stopwatch') %> Unsnooze for curation
+          <% end %>
+          &raquo; Display again in pending curation tasks with other submitted
+          lists
+        <% else %>
+          <%= link_to(
+                snooze_curation_register_url(@register, time: 20),
+                method: :post, class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('stopwatch-20') %> Snooze for curation
+          <% end %>
+          &raquo; Hide from curation tasks for 20 days or until correspondance
+          is posted
+        <% end %>
+        <hr/>
+
         <%= render(partial: 'registers/curator_review_checks') %>
         <br/><br/>
         <%= render(partial: 'registers/curator_internal_notes') %>

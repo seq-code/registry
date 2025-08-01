@@ -1,5 +1,6 @@
 <h2>
   Pending submissions
+  <%= 'snoozed' if params[:snoozed] %>
   <div class="badge badge-count"><%= @pending_registers.count %></div>
 </h2>
 

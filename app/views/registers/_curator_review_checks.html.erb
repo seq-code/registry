@@ -13,3 +13,10 @@
     <%= what.to_s.capitalize %> review
   <% end %>
 <% end %>
+
+<% if register.snoozed_curation? %>
+  <span class="text-muted btn">
+    <%= fa_icon('stopwatch') %>
+    Curation snoozed for <%= time_ago_in_words(register.snooze_curation) %>
+  </span>
+<% end %>

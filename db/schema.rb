@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_06_23_185140) do
+ActiveRecord::Schema.define(version: 2025_08_01_170209) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -391,6 +391,7 @@ ActiveRecord::Schema.define(version: 2025_06_23_185140) do
     t.text "internal_notes"
     t.binary "certificate_image"
     t.string "reviewer_token"
+    t.datetime "snooze_curation"
     t.index ["accession"], name: "index_registers_on_accession", unique: true
     t.index ["publication_id"], name: "index_registers_on_publication_id"
     t.index ["submitted"], name: "index_registers_on_submitted"

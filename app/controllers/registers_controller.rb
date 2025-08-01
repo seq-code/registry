@@ -5,7 +5,7 @@ class RegistersController < ApplicationController
       show table list certificate_image cite edit update destroy
       submit return return_commit endorse notify notify_commit
       validate editorial_checks publish publish_commit new_correspondence
-      internal_notes nomenclature_review genomics_review
+      internal_notes nomenclature_review genomics_review snooze_curation
       observe unobserve merge merge_commit sample_map
       reviewer_token reviewer_token_create reviewer_token_delete
     ]
@@ -19,7 +19,7 @@ class RegistersController < ApplicationController
     :authenticate_curator!,
     only: %i[
       return return_commit endorse validate
-      internal_notes nomenclature_review genomics_review
+      internal_notes nomenclature_review genomics_review snooze_curation
     ]
   )
   before_action(
@@ -315,6 +315,7 @@ class RegistersController < ApplicationController
       @register_correspondence.register = @register
       if @register_correspondence.save
         @register.add_observer(current_user)
+        @register.unsnooze_curation!
         flash[:notice] = 'Correspondence recorded'
       else
         flash[:alert] = 'An unexpected error occurred with the correspondence'
@@ -376,6 +377,12 @@ class RegistersController < ApplicationController
       end
       add_automatic_correspondence('Genomics review complete')
     end
+    redirect_back(fallback_location: @register)
+  end
+
+  # POST /registers/r:abc/snooze_curation?time=10
+  def snooze_curation
+    @register.snooze_curation!(Time.now + params[:time].to_i.days)
     redirect_back(fallback_location: @register)
   end
 
