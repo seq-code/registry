@@ -36,8 +36,10 @@ class JsonSubdomainRedirector
   end
 
   def is_core_json?(request)
-    request.path.end_with?('autocomplete.json') ||
-      request.path.end_with?('network.json')
+    path = request.path
+    path.end_with?('autocomplete.json') ||
+      path.end_with?('network.json') ||
+      path.match?(/check\/\d+\.json$/)
   end
 
   def already_on_api_subdomain?(request)
