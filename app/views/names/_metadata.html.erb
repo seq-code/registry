@@ -86,7 +86,7 @@
         <% if @name.wikidata_url.present? %>
           <li>
             <%= link_to(@name.wikidata_url, target: '_blank') do %>
-              WikiData <%= @name.wikidata_item %>
+              Wikidata: <%= @name.wikidata_item %>
               <%= fa_icon('external-link-alt') %>
             <% end %>
           </li>
