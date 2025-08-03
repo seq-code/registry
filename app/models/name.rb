@@ -171,6 +171,14 @@ class Name < ApplicationRecord
       p_var.redirect.present? ? p_var.redirect : p_var
     end
 
+    def all_valid
+      where(status: valid_status, redirect: nil)
+    end
+
+    def all_public
+      where(status: public_status, redirect: nil)
+    end
+
     # ============ --- CLASS > ETYMOLOGY --- ============
 
     def etymology_particles
