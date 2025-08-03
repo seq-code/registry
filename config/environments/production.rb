@@ -135,20 +135,14 @@ Rails.application.configure do
   config.datacite = {
     host:     'https://api.datacite.org',
     prefix:   '10.57973',
-    user:     ENV['RAILS_SEQCODE_DATACITE_USER'],
-    password: ENV['RAILS_SEQCODE_DATACITE_PASS'],
+    user:     Rails.application.credentials.dig(:datacite, :username),
+    password: Rails.application.credentials.dig(:datacite, :password),
   }
 
   # NCBI LinkOut configuration
-  config.linkout_provider_id = ENV['RAILS_SEQCODE_LINKOUT_ID']
+  config.linkout_provider_id = Rails.application.credentials.dig(:linkout, :id)
 
   # API Configuration
   config.api_only = ENV['RAILS_SEQCODE_API_ONLY'].present?
   config.api_server = 'https://api.seqco.de/v1'
-
-  # WikiData Bot access
-  config.wikidata_bot = {
-    username: ENV['RAILS_SEQCODE_WIKIDATA_BOT_USERNAME'],
-    password: ENV['RAILS_SEQCODE_WIKIDATA_BOT_PASSWORD']
-  }
 end

@@ -23,7 +23,7 @@
           container: 'map',
           style:
             'https://api.maptiler.com/maps/hybrid/style.json?' +
-              'key=<%= ENV["RAILS_SEQCODE_MAPTILER_KEY"] ||
+              'key=<%= Rails.application.credentials.dig(:maptiler, :key) ||
                          "get_your_own_OpIi9ZULNHzrESv6T2vL" %>',
           bounds: [lon1, lat1, lon2, lat2]
         })

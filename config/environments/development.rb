@@ -75,10 +75,4 @@ Rails.application.configure do
   # API Configuration
   config.api_only = ENV['RAILS_SEQCODE_API_ONLY'].present?
   config.api_server = 'https://api.seqco.de/v1'
-
-  # WikiData Bot access
-  config.wikidata_bot = {
-    username: ENV['RAILS_SEQCODE_WIKIDATA_BOT_USERNAME'],
-    password: ENV['RAILS_SEQCODE_WIKIDATA_BOT_PASSWORD']
-  }
 end
