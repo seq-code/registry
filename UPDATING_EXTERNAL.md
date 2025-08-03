@@ -51,3 +51,11 @@
    ```
 2. Upload to the private FTP
 
+## Update Wikidata
+
+This should automatically update every day, but just in case that fails or needs
+to be manually performed:
+
+1. Run in the app folder:
+   `RAILS_ENV=production bundle exec rake wikidata:push`
+
