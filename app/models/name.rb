@@ -607,7 +607,8 @@ class Name < ApplicationRecord
     return true if public? # <- return Wikispecies for all public names
 
     ncbi_taxonomy? || gtdb_genome? || !gbif_homonyms(false, true).empty? ||
-      lpsn_url? || gtdb_accession? || algaebase_url.present?
+      lpsn_url? || gtdb_accession? || algaebase_url.present? ||
+      wikidata_url.present?
   end
 
   def gtdb_genome?
@@ -654,6 +655,12 @@ class Name < ApplicationRecord
     return unless ncbi_taxonomy?
 
     'https://www.ncbi.nlm.nih.gov/datasets/genome/?taxon=%i' % ncbi_taxonomy
+  end
+
+  def wikidata_url
+    return unless wikidata_item?
+
+    'https://www.wikidata.org/wiki/%s' % wikidata_item
   end
 
   def seqcode_url(protocol = true)
