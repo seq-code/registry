@@ -7,8 +7,8 @@ class WikidataClient
   def initialize
     # Connection configuration
     @base_url = 'https://www.wikidata.org/w/api.php'
-    @username = Rails.configuration.wikidata_bot[:username]
-    @password = Rails.configuration.wikidata_bot[:password]
+    @username = Rails.application.credentials.dig(:wikidata, :username)
+    @password = Rails.application.credentials.dig(:wikidata, :password)
     @cookies  = HTTParty::CookieHash.new
     @headers  = {
       'Content-Type' => 'application/x-www-form-urlencoded',
