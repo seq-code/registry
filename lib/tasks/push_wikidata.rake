@@ -22,7 +22,7 @@ namespace :wikidata do
       end
 
       names += 1
-      if names > 3 break
+      break if names > 3
       sleep 1 # Rate limit for bots
     end
 
