@@ -7,12 +7,13 @@
 #   rake "some:great:rake:task"
 # end
 
-every 1.day do
-  rake 'works:update names:find parents:infer'
-end
-
 every 20.minutes do
   rake 'genomes:save genomes:download'
+end
+
+every 1.day do
+  rake 'works:update names:find parents:infer'
+  rake 'wikidata:push'
 end
 
 every 1.month do
