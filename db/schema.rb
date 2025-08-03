@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_08_01_170209) do
+ActiveRecord::Schema.define(version: 2025_08_03_153338) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -235,6 +235,7 @@ ActiveRecord::Schema.define(version: 2025_08_01_170209) do
     t.integer "nomenclatural_type_id"
     t.datetime "claimed_at"
     t.string "protect_from_lpsn"
+    t.string "wikidata_item"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["name_order"], name: "index_names_on_name_order"
