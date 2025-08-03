@@ -205,7 +205,7 @@ class WikidataClient
       }.to_json,
       token: csrf_token,
       format: 'json',
-      summary: 'Adding source: SeqCode Registry',
+      summary: 'Adding source: SeqCode Registry via SeqCodeBot',
       bot: true
     }
 

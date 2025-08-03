@@ -22,11 +22,11 @@ namespace :wikidata do
       end
 
       names += 1
-      break if names > 3
+      break if names >= 100
       sleep 1 # Rate limit for bots
     end
 
-    puts "Saved accessions for #{k} names"
+    puts "Saved accessions for #{names} names"
   end
 end
 

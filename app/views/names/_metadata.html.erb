@@ -72,15 +72,6 @@
           </li>
         <% end %>
 
-        <% if @name.wikidata_url.present? %>
-          <li>
-            <%= link_to(@name.wikidata_url, target: '_blank') do %>
-              WikiData <%= @name.wikidata_item %>
-              <%= fa_icon('external-link-alt') %>
-            <% end %>
-          </li>
-        <% end %>
-
         <% if @name.public? %>
           <li>
             <%= link_to(@name.wikispecies_url, target: '_blank') do %>
@@ -88,6 +79,15 @@
               <%= fa_icon('external-link-alt') %><% end %>
             <% if user_signed_in? %>
               (<%= link_to('see reference source', wiki_name_url(@name)) %>)
+            <% end %>
+          </li>
+        <% end %>
+
+        <% if @name.wikidata_url.present? %>
+          <li>
+            <%= link_to(@name.wikidata_url, target: '_blank') do %>
+              WikiData <%= @name.wikidata_item %>
+              <%= fa_icon('external-link-alt') %>
             <% end %>
           </li>
         <% end %>
