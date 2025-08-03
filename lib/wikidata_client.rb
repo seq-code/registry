@@ -24,7 +24,8 @@ class WikidataClient
       headers: @headers,
       cookies: @cookies
     ))
-    @cookies.add_cookies(res.headers['set-cookie'])
+    set_cookies = res.headers['set-cookie']
+    @cookies.add_cookies(set_cookies) if set_cookies.present?
     res
   end
 
@@ -33,7 +34,8 @@ class WikidataClient
       headers: @headers,
       cookies: @cookies
     ))
-    @cookies.add_cookies(res.headers['set-cookie'])
+    set_cookies = res.headers['set-cookie']
+    @cookies.add_cookies(set_cookies) if set_cookies.present?
     res
   end
 
