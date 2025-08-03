@@ -189,28 +189,41 @@ class WikidataClient
   end
 
   def add_reference_to_claim(claim_id, csrf_token)
+    snak_ref = {
+      snaktype: 'value',
+      property: 'P248', # stated in
+      datavalue: {
+        value: {
+          'entity-type': 'item',
+          'numeric-id': 119959538
+        },
+        type: 'wikibase-entityid'
+      }
+    }
+    snak_time = {
+      snaktype: 'value',
+      property: 'P813', # retrieved
+      datavalue: {
+        value: {
+          time: Time.now.utc.strftime('+%Y-%m-%dT00:00:00Z'),
+          precision: 11,
+          timezone: 0,
+          before: 0,
+          after: 0,
+          calendarmodel: 'http://www.wikidata.org/entity/Q1985727'
+        },
+        type: 'time'
+      }
+    }
     body = {
       action: 'wbsetreference',
       statement: claim_id,
-      snaks: {
-        P248: [{
-          snaktype: 'value',
-          property: 'P248',
-          datavalue: {
-            value: {
-              'entity-type': 'item',
-              'numeric-id': 119959538
-            },
-            type: 'wikibase-entityid'
-          }
-        }]
-      }.to_json,
+      snaks: { P248: [snak_ref, snak_time] }.to_json,
       token: csrf_token,
       format: 'json',
       summary: 'Adding source: SeqCode Registry via SeqCodeBot',
       bot: true
     }
-
     res = post(body: URI.encode_www_form(body))
 
     begin
