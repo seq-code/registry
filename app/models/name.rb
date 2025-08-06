@@ -78,7 +78,10 @@ class Name < ApplicationRecord
   )
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
-  has_many(:register_names, -> { order(:name_order) }, through: :register)
+  has_many(
+    :register_names, -> { order(:name_order) }, through: :register,
+    source: :names
+  )
 
   before_validation(:observe_nomenclatural_type_entry)
   before_validation(:harmonize_register_and_status)
