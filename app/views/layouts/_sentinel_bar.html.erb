@@ -34,31 +34,35 @@
   <% end %>
 
   <% if sentinel_bar[:register] %>
-    <%= link_to(
-          sentinel_bar[:register], class: 'btn btn-primary btn-sm',
-          title: 'Register List', data: { toggle: 'tooltip' }
-        ) do %>
-      <%= fa_icon('clipboard-list') %>
-      <%= sentinel_bar[:register].acc_url %>
-    <% end %>
-
-    <% if @name && @name.previous_register_name %>
+    <div class="btn-group">
       <%= link_to(
-            @name.previous_register_name, class: 'btn btn-primary btn-sm',
-            tile: 'Previous name in register', data: { toggle: 'tooltip' }
+            sentinel_bar[:register], class: 'btn btn-primary btn-sm',
+            title: 'Register List', data: { toggle: 'tooltip' }
           ) do %>
-        <%= fa_icon('circle-chevron-left', 'aria-label': 'Previous') %>
+        <%= fa_icon('clipboard-list') %>
+        <%= sentinel_bar[:register].acc_url %>
       <% end %>
-    <% end %>
 
-    <% if @name && @name.next_register_name %>
-      <%= link_to(
-            @name.next_register_name, class: 'btn btn-primary btn-sm',
-            tile: 'Next name in register', data: { toggle: 'tooltip' }
-          ) do %>
-        <%= fa_icon('circle-chevron-right', 'aria-label': 'Next') %>
+      <% if @name && @name.previous_register_name %>
+        <%= link_to(
+              @name.previous_register_name, class: 'btn btn-primary btn-sm',
+              style: 'margin-left: 0.1rem;',
+              title: 'Previous name in register', data: { toggle: 'tooltip' }
+            ) do %>
+          <%= fa_icon('caret-left', 'aria-label': 'Previous') %>
+        <% end %>
       <% end %>
-    <% end %>
+
+      <% if @name && @name.next_register_name %>
+        <%= link_to(
+              @name.next_register_name, class: 'btn btn-primary btn-sm',
+              style: 'margin-left: 0.1rem;',
+              title: 'Next name in register', data: { toggle: 'tooltip' }
+            ) do %>
+          <%= fa_icon('caret-right', 'aria-label': 'Next') %>
+        <% end %>
+      <% end %>
+    </div>
   <% end %>
 
   <% if sentinel_bar[:reviewer] %>
