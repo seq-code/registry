@@ -8,6 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'addressable'
+gem 'benchmark'
 gem 'bootstrap', '~> 4.6.2'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
@@ -20,6 +21,8 @@ gem 'font_awesome5_rails', '~> 1.5'
 gem 'httparty', '~> 0.23'
 gem 'image_processing', '~> 1.2'
 gem 'inline_svg', '~> 1.8'
+gem 'irb'
+gem 'rdoc'
 gem 'redis', '~> 4.8'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11'
