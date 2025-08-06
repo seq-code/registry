@@ -78,6 +78,7 @@ class Name < ApplicationRecord
   )
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
+  has_many(:register_names, -> { order(:name_order) }, through: :register)
 
   before_validation(:observe_nomenclatural_type_entry)
   before_validation(:harmonize_register_and_status)
@@ -1116,6 +1117,19 @@ class Name < ApplicationRecord
       self.claimed_at = Time.now
     end
     save
+  end
+
+  def index_in_register
+    @index_in_register ||=
+      register_names.pluck(:id).index { |i| i == id }
+  end
+
+  def previous_register_name
+    register_names[index_in_register - 1] if index_in_register.try(:nonzero?)
+  end
+
+  def next_register_name
+    register_names[index_in_register] unless index_in_register.nil?
   end
 
   def notified?
