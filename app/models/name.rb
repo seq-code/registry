@@ -1132,7 +1132,7 @@ class Name < ApplicationRecord
   end
 
   def next_register_name
-    register_names[index_in_register] unless index_in_register.nil?
+    register_names[index_in_register + 1] unless index_in_register.nil?
   end
 
   def notified?
