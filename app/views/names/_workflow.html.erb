@@ -259,8 +259,8 @@
 <% if @name.can_see_status?(current_user) %>
   <div class="text-center border-bottom mb-3 pb-3">
     <%= modal_button(@workflow_modal_id, class: 'card btn btn-light') do %>
-      <div class="card-body">
-        <h1 class="d-sm-block d-lg-none mb-4">Submission process</h1>
+      <div class="btn btn-primary mt-1 mb-3">Submission Process Status</div>
+      <div class="card-body py-2">
         <div class="row workflow-panel">
           <% k = 0 %>
           <% workflow_steps.each do |step, pass| %>
