@@ -89,7 +89,10 @@ trix-editor {
     color: white;
     &:hover{
       color: white;
-      text-shadow: 0 0 5px #ffffff66, 0 0 10px #ff4da666, 0 0 15px #ff4da666, 0 0 20px #ff4da666 ;
+      // Fun pink:
+      // text-shadow: 0 0 5px #ffffff66, 0 0 10px #ff4da666, 0 0 15px #ff4da666, 0 0 20px #ff4da666 ;
+      // Blue:
+      text-shadow: 0 0 5px #ffffff66, 0 0 10px #26689966, 0 0 15px #26689966, 0 0 20px #26689966 ;
     }
   }
 }
