@@ -146,6 +146,9 @@
           if (r["family-names"] != $("#user-" + user + "-family").val()) {
             $("#user-" + user + "-family-orcid").addClass("text-danger");
           }
+          if (!r["institution-name"].include($("#user-" + user + "-affiliation").val())) {
+            $("#user-" + user + "-affiliation-orcid").addClass("text-danger");
+          }
         }
         submit.removeClass("disabled");
       }
@@ -199,16 +202,19 @@
       success: function(data) {
         if(data["id"]) {
           var r = data;
-          var tag = " <span class=text-muted>(from ROR)</span>"
+          var names = r["names"].map((x) => x["value"]);
+          var tag = " <span class=text-muted>(from ROR)</span>";
 
           // Report results
-          $("#user-" + user + "-affiliation-ror").html(r["name"] + tag);
+          $("#user-" + user + "-affiliation-ror").html(names.join(", ") + tag);
 
           // Highlight inconsistencies
-          if (r["name"] != $("#user-" + user + "-affiliation").val()) {
+          if (!names.include($("#user-" + user + "-affiliation").val())) {
             $("#user-" + user + "-affiliation-ror").addClass("text-danger");
           }
-          if (r["id"] != "https://ror.org/" + $("#user-" + user + "-affiliation_ror").val()) {
+          var ror_url = "https://ror.org/" +
+                $("#user-" + user + "-affiliation_ror").val();
+          if (r["id"] != ror_url) {
             $("#user-" + user + "-affiliation_ror-ror").html(r["id"] + tag);
             $("#user-" + user + "-affiliation_ror-ror").addClass("text-danger");
           }
