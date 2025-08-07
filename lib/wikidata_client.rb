@@ -68,7 +68,7 @@ class WikidataClient
     result = login_body.dig('login', 'result')
     raise "Login failed: #{result}" unless result == 'Success'
 
-    puts 'Login successful'
+    true
   end
 
   def fetch_csrf_token

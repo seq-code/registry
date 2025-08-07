@@ -10,10 +10,7 @@ namespace :wikidata do
       puts "~ #{name.name}"
 
       entity_id = client.find_taxon_entity(name.name, name.rank)
-      if entity_id.nil?
-        puts "  > Taxon not found"
-        next
-      end
+      next if entity_id.nil?
 
       if client.add_seqcode_claim(entity_id, name.id.to_s, csrf_token)
         # Save wikidata item to (1) link to WikiData and (2) keep track of
@@ -26,7 +23,7 @@ namespace :wikidata do
       sleep 1 # Rate limit for bots
     end
 
-    puts "Saved accessions for #{names} names"
+    puts "Saved accessions for #{names} names" unless names.zero?
   end
 end
 
