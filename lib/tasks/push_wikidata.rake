@@ -7,10 +7,11 @@ namespace :wikidata do
     names = 0
 
     Name.all_valid.where(wikidata_item: nil).each do |name|
-      puts "~ #{name.name}"
-
+      # Ignore taxa without wikidata item
       entity_id = client.find_taxon_entity(name.name, name.rank)
       next if entity_id.nil?
+
+      puts "~ #{name.name}"
 
       if client.add_seqcode_claim(entity_id, name.id.to_s, csrf_token)
         # Save wikidata item to (1) link to WikiData and (2) keep track of
