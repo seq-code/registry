@@ -19,7 +19,7 @@ production:
   <<: *default
   adapter: postgresql
   encoding: unicode
-  database: registry_db
+  database: registry
   username: registry
   password: <%= Rails.application.credentials.dig(:postgres, :aau) %>
   host: localhost
