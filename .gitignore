@@ -38,3 +38,4 @@ yarn-debug.log*
 
 # Secrets
 /config/master.key
+/public/assets/.sprockets-*.json
