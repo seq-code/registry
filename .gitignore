@@ -24,7 +24,7 @@
 /yarn-error.log
 
 .byebug_history
-public/assets/*
+/public/assets/*
 
 /public/packs
 /public/packs-test
@@ -38,4 +38,3 @@ yarn-debug.log*
 
 # Secrets
 /config/master.key
-/public/assets/.sprockets-*.json
