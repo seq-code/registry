@@ -55,9 +55,7 @@ const wn_struct = {
   }
 };
 
-if (Notification.permission === "granted") {
-  consumer.subscriptions.create("WebNotificationsChannel", wn_struct);
-}
+consumer.subscriptions.create("WebNotificationsChannel", wn_struct);
 
 $(document).on("turbolinks:load", function() {
   if (Notification.permission === "default") {
@@ -66,10 +64,7 @@ $(document).on("turbolinks:load", function() {
       var btn = $("#notification-permission button");
       btn.on("click", function() {
         Notification.requestPermission().then(function(permission) {
-          if (permission === 'granted') {
-            msg.slideUp();
-            consumer.subscriptions.create("WebNotificationsChannel", wn_struct);
-          }
+          if (permission === 'granted') msg.slideUp();
         });
       });
       msg.slideDown();
