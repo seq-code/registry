@@ -341,7 +341,19 @@ GEM
     sass-embedded (1.89.2)
       google-protobuf (~> 4.31)
       rake (>= 13)
+    sass-embedded (1.89.2-aarch64-linux-android)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.89.2-arm-linux-androideabi)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.89.2-riscv64-linux-android)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.89.2-riscv64-linux-gnu)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.89.2-riscv64-linux-musl)
+      google-protobuf (~> 4.31)
     sass-embedded (1.89.2-x86_64-darwin)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.89.2-x86_64-linux-android)
       google-protobuf (~> 4.31)
     sass-embedded (1.89.2-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
@@ -441,10 +453,15 @@ GEM
     zeitwerk (2.7.3)
 
 PLATFORMS
+  aarch64-linux-android
+  arm-linux-androideabi
+  riscv64-linux-android
+  riscv64-linux-gnu
+  riscv64-linux-musl
   ruby
-  x86_64-darwin-19
-  x86_64-darwin-23
+  x86_64-darwin
   x86_64-linux
+  x86_64-linux-android
   x86_64-linux-gnu
 
 DEPENDENCIES
