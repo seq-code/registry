@@ -21,7 +21,7 @@ production:
   encoding: unicode
   database: registry_db
   username: registry
-  password: "*********"
+  password: <%= Rails.application.credentials.dig(:postgres, :aau) %>
   host: localhost
   port: <%= ENV.fetch("POSTGRESQL_PORT") { "5432" } %>
 
