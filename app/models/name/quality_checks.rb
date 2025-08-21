@@ -175,7 +175,13 @@ module Name::QualityChecks
         recommendations: %w[9.1]
       }.merge(@@link_to_edit_spelling),
       # - Recommendation 9.1 covered in § Rule 9b
-      # - Recommendation 9.2 [TODO: issue #6]:
+      # - Recommendation 9.2:
+      #   TODO [issue #205]: Discuss the default implementation, since it
+      #   involves Levenshtein ≥ 2 instead of 3, as stipulated in the SeqCode,
+      #   because the latter returns too many clearly distinct options. For
+      #   example, Burarchaeum would be "too similar" to: Halarchaeum,
+      #   Hadarchaeum, Salarchaeum, and Gugararchaeum, all of which are clearly
+      #   different
       similar_names_validly_published: {
         message: lambda { |w|
           similar = w.name.similar_names(:valid).limit(5)
@@ -189,7 +195,8 @@ module Name::QualityChecks
       }.merge(@@link_to_edit_spelling),
       similar_names_in_register_list: {
         message: lambda { |w|
-          similar = w.name.similar_names(:register).limit(5).map(&:name)
+          similar = w.name.similar_names(:register).limit(5)
+                     .map(&:reload).map(&:name_html)
           <<~MSG.html_safe
             Name is similar in spelling to: #{similar.to_sentence}.
             Consider variations that are less prone to confusion

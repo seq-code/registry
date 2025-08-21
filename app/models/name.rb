@@ -188,7 +188,7 @@ class Name < ApplicationRecord
     # parameters are:
     # - method: One of +:similarity+ (default) or +:levenshtein+
     # - threshold: Limit to find matches,
-    #   by default 0.7 (similarity) or 3 (levenshtein)
+    #   by default 0.7 (similarity) or 2 (levenshtein)
     # - limit: Maximum number of results to return
     # - selection: Pre-selection of names included in the search. One of:
     #   - all_valid: (default) All validly published names
@@ -223,7 +223,7 @@ class Name < ApplicationRecord
           .order('score DESC')
           .limit(limit)
       when :levenshtein
-        threshold ||= 3
+        threshold ||= 2
         selection
           .select("id, name, levenshtein(name, #{clean_query}) AS score")
           .where('levenshtein(name, ?) <= ?', query, threshold)
