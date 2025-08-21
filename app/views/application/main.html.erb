@@ -1,17 +1,3 @@
-<!--
-<div class="alert alert-info mx-3 py-4 text-center">
-  <h2>
-    New server domain for the Registry
-  </h2>
-  <hr/>
-  The SeqCode Registry is now migrating all traffic to the domain
-  <code>https://registry.seqco.de/</code>. This means you might need
-  to login again (with the same credentials), but it should otherwise
-  cause no interruptions.<br/> For reference, the previous location was
-  <code>https://disc-genomics.uibk.ac.at/seqcode</code>.
-</div>
--->
-
 <% if user_signed_in? %>
   <div id="notification-permission" class="text-center" style="display: none;">
     <%= button_tag(class: 'btn btn-primary', id: 'enable') do %>
