@@ -661,7 +661,7 @@ class Name < ApplicationRecord
   # - public: All publicly visible names of genera or species of the same genus
   # - register: All names names of genera or species of the same genus in the
   #   same register list as this name (if any)
-  def similar_names(among: :valid)
+  def similar_names(among = :valid)
     selection =
       case among.to_sym
       when :valid
