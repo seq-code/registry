@@ -176,6 +176,26 @@ module Name::QualityChecks
       }.merge(@@link_to_edit_spelling),
       # - Recommendation 9.1 covered in § Rule 9b
       # - Recommendation 9.2 [TODO: issue #6]:
+      similar_names_validly_published: {
+        message: lambda { |w|
+          similar = w.name.similar_names(:valid).limit(5).map(&:name)
+          <<~MSG.html_safe
+            Name is similar in spelling to: #{similar.to_sentence}.
+            Consider variations that are less prone to confusion
+          MSG
+        },
+        recommendations: %w[9.2]
+      }.merge(@@link_to_edit_spelling),
+      similar_names_in_register_list: {
+        message: lambda { |w|
+          similar = w.name.similar_names(:register).limit(5).map(&:name)
+          <<~MSG.html_safe
+            Name is similar in spelling to: #{similar.to_sentence}.
+            Consider variations that are less prone to confusion
+          MSG
+        },
+        recommendations: %w[9.2]
+      }.merge(@@link_to_edit_spelling),
       #   Names should differ by at least three characters from existing names
       #   of genera or species within the same genus.
       # - Recommendation 9.3 [Checklist-N]
@@ -1005,6 +1025,14 @@ module Name::QualityChecks
 
     @qc_warnings.add(:long_name) if long_word?
     @qc_warnings.add(:difficult_to_pronounce) if hard_to_pronounce?
+
+    if similar_names(:valid).present?
+      @qc_warnings.add(:similar_names_validly_published)
+    end
+
+    if similar_names(:register).present?
+      @qc_warnings.add(:similar_names_in_register_list)
+    end
 
     if rank? && %w[species subspecies].include?(rank)
       unless consistent_species_name?

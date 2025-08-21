@@ -218,14 +218,14 @@ class Name < ApplicationRecord
       when :similarity
         threshold ||= 0.7
         selection
-          .select("name, similarity(name, #{clean_query}) AS score")
+          .select("id, name, similarity(name, #{clean_query}) AS score")
           .where('similarity(name, ?) > ?', query, threshold)
           .order('score DESC')
           .limit(limit)
       when :levenshtein
         threshold ||= 3
         selection
-          .select("name, levenshtein(name, #{clean_query}) AS score")
+          .select("id, name, levenshtein(name, #{clean_query}) AS score")
           .where('levenshtein(name, ?) <= ?', query, threshold)
           .order('score ASC')
           .limit(limit)
@@ -648,6 +648,47 @@ class Name < ApplicationRecord
     pse = pseudonyms.map { |i| i.pseudonym.downcase.sub(/^candidatus /, '') }
     return true if pse.include?(clean)
     false
+  end
+
+  ##
+  # This method always return +nil+ for names that are not at (inferred) rank
+  # of genus or species
+  # 
+  # Find names similar to the current one (using the cannonical spelling
+  # from +base_name+) with Levenshtein ≤ 3, considering a search space
+  # defined by the taxonomic rank and +among+:
+  # - valid: All validly published names of genera or species of the same genus
+  # - public: All publicly visible names of genera or species of the same genus
+  # - register: All names names of genera or species of the same genus in the
+  #   same register list as this name (if any)
+  def similar_names(among: :valid)
+    selection =
+      case among.to_sym
+      when :valid
+        self.class.all_valid
+      when :public
+        self.class.all_public
+      when :register
+        return unless register.present?
+        register.names
+      else
+        raise ArgumentError, "Unsupported search space (among): #{among}"
+      end
+
+    case inferred_rank.to_sym
+    when :genus
+      selection = selection.where(rank: :genus)
+    when :species
+      return unless parent.present?
+      selection = selection.where(parent_id: parent.id)
+    else
+      return
+    end
+
+    selection = selection.where.not(id: id)
+    self.class.fuzzy_match(
+      base_name, method: :levenshtein, selection: selection
+    )
   end
 
   # ============ --- OUTLINKS --- ============
