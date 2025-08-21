@@ -24,7 +24,7 @@ namespace :name do
     matches = Name.fuzzy_match(query)
     if matches.any?
       matches.each do |match|
-        puts "Match: #{match.name} (Similarity: #{match.sim})"
+        puts "Match: #{match.name} (Similarity: #{match.score})"
       end
     else
       puts 'No close matches found.'
