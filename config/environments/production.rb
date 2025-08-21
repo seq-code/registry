@@ -72,13 +72,13 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.default_url_options = { host: 'https://registry.seqco.de' }
-  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              'smtp-relay.gmail.com',
+    address:              Rails.application.credentials.dig(:smtp, :address),
     port:                 587,
     domain:               'seqco.de',
-    user_name:            'no-reply@seqco.de',
-    password:             '*********',
+    user_name:            Rails.application.credentials.dig(:smtp, :username),
+    password:             Rails.application.credentials.dig(:smtp, :password),
     authentication:       'plain',
     enable_starttls_auto: true
   }
