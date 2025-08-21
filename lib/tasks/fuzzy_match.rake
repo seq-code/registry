@@ -25,10 +25,10 @@ namespace :name do
     matches = Name.fuzzy_match(query, method: method)
     if matches.any?
       matches.each do |match|
-        puts "Match: #{match.name} (Similarity: #{match.score})"
+        puts "- Match: #{match.name} (Score: #{match.score})"
       end
     else
-      puts 'No close matches found.'
+      puts 'No close matches found'
     end
   end
 end
