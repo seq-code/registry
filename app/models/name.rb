@@ -183,6 +183,57 @@ class Name < ApplicationRecord
       where(status: public_status, redirect: nil)
     end
 
+    ##
+    # Performs a fuzzy search for names similar to +query+. The search
+    # parameters are:
+    # - method: One of +:similarity+ (default) or +:levenshtein+
+    # - threshold: Limit to find matches,
+    #   by default 0.7 (similarity) or 3 (levenshtein)
+    # - limit: Maximum number of results to return
+    # - selection: Pre-selection of names included in the search. One of:
+    #   - all_valid: (default) All validly published names
+    #   - all_public: All publicly visible names
+    #   - valid_genera: All validly published genus names
+    #   - public_genera: All publicly visible genus names
+    #   - An ActiveRecord query on the +names+ table
+    def fuzzy_match(
+          query, method: :similarity, threshold: nil, limit: 10,
+          selection: :all_valid
+        )
+      return unless ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
+
+      case selection
+      when :all_valid
+        selection = all_valid
+      when :all_public
+        selection = all_public
+      when :valid_genera
+        selection = all_valid.where(rank: :genus)
+      when :public_genera
+        selection = all_public.where(rank: :genus)
+      end
+
+      clean_query = ActiveRecord::Base.connection.quote(query)
+      case method.to_sym
+      when :similarity
+        threshold ||= 0.7
+        selection
+          .select("name, similarity(name, #{clean_query}) AS score")
+          .where('similarity(name, ?) > ?', query, threshold)
+          .order('score DESC')
+          .limit(limit)
+      when :levenshtein
+        threshold ||= 3
+        selection
+          .select("name, levenshtein(name, #{clean_query}) AS score")
+          .where('levenshtein(name, ?) <= ?', query, threshold)
+          .order('score ASC')
+          .limit(limit)
+      else
+        raise ArgumentError, "Unsupported fuzzy match method: #{method}"
+      end
+    end
+
     # ============ --- CLASS > ETYMOLOGY --- ============
 
     def etymology_particles
