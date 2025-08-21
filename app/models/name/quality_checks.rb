@@ -179,7 +179,7 @@ module Name::QualityChecks
       similar_names_validly_published: {
         message: lambda { |w|
           similar = w.name.similar_names(:valid).limit(5)
-                     .map { |i| link_to(name.reload) }
+                     .map { |name| link_to(name.reload) }
           <<~MSG.html_safe
             Name is similar in spelling to: #{similar.to_sentence}.
             Consider variations that are less prone to confusion
