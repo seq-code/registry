@@ -1,12 +1,10 @@
 <div id="header">
-  <div><b>SeqCode Registry</b></div>
+  <div>SeqCode Registry</div>
   <% if @register ||= nil %>
     <div style="text-align: right; position: fixed; top: 0; right: 0;">
-      <b>
-        Register List
-        <%= link_to(@register.acc_url(true), @register.acc_url(true)) %>
-        [<%= @register.priority_date&.year || @register.status_name %>]
-      </b>
+      Register List
+      <%= link_to(@register.acc_url(true), @register.acc_url(true)) %>
+      [<%= @register.priority_date&.year || @register.status_name %>]
     </div>
   <% end %>
 </div>
