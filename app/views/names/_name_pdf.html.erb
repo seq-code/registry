@@ -1,12 +1,13 @@
 <% @citations ||= name.citations %>
 <div class="pdf-list-entry main-section name-details my-3 rounded">
-  <h2 class="no-sticky">
-    <%= name.inferred_rank.capitalize %>
-    <%= name.name_html(nil, true) %>
-  </h2>
-  <%
-    name.only_display = true
-  %>
+  <div class="avoid-page-break">
+    <h2 class="no-sticky">
+      <%= name.inferred_rank.capitalize %>
+      <%= name.name_html(nil, true) %>
+    </h2>
+    <%= name.formal_html %>
+  </div>
+  <% name.only_display = true %>
   <dl>
     <div class="avoid-page-break">
       <dt>Etymology</dt>
