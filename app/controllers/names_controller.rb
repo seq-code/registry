@@ -193,7 +193,7 @@ class NamesController < ApplicationController
       format.html
       format.json
       format.pdf do
-        response.set_header('Link', '<%s>; rel="cannonical"' % cannonical_url)
+        response.set_header('Link', '<%s>; rel="cannonical"' % url_for(@name))
         render(
           template: 'names/show_pdf.html.erb',
           pdf: "#{@name.name} | SeqCode Registry",
