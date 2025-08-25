@@ -106,9 +106,12 @@ class Register < ApplicationRecord
     acc_url(true)
   end
 
+  ##
+  # Sort first by rank, and then alphabetically
   def names_by_rank
     names.sort do |a, b|
-      Name.ranks.index(a.rank) <=> Name.ranks.index(b.rank)
+      y = Name.ranks.index(a.rank) <=> Name.ranks.index(b.rank)
+      y.zero? ? a.base_name <=> a.base_name : y
     end
   end
 
