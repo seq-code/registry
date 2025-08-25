@@ -496,7 +496,7 @@ class Name < ApplicationRecord
     end
   end
 
-  def name_html(name = nil, assume_valid = false, check_correctness = false)
+  def name_html(name: nil, assume_valid: false, check_correctness: false)
     name = sanitize(name || self.name)
     if candidatus?
       name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
@@ -517,7 +517,7 @@ class Name < ApplicationRecord
   end
 
   def name_html_correctness
-    name_html(nil, false, true)
+    name_html(assume_valid: false, check_correctness: true)
   end
 
   def abbr_corr_name
@@ -525,11 +525,11 @@ class Name < ApplicationRecord
   end
 
   def corr_name_html
-    name_html(corrigendum_from)
+    name_html(name: corrigendum_from)
   end
 
-  def formal_html(check_correctness = false)
-    y = name_html(nil, false, check_correctness)
+  def formal_html(assume_valid: false, check_correctness: false)
+    y = name_html(assume_valid: assume_valid, check_correctness: check_correctness)
     y = "&#8220;#{y}&#8221;" if candidatus?
     y += ' <i>corrig.</i>'.html_safe if corrigendum_from?
     if not_validly_proposed_in.any?

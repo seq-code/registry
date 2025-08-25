@@ -61,9 +61,9 @@ module NamesHelper
 
     # Display the current name
     if links && !last
-      out << link_to(name.name_html(nil, assume_valid), name)
+      out << link_to(name.name_html(assume_valid: assume_valid), name)
     else
-      out << name.name_html(nil, assume_valid)
+      out << name.name_html(assume_valid: assume_valid)
     end
 
     out.inject(:+)

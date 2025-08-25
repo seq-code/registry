@@ -26,7 +26,7 @@
       <tr>
         <td>
           <%= name.inferred_rank.capitalize %>
-          <%= name.name_html(nil, true) %>
+          <%= name.name_html(assume_valid: true) %>
         </td>
         <td>
           <% if name.syllabication? %>
@@ -42,7 +42,7 @@
           <% elsif !name.parent %>
             <u>Unknown</u>
           <% elsif @register.names.include? name %>
-            <%= name.parent.name_html(nil, true) %>
+            <%= name.parent.name_html(assume_valid: true) %>
           <% else %>
             <%= name.parent.name_html %>
           <% end %>
@@ -50,7 +50,7 @@
         <td>
           <% if name.type_is_name? %>
             <% if @register.names.include? name.type_name %>
-              <%= name.type_name.name_html(nil, true) %>
+              <%= name.type_name.name_html(assume_valid: true) %>
             <% else %>
               <%= name.type_name.name_html %>
             <% end %>

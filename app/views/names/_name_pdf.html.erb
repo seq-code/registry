@@ -3,9 +3,9 @@
   <div class="avoid-page-break">
     <h2 class="no-sticky">
       <%= name.inferred_rank.capitalize %>
-      <%= name.name_html(nil, true) %>
+      <%= name.name_html(assume_valid: true) %>
     </h2>
-    <%= name.formal_html %>
+    <%= name.formal_html(assume_valid: true) %>
   </div>
   <% name.only_display = true %>
   <dl>
@@ -24,7 +24,7 @@
         <% if name.type_is_name? %>
           <%= name.type_name.rank.capitalize %>
           <% if @register&.names&.include?(name.type_name) %>
-            <%= name.type_name.name_html(nil, true) %>
+            <%= name.type_name.name_html(assume_valid: true) %>
           <% else %>
             <%= name.type_name.name_html %>
           <% end %>
