@@ -1,5 +1,5 @@
 <% @citations ||= name.citations %>
-<div class="pdf-list-entry main-section name-details my-3 rounded">
+<div class="pdf-list-entry main-section name-details my-3 rounded avoid-page-break">
   <h2 class="no-sticky">
     <%= name.inferred_rank.capitalize %>
     <%= name.name_html(assume_valid: true) %>
