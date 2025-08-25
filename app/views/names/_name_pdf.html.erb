@@ -1,12 +1,10 @@
 <% @citations ||= name.citations %>
 <div class="pdf-list-entry main-section name-details my-3 rounded">
-  <div class="avoid-page-break">
-    <h2 class="no-sticky">
-      <%= name.inferred_rank.capitalize %>
-      <%= name.name_html(assume_valid: true) %>
-    </h2>
-    <%= name.formal_html(assume_valid: true) %>
-  </div>
+  <h2 class="no-sticky">
+    <%= name.inferred_rank.capitalize %>
+    <%= name.name_html(assume_valid: true) %>
+  </h2>
+  <% name_old_display = name.only_display %>
   <% name.only_display = true %>
   <dl>
     <div class="avoid-page-break">
@@ -114,4 +112,5 @@
       <dd><%= link_to(name.seqcode_url, name.seqcode_url) %></dd>
     </div>
   </dl>
+  <% name.only_display = name_old_display %>
 </div>
