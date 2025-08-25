@@ -111,7 +111,7 @@ class Register < ApplicationRecord
   def names_by_rank
     names.sort do |a, b|
       y = Name.ranks.index(a.rank) <=> Name.ranks.index(b.rank)
-      y.zero? ? a.base_name <=> a.base_name : y
+      y.zero? ? a.base_name <=> b.base_name : y
     end
   end
 
