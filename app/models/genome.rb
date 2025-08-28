@@ -322,7 +322,7 @@ class Genome < ApplicationRecord
   end
 
   def miga_url
-    miga_project = 'https://aai.microbial-genomes.org/projects/8'
+    miga_project = 'https://aau.microbial-genomes.org/projects/8'
     '%s/reference_datasets/genome_%i' % [miga_project, id]
   end
 
