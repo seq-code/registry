@@ -1,7 +1,7 @@
 class Strain < ApplicationRecord
   has_many(
-    :typified_names, class_name: 'Name',
-    as: :nomenclatural_type, dependent: :nullify
+    :typified_names, -> { where(redirect_id: nil) },
+    class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
   )
   has_many(:genomes, dependent: :nullify)
 

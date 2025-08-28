@@ -32,8 +32,8 @@ class Name < ApplicationRecord
   has_many(:observe_names, dependent: :destroy)
   has_many(:observers, through: :observe_names, source: :user)
   has_many(
-    :typified_names, class_name: 'Name',
-    as: :nomenclatural_type, dependent: :nullify
+    :typified_names, -> { where(redirect_id: nil) },
+    class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
   )
 
   belongs_to(:nomenclatural_type, polymorphic: true, optional: true)

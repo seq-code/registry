@@ -7,8 +7,8 @@ class Genome < ApplicationRecord
   has_many(:genome_sequencing_experiments, dependent: :destroy)
   has_many(:sequencing_experiments, through: :genome_sequencing_experiments)
   has_many(
-    :typified_names, class_name: 'Name',
-    as: :nomenclatural_type, dependent: :nullify
+    :typified_names, -> { where(redirect_id: nil) },
+    class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
   )
 
   before_validation(:standardize_source)
