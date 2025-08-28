@@ -48,6 +48,7 @@
    wget -O resources_1.xml 'https://registry.seqco.de/names/linkout.xml?per_page=10000&page=1'
    wget -O resources_2.xml 'https://registry.seqco.de/names/linkout.xml?per_page=10000&page=2'
    wget -O resources_3.xml 'https://registry.seqco.de/names/linkout.xml?per_page=10000&page=3'
+   wget -O resources_4.xml 'https://registry.seqco.de/names/linkout.xml?per_page=10000&page=4'
    ```
 2. Upload to the private FTP
 

@@ -25,13 +25,14 @@ module Name::Inferences
     when /[ck]orys$/
       # - Myxacorys -- 
       base.sub!(/ys$/, '')
-    when /(desmis|glans|opsis|physalis)$/
+    when /(desmis|glans|opsis|physalis|pyxis)$/
       # - Phormidesmis -- Phormidesmi-d-aceae
       # - Desulfatiglans -- Desulfatiglan-d-aceae
       # - Coelosphaeriopsis -- 
       # - Hapalopsis -- 
       # - Lyngbyopsis --
       # - Entophysalis -- Entophysali-d-aceae
+      # - Sphingopyxis -- Sphingopyxi-d-aceae
       base.sub!(/s$/, 'd')
     when /glomus$/
       # - Dictryoglomus -- Dictyoglom-er-aceae
