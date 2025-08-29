@@ -24,9 +24,14 @@
   </ul>
 <% end %>
 
-<div>
-  <% render_tree_node(nil, @register.tree) %>
-</div>
+<h2>Tree view</h2>
+<div><% render_tree_node(nil, @register.tree) %></div>
+<p class="lead">
+  The above <b>tree view</b> displays the names proposed in the present list
+  (bold face) in their taxonomic context. Note that alternative taxonomic
+  placements may exist, and this display is only meant as indicative of the
+  preferred placements currently in the Registry.
+</p>
 
 <br/>
 <%= render(partial: 'shared/cc') %>
