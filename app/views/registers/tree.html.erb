@@ -6,21 +6,21 @@
 <%= render(partial: 'alert_messages') %>
 
 <% def render_tree_node(n, contents) %>
-  <% in_reg = @register.names.include?(n) %>
-  <ul class="ml-4 <%= in_reg ? '' : 'bg-secondary' %>">
+  <% if n.present? %>
+    <%= '***' if @register.names.include?(n) %>
+    <%= display_link(n, :formal_html) %>
+    <% if n.type? %>
+      <div class="text-muted ml-2 small">
+        [Type: <%= display_link(n.nomenclatural_type) %>]
+      </div>
+    <% end %>
+  <% end %>
+  <ul class="ml-2">
+  <% contents.each do |k, v| %>
     <li>
-    <% if n.present? %>
-      <%= display_link(n, :formal_html) %>
-      <% if n.type? %>
-        <div class="text-muted ml-2 small">
-          [Type: <%= display_link(n.nomenclatural_type) %>]
-        </div>
-      <% end %>
-    <% end %>
-    <% contents.each do |k, v| %>
-      <% render_tree_node(k, v) %>
-    <% end %>
+    <% render_tree_node(k, v) %>
     </li>
+  <% end %>
   </ul>
 <% end %>
 
