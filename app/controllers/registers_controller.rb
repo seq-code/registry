@@ -103,6 +103,9 @@ class RegistersController < ApplicationController
 
   # GET /registers/r:abcd/tree
   def tree
+    @crumbs = [
+      ['Lists', registers_url], [@register.acc_url, @register], 'Tree view'
+    ]
     @register.update_name_order
   end
 
