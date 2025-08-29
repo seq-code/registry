@@ -7,15 +7,17 @@
 
 <% def render_tree_node(n, contents) %>
   <% if n.present? %>
-    <%= '***' if @register.names.include?(n) %>
-    <%= display_link(n, :formal_html) %>
+    <%= content_tag(@register.names.include?(n) ? :b : :span) do %>
+      <%= display_link(n, :formal_html) %>
+    <% end %>
+
     <% if n.type? %>
-      <div class="text-muted ml-2 small">
+      <span class="text-muted ml-2 small">
         [Type: <%= display_link(n.nomenclatural_type) %>]
-      </div>
+      </span>
     <% end %>
   <% end %>
-  <ul class="ml-2">
+  <ul>
     <% contents.each do |k, v| %>
       <li><% render_tree_node(k, v) %></li>
     <% end %>
