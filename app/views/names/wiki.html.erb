@@ -20,7 +20,7 @@
     <%= link_to('edit template in Wikispecies',
           @name.edit_wikispecies_template_link) %>:
   </p>
-  <pre class="rounded bg-light px-3 py-2 border"><%=
+  <pre class="rounded bg-light px-3 py-2 border copyable"><%=
     render(partial: 'names/wiki/wikispecies_template')
   %></pre>
   <br/>
@@ -32,7 +32,7 @@
   <%= link_to('edit page in Wikispecies',
         @name.edit_wikispecies_page_link) %>:
 </p>
-<pre class="rounded bg-light px-3 py-2 border"><%=
+<pre class="rounded bg-light px-3 py-2 border copyable"><%=
   render(partial: 'names/wiki/wikispecies_page')
 %></pre>
 <% if @name.parent.present? %>
