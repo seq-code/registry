@@ -72,4 +72,4 @@ Species: <%= @name.name_wiki(no_candidatus: true, link: true) %>
 <% end %>
 * {{SeqCode|<%= @name.id %>}}
 
-{{Taxonbar}}
+{{Taxonbar<%= "|from=#{@name.wikidata_item}" if @name.wikidata_item? %>}}
