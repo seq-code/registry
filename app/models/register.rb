@@ -347,6 +347,19 @@ class Register < ApplicationRecord
     names.map(&:update_name_order)
   end
 
+  def tree
+    @tree ||= fresh_tree
+  end
+
+  def fresh_tree
+    {}.tap do |o|
+      names.order(:name_order).each do |name_i|
+        y = o
+        name.lineage.each { |name_j| y = (y[name_j] ||= {}) }
+      end
+    end
+  end
+
   def registers_with_shared_publication
     return unless publication.present?
     if validated?

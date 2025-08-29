@@ -2,7 +2,7 @@ class RegistersController < ApplicationController
   before_action(
     :set_register,
     only: %i[
-      show table list certificate_image cite edit update destroy
+      show table list certificate_image cite edit update destroy tree
       submit return return_commit endorse notify notify_commit
       validate editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review snooze_curation
@@ -28,7 +28,7 @@ class RegistersController < ApplicationController
   before_action(
     :authenticate_can_view!,
     only: %i[
-      show table list certificate_image new_correspondence sample_map
+      show table list certificate_image new_correspondence sample_map tree
       reviewer_token
     ]
   )
@@ -99,6 +99,11 @@ class RegistersController < ApplicationController
     @names &&= @names.where(rank: params[:rank]) if params[:rank].present?
     @names &&= @names.paginate(page: params[:page], per_page: 30)
     @crumbs = [['Lists', registers_url], @register.acc_url]
+  end
+
+  # GET /registers/r:abcd/tree
+  def tree
+    @register.update_name_order
   end
 
   # GET /registers/new

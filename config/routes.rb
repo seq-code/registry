@@ -146,6 +146,7 @@ Rails.application.routes.draw do
       get  :cite
       get  :certificate_image
       get  :sample_map
+      get  :tree
       get  :reviewer_token
       post :reviewer_token, action: :reviewer_token_create
       delete :reviewer_token, action: :reviewer_token_delete

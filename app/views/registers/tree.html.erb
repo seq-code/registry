@@ -1,0 +1,23 @@
+<% if @register.title? %>
+  <% provide(:title, @register.title) %>
+<% end %>
+
+<%= render(partial: 'title') %>
+<%= render(partial: 'alert_messages') %>
+
+<% def render_tree_node(n, contents) %>
+  <div class="ml-3">
+    <%= display_link(n) if n %>
+    <% contents.each do |k, v| %>
+      <% render_tree_node(k, v) %>
+    <% end %>
+  </div>
+<% end %>
+
+<div>
+  <% render_tree_node(nil, @register.tree) %>
+</div>
+
+<br/>
+<%= render(partial: 'shared/cc') %>
+
