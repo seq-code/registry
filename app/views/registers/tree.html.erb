@@ -7,7 +7,14 @@
 
 <% def render_tree_node(n, contents) %>
   <div class="ml-3">
-    <%= display_link(n) if n %>
+    <% if n.present? %>
+      <%= display_link(n, :formal_html) %>
+      <% if n.type? %>
+        <span class="text-muted ml-4">
+          [Type: <%= display_link(n.nomenclatural_type.present) %>]
+        </span>
+      <% end %>
+    <% end %>
     <% contents.each do |k, v| %>
       <% render_tree_node(k, v) %>
     <% end %>

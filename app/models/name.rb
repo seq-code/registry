@@ -940,7 +940,7 @@ class Name < ApplicationRecord
     self.class.ranks[idx - 1] if idx && idx > 0
   end
 
-  def lineage
+  def lineage(with_self: false)
     @lineage ||= nil
     return @lineage unless @lineage.nil?
 
@@ -953,7 +953,7 @@ class Name < ApplicationRecord
       end
       @lineage.unshift(par)
     end
-    @lineage.pop
+    @lineage.pop unless with_self
     @lineage
   end
 
