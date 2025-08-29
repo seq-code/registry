@@ -16,11 +16,9 @@
     <% end %>
   <% end %>
   <ul class="ml-2">
-  <% contents.each do |k, v| %>
-    <li>
-    <% render_tree_node(k, v) %>
-    </li>
-  <% end %>
+    <% contents.each do |k, v| %>
+      <li><% render_tree_node(k, v) %></li>
+    <% end %>
   </ul>
 <% end %>
 
