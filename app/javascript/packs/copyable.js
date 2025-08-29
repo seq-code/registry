@@ -11,7 +11,7 @@ $(document).on("turbolinks:load", function() {
       '<i class="fas fa-copy mr-1"> </i> Copy</a>'
     );
     if (elem.hasClass("copyable-block")) {
-      btn.addClass("mt-2");
+      btn.addClass("mt-3");
     } else {
       btn.addClass("ml-2");
       cont = cont.replace(/\s+/gm, " ");
