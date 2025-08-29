@@ -7,7 +7,9 @@
 
 <% def render_tree_node(n, contents) %>
   <% if n.present? %>
-    <% if n.incertae_sedis? %>(<i>incertae sedis</i>) <% end %>
+    <% if n.incertae_sedis? %>
+      <span class="text-muted small">(<i>incertae sedis</i>)</span>
+    <% end %>
     <%= content_tag(@register.names.include?(n) ? :b : :span) do %>
       <%= display_link(n, :formal_html) %>
     <% end %>
