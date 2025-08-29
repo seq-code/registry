@@ -6,12 +6,13 @@
 <%= render(partial: 'alert_messages') %>
 
 <% def render_tree_node(n, contents) %>
-  <div class="ml-3">
+  <% in_reg = @register.names.include?(n) %>
+  <div class="ml-3 <%= in_reg ? 'bg-primary' : 'bg-secondary' %>">
     <% if n.present? %>
       <%= display_link(n, :formal_html) %>
       <% if n.type? %>
         <span class="text-muted ml-4">
-          [Type: <%= display_link(n.nomenclatural_type.present) %>]
+          [Type: <%= display_link(n.nomenclatural_type) %>]
         </span>
       <% end %>
     <% end %>
