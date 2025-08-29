@@ -17,8 +17,9 @@
   <h3>Wikispecies template source</h3>
   <p>
     The following source can be used as a basis to
-    <%= link_to('edit template in Wikispecies',
-          @name.edit_wikispecies_template_link) %>:
+    <%= link_to(@name.edit_wikispecies_template_link, target: '_blank') do %>
+      edit template in Wikispecies <%= fa_icon('external-link-alt') %>
+    <% end %>:
   </p>
   <pre class="rounded bg-light px-3 py-2 border copyable copyable-block"><%=
     render(partial: 'names/wiki/wikispecies_template')
@@ -29,8 +30,9 @@
 <h3>Wikispecies page source</h3>
 <p>
   The following source can be used as a basis to
-  <%= link_to('edit page in Wikispecies',
-        @name.edit_wikispecies_page_link) %>:
+  <%= link_to(@name.edit_wikispecies_page_link, target: '_blank') do %>
+    edit page in Wikispecies <%= fa_icon('external-link-alt') %>
+  <% end %>:
 </p>
 <pre class="rounded bg-light px-3 py-2 border copyable copyable-block"><%=
   render(partial: 'names/wiki/wikispecies_page')
