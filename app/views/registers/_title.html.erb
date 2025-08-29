@@ -17,12 +17,6 @@
       'file-code', 'Plain HTML'
     ]
   ]
-  if @register.validated?
-    links << [
-      cite_register_url(@register, format: :xml), 'file-code',
-      'DataCite XML'
-    ]
-  end
 %>
 <%
   if user_signed_in?
