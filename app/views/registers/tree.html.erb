@@ -7,19 +7,21 @@
 
 <% def render_tree_node(n, contents) %>
   <% in_reg = @register.names.include?(n) %>
-  <div class="ml-3 <%= in_reg ? 'bg-primary' : 'bg-secondary' %>">
+  <ul class="ml-4 <%= in_reg ? '' : 'bg-secondary' %>">
+    <li>
     <% if n.present? %>
       <%= display_link(n, :formal_html) %>
       <% if n.type? %>
-        <span class="text-muted ml-4">
+        <div class="text-muted ml-2 small">
           [Type: <%= display_link(n.nomenclatural_type) %>]
-        </span>
+        </div>
       <% end %>
     <% end %>
     <% contents.each do |k, v| %>
       <% render_tree_node(k, v) %>
     <% end %>
-  </div>
+    </li>
+  </ul>
 <% end %>
 
 <div>
