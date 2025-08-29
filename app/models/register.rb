@@ -355,7 +355,7 @@ class Register < ApplicationRecord
     {}.tap do |o|
       names.order(:name_order).each do |name_i|
         y = o
-        name.lineage.each { |name_j| y = (y[name_j] ||= {}) }
+        name_i.lineage.each { |name_j| y = (y[name_j] ||= {}) }
       end
     end
   end
