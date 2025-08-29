@@ -12,6 +12,13 @@
     <% end %>
   </dd>
 
+  <dt><%= fa_icon('folder-tree') %> Tree view</dt>
+  <dd>
+    <%= link_to(tree_register_url(@register)) do %>
+      See all names in their taxonomic context
+    <% end %>
+  </dd>
+
   <dt><%= fa_icon(:user) %> Created</dt>
   <dd>
     <%= time_ago_with_date(@register.created_at, true) %>
