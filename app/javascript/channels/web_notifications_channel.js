@@ -35,7 +35,7 @@ const wn_struct = {
     var n = new Notification('SeqCode Registry', {
       body: data["title"],
       tag: data["tag"],
-      icon: ROOT_PATH + "assets/logo.svg"
+      icon: ROOT_PATH + "logo.svg"
     });
     n.addEventListener("click", function(e) {
       window.parent.parent.focus();
