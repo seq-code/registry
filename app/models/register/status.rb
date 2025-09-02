@@ -303,23 +303,20 @@ module Register::Status
 
     if has_acc
       add_note('The effective publication includes the SeqCode accession')
-    else
-      names.each do |n|
-        Check.find_or_create_by(
-          name: n, kind: :effective_publication_missing_accession, pass: false
-        )
-      end
+    end
+    names.each do |n|
+      Check.find_or_create_by(
+        name: n, kind: :effective_publication_missing_accession, pass: has_acc
+      )
     end
 
     if inames.values.all?
       add_note('The effective publication mentions all names in the list')
-    else
-      inames.each do |n, v|
-        next if v
-        Check.find_or_create_by(
-          name: n, kind: :name_missing_in_effective_publication, pass: false
-        )
-      end
+    end
+    inames.each do |n, v|
+      Check.find_or_create_by(
+        name: n, kind: :name_missing_in_effective_publication, pass: v
+      )
     end
 
     has_acc && inames.values.all?
