@@ -163,7 +163,7 @@ class Register < ApplicationRecord
   end
 
   def can_view_correspondence?(user)
-    can_edit?(user) || user?(user)
+    can_edit?(user) || (!published? && user?(user))
   end
 
   def display(_html = true)
