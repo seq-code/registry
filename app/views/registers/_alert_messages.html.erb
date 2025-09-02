@@ -55,10 +55,10 @@
 
 <% if current_curator? &&
       @register.validated? && @register.wikispecies_issues? %>
+  <% n = @register.names.find { |n| n.wikispecies_issues.any? }) %>
   <div class="alert alert-warning">
-    <h4>Issues detected in Wikispecies entries</h4>
+    <h4>Issues detected in Wikispecies entries (only for Curators)</h4>
     This list includes name(s) that are not properly registered in Wikispecies,
-    including
-    <%= display_link(@register.names.find { |n| n.wikispecies_issues.any? }) %>
+    including <%= link_to(wiki_name_url(n)) { %><%= n.name_html %><% } %>
   </div>
 <% end %>
