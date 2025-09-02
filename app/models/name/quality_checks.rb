@@ -520,7 +520,12 @@ module Name::QualityChecks
         rule_notes: %w[26#1],
         can_endorse: false
       }.merge(@@link_to_edit_parent),
-      # - Rule 26 Note 2 [TODO: Report as check and not as register note]
+      # - Rule 26 Note 2
+      effective_publication_missing_accession: {
+        message: 'The effective publication does not include the SeqCode ' \
+                 'Registry Accession',
+        rule_notes: %w[26#2],
+      },
       # - Rule 26 Note 3 is enforced outside of the SeqCode Registry
       # - Recommendation 26 [Checklist-N]
       missing_description_in_publication: {
@@ -621,6 +626,11 @@ module Name::QualityChecks
       # - Rule 50.3 covered in § Rule 50.1
 
       # APPENDIX I
+      name_missing_in_effective_publication: {
+        message:
+          'The reported effective publication does not mention this name',
+        rules: %w[appendix-i]
+      },
       low_genome_sequencing_depth: {
         message:
           'The sequencing depth of the type genome should be 10X or greater',

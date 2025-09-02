@@ -281,10 +281,9 @@ module Register::Status
   # persistent
   def check_pdf_files
     has_acc = false
-    bnames = Hash[names.map { |n| [n.base_name, false] }]
-    cnames = Hash[names.map { |n| [n.base_name, n.corrigendum_from] }]
+    inames = Hash[names.map { |n| [n, false] }]
     [publication_pdf, supplementary_pdf].each do |as|
-      break if has_acc && bnames.values.all?
+      break if has_acc && inames.values.all?
       next unless as.attached?
 
       as.open do |file|
@@ -292,12 +291,12 @@ module Register::Status
         render.pages.each do |page|
           txt = page.text
           has_acc = true if txt.index(accession)
-          bnames.each_key do |bn|
-            if txt.index(bn) || (cnames[bn] && txt.index(cnames[bn]))
-              bnames[bn] = true
-            end
+          inames.each_key do |n|
+            bn = n.base_name
+            cn = n.corrigendum_from
+            inames[n] = true if txt.index(bn) || (cn && txt.index(cn))
           end
-          break if has_acc && bnames.values.all?
+          break if has_acc && inames.values.all?
         end
       end
     end
@@ -305,33 +304,24 @@ module Register::Status
     if has_acc
       add_note('The effective publication includes the SeqCode accession')
     else
-      add_note(
-        'The effective publication does not include the accession ' \
-        '(SeqCode, Rule 26, Note 2)'
-      )
-    end
-
-    if bnames.values.all?
-      add_note('The effective publication mentions all names in the list')
-    elsif bnames.values.any?
-      if bnames.values.count(&:!) > 5
-        add_note(
-          'The effective publication mentions' \
-            " #{bnames.values.count(&:itself)} out of" \
-            " #{bnames.count} names in the list"
-        )
-      else
-        add_note(
-          'The effective publication mentions some names in the list,' \
-            " but not: #{bnames.select { |_, v| !v }.keys.join(', ')}"
+      names.each do |n|
+        Check.find_or_create_by(
+          name: n, kind: :effective_publication_missing_accession, pass: false
         )
       end
-    else
-      add_note(
-        'The effective publication does not mention any names in the list'
-      )
     end
 
-    has_acc && bnames.values.all?
+    if inames.values.all?
+      add_note('The effective publication mentions all names in the list')
+    else
+      inames.each do |n, v|
+        next if v
+        Check.find_or_create_by(
+          name: n, kind: :name_missing_in_effective_publication, pass: false
+        )
+      end
+    end
+
+    has_acc && inames.values.all?
   end
 end
