@@ -53,7 +53,11 @@
           <%= fa_icon('exclamation-circle') %> reinstate as failed check
         <% end %>
       <% else %>
-        Identified by <%= link_to_user(warn.check.user) %>
+        <% if warn.check.user.present? %>
+          Identified by <%= link_to_user(warn.check.user) %>
+        <% else %>
+          Automatically identified
+        <% end %>
         <%= time_ago_in_words(warn.check.updated_at) %> ago
       <% end %>
     </div>
