@@ -522,6 +522,7 @@ module Name::QualityChecks
       }.merge(@@link_to_edit_parent),
       # - Rule 26 Note 2
       effective_publication_missing_accession: {
+        checklist: :register,
         message: 'The effective publication does not include the SeqCode ' \
                  'Registry Accession',
         rule_notes: %w[26#2],
@@ -627,6 +628,7 @@ module Name::QualityChecks
 
       # APPENDIX I
       name_missing_in_effective_publication: {
+        checklist: :register,
         message:
           'The reported effective publication does not mention this name',
         rules: %w[appendix-i]
@@ -1122,6 +1124,11 @@ module Name::QualityChecks
     if corrigendum_from? &&
          corrigendum_from.sub(/^Candidatus /, '')[0] != base_name[0]
       @qc_warnings.add(:corrigendum_affecting_initials)
+    end
+
+    if register&.notified?
+      @qc_warnings.add(:effective_publication_missing_accession) # check
+      @qc_warnings.add(:name_missing_in_effective_publication) # check
     end
 
     @qc_warnings.resort!
