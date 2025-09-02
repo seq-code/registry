@@ -412,6 +412,10 @@ class Register < ApplicationRecord
     end
   end
 
+  def wikispecies_issues?
+    names.any? { |n| n.wikispecies_issues.present? }
+  end
+
   private
 
   def assign_accession

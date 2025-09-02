@@ -52,3 +52,14 @@
     proposed (it should be <%= @register.names.size %>)
   </div>
 <% end %>
+
+<% if current_curator? &&
+      @register.validated? && @register.wikispecies_issues? %>
+  <div class="alert alert-warning">
+    <h4>Issues detected in Wikispecies entries</h4>
+    This list includes name(s) that are not properly registered in Wikispecies,
+    including
+    <%= display_link(
+          @register.names.find { |n| n.wikispecies_issues.present? }) %>
+  </div>
+<% end %>
