@@ -59,7 +59,6 @@
     <h4>Issues detected in Wikispecies entries</h4>
     This list includes name(s) that are not properly registered in Wikispecies,
     including
-    <%= display_link(
-          @register.names.find { |n| n.wikispecies_issues.present? }) %>
+    <%= display_link(@register.names.find { |n| n.wikispecies_issues.any? }) %>
   </div>
 <% end %>

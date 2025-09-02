@@ -413,7 +413,7 @@ class Register < ApplicationRecord
   end
 
   def wikispecies_issues?
-    names.any? { |n| n.wikispecies_issues.present? }
+    names.any? { |n| n.wikispecies_issues.any? }
   end
 
   private
