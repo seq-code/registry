@@ -282,6 +282,7 @@ module Register::Status
   def check_pdf_files
     has_acc = false
     inames = Hash[names.map { |n| [n, false] }]
+    anames = Hash[names.map { |n| [n, false] }]
     [publication_pdf, supplementary_pdf].each do |as|
       break if has_acc && inames.values.all?
       next unless as.attached?
@@ -295,19 +296,20 @@ module Register::Status
             bn = n.base_name
             cn = n.corrigendum_from
             inames[n] = true if txt.index(bn) || (cn && txt.index(cn))
+            anames[n] = true if txt.index(n.seqcode_url(false))
           end
-          break if has_acc && inames.values.all?
+          break if (has_acc || anames.values.all?) && inames.values.all?
         end
       end
     end
 
     names.each do |n|
-      Check.create_with(pass: has_acc).find_or_create_by(
+      v = has_acc || anames[n]
+      Check.create_with(pass: v).find_or_create_by(
         name: n, kind: :effective_publication_missing_accession
-      ).update(pass: has_acc)
-    end
+      ).update(pass: v)
 
-    inames.each do |n, v|
+      v = inames[n]
       Check.create_with(pass: v).find_or_create_by(
         name: n, kind: :name_missing_in_effective_publication
       ).update(pass: v)
@@ -316,5 +318,8 @@ module Register::Status
     add_note('The effective publication files have been parsed')
 
     has_acc && inames.values.all?
+  rescue => e
+    add_note('ERROR: The effective publication files could not be parsed')
+    raise e
   end
 end
