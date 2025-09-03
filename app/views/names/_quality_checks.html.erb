@@ -1,5 +1,5 @@
 <% force_qc_view ||= false %>
-<% if force_qc_view || (@name.can_edit?(current_user) && !@name.validated?) %>
+<% if force_qc_view || @name.can_see_qc?(current_user) %>
   <% if !@name.qc_warnings.empty? %>
     <dl name="quality-checks"
         class="main-section name-details border-danger"

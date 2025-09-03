@@ -816,6 +816,10 @@ class Name < ApplicationRecord
     can_edit?(user) || can_claim?(user)
   end
 
+  def can_see_qc?(user)
+    !validated? && (can_edit?(user) || user?(user))
+  end
+
   def can_edit?(user)
     return false if only_display
     return false if user.nil?
