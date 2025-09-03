@@ -42,7 +42,9 @@
     </div>
   <% end %>
 
+  <% editable_check = true %>
   <% if warn.check %>
+    <% editable_check = false %>
     <div class="text-muted">
       <% if warn.check.pass? %>
         Bypassed by <%= link_to_user(warn.check.user) %>
@@ -53,6 +55,8 @@
           <%= fa_icon('exclamation-circle') %> reinstate as failed check
         <% end %>
       <% else %>
+        <% editable_check = true if
+              warn.checklist.present? && warn.checklist == :register %>
         <% if warn.check.user.present? %>
           Identified by <%= link_to_user(warn.check.user) %>
         <% else %>
@@ -61,7 +65,8 @@
         <%= time_ago_in_words(warn.check.updated_at) %> ago
       <% end %>
     </div>
-  <% elsif current_curator? %>
+  <% end %>
+  <% if editable_check && current_curator? %>
     <div class="text-muted">
       <b>Curator action</b>:
       <%= link_to(
