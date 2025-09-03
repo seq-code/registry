@@ -77,6 +77,10 @@ module Strain::ExternalResources
     body = external_request(uri)
     return empty unless body.present?
 
+    # Pre-processing to avoid a strange StrainInfo bug returning malformed JSON
+    body.gsub!(/,,+/, ',')
+    body.gsub!(/^\[,/, '[')
+    body.gsub!(/,\]$/, ']')
     JSON.parse(body)
   end
 end
