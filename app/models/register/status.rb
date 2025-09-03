@@ -301,13 +301,15 @@ module Register::Status
     end
 
     names.each do |n|
-      Check.create_with(pass: anames[n]).find_or_create_by(
+      par = { pass: anames[n], user: nil }
+      Check.create_with(par).find_or_create_by(
         name: n, kind: :effective_publication_missing_accession
-      ).update(pass: anames[n])
+      ).update(par)
 
-      Check.create_with(pass: inames[n]).find_or_create_by(
+      par = { pass: inames[n], user: nil }
+      Check.create_with(par).find_or_create_by(
         name: n, kind: :name_missing_in_effective_publication
-      ).update(pass: inames[n])
+      ).update(par)
     end
 
     add_note('The effective publication files have been parsed')
