@@ -280,44 +280,38 @@ module Register::Status
   # IMPORTANT: Notes are soft-registered, remember to +save+ to make them
   # persistent
   def check_pdf_files
-    has_acc = false
     inames = Hash[names.map { |n| [n, false] }]
     anames = Hash[names.map { |n| [n, false] }]
     [publication_pdf, supplementary_pdf].each do |as|
-      break if has_acc && inames.values.all?
       next unless as.attached?
+      break if anames.values.all? && inames.values.all?
 
       as.open do |file|
         render = PDF::Reader.new(file.path)
         render.pages.each do |page|
-          txt = page.text
-          has_acc = true if txt.index(accession)
-          inames.each_key do |n|
-            bn = n.base_name
-            cn = n.corrigendum_from
-            inames[n] = true if txt.index(bn) || (cn && txt.index(cn))
-            anames[n] = true if txt.index(n.seqcode_url(false))
+          txt = page.text.unicode_normalize(:nfkc)
+          anames.each { |n, _| anames[n] = true } if txt.index(accession)
+          names.each do |n|
+            inames[n] ||= n.pdf_variants.find { |i| txt.index(i) }.present?
+            anames[n] ||= txt.index(n.seqcode_url(false)).present?
           end
-          break if (has_acc || anames.values.all?) && inames.values.all?
+          break if anames.values.all? && inames.values.all?
         end
       end
     end
 
     names.each do |n|
-      v = has_acc || anames[n]
-      Check.create_with(pass: v).find_or_create_by(
+      Check.create_with(pass: anames[n]).find_or_create_by(
         name: n, kind: :effective_publication_missing_accession
-      ).update(pass: v)
+      ).update(pass: anames[n])
 
-      v = inames[n]
-      Check.create_with(pass: v).find_or_create_by(
+      Check.create_with(pass: inames[n]).find_or_create_by(
         name: n, kind: :name_missing_in_effective_publication
-      ).update(pass: v)
+      ).update(pass: inames[n])
     end
 
     add_note('The effective publication files have been parsed')
-
-    has_acc && inames.values.all?
+    anames.values.all? && inames.values.all?
   rescue => e
     add_note('ERROR: The effective publication files could not be parsed')
     raise e

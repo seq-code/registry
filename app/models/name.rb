@@ -1323,6 +1323,31 @@ class Name < ApplicationRecord
     checks.find { |check| check.kind == type.to_s }
   end
 
+  def text_variants
+    @text_variants ||= Set.new
+    return @text_variants if @text_variants.any?
+
+    b = [base_name, corrigendum_from].compact
+    @text_variants += b
+    if %w[subspecies].include?(inferred_rank)
+      @text_variants += b.map { |i| i.sub(/ subsp\. /, ' ') }
+    end
+    if %w[species subspecies].include?(inferred_rank)
+      @text_variants += b.map { |i| i.gsub(/^(\S)\S+\s/, '\\1. ') }
+    end
+    @text_variants
+  end
+
+  def pdf_variants
+    @pdf_variants ||= Set.new
+    return @pdf_variants if @pdf_variants.any?
+
+    @pdf_variants += text_variants
+    @pdf_variants += text_variants.map { |i| i.split('').join(' ') }
+    @pdf_variants += text_variants.map { |i| i.gsub(' ', '') }
+    @pdf_variants
+  end
+
   def fresh_name_order
     y = ''
     if parent && parent.rank_index < rank_index
