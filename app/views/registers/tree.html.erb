@@ -14,8 +14,13 @@
     <% end %>
 
     <% if n.type? %>
+      <% t = n.nomenclatural_type %>
       <span class="text-muted ml-2 small">
-        [Type: <%= display_link(n.nomenclatural_type) %>]
+        [Type: <%=
+          content_tag(
+            n.type_is_name? && @register.names.include?(t) ? :b : :span
+          ) { display_link(t) }
+        %>]
       </span>
     <% end %>
   <% end %>
