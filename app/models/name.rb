@@ -529,7 +529,9 @@ class Name < ApplicationRecord
   end
 
   def formal_html(assume_valid: false, check_correctness: false)
-    y = name_html(assume_valid: assume_valid, check_correctness: check_correctness)
+    y = name_html(
+      assume_valid: assume_valid, check_correctness: check_correctness
+    )
     y = "&#8220;#{y}&#8221;" if candidatus?
     y += ' <i>corrig.</i>'.html_safe if corrigendum_from?
     if not_validly_proposed_in.any?
@@ -552,7 +554,11 @@ class Name < ApplicationRecord
   end
 
   def formal_txt
-    sanitize(formal_html.gsub(/&#822[01];/, "'"))
+    sanitize(
+      formal_html
+        .gsub(/<sup>([A-Za-z]+)<\/sup>/, '(\\1)')
+        .gsub(/&#822[01];/, "'")
+    )
   end
 
   def page_description
