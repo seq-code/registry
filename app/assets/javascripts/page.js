@@ -19,7 +19,7 @@ $(document).on("turbolinks:load", function() {
 function new_toast(title, body, url) {
   var toast = $(
     "<div class=toast role=alert aria-live=assertive aria-atomic=true " +
-      "data-autohide=false data-delay=30000></div>"
+      "data-autohide=true data-delay=300000></div>"
   );
   toast.append($(
     "<div class=toast-header>" +
