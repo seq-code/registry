@@ -4,7 +4,8 @@
 <h1><%= @publication.title_html %></h1>
 <hr/>
 
-<dl class='main-section'>
+<dl class="main-section name-details">
+  <h2>Publication</h2>
   <%= render partial: 'basic_info', locals: { publication: @publication } %>
   <dt>
     <%= fa_icon('user-friends') %>

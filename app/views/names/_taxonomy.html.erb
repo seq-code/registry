@@ -19,22 +19,6 @@
       </dd>
     <% end %>
 
-    <% if @name.notes? || @name.can_edit_validated?(current_user) %>
-      <dt><%= fa_icon('sticky-note') %> Notes</dt>
-      <dd>
-        <%= @name.notes %>
-        <% if @name.can_edit_validated?(current_user) %>
-          <%= link_to(
-                edit_notes_name_url(@name),
-                class: 'badge badge-pill badge-primary',
-                title: 'edit notes'
-              ) do %>
-            <%= fa_icon 'edit' %> Edit
-          <% end %>
-        <% end %>
-      </dd>
-    <% end %>
-
     <% if @name.parent %>
       <dt><%= fa_icon('layer-group') %> Classification</dt>
       <dd><%= name_lineage(@name) %></dd>
