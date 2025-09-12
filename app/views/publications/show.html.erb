@@ -5,7 +5,10 @@
 <hr/>
 
 <dl class="main-section name-details">
-  <h2>Publication</h2>
+  <h2>
+    <%= fa_icon('newspaper', class: 'float-right') %>
+    Publication
+  </h2>
   <%= render partial: 'basic_info', locals: { publication: @publication } %>
   <dt>
     <%= fa_icon('user-friends') %>
