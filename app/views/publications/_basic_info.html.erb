@@ -1,9 +1,10 @@
-<dt>Citation</dt>
+<dt><%= fa_icon('book-open') %> Citation</dt>
 <dd><%= publication_full_citation(publication) %></dd>
 
 <% if current_contributor? || !publication.names.empty? %>
   <dt>
-    Names <span class="text-muted">(<%= publication.names.count %>)</span>
+    <%= fa_icon('list-ul') %> Names
+    <span class="text-muted">(<%= publication.names.count %>)</span>
   </dt>
   <dd>
     <% publication.publication_names.each do |publication_name| %>
@@ -30,7 +31,7 @@
 <% end %>
 
 <% unless publication.subjects.empty? %>
-  <dt>Subjects</dt>
+  <dt><%= fa_icon('tags') %> Subjects</dt>
   <dd>
   <% publication.subjects.each do |subject| %>
     <%= link_to(
@@ -42,7 +43,7 @@
 <% end %>
 
 <% if publication.abstract %>
-  <dt>Abstract</dt>
+  <dt><%= fa_icon('file-alt') %> Abstract</dt>
   <dd class='text-sm text-muted'><%= publication.clean_abstract %></dd>
 <% end %>
 
