@@ -109,7 +109,10 @@ class ApplicationController < ActionController::Base
       redirect_to(genome_path(genome, par))
     when /\Ag:([a-z]+):(.+)\z/i
       db, acc = [$1, $2]
-      acc += '.' + par[:format] if par[:format].present?
+      if par[:format].present? # Interpret as version, not as format
+        acc += '.' + par[:format]
+        par.delete(:format)
+      end
       genome = Genome.where(database: db, accession: acc).first or not_found
       redirect_to(genome_path(genome, par))
     when /\Ah:(.+)\z/i
