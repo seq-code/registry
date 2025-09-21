@@ -104,15 +104,15 @@ class ApplicationController < ActionController::Base
     when /\A(r:.+)\z/i
       list = Register.where(accession: $1).first or not_found
       redirect_to(register_path(list, par))
+    when /\Ag:(\d+)\z/i
+      genome = Genome.where(id: $1).first or not_found
+      redirect_to(genome_path(genome, par))
     when /\Ag:([a-z]+):(.+)\z/i
       genome = Genome.where(database: $1, accession: $2).first
       unless genome
-        logger.error('CANNOT FIND: %s | %s' % [$1, $2])
+        logger.error('FORMAT: %s' % [par[:format]])
         not_found
       end
-      redirect_to(genome_path(genome, par))
-    when /\Ag:(\d+)\z/i
-      genome = Genome.where(id: $1).first or not_found
       redirect_to(genome_path(genome, par))
     when /\Ah:(.+)\z/i
       redirect_to(help_path($1, par))
