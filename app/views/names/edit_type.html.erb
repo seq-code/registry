@@ -20,6 +20,20 @@
     %>
     <%= @name.type? %>
   <% else %>
+    <h3>How to define the nomenclatural type?</h3>
+    <p class="lead">
+      Under the SeqCode, the type material of species and subspecies must be a
+      genome sequence. First, select the database where the genome is deposited.
+      It must be <b>INSDC Nucleotide</b> or <b>NCBI Assembly</b>.
+      <!-- If you are following <b>Path 1</b> and the genome is not yet publicly
+      available, you can select <b>Pending Genome</b>, and the genome accession
+      can be reported upon notification. --><br/><br/>
+      If you report a <b>Reference strain</b>, we assume that the genome is
+      derived from an isolate or another culture. <b>Do not</b> report MAG or
+      SAG identifiers as reference strains.
+    </p>
+    <hr/>
+
     <% legacy =  @name.nomenclatural_type.try(:old_type_definition) || [] %>
     <%=
       f.input(
