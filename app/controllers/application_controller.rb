@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
     when /\Ag:([a-z]+):(.+)\z/i
       genome = Genome.where(database: $1, accession: $2).first
       unless genome
-        $stderr.puts 'CANNOT FIND: %s | %s' % [$1, $2]
+        logger.error('CANNOT FIND: %s | %s' % [$1, $2])
         not_found
       end
       redirect_to(genome_path(genome, par))
