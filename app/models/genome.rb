@@ -44,8 +44,9 @@ class Genome < ApplicationRecord
 
     def db_names
       {
-        nuccore: 'INSDC Nucleotide',
-        assembly: 'NCBI Assembly'
+        nuccore:  'INSDC Nucleotide',
+        assembly: 'NCBI Assembly',
+        pending:  'Pending Genome'
       }
     end
 
@@ -227,9 +228,11 @@ class Genome < ApplicationRecord
     acc ||= accession
     case database
     when 'assembly'
-      "https://www.ncbi.nlm.nih.gov/datasets/genome/#{acc}"
+      'https://www.ncbi.nlm.nih.gov/datasets/genome/%s' % acc
     when 'nuccore'
-      "https://www.ncbi.nlm.nih.gov/#{database}/#{acc}"
+      'https://www.ncbi.nlm.nih.gov/%s/%s' % [database, acc]
+    when 'pending'
+      'https://seqco.de/g:%s:%s' % [database, acc]
     end
   end
 

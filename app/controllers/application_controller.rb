@@ -104,6 +104,9 @@ class ApplicationController < ActionController::Base
     when /\A(r:.+)\z/i
       list = Register.where(accession: $1).first or not_found
       redirect_to(register_path(list, par))
+    when /\Ag:([a-z]+):(.+)\z/i
+      genome = Genome.where(database: $1, accession: $2).first or not_found
+      redirect_to(genome_path(genome, par))
     when /\Ag:(.+)\z/i
       genome = Genome.where(id: $1).first or not_found
       redirect_to(genome_path(genome, par))
