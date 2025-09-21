@@ -108,11 +108,9 @@ class ApplicationController < ActionController::Base
       genome = Genome.where(id: $1).first or not_found
       redirect_to(genome_path(genome, par))
     when /\Ag:([a-z]+):(.+)\z/i
-      genome = Genome.where(database: $1, accession: $2).first
-      unless genome
-        logger.error('FORMAT: %s' % [par[:format]])
-        not_found
-      end
+      db, acc = [$1, $2]
+      acc += '.' + par[:format] if par[:format].present?
+      genome = Genome.where(database: db, accession: acc).first or not_found
       redirect_to(genome_path(genome, par))
     when /\Ah:(.+)\z/i
       redirect_to(help_path($1, par))
