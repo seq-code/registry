@@ -20,7 +20,7 @@
     $(this).attr('href', '#' + $(this).parent().attr('id'));
   });
   $('#seqcode-down .link-to-id [name]').each(function(idx){
-    $(this).siblings('.linker').attr('href', '#' + $(this).attr('name'));
+    $(this).siblings('.linker').attr('href', '#' + encodeURIComponent($(this).attr('name')));
   });
   // Smooth scrolling
   $(document).on('click', 'a[href^="#"]', function (event) {
