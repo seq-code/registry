@@ -216,7 +216,8 @@ end
         </div>
       <% else %>
         <%=
-          @genome.auto_check ? 'Complete' :
+          @genome.database == 'pending' ? 'Postponed' :
+            @genome.auto_check ? 'Complete' :
             @genome.kind? ? 'Scheduled' : 'Missing information'
         %>
       <% end %>

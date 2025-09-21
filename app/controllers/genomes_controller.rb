@@ -84,9 +84,14 @@ class GenomesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    # Use callbacks to share common setup or constraints between actions
     def set_genome
       @genome = Genome.find(params[:id])
+
+      if @genome && !@genome.can_view?(current_user, cookies[:reviewer_token])
+        flash[:alert] = 'User cannot see genome'
+        redirect_to(root_path)
+      end
     end
 
     def set_name

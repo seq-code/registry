@@ -35,7 +35,7 @@ namespace :genomes do
     p_path = File.join(Rails.root, '..', 'miga_check')
     genomes = Genome.where(
       auto_check: false, auto_scheduled_at: nil, auto_failed: nil
-    ).where.not(kind: nil)
+    ).where.not(database: 'pending').where.not(kind: nil)
 
     genomes.each_with_index do |genome, k|
       $stderr.puts 'Download genomes:' if k == 0

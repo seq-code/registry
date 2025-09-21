@@ -318,6 +318,14 @@ class Genome < ApplicationRecord
       names.all? { |name| name.can_edit?(user) }
   end
 
+  def can_view?(user, token = nil)
+    if names.empty?
+      database == 'pending' ? user&.curator? : true
+    else
+      names.any? { |n| n.can_view?(user, token) }
+    end
+  end
+
   # MiGA Checks
 
   def miga_name
