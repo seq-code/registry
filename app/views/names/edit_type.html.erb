@@ -22,15 +22,18 @@
   <% else %>
     <h3>How to define the nomenclatural type?</h3>
     <p class="lead">
-      Under the SeqCode, the type material of species and subspecies must be a
+      Under the SeqCode, the type material of a species or subspecies must be a
       genome sequence. First, select the database where the genome is deposited.
-      It must be <b>INSDC Nucleotide</b> or <b>NCBI Assembly</b>.
+      It must be <b>INSDC Nucleotide</b> or <b>NCBI Assembly</b>. Then report
+      the accession number in the corresponding database.
       <!-- If you are following <b>Path 1</b> and the genome is not yet publicly
       available, you can select <b>Pending Genome</b>, and the genome accession
-      can be reported upon notification. --><br/><br/>
+      can be reported upon notification. In that case use a unique identifier
+      as the sequence accession, ideally a globally unique one. --><br/><br/>
       If you report a <b>Reference strain</b>, we assume that the genome is
-      derived from an isolate or another culture. <b>Do not</b> report MAG or
-      SAG identifiers as reference strains.
+      derived from an isolate or another culture.
+      <b class="text-danger">Do not</b> report MAG or SAG identifiers<b>
+      as reference strains.
     </p>
     <hr/>
 
