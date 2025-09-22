@@ -27,7 +27,7 @@
     <tbody>
       <% @genomes.each do |genome| %>
         <tr>
-          <td><%= display_link(genome.name) %></td>
+          <td><%= display_link(genome.typified_names.first) %></td>
           <td><%= genome.accession %></td>
           <td></td>
           <td></td>
