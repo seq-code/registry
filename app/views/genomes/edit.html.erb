@@ -21,7 +21,7 @@
           :kind, collection: Genome.kinds_opt, label: 'Type of genome',
           required: true) %>
     <%= f.input(
-          :seq_depth, label: 'Sequencing depth (X)',
+          :seq_depth, label: 'Sequencing depth (X)', required: @genome.isolate?,
           hint: 'Required for isolate genomes, optional (but recommended) ' \
                 'for all other types') %>
 
@@ -44,8 +44,12 @@
       assesment will be used to fill-up all the information below.
     </p>
     <%= f.input(:gc_content, label: 'G+C content (%)') %>
-    <%= f.input(:completeness, label: 'Estimated completeness (%)') %>
-    <%= f.input(:contamination, label: 'Estimated contamination (%)') %>
+    <%= f.input(
+          :completeness, label: 'Estimated completeness (%)',
+          required: @genome.pending?) %>
+    <%= f.input(
+          :contamination, label: 'Estimated contamination (%)',
+          required: @genome.pending?) %>
     <%= f.input(
           :most_complete_16s,
           label: 'Fraction of the most complete 16S rRNA gene fragment (%)') %>
