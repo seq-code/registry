@@ -114,7 +114,7 @@ class NamesController < ApplicationController
       if @status == 'all'
         @crumbs << bu
       else
-        @crumbs << [bu, names_path(user: @user.username)],
+        @crumbs << [bu, names_path(user: @user.username)]
         @crumbs << @status.gsub(/^\S/, &:upcase)
       end
     else
