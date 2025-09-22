@@ -25,7 +25,7 @@ const wn_struct = {
 
     // Sound (only if it is allowed)
     if (new AudioContext().state == "running") {
-      var bell = ROOT_PATH + "assets/audios/notification.mp3";
+      var bell = ROOT_PATH + "notification.mp3";
       var notification_sound = new Audio(bell);
       notification_sound.play();
     }

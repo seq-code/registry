@@ -313,6 +313,10 @@ class Genome < ApplicationRecord
     self.class.required.all? { |i| send(i) }
   end
 
+  def pending?
+    database == 'pending'
+  end
+
   def can_edit?(user)
     (names.empty? && user.present?) ||
       names.all? { |name| name.can_edit?(user) }
@@ -320,7 +324,7 @@ class Genome < ApplicationRecord
 
   def can_view?(user, token = nil)
     if names.empty?
-      database == 'pending' ? user&.curator? : true
+      pending? ? user&.curator? : true
     else
       names.any? { |n| n.can_view?(user, token) }
     end

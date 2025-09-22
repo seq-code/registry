@@ -32,9 +32,9 @@
     </p>
     <%= f.input(
           :source_database, collection: Genome.source_databases_opt,
-          label: 'Database', required: true) %>
+          label: 'Database', required: !@genome.pending?) %>
     <%= f.input(
-          :source_accession, label: 'Accession', required: true,
+          :source_accession, label: 'Accession', required: !@genome.pending?,
           hint: 'Multiple accessions in the same database can be reported ' \
                 'separated by comma (,)') %>
 
