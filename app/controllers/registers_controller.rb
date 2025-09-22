@@ -211,11 +211,10 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abc/prenotify
   def prenotify_commit
-    genomes = params.require(:genome)
     @errored = {}
-    genomes.each do |k, v|
-      genome = Genome.find(k)
-      unless genome.update_accession(v['accession'], v['database'])
+    params.require(:genome).each do |k, v|
+      genome = Genome.find(k.to_i)
+      unless genome&.update_accession(v['accession'], v['database'])
         @errored[k.to_i] = 'Cannot update accession'
       end
     end
