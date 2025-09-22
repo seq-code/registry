@@ -1,6 +1,8 @@
 <%
-  npar = { status: @status }
-  npar[:user] = params[:user] if params[:user].present?
+  npar = {}
+  npar[:status] = @status if @status.present?
+  npar[:sort]   = @sort if @sort.present?
+  npar[:user]   = params[:user] if params[:user].present?
 %>
 <%= download_buttons(
       [[names_url(npar.merge(format: :json)), 'file-code', 'JSON']]
@@ -23,10 +25,10 @@
             link_to(
               sort,
               @submitted ?
-                submitted_names_path(sort: sort, status: @status) :
+                submitted_names_path(npar.merge(sort: sort)) :
                 @draft ?
-                draft_names_path(sort: sort, status: @status) :
-                names_path(sort: sort, status: @status)
+                draft_names_path(npar.merge(sort: sort)) :
+                names_path(npar.merge(sort: sort))
             )
         %>
       <% end %>
@@ -37,7 +39,7 @@
         <span class="text-muted">•</span>
         <%=
           status == @status ?
-            status : link_to(status, names_path(status: status, sort: @sort))
+            status : link_to(status, names_path(npar.merge(status: status))
         %>
       <% end %>
     </div>
