@@ -2,7 +2,7 @@
   npar = {}
   npar[:status] = @status if @status.present?
   npar[:sort]   = @sort if @sort.present?
-  npar[:user]   = params[:user] if params[:user].present?
+  npar[:user]   = @user.username if @user.present?
 %>
 <%= download_buttons(
       [[names_url(npar.merge(format: :json)), 'file-code', 'JSON']]
