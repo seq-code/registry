@@ -70,18 +70,12 @@ class NamesController < ApplicationController
 
     opts[:status] ||=
       case @status
-      when 'public'
-        Name.public_status
-      when 'automated'
-        0
-      when 'SeqCode'
-        15
-      when 'ICNP'
-        20
-      when 'ICN'
-        25
-      when 'valid'
-        Name.valid_status
+      when 'public'; Name.public_status
+      when 'automated'; 0
+      when 'SeqCode'; 15
+      when 'ICNP';    20
+      when 'ICN', 'ICNafp'; 25
+      when 'valid'; Name.valid_status
       end
 
     @names ||=
