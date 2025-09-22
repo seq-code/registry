@@ -3,8 +3,9 @@ class RegistersController < ApplicationController
     :set_register,
     only: %i[
       show table list certificate_image cite edit update destroy tree
-      submit return return_commit endorse notify notify_commit
-      validate editorial_checks publish publish_commit new_correspondence
+      submit return return_commit endorse prenotify prenotify_commit
+      notify notify_commit validate
+      editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review snooze_curation
       observe unobserve merge merge_commit sample_map
       reviewer_token reviewer_token_create reviewer_token_delete
@@ -36,11 +37,12 @@ class RegistersController < ApplicationController
   before_action(
     :authenticate_can_edit!,
     only: %i[
-      edit update destroy submit notify notify_commit merge merge_commit
-      reviewer_token_create reviewer_token_delete
+      edit update destroy submit prenotify prenotify_commit notify notify_commit
+      merge merge_commit reviewer_token_create reviewer_token_delete
     ]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve])
+  before_action(:check_pending_genomes!, only: %i[notify notify_commit])
 
   # GET /registers or /registers.json
   def index(status = :validated)
@@ -198,6 +200,16 @@ class RegistersController < ApplicationController
     change_status(
       :endorse, 'Register list has been endorsed', current_user
     )
+  end
+
+  # GET /registers/r:abc/prenotify
+  def prenotify
+    @genomes = @register.names.map(&:type_genome).compact.select(&:pending?)
+    redirect_to(notify_register_path(@register)) if @genomes.empty?
+  end
+
+  # POST /registers/r:abc/prenotify
+  def prenotify_commit
   end
 
   # GET /registers/r:abc/notify
@@ -525,6 +537,12 @@ class RegistersController < ApplicationController
 
     def ensure_valid!
       @register&.validated?
+    end
+
+    def check_pending_genomes!
+      if @register.pending_genomes?
+        redirect_to(prenotify_register_path(@register))
+      end
     end
 
     def add_automatic_correspondence(message)

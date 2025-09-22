@@ -416,6 +416,10 @@ class Register < ApplicationRecord
     names.any? { |n| n.wikispecies_issues.any? }
   end
 
+  def pending_genomes?
+    names.any? { |n| n.type_genome.try(:pending?) }
+  end
+
   private
 
   def assign_accession

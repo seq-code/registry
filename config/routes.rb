@@ -157,6 +157,8 @@ Rails.application.routes.draw do
       post :endorse
       get  :notify
       post :notify, action: :notify_commit
+      get  :prenotify
+      post :prenotify, action: :prenotify_commit
       post :validate
       get  :editorial_checks
       get  :publish

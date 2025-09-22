@@ -1,0 +1,52 @@
+<h1>
+  Notification of Effective Publication
+</h1>
+<hr/>
+
+<p class="lead">
+  Before reporting the effective publication associated to this register list,
+  you must report the accession numbers of all pending genomes serving as
+  nomenclatural types in the list.
+</p>
+
+<%= simple_form_for(
+      @register, url: prenotify_register_url(@register), method: :post
+    ) do |f| %>
+  <br/>
+
+  <h2>Pending genomes</h2>
+  <table class="table table-hover table-responsive">
+    <thead>
+      <tr>
+        <th scope=col>Name</th>
+        <th scope=col>Temporary designation</th>
+        <th scope=col>Database</th>
+        <th scope=col>Accession</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @genomes.each do |genome| %>
+        <tr>
+          <td><%= display_link(genome.name) %></td>
+          <td><%= genome.accession %></td>
+          <td></td>
+          <td></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%=
+    f.input(
+      :publication_pdf, label: 'Publication PDF', required: true,
+      hint: 'Published manuscript in PDF: the preferred PDF is the final ' \
+            'typeset version, but the author accepted manuscript version ' \
+            'is also acceptable'
+    )
+  %>
+
+  <br/>
+  <%= f.button(:submit, 'Submit list for validation') %>
+  <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+
