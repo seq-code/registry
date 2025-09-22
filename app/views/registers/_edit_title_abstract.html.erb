@@ -15,7 +15,12 @@
 <%=
   f.input(
     :abstract, as: :rich_text_area, label: 'Abstract (optional)',
-    hint: 'Abstract of the Register List, <b class="text-danger">not the ' \
-          'abstract of the effective publication</b>'.html_safe
+    hint: <<~HELP.html_safe
+      <b>Abstract of the Register List, <span class="text-danger">not the
+      abstract of the effective publication</span></b>. An abstract is optional,
+      but it can help find your register list in public repositories and
+      indicate readers what makes the lineage(s) described here interesting or
+      unique.
+    HELP
   )
 %>
