@@ -22,7 +22,7 @@
         <th scope=col>Temporary designation</th>
         <th scope=col>Database</th>
         <th scope=col>Accession</th>
-        <% unless @errored.present? %>
+        <% if @errored.present? %>
           <th scope=col>Errors</th>
         <% end %>
       </tr>
