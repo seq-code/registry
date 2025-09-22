@@ -121,7 +121,7 @@ class NamesController < ApplicationController
     if params[:user] && current_user&.admin?
       user = User.find_by(username: params[:user])
     end
-    @title  = "Names by #{user.username}"
+    @title  = "Names by #{user&.username}"
     @status = 'all'
     index(where: { created_by: user })
     render(:index)
