@@ -60,7 +60,11 @@ class NamesController < ApplicationController
     @draft     ||= false
     @sort      ||= params[:sort] || 'date'
     @status    ||= params[:status] || 'public'
-    @title     ||= "#{@status.gsub(/^\S/, &:upcase)} Names"
+    @title     ||= [
+      @status == 'all' ? nil : @status.gsub(/^\S/, &:upcase),
+      'Names',
+      @user.present? ? "by #{@user.username}" : nil
+    ].compact.join('')
     opts[:rank] = params[:rank] if params[:rank].present?
 
     opts[:status] ||=
@@ -122,7 +126,6 @@ class NamesController < ApplicationController
     if params[:user] && current_user&.admin?
       @user = User.find_by(username: params[:user])
     end
-    @title  = "Names by #{@user&.username}"
     @status = 'all'
     index(where: { created_by: @user })
     render(:index)
