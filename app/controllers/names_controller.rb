@@ -118,7 +118,7 @@ class NamesController < ApplicationController
   # GET /names/user?user=abc
   def user
     user = current_user
-    if params[:user] && current_user.admin?
+    if params[:user] && current_user&.admin?
       user = User.find_by(username: params[:user])
     end
     @title  = "Names by #{user.username}"
