@@ -39,7 +39,7 @@
         <span class="text-muted">•</span>
         <%=
           status == @status ?
-            status : link_to(status, names_path(npar.merge(status: status))
+            status : link_to(status, names_path(npar.merge(status: status)))
         %>
       <% end %>
     </div>
