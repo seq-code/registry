@@ -882,11 +882,11 @@ module Name::QualityChecks
 
       if type_genome.source?
         @qc_warnings.add(:missing_metadata_in_databases) # check
-      elsif type_genome.pending?
-        # Do nothing
       else
-        if proposed_in && proposed_in.journal_date.year < 2023
+        if type_genome.pending? ||
+            (proposed_in && proposed_in.journal_date.year < 2023)
           # Only a warning for publications before 1st January 2023
+          # or for pending genomes
           @qc_warnings.add(
             :missing_genome_source,
             rules: [],
