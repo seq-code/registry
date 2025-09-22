@@ -31,7 +31,8 @@
           <td><%= genome.accession %></td>
           <td><%= select_tag(
             "genome[#{genome.id}][database]",
-            options_for_select(Genome.db_names.to_a.map(&:reverse), 'pending'),
+            options_for_select(
+              Genome.db_names.to_a.map(&:reverse), genome.database),
             class: 'form-control'
           ) %></td>
           <td><%= text_field_tag(
@@ -43,8 +44,12 @@
   </table>
 
   <br/>
-  <%= f.button(:submit, 'Submit list for validation') %>
+  <%= f.button(:submit, 'Proceed to notification') %>
   <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
   <br/><br/>
 <% end %>
+
+<pre>
+<%= params.inspect %>
+</pre>
 
