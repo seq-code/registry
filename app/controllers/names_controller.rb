@@ -108,7 +108,22 @@ class NamesController < ApplicationController
 
     @count = @names.count
     @count = @count.size if @count.is_a? Hash
-    @crumbs = ['Names']
+    @crumbs = [['Names', names_path]]
+    if @user.present?
+      bu = "by #{@user.username}"
+      if @status == 'all'
+        @crumbs << bu
+      else
+        @crumbs << [bu, names_path(user: @user.username)],
+        @crumbs << @status.gsub(/^\S/, &:upcase)
+      end
+    else
+      if @status == 'public'
+        @crumbs[0] = 'Names'
+      else
+        @crumbs << @status.gsub(/^\S/, &:upcase)
+      end
+    end
   end
 
   # GET /type-genomes
