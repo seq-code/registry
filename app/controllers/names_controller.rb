@@ -53,7 +53,8 @@ class NamesController < ApplicationController
   # GET /names
   # GET /names.json
   def index(opts = {})
-    return user if params[:user].present? && opts == {}
+    return user if params[:user].present? && !opts[:where].present?
+
     @user      ||= nil
     @submitted ||= false
     @endorsed  ||= false
@@ -64,7 +65,7 @@ class NamesController < ApplicationController
       @status == 'all' ? nil : @status.gsub(/^\S/, &:upcase),
       'Names',
       @user.present? ? "by #{@user.username}" : nil
-    ].compact.join('')
+    ].compact.join(' ')
     opts[:rank] = params[:rank] if params[:rank].present?
 
     opts[:status] ||=
@@ -126,7 +127,6 @@ class NamesController < ApplicationController
     if params[:user] && current_user&.admin?
       @user = User.find_by(username: params[:user])
     end
-    @status = 'all'
     index(where: { created_by: @user })
     render(:index)
   end
