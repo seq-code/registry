@@ -31,7 +31,7 @@
           <td><%= genome.accession %></td>
           <td><%= select_tag(
             "genome[#{genome.id}][database]",
-            options_for_select(Genome.db_names.to_a, 'pending'),
+            options_for_select(Genome.db_names.to_a.map(&:reverse), 'pending'),
             class: 'form-control'
           ) %></td>
           <td><%= text_field_tag(

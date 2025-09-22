@@ -24,7 +24,9 @@
             Please be very careful with accession changes, as they can have
             unexpected consequences. Use only when absolutely necessary.
           </div>
-          <%= f.input(:database) %>
+          <%=
+            f.input(:database, collection: Genome.db_names.to_a.map(&:reverse))
+          %>
           <%= f.input(:accession) %>
           <br/>
           <%= f.submit('Update', class: 'btn btn-primary') %>
