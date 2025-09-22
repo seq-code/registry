@@ -210,6 +210,7 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abc/prenotify
   def prenotify_commit
+    prenotify
     render(:prenotify)
   end
 
