@@ -1,5 +1,9 @@
+<%
+  npar = { status: @status }
+  npar[:user] = params[:user] if params[:user].present?
+%>
 <%= download_buttons(
-      [[names_url(format: :json, status: @status), 'file-code', 'JSON']]
+      [[names_url(npar.merge(format: :json), 'file-code', 'JSON']]
     ) %>
 
 <h1>
