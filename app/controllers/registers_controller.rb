@@ -204,14 +204,24 @@ class RegistersController < ApplicationController
 
   # GET /registers/r:abc/prenotify
   def prenotify
+    @errored ||= {}
     @genomes = @register.names.map(&:type_genome).compact.select(&:pending?)
     redirect_to(notify_register_path(@register)) if @genomes.empty?
   end
 
   # POST /registers/r:abc/prenotify
   def prenotify_commit
+    genomes = params.require(:genome)
+    @errored = {}
+    genomes.each do |k, v|
+      genome = Genome.find(k)
+      unless genome.update_accession(v['accession'], v['database'])
+        @errored[k.to_i] = 'Cannot update accession'
+      end
+    end
+
     prenotify
-    render(:prenotify)
+    render(:prenotify) unless @genomes.empty?
   end
 
   # GET /registers/r:abc/notify

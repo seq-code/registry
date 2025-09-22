@@ -22,6 +22,9 @@
         <th scope=col>Temporary designation</th>
         <th scope=col>Database</th>
         <th scope=col>Accession</th>
+        <% unless @errored.present? %>
+          <th scope=col>Errors</th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -38,6 +41,9 @@
           <td><%= text_field_tag(
             "genome[#{genome.id}][accession]", nil, class: 'form-control'
           ) %></td>
+          <% if @errored[genome.id] %>
+            <td class="text-danger"><%= @errored[genome.id] %></td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
@@ -48,8 +54,4 @@
   <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
   <br/><br/>
 <% end %>
-
-<pre>
-<%= params.inspect %>
-</pre>
 
