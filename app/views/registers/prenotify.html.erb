@@ -14,6 +14,15 @@
     ) do |f| %>
   <br/>
 
+  <% if @errored.present? %>
+    <div class="alert alert-danger">
+      Cannot update <%= pluralize(@errored.size, 'genome') %>, probably because
+      the genome has already been registered in the system. Please contact the
+      curators indicating which temporary designations should be updated to
+      which database and accessions.
+    </div>
+  <% end %>
+
   <h2>Pending genomes</h2>
   <table class="table table-hover table-responsive">
     <thead>

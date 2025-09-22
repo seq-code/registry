@@ -380,7 +380,7 @@ class Name < ApplicationRecord
         name:     { name: 'Name', class: 'Name', sp: false },
         nuccore:  { name: 'INSDC Nucleotide', class: 'Genome', sp: true },
         assembly: { name: 'NCBI Assembly', class: 'Genome', sp: true },
-        ## TODO pending:  { name: 'Pending Genome', class: 'Genome', sp: true },
+        pending:  { name: 'Pending Genome', class: 'Genome', sp: true },
         strain:   { name: 'Strain', class: 'Strain', sp: true },
         other:    { name: 'Other', class: 'GenericTypeMaterial', sp: true }
       }
