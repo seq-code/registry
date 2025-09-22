@@ -29,20 +29,18 @@
         <tr>
           <td><%= display_link(genome.typified_names.first) %></td>
           <td><%= genome.accession %></td>
-          <td></td>
-          <td></td>
+          <td><%= select_tag(
+            "genome[#{genome.id}][database]",
+            options_for_select(Genome.db_names.to_a, 'pending'),
+            class: 'form-control'
+          ) %></td>
+          <td><%= text_field_tag(
+            "genome[#{genome.id}][accession]", nil, class: 'form-control'
+          ) %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-  <%=
-    f.input(
-      :publication_pdf, label: 'Publication PDF', required: true,
-      hint: 'Published manuscript in PDF: the preferred PDF is the final ' \
-            'typeset version, but the author accepted manuscript version ' \
-            'is also acceptable'
-    )
-  %>
 
   <br/>
   <%= f.button(:submit, 'Submit list for validation') %>
