@@ -75,6 +75,7 @@ module Name::Etymology
     if html
       pre = "<b>#{pre}</b>" if pre
       par = "<i>#{par}</i>" if par
+      des = des.gsub(/_([^_]+)_/, '<i>\\1</i>')
     end
     y = [[pre, par].compact.join(' '), des].compact.join(', ')
     y.empty? ? nil : html ? y.html_safe : y
