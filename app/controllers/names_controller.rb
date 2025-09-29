@@ -70,17 +70,17 @@ class NamesController < ApplicationController
     opts[:rank] = params[:rank] if params[:rank].present?
 
     opts[:status] ||=
-      case @status
+      case @status.to_s.downcase
       when 'public';    Name.public_status
       when 'automated'; 0
-      when 'SeqCode';   15
-      when 'ICNP';      20
-      when 'ICNafp';    25
+      when 'seqcode';   15
+      when 'icnp';      20
+      when 'icnafp';    25
       when 'valid';     Name.valid_status
       end
 
     @names ||=
-      case @sort
+      case @sort.to_s.downcase
       when 'date'
         if opts[:status] == 15
           Name.order(validated_at: :desc)
