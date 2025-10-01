@@ -111,7 +111,7 @@ module Tutorial::Batch
 
   def check_ephemeral_names(user)
     @check_ephemeral_names ||= :pending
-    return ephemeral_names if @check_names == :done
+    return ephemeral_names if @check_ephemeral_names == :done
 
     name_names = ephemeral_names.map(&:name)
     ephemeral_names.each do |name|
@@ -174,7 +174,7 @@ module Tutorial::Batch
        end
       end
     end
-    @check_names = :done
+    @check_ephemeral_names = :done
   end
 
   def check_ephemeral_genomes(user)
@@ -312,8 +312,13 @@ module Tutorial::Batch
         # Claim/update or create
         name = Name.find_by_variants(par['name'])
         if name
-          name.claim(user, false)
-          name.update!(par)
+          if name.can_claim?(user)
+            name.claim(user, false)
+            name.update!(par)
+          else
+            # The user does not have permissions to claim/update
+            raise ActiveRecord::Rollback
+          end
         else
           name = Name.create!(par)
           name.claim(user, false)
