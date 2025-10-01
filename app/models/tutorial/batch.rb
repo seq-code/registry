@@ -317,6 +317,7 @@ module Tutorial::Batch
             name.update!(par)
           else
             # The user does not have permissions to claim/update
+            @alert = 'The user cannot claim a name in this collection'
             raise ActiveRecord::Rollback
           end
         else

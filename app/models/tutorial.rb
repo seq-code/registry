@@ -71,6 +71,10 @@ class Tutorial < ApplicationRecord
     @notice ||= nil
   end
 
+  def alert
+    @alert ||= nil
+  end
+
   def data_hash
     @data_hash ||= JSON.parse(data || '{}')
   end
