@@ -49,7 +49,7 @@ class TutorialsController < ApplicationController
     elsif @tutorial.next_step(params.require(:tutorial), current_user)
       redirect_to(@tutorial.next_action, notice: @tutorial.notice)
     else
-      flash[:alert] = @tutorial.alert
+      flash.now[:alert] = @tutorial.alert
       render(:show)
     end
 
