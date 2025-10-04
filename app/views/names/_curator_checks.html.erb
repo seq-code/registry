@@ -56,6 +56,9 @@
               <%= fa_icon('exclamation-triangle', class: 'text-danger') %>
               No genome associated to this taxon
             <% end %>
+          <% when :register %>
+            These checks are automatically evaluated based on the submitted
+            PDF, avoid manually modifying them
           <% end %>
         </div>
         <% first = false %>
