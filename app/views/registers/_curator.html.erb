@@ -64,15 +64,6 @@
         <hr/>
         <% if @register.notified? %>
           <%= link_to(
-                notify_register_url(@register),
-                class: 'btn btn-primary btn-sm'
-              ) do %>
-            <%= fa_icon('file-upload') %> Edit notification
-          <% end %>
-          &raquo; Edit the notification form, including minor changes in title
-          and abstract
-          <hr/>
-          <%= link_to(
                 recheck_pdf_files_register_url(@register), method: :post,
                 class: 'btn btn-primary btn-sm'
               ) do %>
@@ -80,6 +71,15 @@
           <% end %>
           &raquo; Rerun automated checks for the publication and supplementary
           files
+          <hr/>
+          <%= link_to(
+                notify_register_url(@register),
+                class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('file-upload') %> Edit notification
+          <% end %>
+          &raquo; Edit the notification form, including minor changes in title
+          and abstract
           <hr/>
           <% id = modal('Are you sure?') do %>
             <h5>Validate names in the list</h5>
