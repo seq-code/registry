@@ -73,7 +73,7 @@
           and abstract
           <hr/>
           <%= link_to(
-                recheck_pdf_files_register_url(@register),
+                recheck_pdf_files_register_url(@register), method: :post,
                 class: 'btn btn-primary btn-sm'
               ) do %>
             <%= fa_icon('file-invoice') %> Recheck PDF files
