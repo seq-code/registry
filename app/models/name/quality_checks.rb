@@ -594,7 +594,7 @@ module Name::QualityChecks
       # - Rule 47 [Checklist-N]
       incorrect_spelling: {
         checklist: :nomenclature,
-        message: 'Name should conform original spelling and Latin grammar',
+        message: 'Name should conform to original spelling and Latin grammar',
         rules: %w[47]
       }.merge(@@link_to_edit_spelling),
       # - Rule 48 is followed by the SeqCode Registry, and also:
