@@ -169,6 +169,7 @@ Rails.application.routes.draw do
       get  :merge
       post :merge, action: :merge_commit
       post :snooze_curation
+      post :recheck_pdf_files
       # --> Edit user relationship to register list
       get  :observe
       get  :unobserve

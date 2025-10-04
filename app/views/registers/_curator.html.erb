@@ -72,6 +72,15 @@
           &raquo; Edit the notification form, including minor changes in title
           and abstract
           <hr/>
+          <%= link_to(
+                recheck_pdf_files_register_url(@register),
+                class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('file-invoice') %> Recheck PDF files
+          <% end %>
+          &raquo; Rerun automated checks for the publication and supplementary
+          files
+          <hr/>
           <% id = modal('Are you sure?') do %>
             <h5>Validate names in the list</h5>
             <p>

@@ -7,6 +7,7 @@ class RegistersController < ApplicationController
       notify notify_commit validate
       editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review snooze_curation
+      recheck_pdf_files
       observe unobserve merge merge_commit sample_map
       reviewer_token reviewer_token_create reviewer_token_delete
     ]
@@ -21,6 +22,7 @@ class RegistersController < ApplicationController
     only: %i[
       return return_commit endorse validate
       internal_notes nomenclature_review genomics_review snooze_curation
+      recheck_pdf_files
     ]
   )
   before_action(
@@ -414,6 +416,12 @@ class RegistersController < ApplicationController
   # POST /registers/r:abc/snooze_curation?time=10
   def snooze_curation
     @register.snooze_curation!(Time.now + params[:time].to_i.days)
+    redirect_back(fallback_location: @register)
+  end
+
+  # POST /registers/r:abc/recheck_pdf_files
+  def recheck_pdf_files
+    @register.check_pdf_files if @register.notified?
     redirect_back(fallback_location: @register)
   end
 
