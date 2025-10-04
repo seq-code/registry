@@ -58,7 +58,29 @@
             <% end %>
           <% when :register %>
             These checks are automatically evaluated based on the submitted
-            PDF, avoid modifying them manually
+            PDF, avoid modifying them manually<br/>
+            <% if @name.register.publication_pdf.attached? %>
+              <%= link_to(
+                    'publication',
+                    rails_blob_path(
+                      @name.register.publication_pdf,
+                      disposition: 'attachment'
+                    )
+                  ) %>
+              <% if @name.register.supplementary_pdf.attached? %>
+                <%= fa_icon('ellipsis-h', class: 'mx-2') %>
+                <%= link_to(
+                      'supplementary',
+                      rails_blob_path(
+                        @name.register.supplementary_pdf,
+                        disposition: 'attachment'
+                      )
+                    ) %>
+              <% end %>
+            <% else %>
+              <%= fa_icon('exclamation-triangle', class: 'text-danger') %>
+              No attached publication file
+            <% end %>
           <% end %>
         </div>
         <% first = false %>
