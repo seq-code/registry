@@ -6,7 +6,7 @@ class ContactsController < ApplicationController
   # GET /contacts/user
   def user
     @contacts = current_user
-      .contacts.order(created_at: :asc)
+      .contacts.order(created_at: :desc)
       .paginate(page: params[:page], per_page: 30)
     render :index
   end
@@ -14,7 +14,7 @@ class ContactsController < ApplicationController
   # GET /publications/1/contacts
   def index
     @contacts = @publication
-      .contacts.order(created_at: :asc)
+      .contacts.order(created_at: :desc)
       .paginate(page: params[:page], per_page: 30)
   end
 
