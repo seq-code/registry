@@ -307,8 +307,8 @@ module ApplicationHelper
         display_obj(obj, display_method), name_url(obj, no_redirect: true)
       ) + ' ' +
         link_to(obj.redirect, class: 'badge badge-pill badge-danger') do
-          fa_icon(:directions, class: 'text-danger', title: 'Redirects to') +
-          ' ' + display_obj(obj.redirect, display_method)
+          fa_icon(:directions, title: 'Redirects to') + ' ' +
+          display_obj(obj.redirect, display_method)
         end
     else
       link_to(display_obj(obj, display_method), obj)
