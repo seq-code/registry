@@ -421,7 +421,16 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abc/recheck_pdf_files
   def recheck_pdf_files
-    @register.check_pdf_files if @register.notified?
+    if @register.notified?
+      begin
+        @register.check_pdf_files
+        flash[:notice] = 'Attached files successfully evaluated'
+      rescue => e
+        flash[:alert] = e.to_s
+      end
+    else
+      flash[:alert] = 'The list has not been notified'
+    end
     redirect_back(fallback_location: @register)
   end
 
