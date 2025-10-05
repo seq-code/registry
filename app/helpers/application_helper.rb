@@ -301,17 +301,18 @@ module ApplicationHelper
     end
   end
 
-  def display_link(obj, display_method = nil)
+  def display_link(obj, display_method: nil, display_text: nil)
     if obj.is_a?(Name) && obj.redirect.present?
       link_to(
-        display_obj(obj, display_method), name_url(obj, no_redirect: true)
+        display_text || display_obj(obj, display_method),
+        name_url(obj, no_redirect: true)
       ) + ' ' +
         link_to(obj.redirect, class: 'badge badge-pill badge-danger') do
           fa_icon(:directions, title: 'Redirects to') + ' ' +
           display_obj(obj.redirect, display_method)
         end
     else
-      link_to(display_obj(obj, display_method), obj)
+      link_to(display_text || display_obj(obj, display_method), obj)
     end
   end
 end

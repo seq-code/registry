@@ -61,7 +61,11 @@ module NamesHelper
 
     # Display the current name
     if links && !last
-      out << link_to(name.name_html(assume_valid: assume_valid), name)
+      out << display_link(
+        name,
+        display_method: :name_html,
+        display_text: name.name_html(assume_valid: assume_valid)
+      )
     else
       out << name.name_html(assume_valid: assume_valid)
     end
