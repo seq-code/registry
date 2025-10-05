@@ -286,17 +286,22 @@ module Register::Status
       next unless as.attached?
       break if anames.values.all? && inames.values.all?
 
-      as.open do |file|
-        render = PDF::Reader.new(file.path)
-        render.pages.each do |page|
-          txt = page.text.unicode_normalize(:nfkc)
-          anames.each { |n, _| anames[n] = true } if txt.index(accession)
-          names.each do |n|
-            inames[n] ||= n.pdf_variants.find { |i| txt.index(i) }.present?
-            anames[n] ||= txt.index(n.seqcode_url(false)).present?
+      if as.filename.extension == 'pdf' || as.content_type == 'application/pdf'
+        as.open do |file|
+          render = PDF::Reader.new(file.path)
+          render.pages.each do |page|
+            txt = page.text.unicode_normalize(:nfkc)
+            anames.each { |n, _| anames[n] = true } if txt.index(accession)
+            names.each do |n|
+              inames[n] ||= n.pdf_variants.find { |i| txt.index(i) }.present?
+              anames[n] ||= txt.index(n.seqcode_url(false)).present?
+            end
+            break if anames.values.all? && inames.values.all?
           end
-          break if anames.values.all? && inames.values.all?
         end
+      elsif as.filename.extension == 'xlsx'
+        # TODO
+        # Parse spreadsheets!
       end
     end
 
