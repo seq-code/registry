@@ -5,15 +5,17 @@ class ContactsController < ApplicationController
 
   # GET /contacts/user
   def user
-    @contacts =
-      current_user.contacts.paginate(page: params[:page], per_page: 30)
+    @contacts = current_user
+      .contacts.order(created_at: :asc)
+      .paginate(page: params[:page], per_page: 30)
     render :index
   end
 
   # GET /publications/1/contacts
   def index
-    @contacts =
-      @publication.contacts.paginate(page: params[:page], per_page: 30)
+    @contacts = @publication
+      .contacts.order(created_at: :asc)
+      .paginate(page: params[:page], per_page: 30)
   end
 
   # GET /publications/1/contacts/1
