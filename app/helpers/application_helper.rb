@@ -301,7 +301,7 @@ module ApplicationHelper
     end
   end
 
-  def display_link(obj, display_method: nil, display_text: nil)
+  def display_link(obj, display_method = nil, display_text: nil)
     if obj.is_a?(Name) && obj.redirect.present?
       link_to(
         display_text || display_obj(obj, display_method),
