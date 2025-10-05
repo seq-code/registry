@@ -302,7 +302,18 @@ module ApplicationHelper
   end
 
   def display_link(obj, display_method = nil)
-    link_to(display_obj(obj, display_method), obj)
+    if obj.is_a?(Name) && obj.redirect.present?
+      link_to(
+        display_obj(obj, display_method), name_url(obj, no_redirect: true)
+      ) + ' (' +
+        fa_icon(:directions, class: 'text-danger', title: 'Redirects to') +
+        ' ' +
+        link_to(
+          display_obj(obj.redirect, display_method), name_url(obj.redirect)
+        ) + ')'
+    else
+      link_to(display_obj(obj, display_method), obj)
+    end
   end
 end
 
