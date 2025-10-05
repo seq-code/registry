@@ -305,12 +305,11 @@ module ApplicationHelper
     if obj.is_a?(Name) && obj.redirect.present?
       link_to(
         display_obj(obj, display_method), name_url(obj, no_redirect: true)
-      ) + ' (' +
-        fa_icon(:directions, class: 'text-danger', title: 'Redirects to') +
-        ' ' +
-        link_to(
-          display_obj(obj.redirect, display_method), name_url(obj.redirect)
-        ) + ')'
+      ) + ' ' +
+        link_to(obj.redirect, class: 'badge badge-pill badge-danger') do
+          fa_icon(:directions, class: 'text-danger', title: 'Redirects to') +
+          ' ' + display_obj(obj.redirect, display_method)
+        end
     else
       link_to(display_obj(obj, display_method), obj)
     end
