@@ -104,15 +104,21 @@
             <%= @register.publication.long_citation_html %>
           </p>
           <% if @register.can_view_publication?(current_user) %>
-            <% %i[publication_pdf supplementary_pdf].each do |attach| %>
-              <% as = @register.send(attach) %>
-              <% if as.attached? %>
+            <% %i[publication supplementary].each do |attach| %>
+              <% if @register.file?(attach) %>
                 <%= link_to(
-                      rails_blob_path(as, disposition: 'attachment'),
-                      class: 'btn btn-secondary btn-sm'
+                      rails_blob_path(
+                        @register.file(attach), disposition: 'attachment'
+                      ), class: 'btn btn-secondary btn-sm'
                     ) do %>
-                  <%= fa_icon('file-pdf') %>
-                  <%= attach.to_s.sub(/_.*/, '') %>
+                  <% if @register.file_is_pdf?(attach) %>
+                    <%= fa_icon('file-pdf') %>
+                  <% elsif @register.file_is_xlsx?(attach) %>
+                    <%= fa_icon('file-excel') %>
+                  <% else %>
+                    <%= fa_icon('file-alt') %>
+                  <% end %>
+                  <%= attach %>
                 <% end %>
               <% end %>
             <% end %>

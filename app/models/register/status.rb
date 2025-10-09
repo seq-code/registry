@@ -272,55 +272,68 @@ module Register::Status
   end
 
   ##
-  # Check if the PDF file(s) include accession and all list names, and report
-  # results as register list notes
+  # Check if the PDF and XLSX file(s) include accession and all list names, and
+  # report results as register list notes
   #
   # Returns boolean, with true indicating all checks passed and false otherwise
   #
   # IMPORTANT: Notes are soft-registered, remember to +save+ to make them
-  # persistent
+  # persistent, but the individual +Check+ entries are actually saved
   def check_pdf_files
-    inames = Hash[names.map { |n| [n, false] }]
-    anames = Hash[names.map { |n| [n, false] }]
-    [publication_pdf, supplementary_pdf].each do |as|
-      next unless as.attached?
-      break if anames.values.all? && inames.values.all?
+    xnames = Hash[names.map { |n| [n, [false, false]] }]
+    %i[publication supplementary].each do |file|
+      next unless file?(file)
+      break if xnames.values.flatten.all?
 
-      if as.filename.extension == 'pdf' || as.content_type == 'application/pdf'
-        as.open do |file|
-          render = PDF::Reader.new(file.path)
+      file(file).open do |fh|
+        if file_is_pdf?(file)
+          render = PDF::Reader.new(fh.path)
           render.pages.each do |page|
-            txt = page.text.unicode_normalize(:nfkc)
-            anames.each { |n, _| anames[n] = true } if txt.index(accession)
-            names.each do |n|
-              inames[n] ||= n.pdf_variants.find { |i| txt.index(i) }.present?
-              anames[n] ||= txt.index(n.seqcode_url(false)).present?
-            end
-            break if anames.values.all? && inames.values.all?
+            break if _search_names_in_text(
+              xnames, names, accession,
+              page.text.unicode_normalize(:nfkc)
+            )
+          end
+        elsif file_is_xlsx?(file)
+          xlsx = Roo::Spreadsheet.open(fh.path)
+          xlsx.each do |row|
+            break if _search_names_in_text(
+              xnames, names, accession,
+              row.select(&:present?).join(' ')
+            )
           end
         end
-      elsif as.filename.extension == 'xlsx'
-        # TODO
-        # Parse spreadsheets!
       end
     end
 
     names.each do |n|
-      par = { pass: anames[n], user: nil }
+      par = { pass: xnames[n][0], user: nil }
       Check.create_with(par).find_or_create_by(
         name: n, kind: :effective_publication_missing_accession
       ).update(par)
 
-      par = { pass: inames[n], user: nil }
+      par = { pass: xnames[n][1], user: nil }
       Check.create_with(par).find_or_create_by(
         name: n, kind: :name_missing_in_effective_publication
       ).update(par)
     end
 
     add_note('The effective publication files have been parsed')
-    anames.values.all? && inames.values.all?
+    xnames.values.flatten.all?
   rescue => e
     add_note('ERROR: The effective publication files could not be parsed')
     raise e
   end
+
+  private
+
+  def _search_names_in_text(xnames, names, accession, txt)
+    xnames.each { |n, _| xnames[n][0] = true } if txt.index(accession)
+    names.each do |n|
+      xnames[n][0] ||= txt.index(n.seqcode_url(false)).present?
+      xnames[n][1] ||= n.pdf_variants.find { |i| txt.index(i) }.present?
+    end
+    xnames.values.flatten.all?
+  end
 end
+

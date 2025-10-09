@@ -420,6 +420,39 @@ class Register < ApplicationRecord
     names.any? { |n| n.type_genome.try(:pending?) }
   end
 
+  # ============ --- FILES --- ============
+  %i[publication supplementary].each do |file|
+    define_method(:"#{file}_file") do
+      send(:"#{file}_pdf")
+    end
+
+    define_method(:"#{file}_file?") do
+      send(:"#{file}_file").attached?
+    end
+  end
+
+  def file?(file)
+    %i[publication supplementary].include?(file.to_sym) &&
+      send(:"#{file}_file?")
+  end
+
+  def file(file)
+    return unless file?(file)
+    send(:"#{file}_pdf")
+  end
+
+  def file_is_pdf?(file)
+    file = file(file) or return false
+    file.filename.extension == 'pdf' || file.content_type == 'application/pdf'
+  end
+
+  def file_is_xlsx?(file)
+    file = file(file) or return false
+    file.filename.extension == 'xlsx' ||
+      file.content_type ==
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  end
+
   private
 
   def assign_accession
