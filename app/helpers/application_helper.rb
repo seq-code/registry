@@ -3,6 +3,20 @@ module ApplicationHelper
     url_for(only_path: false, protocol: 'https', host: 'registry.seqco.de')
   end
 
+  def report_history(obj, text: 'Report history')
+    id = modal('Report history') do
+      obj.reports.map do |report|
+        content_tag(:div, class: 'border') do
+          time_ago_with_date(report.created_at, true) +
+            report.html.html_safe
+        end
+      end.inject(:+)
+    end
+    modal_button(id, class: 'btn btn-primary btn-sm') do
+      fa_icon('archive') + ' ' + text
+    end
+  end
+
   def list_preference
     cookies[:list] || 'cards'
   end

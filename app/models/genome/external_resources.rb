@@ -50,7 +50,9 @@ module Genome::ExternalResources
   # Find BioSample accession linked to the SRA entry +acc+ and return as
   # String (or +nil+)
   def external_sra_to_biosample(acc)
-    SequencingExperiment.by_sra(acc).try(:biosample_accession)
+    sr = SequencingExperiment.by_sra(acc)
+    ephemeral_report << sr.try(:ephemeral_report)
+    sr.try(:biosample_accession)
   end
 
   ##
@@ -64,7 +66,8 @@ module Genome::ExternalResources
     ng = Nokogiri::XML(body)
     ng.xpath('//result/entries/entry').map do |exp|
       sra_acc = exp['acc'] || exp['id'] or next
-      SequencingExperiment.find_or_create_by(sra_accession: sra_acc)
+      sr = SequencingExperiment.find_or_create_by(sra_accession: sra_acc)
+      ephemeral_report << sr.try(:ephemeral_report)
     end
   end
 

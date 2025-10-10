@@ -2,6 +2,9 @@
   <dl name="curator" class="main-section name-details actions-section">
     <h2>Curator Actions</h2>
     <dd class="pt-2">
+      <%= report_history(@genome) %>
+      &raquo; See the logs from automated tasks
+      <hr/>
       <%= link_to(
             update_external_genome_url(@genome),
             method: :post, class: 'btn btn-primary btn-sm'

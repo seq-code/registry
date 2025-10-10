@@ -17,12 +17,24 @@ class EphemeralReport
     end
   end
 
-  def to_s
-    @messages.map(&:to_s).join("\n")
+  def title_message
+    EphemeralMessage.new(obj.qualified_id, type: :section)
   end
 
-  def to_html
-    @messages.map(&:to_html).join("\n")
+  def end_messsage
+    EphemeralMessage.new('Report end for %s' % obj.qualified_id)
+  end
+
+  def to_s(section: false)
+    y = @messages.map(&:to_s).join("\n")
+    y = title_message.to_s + "\n" + y if section
+    y + "\n" + end_message.to_s
+  end
+
+  def to_html(section: false)
+    y = @messages.map(&:to_html).join("\n")
+    y = title_message.to_html + "\n" + y if section
+    y.html_safe + "\n" + end_message.to_html
   end
 
   def save
@@ -47,15 +59,15 @@ class EphemeralMessage
 
   def to_s
     @message.is_a?(EphemeralReport) ?
-      @message.to_s :
+      @message.to_s(section: true) :
       '%s: [%s] %s' % [@type.to_s.upcase, @timestamp.to_s, @message.to_s]
   end
 
   def to_html
     @message.is_a?(EphemeralReport) ?
-      @message.to_html :
-      '<div class="%s"><span class="text-muted">[%s]</span> %s</div>' % [
-        html_class, @timestamp.to_s, @message.to_s
+      @message.to_html(section: true) :
+      '<div class="%s %s"><span class="text-muted">[%s]</span> %s</div>' % [
+        'report-message', html_class, @timestamp.to_s, @message.to_s
       ]
   end
 
