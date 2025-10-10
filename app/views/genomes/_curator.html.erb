@@ -2,9 +2,6 @@
   <dl name="curator" class="main-section name-details actions-section">
     <h2>Curator Actions</h2>
     <dd class="pt-2">
-      <%= report_history(@genome) %>
-      &raquo; See the logs from automated tasks
-      <hr/>
       <%= link_to(
             update_external_genome_url(@genome),
             method: :post, class: 'btn btn-primary btn-sm'
@@ -39,6 +36,9 @@
         <%= fa_icon('tags') %> Change accession
       <% end %>
       &raquo; Change database and/or accession entry for genome
+      <hr/>
+      <%= report_history(@genome) %>
+      &raquo; See the logs from automated tasks
       <hr/>
     </dd>
   </dl>
