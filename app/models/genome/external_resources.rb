@@ -23,7 +23,7 @@ module Genome::ExternalResources
     case source_database.to_sym
     when :sra
       source_accessions.each do |acc|
-        ephemeral_resouce << "SRA:#{acc}"
+        ephemeral_report << "SRA:#{acc}"
         biosample = external_sra_to_biosample(acc)
         ephemeral_resource << "Linked to BioSample#{biosample}"
         data[biosample] ||=
@@ -32,7 +32,7 @@ module Genome::ExternalResources
       end
     when :biosample
       source_accessions.each do |acc|
-        ephemeral_resouce << "BioSample:#{acc}"
+        ephemeral_report << "BioSample:#{acc}"
         data[acc] = external_biosample_hash(acc)
         data[acc][:biosample_accessions].each do |acc_alt|
           external_biosample_to_sra(acc_alt)
