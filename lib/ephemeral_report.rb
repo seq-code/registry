@@ -21,7 +21,7 @@ class EphemeralReport
     EphemeralMessage.new(obj.qualified_id, type: :section)
   end
 
-  def end_messsage
+  def end_message
     EphemeralMessage.new('Report end for %s' % obj.qualified_id)
   end
 
