@@ -8,6 +8,7 @@ class ApplicationRecord < ActiveRecord::Base
   has_many(:linked_notifications, class_name: 'Notification',
     as: :linkeable, dependent: :nullify
   )
+  has_many(:reports, as: :linkeable, dependent: :destroy)
 
   def qualified_id
     '%s:%i' % [self.class.to_s, id]

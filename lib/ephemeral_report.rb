@@ -8,11 +8,29 @@ class EphemeralReport
   end
 
   def <<(message)
-    @messages << EphemeralMessage.new(message)
+    @messages << EphemeralMessage.new(message) if message
   end
 
-  def error(message)
-    @messages << EphemeralMessage.new(message, type: :error)
+  %i[info error warn section].each do |type|
+    define_method(type) do |message|
+      @messages << EphemeralMessage.new(message, type: type) if message
+    end
+  end
+
+  def to_s
+    @messages.map(&:to_s).join("\n")
+  end
+
+  def to_html
+    @messages.map(&:to_html).join("\n")
+  end
+
+  def save
+    Report.new(
+      object: obj,
+      text: to_s,
+      html: to_html
+    ).save
   end
 end
 
@@ -28,8 +46,29 @@ class EphemeralMessage
   end
 
   def to_s
-    @message.is_a?(EphemeralMessage) ?
+    @message.is_a?(EphemeralReport) ?
       @message.to_s :
-      '[%s] %s' % [@timestamp.to_s, @message.to_s]
+      '%s: [%s] %s' % [@type.to_s.upcase, @timestamp.to_s, @message.to_s]
+  end
+
+  def to_html
+    @message.is_a?(EphemeralReport) ?
+      @message.to_html :
+      '<div class="%s"><span class="text-muted">[%s]</span> %s</div>' % [
+        html_class, @timestamp.to_s, @message.to_s
+      ]
+  end
+
+  def html_class
+    case type
+    when :error
+      'text-danger'
+    when :warn
+      'text-alert'
+    when :section
+      'text-info'
+    else
+      ''
+    end
   end
 end
