@@ -57,11 +57,16 @@ class GenomesController < ApplicationController
 
   # POST /genomes/1/update_external
   def update_external
-    if @genome.queue_for_external_resources(true) # Force: trust curators
-      flash[:notice] = 'Update has been queued'
-      sleep(2)
+    if @genome.reload_source_json!
+      flash[:notice] = {
+        message: 'External metadata has been updated',
+        report: @genome.ephemeral_report
+      }
     else
-      flash[:alert] = 'Update was not queued, something failed'
+      flash[:alert] = {
+        message: 'Update failed',
+        report: @genome.ephemeral_report
+      }
     end
     redirect_back(fallback_location: @genome)
   end

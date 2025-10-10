@@ -5,7 +5,17 @@
         alt_k = { alert: 'danger', notice: 'info' }
 	k = alt_k[ k.to_sym ] if alt_k[ k.to_sym ]
       %>
-      <div class='alert alert-<%= k %>' role='alert'><%= v %></div>
+      <div class='alert alert-<%= k %>' role='alert'>
+        <% if v.is_a?(Hash) %>
+          <%= v[:message] %>
+          <% if v[:report].present? %>
+            <hr/>
+            <pre><%= v[:report].to_s %></pre>
+          <% end %>
+        <% else %>
+          <%= v %>
+        <% end %>
+      </div>
     <% end %>
   </div>
 <% end %>

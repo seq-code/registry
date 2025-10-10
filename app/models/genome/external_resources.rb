@@ -18,17 +18,21 @@ module Genome::ExternalResources
   # Execute a programmatic search of the genome sample(s)
   def reload_source_json!
     reload # To make sure I use the current persistent version
+    ephemeral_report << 'Reloading sources'
     data = {}
     case source_database.to_sym
     when :sra
       source_accessions.each do |acc|
+        ephemeral_resouce << "SRA:#{acc}"
         biosample = external_sra_to_biosample(acc)
+        ephemeral_resource << "Linked to BioSample#{biosample}"
         data[biosample] ||=
           { from_sra: [] }.merge(external_biosample_hash(biosample))
         data[biosample][:from_sra] << acc
       end
     when :biosample
       source_accessions.each do |acc|
+        ephemeral_resouce << "BioSample:#{acc}"
         data[acc] = external_biosample_hash(acc)
         data[acc][:biosample_accessions].each do |acc_alt|
           external_biosample_to_sra(acc_alt)

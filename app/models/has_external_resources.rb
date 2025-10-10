@@ -13,6 +13,7 @@ module HasExternalResources
     return if Rails.configuration.bypass_external_apis
     return if !force && queued_for_external_resources
 
+    ephemeral_report << 'Queued for external resource call'
     external_resources_job.perform_later(self)
     update_column(:queued_external, DateTime.now)
   end
@@ -33,9 +34,12 @@ module HasExternalResources
     require 'uri'
     require 'net/http'
 
+    ephemeral_report << "Request: #{uri}"
     res = Net::HTTP.get_response(URI(uri))
     unless res.is_a?(Net::HTTPSuccess)
-      Rails.logger.error "External Request #{uri} returned #{res}"
+      msg = "External Request #{uri} returned #{res}"
+      Rails.logger.error(msg)
+      ephemeral_report.error(msg)
       return nil
     end
 
@@ -62,5 +66,9 @@ module HasExternalResources
     end
 
     body
+  end
+
+  def ephemeral_report
+    @ephemeral_report ||= EphemeralReport.new
   end
 end
