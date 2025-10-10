@@ -51,6 +51,7 @@ module Genome::ExternalResources
   # String (or +nil+)
   def external_sra_to_biosample(acc)
     sr = SequencingExperiment.by_sra(acc)
+    sr.reload_metadata! unless sr.metadata_xml.present?
     ephemeral_report << (sr.try(:ephemeral_report) || 'No SRA experiments')
     sr.try(:biosample_accession)
   end
@@ -67,6 +68,7 @@ module Genome::ExternalResources
     ng.xpath('//result/entries/entry').map do |exp|
       sra_acc = exp['acc'] || exp['id'] or next
       sr = SequencingExperiment.find_or_create_by(sra_accession: sra_acc)
+      sr.reload_metadata! unless sr.metadata_xml.present?
       ephemeral_report << (sr.try(:ephemeral_report) || 'No SRA experiments')
     end
   end
