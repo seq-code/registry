@@ -10,11 +10,15 @@ class SequencingExperiment < ApplicationRecord
 
   class << self
     def by_biosample(acc)
-      SequencingExperiment.where(biosample_accession: acc)
+      SequencingExperiment
+        .where(biosample_accession: acc)
+        .tap(&:load_and_save_metadata!)
     end
 
     def by_sra(acc)
-      SequencingExperiment.find_or_create_by(sra_accession: acc)
+      SequencingExperiment
+        .find_or_create_by(sra_accession: acc)
+        .tap(&:load_and_save_metadata!)
     end
   end
 
@@ -59,6 +63,13 @@ class SequencingExperiment < ApplicationRecord
       '//EXPERIMENT_SET/EXPERIMENT/DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_STRATEGY'
     )&.text or return
     %w[amplicon].include? strategy.downcase
+  end
+
+  def load_and_save_metadata!
+    unless metadata_xml.present?
+      reload_metadata!
+      save
+    end
   end
 
   private
