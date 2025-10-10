@@ -1,10 +1,12 @@
 class EphemeralReport
   attr :obj
   attr :messages
+  attr :report
 
   def initialize(obj)
     @obj = obj
     @messages = []
+    @report = nil
   end
 
   def <<(message)
@@ -38,11 +40,13 @@ class EphemeralReport
   end
 
   def save
-    Report.new(
-      object: obj,
-      text: to_s,
-      html: to_html
-    ).save
+    par = { linkeable: obj, text: to_s, html: to_html }
+    if @report
+      @report.update(par)
+    else
+      @report = Report.new(par)
+      @report.save
+    end
   end
 end
 
