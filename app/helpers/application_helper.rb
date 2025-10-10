@@ -4,12 +4,13 @@ module ApplicationHelper
   end
 
   def report_history(obj, text: 'Report history')
-    id = modal('Report history') do
+    id = modal('Report history', size: :lg) do
       obj.reports.map do |report|
-        content_tag(:div, class: 'border') do
-          time_ago_with_date(report.created_at, true) +
-            report.html.html_safe
-        end
+        content_tag(:div, class: 'text-right muted-text') do
+          time_ago_with_date(report.created_at, true)
+        end +
+          report.html.html_safe +
+          content_tag(:hr)
       end.inject(:+)
     end
     modal_button(id, class: 'btn btn-primary btn-sm') do
