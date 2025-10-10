@@ -58,7 +58,7 @@
             <% end %>
           <% when :register %>
             These checks are automatically evaluated based on the submitted
-            PDF, avoid modifying them manually<br/>
+            files, avoid modifying them manually<br/>
             <% if @name.register.publication_pdf.attached? %>
               <%= fa_icon('angle-double-right', class: 'mx-2') %>
               <%= link_to(
