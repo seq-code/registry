@@ -69,6 +69,6 @@ module HasExternalResources
   end
 
   def ephemeral_report
-    @ephemeral_report ||= EphemeralReport.new
+    @ephemeral_report ||= EphemeralReport.new(self)
   end
 end
