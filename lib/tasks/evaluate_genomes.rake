@@ -33,9 +33,11 @@ namespace :genomes do
     include Rails.application.routes.url_helpers
 
     p_path = File.join(Rails.root, '..', 'miga_check')
-    genomes = Genome.where(
-      auto_check: false, auto_scheduled_at: nil, auto_failed: nil
-    ).where.not(database: 'pending').where.not(kind: nil)
+    genomes =
+      Genome
+        .where(auto_check: false, auto_scheduled_at: nil, auto_failed: nil)
+        .where.not(database: 'pending').where.not(kind: nil)
+        .limit(100)
 
     genomes.each_with_index do |genome, k|
       $stderr.puts 'Download genomes:' if k == 0
