@@ -2,7 +2,7 @@ json.partial!('registers/register_item', register: register)
 json.extract!(register, :submitted, :validated)
 json.validated_by register.validated_by.try(:display_name)
 json.submitter register.user.try(:display_name)
-json.authors register.authors.map(:display_name)
+json.authors register.authors.map(&:display_name)
 json.effective_publication do
   register.publication_id ?
     json.partial!(
