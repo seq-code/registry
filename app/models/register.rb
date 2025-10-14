@@ -30,7 +30,7 @@ class Register < ApplicationRecord
     :type_strains, through: :names, source: :nomenclatural_type,
     source_type: 'Strain'
   )
-  has_many(:register_coauthors)
+  has_many(:register_coauthors, -> { order(:order) }, dependent: :destroy)
   has_many(:coauthors, through: :register_coauthors, source: :user)
   alias :correspondences :register_correspondences
   alias :created_by :user
@@ -56,7 +56,7 @@ class Register < ApplicationRecord
   include Register::SampleSet
 
   attr_accessor :modal_form_id
-  attr_accessor :new_coauthor
+  attr_accessor :coauthor
 
   def to_param
     accession

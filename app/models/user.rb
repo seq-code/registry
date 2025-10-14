@@ -77,6 +77,10 @@ class User < ApplicationRecord
     where('curator_statement is not null').where(curator: false)
   end
 
+  def self.find_by_email_or_username(query)
+    where('LOWER(email) = ?', query.downcase).or(where(username: query)).first
+  end
+
   def roles
     o = ['User']
     o << 'Contributor' if contributor?

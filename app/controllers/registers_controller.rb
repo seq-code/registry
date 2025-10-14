@@ -268,6 +268,32 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abc/coauthors
   def coauthors_commit
+    @register.coauthor = params.require('register').require('coauthor')
+    @coauthor = User.find_by_email_or_username(@register.coauthor)
+    if @coauthor.present?
+      rc_par = { register: @register, user: @coauthor }
+      success =
+        case params['action']
+        when 'unlink'
+          RegisterCoauthor.find_by(rc_par).destroy
+        when 'up'
+          RegisterCoauthor.find_by(rc_par).move_up
+        else
+          rc_par.merge!(order: @register.register_coauthors.size + 1)
+          RegisterCoauthor.create(rc_par)
+        end
+      
+      if success
+        flash[:notice] = 'Successfully updated coauthors'
+        redirect_back(fallback_location: @register)
+      else
+        flash.now[:alert] = 'Error updating coauthors'
+        render :coauthors
+      end
+    else
+      @register.add_error(:coauthor, 'does not exist in the system')
+      render :coauthors
+    end
   end
 
   # GET /registers/r:abc/editorial_checks
