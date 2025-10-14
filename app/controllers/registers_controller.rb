@@ -283,7 +283,7 @@ class RegistersController < ApplicationController
           RegisterCoauthor.find_by(rc_par).move_up
         else
           rc_par.merge!(order: @register.register_coauthors.size + 1)
-          RegisterCoauthor.create(rc_par)
+          RegisterCoauthor.new(rc_par).save
         end
       
       if success

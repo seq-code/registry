@@ -22,9 +22,8 @@
         <% author = rc.user %>
         <%= display_link(author) %>
         <%= link_to(
-              coauthors_register_url(@register, {
-                register: { coauthor: author.username, action: :unlink }
-              }),
+              coauthors_register_url(@register,
+                register: { coauthor: author.username, action: :unlink }),
               class: 'badge badge-pill badge-primary',
               method: :post, title: 'Unlink coauthor',
               data: { confirm: 'Are you sure?' }
@@ -33,9 +32,8 @@
         <% end %>
         <% unless rc.first? %>
           <%= link_to(
-                coauthors_register_url(@register, {
-                  register: { coauthor: author.username, action: :up }
-                }),
+                coauthors_register_url(@register,
+                  register: { coauthor: author.username, action: :up }),
                 class: 'badge badge-pill badge-primary',
                 method: :post, title: 'Move coauthor up'
               ) do %>
