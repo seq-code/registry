@@ -5,7 +5,7 @@
 
 <p class="lead">
   The accuracy of the information provided and the access provided to other
-  users as coauthors is the sole responsibility of the submitting user,
+  users as coauthors is the sole responsibility of the submitting user:
   <%= display_obj(@register.user) %>.
 </p>
 
@@ -16,16 +16,36 @@
 
   <h2>Current authors</h2>
   <ul>
-    <% @register.authors.each do |author| %>
+    <li><%= display_link(@register.user) %></li>
+    <% @register.register_coauthors.each do |rc| %>
       <li>
+        <% author = rc.user %>
         <%= display_link(author) %>
-        
+        <%= link_to(
+              coauthors_register_url(@register, unlink: author.id),
+              class: 'badge badge-pill badge-primary',
+              method: :post, title: 'Unlink coauthor',
+              data: { confirm: 'Are you sure?' }
+            ) do %>
+          <%= fa_icon('unlink') %> Remove as coauthor
+        <% end %>
+        <% unless rc.order == 1 %>
+          <%= link_to(
+                coauthors_register_url(@register, up: author.id),
+                class: 'badge badge-pill badge-primary',
+                method: :post, title: 'Move coauthor up'
+              ) do %>
+            <%= fa_icon('arrow-up') %> Move coauthor up
+          <% end %>
+        <% end %>
       </li>
     <% end %>
   </ul>
 
   <h2>Add authors</h2>
-  <%= f.input(:coauthors, as: 'text', label: 'Coauthor (email or username)') %>
+  <%= f.input(
+        :new_coauthor, as: 'string', label: 'Coauthor (email or username)'
+      ) %>
 
   <br/>
   <%= f.button(:submit, 'Register coauthor') %>

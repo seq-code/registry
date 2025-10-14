@@ -56,6 +56,7 @@ class Register < ApplicationRecord
   include Register::SampleSet
 
   attr_accessor :modal_form_id
+  attr_accessor :new_coauthor
 
   def to_param
     accession
