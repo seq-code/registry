@@ -5,7 +5,9 @@ class RegisterCoauthor < ApplicationRecord
     :order, presence: true,
     numericality: { only_integer: true, greater_than: 0 }
   )
-  validates(:user, uniqueness: { scope: :register })
+  validates(
+    :user, uniqueness: { scope: :register, message: 'has already been added' }
+  )
 
   after_destroy(:update_coauthors_order)
 
