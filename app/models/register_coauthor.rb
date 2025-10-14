@@ -25,7 +25,7 @@ class RegisterCoauthor < ApplicationRecord
     return if order <= 1
 
     register
-      .register_coauthor.where(order: order - 1)
+      .register_coauthors.where(order: order - 1)
       .update(order: order) && update(order: order - 1)
   end
 
