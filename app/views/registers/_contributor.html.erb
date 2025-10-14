@@ -65,7 +65,17 @@
         <% end %>
         &raquo; Merge this register list into a different one
         <hr/>
+
+        <%= link_to(
+              coauthors_register_url(@register),
+              class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('user-friends') %> Edit coauthors
+        <% end %>
+        &raquo; Add, remove, or reorder the coauthors of the list
+        <hr/>
       <% end %>
+
       <% id = modal('Are you sure?') do %>
         <div class="alert alert-danger my-0">
           <h5>Remove register list</h5>
