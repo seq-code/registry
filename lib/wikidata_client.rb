@@ -81,8 +81,6 @@ class WikidataClient
   end
 
   def fetch_csrf_token
-    return true # Using OAuth instead
-
     res = get(
       query: {
         action: 'query',
@@ -109,7 +107,7 @@ class WikidataClient
       property: @accession_property,
       snaktype: 'value',
       value:    seqcode_accession.to_json,
-      # OAuth # token:    csrf_token,
+      token:    csrf_token,
       format:   'json',
       summary:  'Adding SeqCode Registry accession via SeqCodeBot',
       bot:      true
@@ -231,7 +229,7 @@ class WikidataClient
       action: 'wbsetreference',
       statement: claim_id,
       snaks: { P248: [snak_ref, snak_time] }.to_json,
-      # OAuth # token: csrf_token,
+      token: csrf_token,
       format: 'json',
       summary: 'Adding source: SeqCode Registry via SeqCodeBot',
       bot: true
