@@ -23,8 +23,7 @@
         <%= display_link(author) %>
         <%= link_to(
               coauthors_register_url(@register, {
-                action: :unlink,
-                register: { coauthor: author.username }
+                register: { coauthor: author.username, action: :unlink }
               }),
               class: 'badge badge-pill badge-primary',
               method: :post, title: 'Unlink coauthor',
@@ -35,8 +34,7 @@
         <% unless rc.first? %>
           <%= link_to(
                 coauthors_register_url(@register, {
-                  action: :up,
-                  register: { coauthor: author.username }
+                  register: { coauthor: author.username, action: :up }
                 }),
                 class: 'badge badge-pill badge-primary',
                 method: :post, title: 'Move coauthor up'

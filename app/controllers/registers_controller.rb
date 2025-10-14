@@ -264,6 +264,9 @@ class RegistersController < ApplicationController
 
   # GET /registers/r:abc/coauthors
   def coauthors
+    @crumbs = [
+      ['Lists', registers_url], [@register.acc_url, @register], 'Coauthors'
+    ]
   end
 
   # POST /registers/r:abc/coauthors
@@ -273,7 +276,7 @@ class RegistersController < ApplicationController
     if @coauthor.present?
       rc_par = { register: @register, user: @coauthor }
       success =
-        case params['action']
+        case params['register']['action']
         when 'unlink'
           RegisterCoauthor.find_by(rc_par).destroy
         when 'up'
@@ -288,10 +291,12 @@ class RegistersController < ApplicationController
         redirect_back(fallback_location: @register)
       else
         flash.now[:alert] = 'Error updating coauthors'
+        coauthors
         render :coauthors
       end
     else
       @register.add_error(:coauthor, 'does not exist in the system')
+      coauthors
       render :coauthors
     end
   end
