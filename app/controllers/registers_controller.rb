@@ -275,11 +275,13 @@ class RegistersController < ApplicationController
     @coauthor = User.find_by_email_or_username(@register.coauthor)
     if @coauthor.present?
       rc_par = { register: @register, user: @coauthor }
+      notify = true
       rc =
         case params['register']['action']
         when 'unlink'
           RegisterCoauthor.find_by(rc_par).destroy
         when 'up'
+          notify = false
           RegisterCoauthor.find_by(rc_par).tap(&:move_up)
         else
           rc_par.merge!(order: @register.register_coauthors.size + 1)
@@ -287,6 +289,10 @@ class RegistersController < ApplicationController
         end
 
       if rc && !rc.errors.present?
+        Notification.create(
+          user: @coauthor, notifiable: @register,
+          action: :coauthor_register, title: 'Authorship status changed'
+        ) if notify
         flash[:notice] = 'Successfully updated coauthors'
         redirect_back(fallback_location: @register)
       else

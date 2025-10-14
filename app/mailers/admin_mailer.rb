@@ -16,6 +16,9 @@ class AdminMailer < ApplicationMailer
     when :status
       # For observers
       observer_status_email
+    when :coauthor_register
+      # For added/removed authors in a register list
+      coauthor_register_email
     else
       if @object.is_a? Name
         # All other name status changes
@@ -90,6 +93,19 @@ class AdminMailer < ApplicationMailer
     mail(
       subject: 'New correspondence message in SeqCode Registry',
       template_name: 'correspondence_email'
+    )
+  end
+
+  ##
+  # Email coauthors when added to or removed from a register list
+  def coauthor_register_email
+    return unless @user.opt_message_email? || @user.opt_regular_email?
+
+    @object = params[:object]
+
+    mail(
+      subject: 'Your authorship status changed in SeqCode Registry list',
+      template_name: 'coauthor_register_email'
     )
   end
 
