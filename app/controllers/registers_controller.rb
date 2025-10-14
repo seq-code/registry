@@ -275,22 +275,25 @@ class RegistersController < ApplicationController
     @coauthor = User.find_by_email_or_username(@register.coauthor)
     if @coauthor.present?
       rc_par = { register: @register, user: @coauthor }
-      success =
+      rc =
         case params['register']['action']
         when 'unlink'
           RegisterCoauthor.find_by(rc_par).destroy
         when 'up'
-          RegisterCoauthor.find_by(rc_par).move_up
+          RegisterCoauthor.find_by(rc_par).tap(&:move_up)
         else
           rc_par.merge!(order: @register.register_coauthors.size + 1)
           RegisterCoauthor.new(rc_par).save
         end
       
-      if success
+      if rc && !rc.errors.present?
         flash[:notice] = 'Successfully updated coauthors'
         redirect_back(fallback_location: @register)
       else
         flash.now[:alert] = 'Error updating coauthors'
+        rc.errors.each do |field, err|
+          @register.add_error(:coauthor, err)
+        end
         coauthors
         render :coauthors
       end
