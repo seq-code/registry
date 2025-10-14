@@ -12,7 +12,10 @@ class WikidataClient
     @cookies  = HTTParty::CookieHash.new
     @headers  = {
       'Content-Type' => 'application/x-www-form-urlencoded',
-      'User-Agent' => 'SeqCodeBot/0.1 (bot@seqco.de)'
+      'User-Agent' =>
+        'SeqCodeBot/1.0 ' \
+        '(https://registry.seqco.de/; bot@seqco.de) ' \
+        'SeqCode Registry/1.0'
     }
 
     # SeqCode-specific configuration
@@ -35,6 +38,7 @@ class WikidataClient
       cookies: @cookies
     ))
     set_cookies = res.headers['set-cookie']
+    puts set_cookies
     @cookies.add_cookies(set_cookies) if set_cookies.present?
     res
   end
@@ -75,7 +79,8 @@ class WikidataClient
     res = get(
       query: {
         action: 'query',
-        meta: 'tokens',
+        meta:   'tokens',
+        type:   'csrf',
         format: 'json'
       }
     )
