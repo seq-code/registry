@@ -33,6 +33,15 @@
         <hr/>
       <% end %>
       <% unless @register.validated? %>
+        <%= link_to(
+              coauthors_register_url(@register),
+              class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('user-friends') %> Edit coauthors
+        <% end %>
+        &raquo; Add, remove, or reorder the coauthors of the list
+        <hr/>
+
         <% if @register.reviewer_token? %>
           <%= link_to(
                 reviewer_token_register_url(@register), method: :delete,
@@ -64,15 +73,6 @@
           <%= fa_icon('dolly') %> Transfer register names
         <% end %>
         &raquo; Merge this register list into a different one
-        <hr/>
-
-        <%= link_to(
-              coauthors_register_url(@register),
-              class: 'btn btn-primary btn-sm'
-            ) do %>
-          <%= fa_icon('user-friends') %> Edit coauthors
-        <% end %>
-        &raquo; Add, remove, or reorder the coauthors of the list
         <hr/>
       <% end %>
 
