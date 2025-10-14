@@ -9,14 +9,17 @@ class WikidataClient
     @base_url = 'https://www.wikidata.org/w/api.php'
     @username = Rails.application.credentials.dig(:wikidata, :username)
     @password = Rails.application.credentials.dig(:wikidata, :password)
+    @access_token = Rails.application.credentials.dig(:wikidata, :access_token)
     @cookies  = HTTParty::CookieHash.new
     @user_agent  =
       'SeqCodeBot/1.0 ' \
         '(https://registry.seqco.de/; bot@seqco.de) ' \
         'SeqCode Registry/1.0'
     @headers  = {
-      'Content-Type' => 'application/x-www-form-urlencoded',
-      'User-Agent'   => user_agent
+      'Content-Type'  => 'application/x-www-form-urlencoded',
+      'User-Agent'    => user_agent,
+      # OAuth
+      'Authorization' => 'Bearer %s' % @access_token
     }
 
     # SeqCode-specific configuration
@@ -44,6 +47,8 @@ class WikidataClient
   end
 
   def login
+    return true # Using OAuth instead
+
     # Get login token
     res = get(
       query: {
@@ -76,6 +81,8 @@ class WikidataClient
   end
 
   def fetch_csrf_token
+    return true # Using OAuth instead
+
     res = get(
       query: {
         action: 'query',
