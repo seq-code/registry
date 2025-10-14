@@ -2,26 +2,28 @@
 <resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd">
   <identifier identifierType="DOI"><%= @register.propose_doi %></identifier>
   <creators>
+    <% @register.authors.each do |author| %>
     <creator>
       <%# ========= Submitter ========= %>
-      <creatorName nameType="Personal"><%= @register.user.display_name %></creatorName>
-      <% if @register.user.given? %>
-      <givenName><%= @register.user.given %></givenName>
+      <creatorName nameType="Personal"><%= author.display_name %></creatorName>
+      <% if author.given? %>
+      <givenName><%= author.given %></givenName>
       <% end %>
-      <% if @register.user.family? %>
-      <familyName><%= @register.user.family %></familyName>
+      <% if author.family? %>
+      <familyName><%= author.family %></familyName>
       <% end %>
-      <% if @register.user.orcid? %>
-      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org"><%= @register.user.orcid_url %></nameIdentifier>
+      <% if author.orcid? %>
+      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org"><%= author.orcid_url %></nameIdentifier>
       <% else %>
       <nameIdentifier nameIdentifierScheme="" schemeURI=""/>
       <% end %>
-      <% if @register.user.affiliation_ror? %>
-      <affiliation affiliationIdentifier="<%= @register.user.ror_url %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= @register.user.affiliation %></affiliation>
-      <% elsif @register.user.affiliation? %>
-      <affiliation><%= @register.user.affiliation %></affiliation>
+      <% if author.affiliation_ror? %>
+      <affiliation affiliationIdentifier="<%= author.ror_url %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= author.affiliation %></affiliation>
+      <% elsif author.affiliation? %>
+      <affiliation><%= author.affiliation %></affiliation>
       <% end %>
     </creator>
+    <% end %>
   </creators>
   <%# ========= Title ========= %>
   <titles>

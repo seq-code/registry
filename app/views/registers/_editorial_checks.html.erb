@@ -10,6 +10,7 @@
 <!-- USERS -->
 <%
   users = [[@register.user, :submitter]]
+  users += @register.coauthors.map { |i| [i, :coauthor] }
   users += @register.curators.map { |i| [i, :curator] }
   required = [
     ['Given name',  :given?,  :given],
