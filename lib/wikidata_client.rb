@@ -2,7 +2,7 @@ require 'httparty'
 
 class WikidataClient
 
-  attr_accessor :base_url
+  attr_accessor :base_url, :user_agent
 
   def initialize
     # Connection configuration
@@ -10,12 +10,13 @@ class WikidataClient
     @username = Rails.application.credentials.dig(:wikidata, :username)
     @password = Rails.application.credentials.dig(:wikidata, :password)
     @cookies  = HTTParty::CookieHash.new
-    @headers  = {
-      'Content-Type' => 'application/x-www-form-urlencoded',
-      'User-Agent' =>
-        'SeqCodeBot/1.0 ' \
+    @user_agent  =
+      'SeqCodeBot/1.0 ' \
         '(https://registry.seqco.de/; bot@seqco.de) ' \
         'SeqCode Registry/1.0'
+    @headers  = {
+      'Content-Type' => 'application/x-www-form-urlencoded',
+      'User-Agent'   => user_agent
     }
 
     # SeqCode-specific configuration
@@ -154,8 +155,8 @@ class WikidataClient
     url = "https://query.wikidata.org/sparql?query=#{encoded_query}"
 
     res = HTTParty.get(url, headers: {
-      'Accept' => 'application/sparql-results+json',
-      'User-Agent' => 'SeqCodeBot/0.1 (bot@seqco.de)'
+      'Accept'     => 'application/sparql-results+json',
+      'User-Agent' => user_agent
     })
 
     begin
