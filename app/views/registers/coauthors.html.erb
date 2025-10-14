@@ -23,17 +23,19 @@
         <%= display_link(author) %>
         <%= link_to(
               coauthors_register_url(
-                @register, coauthor: author.username, action: :unlink),
+                @register, action: :unlink,
+                register: { coauthor: author.username }),
               class: 'badge badge-pill badge-primary',
               method: :post, title: 'Unlink coauthor',
               data: { confirm: 'Are you sure?' }
             ) do %>
           <%= fa_icon('unlink') %> Remove as coauthor
         <% end %>
-        <% unless rc.order == 1 %>
+        <% unless rc.first? %>
           <%= link_to(
                 coauthors_register_url(
-                  @register, coauthor: author.username, action: :up),
+                  @register, action: :up,
+                  register: { coauthor: author.username }),
                 class: 'badge badge-pill badge-primary',
                 method: :post, title: 'Move coauthor up'
               ) do %>
