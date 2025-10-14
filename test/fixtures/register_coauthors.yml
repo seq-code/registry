@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  register: one
+  user: one
+  order: 1
+
+two:
+  register: two
+  user: two
+  order: 1

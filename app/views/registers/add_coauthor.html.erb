@@ -1,0 +1,35 @@
+<h1>
+  Modify the list of coauthors for the register list
+</h1>
+<hr/>
+
+<p class="lead">
+  The accuracy of the information provided and the access provided to other
+  users as coauthors is the sole responsibility of the submitting user,
+  <%= display_obj(@register.user) %>.
+</p>
+
+<%= simple_form_for(
+      @register, url: coauthors_register_url(@register), method: :post
+    ) do |f| %>
+  <br/>
+
+  <h2>Current authors</h2>
+  <ul>
+    <% @register.authors.each do |author| %>
+      <li>
+        <%= display_link(author) %>
+        
+      </li>
+    <% end %>
+  </ul>
+
+  <h2>Add authors</h2>
+  <%= f.input(:coauthors, as: 'text', label: 'Coauthor (email or username)') %>
+
+  <br/>
+  <%= f.button(:submit, 'Register coauthor') %>
+  <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+

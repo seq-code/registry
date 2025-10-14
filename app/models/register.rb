@@ -30,6 +30,8 @@ class Register < ApplicationRecord
     :type_strains, through: :names, source: :nomenclatural_type,
     source_type: 'Strain'
   )
+  has_many(:register_coauthors)
+  has_many(:coauthors, through: :register_coauthors, source: :user)
   alias :correspondences :register_correspondences
   alias :created_by :user
   has_many(:observe_registers, dependent: :destroy)
@@ -140,6 +142,10 @@ class Register < ApplicationRecord
   end
   alias :created_by? :user?
 
+  def coauthor?(user)
+    user && coauthors.include?(user)
+  end
+
   def can_edit?(user)
     return false if validated?
     return false unless user
@@ -163,7 +169,9 @@ class Register < ApplicationRecord
   end
 
   def can_view_correspondence?(user)
-    can_edit?(user) || (!published? && user?(user))
+    return true if can_edit?(user)
+    return false if published?
+    user?(user) || coauthor?(user)
   end
 
   def display(_html = true)
@@ -225,6 +233,10 @@ class Register < ApplicationRecord
         including #{self.class.nom_nov(names.first)}
       TITLE
     end
+  end
+
+  def authors
+    [user] + coauthors
   end
 
   def title_has_wrong_number_of_names?

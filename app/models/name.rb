@@ -815,8 +815,8 @@ class Name < ApplicationRecord
   def can_view?(user, token = nil)
     return true if public?
     return true if token.present? && token == register.try(:reviewer_token)
-
-    (!user.nil?) && (user.curator? || user?(user))
+    return false if user.nil?
+    return true if user.curator? || user?(user) || coauthor?(user)
   end
 
   def can_see_status?(user)
@@ -900,6 +900,10 @@ class Name < ApplicationRecord
   alias :user? :created_by?
   def user
     created_by
+  end
+
+  def coauthor?(user)
+    user && register && register.coauthor?(user)
   end
 
   def validated_by?(user)

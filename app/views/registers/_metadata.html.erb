@@ -25,6 +25,18 @@
     by <%= display_link(@register.created_by) %>
   </dd>
 
+  <% if @register.coauthors.present? %>
+    <dt><%= fa_icon('user-friends') %> Coauthors</dt>
+    <dd><ul>
+      <% @register.register_coauthors.each do |rc| %>
+        <li>
+          <%= display_link(rc.user) %>, added
+          <%= time_ago_with_date(rc.created_at) %>
+        </li>
+      <% end %>
+    </ul></dd>
+  <% end %>
+
   <dt><%= fa_icon 'calendar' %> Local history</dt>
   <dd>
     <ul>

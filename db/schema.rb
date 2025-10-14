@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_09_02_220521) do
+ActiveRecord::Schema.define(version: 2025_10_11_094944) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -357,6 +357,16 @@ ActiveRecord::Schema.define(version: 2025_09_02_220521) do
     t.index ["journal"], name: "index_publications_on_journal"
   end
 
+  create_table "register_coauthors", force: :cascade do |t|
+    t.integer "register_id", null: false
+    t.integer "user_id", null: false
+    t.integer "order"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["register_id"], name: "index_register_coauthors_on_register_id"
+    t.index ["user_id"], name: "index_register_coauthors_on_user_id"
+  end
+
   create_table "register_correspondences", force: :cascade do |t|
     t.integer "register_id", null: false
     t.integer "user_id", null: false
@@ -398,6 +408,16 @@ ActiveRecord::Schema.define(version: 2025_09_02_220521) do
     t.index ["submitted"], name: "index_registers_on_submitted"
     t.index ["user_id"], name: "index_registers_on_user_id"
     t.index ["validated"], name: "index_registers_on_validated"
+  end
+
+  create_table "reports", force: :cascade do |t|
+    t.string "linkeable_type", null: false
+    t.integer "linkeable_id", null: false
+    t.text "text"
+    t.text "html"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["linkeable_type", "linkeable_id"], name: "index_reports_on_linkeable"
   end
 
   create_table "sequencing_experiments", force: :cascade do |t|
@@ -511,6 +531,8 @@ ActiveRecord::Schema.define(version: 2025_09_02_220521) do
   add_foreign_key "placements", "names"
   add_foreign_key "placements", "publications"
   add_foreign_key "pseudonyms", "names"
+  add_foreign_key "register_coauthors", "registers"
+  add_foreign_key "register_coauthors", "users"
   add_foreign_key "register_correspondences", "registers"
   add_foreign_key "register_correspondences", "users"
   add_foreign_key "registers", "publications"

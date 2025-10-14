@@ -4,7 +4,7 @@ class RegistersController < ApplicationController
     only: %i[
       show table list certificate_image cite edit update destroy tree
       submit return return_commit endorse prenotify prenotify_commit
-      notify notify_commit validate
+      notify notify_commit validate coauthors coauthors_commit
       editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review snooze_curation
       recheck_pdf_files
@@ -41,6 +41,7 @@ class RegistersController < ApplicationController
     only: %i[
       edit update destroy submit prenotify prenotify_commit notify notify_commit
       merge merge_commit reviewer_token_create reviewer_token_delete
+      coauthors coauthors_commit
     ]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve])
@@ -259,6 +260,14 @@ class RegistersController < ApplicationController
     change_status(
       :validate, 'Successfully validated the register list', current_user
     )
+  end
+
+  # GET /registers/r:abc/coauthors
+  def coauthors
+  end
+
+  # POST /registers/r:abc/coauthors
+  def coauthors_commit
   end
 
   # GET /registers/r:abc/editorial_checks
