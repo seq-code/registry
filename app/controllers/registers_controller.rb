@@ -292,13 +292,13 @@ class RegistersController < ApplicationController
       else
         flash.now[:alert] = 'Error updating coauthors'
         rc.errors.each do |field, err|
-          @register.add_error(:coauthor, err)
+          @register.errors.add(:coauthor, err)
         end
         coauthors
         render :coauthors
       end
     else
-      @register.add_error(:coauthor, 'does not exist in the system')
+      @register.errors.add(:coauthor, 'does not exist in the system')
       coauthors
       render :coauthors
     end
