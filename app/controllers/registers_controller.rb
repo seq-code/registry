@@ -283,9 +283,9 @@ class RegistersController < ApplicationController
           RegisterCoauthor.find_by(rc_par).tap(&:move_up)
         else
           rc_par.merge!(order: @register.register_coauthors.size + 1)
-          RegisterCoauthor.create(rc_par)
+          RegisterCoauthor.new(rc_par).tap(&:save)
         end
-      
+
       if rc && !rc.errors.present?
         flash[:notice] = 'Successfully updated coauthors'
         redirect_back(fallback_location: @register)
