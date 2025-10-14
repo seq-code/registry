@@ -45,9 +45,7 @@
   </ul>
 
   <h2>Add authors</h2>
-  <%= f.input(
-        :new_coauthor, as: 'string', label: 'Coauthor (email or username)'
-      ) %>
+  <%= f.input(:coauthor, as: 'string', label: 'Coauthor (email or username)') %>
 
   <br/>
   <%= f.button(:submit, 'Register coauthor') %>
