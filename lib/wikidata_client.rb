@@ -38,7 +38,6 @@ class WikidataClient
       cookies: @cookies
     ))
     set_cookies = res.headers['set-cookie']
-    puts set_cookies
     @cookies.add_cookies(set_cookies) if set_cookies.present?
     res
   end
