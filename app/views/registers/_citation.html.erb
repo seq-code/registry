@@ -79,7 +79,7 @@
       <% if @register.validated? %>
         <dt><%= fa_icon('book-open') %> How to cite</dt>
         <dd class="copyable">
-          <%= @register.authors.map(&:display_name).join(', ') %>
+          <%= @register.authors.map(&:display_name).join('; ') %>
           (<%= @register.validated_at.year %>).
           <%= @register.propose_title.gsub(/\.\z/, '') %>.
           <i>The SeqCode Registry</i>
