@@ -1,5 +1,5 @@
 class AddUserToReports < ActiveRecord::Migration[6.1]
   def change
-    add_column :reports, :user, :reference, default: nil
+    add_reference :reports, :user, default: nil, foreign_key: true
   end
 end
