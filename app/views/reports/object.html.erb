@@ -1,4 +1,4 @@
-<% @object.each do |reports| %>
+<% @object.reports.each do |reports| %>
   <div class="text-right muted-text">
     <%= time_ago_with_date(report.created_at, true) %>
   </div>
