@@ -211,7 +211,7 @@ Rails.application.routes.draw do
   end
 
   # Reports
-  get 'reports/genomes/:id', to: 'reports#genome'
+  get 'reports/genomes/:id', to: 'reports#genome', as: :reports_genome
 
   # General Application
   get  'link' => 'application#short_link'

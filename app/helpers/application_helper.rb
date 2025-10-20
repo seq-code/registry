@@ -4,7 +4,6 @@ module ApplicationHelper
   end
 
   def report_history(obj, text: 'Report history')
-    url = :"#{obj.class.to_s.downcase}_reports_url"
     id = modal(
       'Report history', size: :xl,
       async: polymorphic_url([:reports, obj], content: true)
