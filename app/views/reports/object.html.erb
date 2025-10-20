@@ -1,5 +1,10 @@
-<% @object.reports.each do |report| %>
+<% @reports.each do |report| %>
   <div class="text-right muted-text">
+    <% if report.user.present? %>
+      <%= display_link(report.user) %>,
+    <% else %>
+      <%= fa_icon('robot') %> Excubia bot,
+    <% end %>
     <%= time_ago_with_date(report.created_at, true) %>
   </div>
   <%= report.html.html_safe %>
