@@ -210,7 +210,7 @@ Rails.application.routes.draw do
     end
   end
   namespace(:reports) do
-    get 'genome/:id', to: 'report#genome'
+    get 'genomes/:id', to: 'reports#genome'
   end
 
   # General Application

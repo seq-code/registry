@@ -5,7 +5,7 @@ class ReportsController < ApplicationController
   def show
   end
 
-  # GET /reports/genome/1
+  # GET /reports/genomes/1
   def genome
     @object = Genome.find(params[:id])
     @crumbs = [
