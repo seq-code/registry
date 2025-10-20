@@ -7,7 +7,7 @@ module ApplicationHelper
     url = :"#{obj.class.to_s.downcase}_report_url"
     id = modal(
       'Report history', size: :xl,
-      async: call(url, obj, content: true)
+      async: send(url, obj, content: true)
     )
     modal_button(id, class: 'btn btn-primary btn-sm') do
       fa_icon('archive') + ' ' + text
