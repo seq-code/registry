@@ -1,0 +1,7 @@
+<% @object.each do |reports| %>
+  <div class="text-right muted-text">
+    <%= time_ago_with_date(report.created_at, true) %>
+  </div>
+  <%= report.html.html_safe %>
+  <hr/>
+<% end %>

@@ -209,6 +209,9 @@ Rails.application.routes.draw do
       get  :template
     end
   end
+  namespace(:reports) do
+    get 'genome/:id', to: 'report#genome'
+  end
 
   # General Application
   get  'link' => 'application#short_link'
