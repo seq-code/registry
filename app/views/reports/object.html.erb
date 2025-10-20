@@ -3,9 +3,9 @@
     <% if report.user.present? %>
       <%= display_link(report.user) %>,
     <% else %>
-      <%= fa_icon('robot') %> Excubia bot,
+      <%= fa_icon('robot') %> Excubia bot
     <% end %>
-    <%= time_ago_with_date(report.created_at, true) %>
+    <%= time_ago_with_date(report.created_at) %>
   </div>
   <%= report.html.html_safe %>
   <hr/>
