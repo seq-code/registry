@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_11_094944) do
+ActiveRecord::Schema.define(version: 2025_10_20_054238) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -417,7 +417,9 @@ ActiveRecord::Schema.define(version: 2025_10_11_094944) do
     t.text "html"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id"
     t.index ["linkeable_type", "linkeable_id"], name: "index_reports_on_linkeable"
+    t.index ["user_id"], name: "index_reports_on_user_id"
   end
 
   create_table "sequencing_experiments", force: :cascade do |t|
@@ -537,5 +539,6 @@ ActiveRecord::Schema.define(version: 2025_10_11_094944) do
   add_foreign_key "register_correspondences", "users"
   add_foreign_key "registers", "publications"
   add_foreign_key "registers", "users"
+  add_foreign_key "reports", "users"
   add_foreign_key "tutorials", "users"
 end
