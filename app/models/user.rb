@@ -59,6 +59,7 @@ class User < ApplicationRecord
     class_name: 'Notification'
   )
   has_many(:contacts)
+  has_many(:reports)
 
   validates(
     :username,

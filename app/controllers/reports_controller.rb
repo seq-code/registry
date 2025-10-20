@@ -7,7 +7,8 @@ class ReportsController < ApplicationController
 
   # GET /reports/genomes/1
   def genome
-    @object  = Genome.find(params[:id])
+    @object  = Genome.find(params[:id]) or return
+    @reports = @object.reports.paginate(page: params[:page], per_page: 30)
     @crumbs  = [['Genomes', genomes_url]]
     @crumbs << [@object.title(''), @object] if @object.present?
     @crumbs << 'Reports'
