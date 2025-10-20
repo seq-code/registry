@@ -7,12 +7,10 @@ class ReportsController < ApplicationController
 
   # GET /reports/genomes/1
   def genome
-    @object = Genome.find(params[:id])
-    @crumbs = [
-      ['Genomes', genomes_url],
-      [@genome.title(''), @genome],
-      'Reports'
-    ]
+    @object  = Genome.find(params[:id])
+    @crumbs  = [['Genomes', genomes_url]]
+    @crumbs << [@object.title(''), @object] if @object.present?
+    @crumbs << 'Reports'
     render('object', layout: !params[:content].present?)
   end
 
