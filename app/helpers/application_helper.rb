@@ -4,15 +4,11 @@ module ApplicationHelper
   end
 
   def report_history(obj, text: 'Report history')
-    id = modal('Report history', size: :xl) do
-      obj.reports.map do |report|
-        content_tag(:div, class: 'text-right muted-text') do
-          time_ago_with_date(report.created_at, true)
-        end +
-          report.html.html_safe +
-          content_tag(:hr)
-      end.inject(:+)
-    end
+    url = :"#{obj.class.downcase}_report_url"
+    id = modal(
+      'Report history', size: :xl,
+      async: call(url, obj, content: true)
+    )
     modal_button(id, class: 'btn btn-primary btn-sm') do
       fa_icon('archive') + ' ' + text
     end
