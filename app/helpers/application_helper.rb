@@ -4,7 +4,7 @@ module ApplicationHelper
   end
 
   def report_history(obj, text: 'Report history')
-    url = :"#{obj.class.downcase}_report_url"
+    url = :"#{obj.class.to_s.downcase}_report_url"
     id = modal(
       'Report history', size: :xl,
       async: call(url, obj, content: true)
