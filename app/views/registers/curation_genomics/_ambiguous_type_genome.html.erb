@@ -27,7 +27,10 @@
         <td>
           <% name.qc_warnings.each do |warn| %>
             <% if warn.type.to_s =~ /^discrepant_/ %>
-              <%= render(partial: 'checks/check', locals: { warn: warn }) %>
+              <%= render(
+                    partial: 'checks/check',
+                    locals: { warn: warn, no_message: true, no_action: true }
+                  ) %>
             <% end %>
           <% end %>
         </td>
