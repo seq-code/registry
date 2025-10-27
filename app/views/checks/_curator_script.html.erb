@@ -12,7 +12,7 @@
         dt.addClass("check-" + data["do"]);
         var mcp = $('#manual-curation-percent');
         if (mcp.length) {
-          var unchecked = $('#curator-checklist .check-skip').length;
+          var unchecked = $('.curator-checklist .check-skip').length;
           var total = mcp.data("total");
           var perc = Math.round(100 * (total - unchecked) / total);
           var mcb = $('#manual-curation-progressbar');
