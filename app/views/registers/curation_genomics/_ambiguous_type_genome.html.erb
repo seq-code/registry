@@ -1,3 +1,4 @@
+<%= pager(@names) %>
 <table class="table table-hover table-responsive">
   <thead>
     <tr>
@@ -16,7 +17,13 @@
         <td><%= display_link(name) %></td>
         <td><%= display_link(genome) %></td>
         <td>
-          <% name.qc_warnings.each do |warn| %>
+          <%= render(
+                'check/curator',
+                locals: { warn: name.qc_warnings[@check] }
+              ) %>
+        </td>
+        <td>
+          <% name.qc_warnings.checks.each do |warn| %>
             <% if warn.type.to_s =~ /^discrepant_/ %>
               <%= render(partial: 'checks/check', locals: { warn: warn }) %>
             <% end %>
@@ -28,3 +35,4 @@
     <% end %>
   </tbody>
 </table>
+<%= pager(@names) %>

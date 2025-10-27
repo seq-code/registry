@@ -773,6 +773,10 @@ module Name::QualityChecks
       @set_h.values.select(&:is_tutorial_error?)
     end
 
+    def [](type)
+      @checks_h[type.to_sym]
+    end
+
     def checks
       @checks_h.values
     end
@@ -791,7 +795,7 @@ module Name::QualityChecks
       @set_h = {}
       @checks_h = {}
       QcWarning.defaults.each_key do |k|
-        @set_h[k]   = new_set_h[k]     if new_set_h[k]
+        @set_h[k]    = new_set_h[k]    if new_set_h[k]
         @checks_h[k] = new_checks_h[k] if new_checks_h[k]
       end
     end

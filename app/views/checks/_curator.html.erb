@@ -1,0 +1,42 @@
+<%
+  warn_class =
+    if !warn.check
+      'check-skip'
+    elsif warn.check.pass
+      'check-pass'
+    else
+      'check-fail'
+    end
+%>
+<dt class="<%= warn_class %>">
+  <span class="check-links">
+    <%= link_to('#', title: 'Skip',
+                data: { do: 'skip', kind: warn.type }) do %>
+      <%= fa_icon('minus-circle') %>
+    <% end %>
+    <%= link_to('#', title: 'Pass',
+                data: { do: 'pass', kind: warn.type }) do %>
+      <%= fa_icon('check-circle') %>
+    <% end %>
+    <%= link_to('#', title: 'Fail',
+                data: { do: 'fail', kind: warn.type }) do %>
+      <%= fa_icon('exclamation-circle') %>
+    <% end %>
+  </span>
+  <span><%= warn.title %></span>
+</dt>
+<dd class="pb-2">
+  <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
+    <%= warn[:message] %>
+    <div class="text-muted">
+      <b>§ SeqCode</b>:
+        <% %w[rule rule_note recommendation].each do |section| %>
+          <% warn[:"#{section}s"]&.each do |i| %>
+            •
+            <% text = name_of_seqcode_section(section, i) %>
+            <%= link_to_seqcode_excerpt(section, i, text) %>
+          <% end %>
+        <% end %>
+    </div>
+  <% end %>
+</dd>
