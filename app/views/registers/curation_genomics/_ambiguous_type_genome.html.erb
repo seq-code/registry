@@ -16,7 +16,7 @@
       <tr>
         <td><%= display_link(name) %></td>
         <td><%= display_link(genome) %></td>
-        <td>
+        <td class="curator-checklist">
           <% @checks[@check].each do |check_type| %>
             <% warn = name.qc_warnings[check_type] or next %>
             <%= render(
@@ -24,9 +24,8 @@
                   locals: { warn: warn, no_message: true }
                 ) %>
           <% end %>
-          <%= render(partial: 'checks/curator_script', locals: { name: name }) %>
         </td>
-        <td class="curator-checklist" id="curator-checklist-<%= name.id %>">
+        <td>
           <% name.qc_warnings.checks.each do |warn| %>
             <% if warn.type.to_s =~ /^discrepant_/ %>
               <%= render(partial: 'checks/check', locals: { warn: warn }) %>
@@ -39,4 +38,5 @@
     <% end %>
   </tbody>
 </table>
+<%= render(partial: 'checks/curator_script') %>
 <%= pager(@names) %>
