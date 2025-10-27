@@ -24,6 +24,7 @@
                   locals: { warn: warn, no_message: true }
                 ) %>
           <% end %>
+          <%= render(partial: 'checks/curator_script', locals: { name: name }) %>
         </td>
         <td class="curator-checklist" id="curator-checklist-<%= name.id %>">
           <% name.qc_warnings.checks.each do |warn| %>
@@ -38,5 +39,4 @@
     <% end %>
   </tbody>
 </table>
-<%= render(partial: 'checks/curator_script', locals: { name: name }) %>
 <%= pager(@names) %>
