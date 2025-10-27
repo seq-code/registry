@@ -7,7 +7,7 @@ class RegistersController < ApplicationController
       notify notify_commit validate coauthors coauthors_commit
       editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review snooze_curation
-      recheck_pdf_files
+      recheck_pdf_files curation_genomics
       observe unobserve merge merge_commit sample_map
       reviewer_token reviewer_token_create reviewer_token_delete
     ]
@@ -22,7 +22,7 @@ class RegistersController < ApplicationController
     only: %i[
       return return_commit endorse validate
       internal_notes nomenclature_review genomics_review snooze_curation
-      recheck_pdf_files
+      recheck_pdf_files curation_genomics
     ]
   )
   before_action(
@@ -546,6 +546,26 @@ class RegistersController < ApplicationController
     redirect_to(@register)
   end
 
+  # GET /registers/r:abcd/curation_genomics
+  def curation_genomics
+    @names =
+      @register.names
+        .order(:name_order, created_at: :desc)
+        .where(rank: %w[species subspecies])
+        .paginate(page: params[:page], per_page: 30)
+    @checks = {
+      ambiguous_type_genome: [:ambiguous_type_genome],
+      inconsistent_16s_assignment: [:inconsistent_16s_assignment],
+      missing_metadata_in_databases: [:missing_metadata_in_databases]
+    }
+    @check_k = (params[:check] || 0).to_i
+    @check = @checks.keys[@check_k]
+    @crumbs = [
+      ['Lists', registers_url],
+      [@register.acc_url, @register],
+      'genomics'
+    ]
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

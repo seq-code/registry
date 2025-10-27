@@ -1,0 +1,7 @@
+<% if @register.title? %>
+  <% provide(:title, @register.title) %>
+<% end %>
+
+<%= render(partial: 'title') %>
+<%= render(partial: 'curation_genomics/' + @check) %>
+

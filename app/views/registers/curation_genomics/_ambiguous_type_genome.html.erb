@@ -1,0 +1,30 @@
+<table class="table table-hover table-responsive">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Check</th>
+      <th>Discrepancies</th>
+      <th>MiGA Distances</th>
+      <th>MiGA Taxonomy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @names.each do |name| %>
+      <% genome = name.type_genome %>
+      <tr>
+        <td><%= display_link(name) %></td>
+        <td><%= display_link(genome) %></td>
+        <td>
+          <% name.qc_warnings.each do |warn| %>
+            <% if warn.type.to_s =~ /^discrepant_/ %>
+              <%= render(partial: 'checks/check', locals: { warn: warn }) %>
+            <% end %>
+          <% end %>
+        </td>
+        <td><%= genome.miga_url(:distances) %></td>
+        <td><%= genome.miga_url(:taxonomy) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

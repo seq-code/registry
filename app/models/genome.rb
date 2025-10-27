@@ -336,9 +336,13 @@ class Genome < ApplicationRecord
     "genome_#{id}"
   end
 
-  def miga_url
+  def miga_url(result: nil)
     miga_project = 'https://aau.microbial-genomes.org/projects/8'
-    '%s/reference_datasets/genome_%i' % [miga_project, id]
+    if result.nil?
+      '%s/reference_datasets/genome_%i' % [miga_project, id]
+    else
+      '%s/result/%s?r_ds=genome_%i' % [miga_project, result, id]
+    end
   end
 
   def remove_miga!
