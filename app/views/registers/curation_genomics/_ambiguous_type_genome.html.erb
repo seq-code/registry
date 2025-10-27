@@ -5,8 +5,8 @@
       <th>Name &amp; Type</th>
       <th>Check</th>
       <th>Discrepancies</th>
-      <th>MiGA Distances</th>
-      <th>MiGA Taxonomy</th>
+      <th>MiGA Distances, AAI</th>
+      <th>MiGA Taxonomy, AAI</th>
     </tr>
   </thead>
   <tbody>
@@ -35,12 +35,12 @@
         </td>
         <td>
           <% cr = genome.miga_object&.closest_relatives(3, false, :aai) || [] %>
-          <% cr.each { |rel| %>AAI to <%= rel[0] %>: <%= rel[1] %>%<br/><% } %>
+          <% cr.each { |rel| %><%= rel[0] %>: <%= rel[1] %>%<br/><% } %>
         </td>
         <td>
           <%= (genome.miga_object&.metadata || {})[:tax] %><hr/>
           <% cr = genome.miga_object&.closest_relatives(3, true, :aai) || [] %>
-          <% cr.each { |rel| %>AAI to <%= rel[0] %>: <%= rel[1] %>%<br/><% } %>
+          <% cr.each { |rel| %><%= rel[0] %>: <%= rel[1] %>%<br/><% } %>
         </td>
       </tr>
     <% end %>
