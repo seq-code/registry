@@ -35,13 +35,13 @@
         </td>
         <td>
           <% cr = genome.miga_object&.closest_relatives(3, false, :aai) || [] %>
-          <ul>
-          <% cr.each do |rel| %>
-            <li>AAI(<%= rel[0] %>, <%= rel[1] %>) = <%= rel[2] %></li>
-          <% end %>
-          </ul>
+          <% cr.each { |rel| %>AAI to <%= rel[0] %>: <%= rel[1] %>%<br/><% } %>
         </td>
-        <td><%= genome.miga_url(:taxonomy) %></td>
+        <td>
+          <%= genome.metadata[:tax] %><hr/>
+          <% cr = genome.miga_object&.closest_relatives(3, true, :aai) || [] %>
+          <% cr.each { |rel| %>AAI to <%= rel[0] %>: <%= rel[1] %>%<br/><% } %>
+        </td>
       </tr>
     <% end %>
   </tbody>
