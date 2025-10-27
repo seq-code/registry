@@ -10,7 +10,7 @@
   <%= warn[:message] %>
 
   <% if warn.link_to %>
-    <% if warn.link_public || @name.can_edit?(current_user) %>
+    <% if warn.link_public || warn.name.can_edit?(current_user) %>
       <%= link_to(warn.link_to, class: 'text-danger') do %>
         [<%= warn.link_text %>]
       <% end %>
@@ -19,7 +19,7 @@
 
   <% case warn.type %>
   <% when :missing_effective_publication %>
-    <% if !@name.after_submission? %>
+    <% if !warn.name.after_submission? %>
       <div>
         <b>This message can be ignored if following Path 1</b>
         <%= help_topic(:paths, 'SeqCode paths to validation', as_help: true) %>
@@ -50,7 +50,7 @@
         Bypassed by <%= link_to_user(warn.check.user) %>
         <%= time_ago_in_words(warn.check.updated_at) %> ago •
         <%= link_to(
-              check_url(@name, kind: warn.type, do: :skip),
+              check_url(warn.name, kind: warn.type, do: :skip),
               method: :post) do %>
           <%= fa_icon('exclamation-circle') %> reinstate as failed check
         <% end %>
@@ -70,7 +70,7 @@
     <div class="text-muted">
       <b>Curator action</b>:
       <%= link_to(
-            check_url(@name, kind: warn.type, do: :pass),
+            check_url(warn.name, kind: warn.type, do: :pass),
             method: :post) do %>
         <%= fa_icon('check-circle') %> Bypass check (mark as valid)
       <% end %>
