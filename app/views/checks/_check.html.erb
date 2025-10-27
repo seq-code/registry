@@ -1,5 +1,7 @@
 <dt class="qc-title">
   <%
+    no_message ||= false
+    no_action  ||= false
     blocking = warn.fail == :error
     icon_class = blocking ? 'text-danger' : 'text-warning'
   %>
@@ -7,12 +9,14 @@
   <%= warn.title %>
 </dt>
 <dd class="pt-2 qc-body">
-  <%= warn[:message] %>
+  <% unless no_message %>
+    <%= warn[:message] %>
 
-  <% if warn.link_to %>
-    <% if warn.link_public || warn.name.can_edit?(current_user) %>
-      <%= link_to(warn.link_to, class: 'text-danger') do %>
-        [<%= warn.link_text %>]
+    <% if warn.link_to %>
+      <% if warn.link_public || warn.name.can_edit?(current_user) %>
+        <%= link_to(warn.link_to, class: 'text-danger') do %>
+          [<%= warn.link_text %>]
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
@@ -66,7 +70,7 @@
       <% end %>
     </div>
   <% end %>
-  <% if editable_check && current_curator? %>
+  <% if !no_action && editable_check && current_curator? %>
     <div class="text-muted">
       <b>Curator action</b>:
       <%= link_to(
