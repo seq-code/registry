@@ -3,5 +3,6 @@
 <% end %>
 
 <%= render(partial: 'title') %>
+<h3><%= @check.to_s.gsub(/_/, ' ').capitalize %></h3>
 <%= render(partial: 'registers/curation_genomics/%s' % @check) %>
 
