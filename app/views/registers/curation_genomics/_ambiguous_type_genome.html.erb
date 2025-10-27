@@ -2,7 +2,7 @@
 <table class="table table-hover table-responsive">
   <thead>
     <tr>
-      <th>Name</th>
+      <th>Name &amp; Type</th>
       <th>Type</th>
       <th>Check</th>
       <th>Discrepancies</th>
@@ -14,19 +14,19 @@
     <% @names.each do |name| %>
       <% genome = name.type_genome %>
       <tr>
-        <td><%= display_link(name) %></td>
-        <td><%= display_link(genome) %></td>
+        <td><%= display_link(name) %>, <%= display_link(genome) %></td>
         <td class="curator-checklist">
           <% @checks[@check].each do |check_type| %>
             <% warn = name.qc_warnings[check_type] or next %>
             <%= render(
                   partial: 'checks/curator',
-                  locals: { warn: warn, no_message: true }
+                  locals: { warn: warn, no_message: true, no_section: true }
                 ) %>
           <% end %>
         </td>
         <td>
           <% name.qc_warnings.checks.each do |warn| %>
+            <%= warn.type %>
             <% if warn.type.to_s =~ /^discrepant_/ %>
               <%= render(partial: 'checks/check', locals: { warn: warn }) %>
             <% end %>

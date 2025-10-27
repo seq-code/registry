@@ -1,5 +1,6 @@
 <%
   no_message ||= false
+  no_section ||= false
   warn_class =
     if !warn.check
       'check-skip'
@@ -29,15 +30,17 @@
 <dd class="pb-2">
   <% if warn[:rules] || warn[:recommendations] || warn[:rule_notes] %>
     <%= warn[:message] unless no_message %>
-    <div class="text-muted">
-      <b>§ SeqCode</b>:
-        <% %w[rule rule_note recommendation].each do |section| %>
-          <% warn[:"#{section}s"]&.each do |i| %>
-            •
-            <% text = name_of_seqcode_section(section, i) %>
-            <%= link_to_seqcode_excerpt(section, i, text) %>
+    <% unless no_section %>
+      <div class="text-muted">
+        <b>§ SeqCode</b>:
+          <% %w[rule rule_note recommendation].each do |section| %>
+            <% warn[:"#{section}s"]&.each do |i| %>
+              •
+              <% text = name_of_seqcode_section(section, i) %>
+              <%= link_to_seqcode_excerpt(section, i, text) %>
+            <% end %>
           <% end %>
-        <% end %>
-    </div>
+      </div>
+    <% end %>
   <% end %>
 </dd>
