@@ -17,10 +17,11 @@
         <td><%= display_link(name) %></td>
         <td><%= display_link(genome) %></td>
         <td>
-          <%= render(
-                'checks/curator',
-                locals: { warn: name.qc_warnings[@check] }
-              ) %>
+          <% @checks[@check].each do |check_type| %>
+            <% if warn = name.qc_warnings[check_type] %>
+              <%= render('checks/curator', locals: { warn: warn }) %>
+            <% end %>
+          <% end %>
         </td>
         <td>
           <% name.qc_warnings.checks.each do |warn| %>
