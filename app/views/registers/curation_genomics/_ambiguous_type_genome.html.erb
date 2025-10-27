@@ -18,9 +18,8 @@
         <td><%= display_link(genome) %></td>
         <td>
           <% @checks[@check].each do |check_type| %>
-            <% if warn = name.qc_warnings[check_type] %>
-              <%= render('checks/curator', locals: { warn: warn }) %>
-            <% end %>
+            <% warn = name.qc_warnings[check_type] %>
+            <%= render('checks/curator', locals: { warn: warn }) if warn %>
           <% end %>
         </td>
         <td>
