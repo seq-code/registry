@@ -33,7 +33,14 @@
             <% end %>
           <% end %>
         </td>
-        <td><%= genome.miga_url(:distances) %></td>
+        <td>
+          <% cr = genome.miga_object&.closest_relatives(3, false, :aai) || [] %>
+          <ul>
+          <% cr.each do |rel| %>
+            <li>AAI(<%= rel[0] %>, <%= rel[1] %>) = <%= rel[2] %></li>
+          <% end %>
+          </ul>
+        </td>
         <td><%= genome.miga_url(:taxonomy) %></td>
       </tr>
     <% end %>

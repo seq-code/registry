@@ -79,6 +79,11 @@ class Genome < ApplicationRecord
         kind? source_database? source_accession?
       ]
     end
+
+
+    def miga_project_path
+      File.join(Rails.root, '..', 'miga_check')
+    end
   end
   
   @@FIELDS_WITH_AUTO = %i[
@@ -350,9 +355,16 @@ class Genome < ApplicationRecord
     require 'miga/cli'
 
     MiGA::Cli.new([
-      'rm', '--project', File.join(Rails.root, '..', 'miga_check'),
+      'rm', '--project', self.class.miga_project_path,
       '--dataset', miga_name, '--remove'
     ]).launch(false)
+  end
+
+  def miga_object
+    require 'miga'
+
+    @miga_object ||=
+      MiGA::Project.load(self.class.miga_project_path).dataset(miga_name)
   end
 
   def recalculate_miga!
