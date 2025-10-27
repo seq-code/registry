@@ -1,0 +1,33 @@
+<script>
+  $('#curator-checklist-<%= name.id %> .check-links a[data-do]').on("click",
+    function() {
+      var path = "<%= check_path(name, format: :json) %>";
+      var data = $(this).data();
+      var dt = $(this).parent().parent();
+      dt.addClass("bg-warning");
+
+      $.post(path, data, function(res) {
+        dt.removeClass();
+        dt.addClass("check-" + data["do"]);
+        var mcp = $('#manual-curation-percent');
+        if (mcp.length) {
+          var unchecked = $('#curator-checklist .check-skip').length;
+          var total = mcp.data("total");
+          var perc = Math.round(100 * (total - unchecked) / total);
+          var mcb = $('#manual-curation-progressbar');
+          mcp.html(perc);
+          mcb.css("width", "" + perc + "%");
+          mcb.attr("aria-valuenow", perc);
+        }
+      })
+      .fail(function(res) {
+        alert(res["responseText"]);
+      })
+      .always(function() {
+        dt.removeClass("bg-warning");
+      });
+
+      return(false);
+    }
+  );
+</script>

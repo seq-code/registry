@@ -1,9 +1,12 @@
 <% if current_curator? && !@name.validated? %>
   <% unless @name.qc_warnings.checks.empty? && @name.qc_warnings.bypass.empty? %>
     <div>
-      <%= link_to('#curator-checklist',
+      <%= link_to('#curator-checklist-%i' % @name.id,
                   class: 'btn btn-primary btn-curator-checklist',
-                  aria: { expanded: 'false', controls: 'curator-checklist' },
+                  aria: {
+                    expanded: 'false',
+                    controls: 'curator-checklist-%i' % @name.id
+                  },
                   role: 'button', data: { toggle: 'collapse' }) do %>
         <h2 class="ml-4 my-1">
           <%= fa_icon('tasks') %>
@@ -27,7 +30,7 @@
       <% end %>
     </div>
     <dl class="main-section name-details curator-checklist collapse border-primary"
-        id="curator-checklist" style="border-left: 1em solid;">
+        id="curator-checklist-<%= @name.id %>" style="border-left: 1em solid;">
       <% first = true %>
       <% %i[nomenclature genomics register].each do |section| %>
         <%
@@ -99,37 +102,7 @@
         <% end %>
       <% end %>
     </dl>
-    <script>
-      $('.curator-checklist .check-links a[data-do]').on("click",
-        function() {
-          var path = "<%= check_path(@name, format: :json) %>";
-          var data = $(this).data();
-          var dt = $(this).parent().parent();
-          dt.addClass("bg-warning");
-
-          $.post(path, data, function(res) {
-            dt.removeClass();
-            dt.addClass("check-" + data["do"]);
-            var mcp = $('#manual-curation-percent');
-            var unchecked = $('#curator-checklist .check-skip').length;
-            var total = mcp.data("total");
-            var perc = Math.round(100 * (total - unchecked) / total);
-            var mcb = $('#manual-curation-progressbar');
-            mcp.html(perc);
-            mcb.css("width", "" + perc + "%");
-            mcb.attr("aria-valuenow", perc);
-          })
-          .fail(function(res) {
-            alert(res["responseText"]);
-          })
-          .always(function() {
-            dt.removeClass("bg-warning");
-          });
-
-          return(false);
-        }
-      );
-    </script>
+    <%= render(partial: 'checks/curator_script', locals: { name: @name }) %>
     <br/>
   <% end %>
 <% end %>
