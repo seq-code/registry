@@ -2,8 +2,8 @@
   $('.curator-checklist .check-links a[data-do]').on("click",
     function() {
       var data = $(this).data();
-      var pattern = "<%= check_path('{name}', format: :json) %>";
-      var path = pattern.replace('{name}', data["name"]);
+      var pattern = "<%= check_path('--name--', format: :json) %>";
+      var path = pattern.replace('--name--', data["name"]);
       var dt = $(this).parent().parent();
       dt.addClass("bg-warning");
 
