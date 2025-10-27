@@ -336,7 +336,7 @@ class Genome < ApplicationRecord
     "genome_#{id}"
   end
 
-  def miga_url(result: nil)
+  def miga_url(result = nil)
     miga_project = 'https://aau.microbial-genomes.org/projects/8'
     if result.nil?
       '%s/reference_datasets/genome_%i' % [miga_project, id]
