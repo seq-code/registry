@@ -35,12 +35,12 @@
         </td>
         <td>
           <% cr = genome.miga_object&.closest_relatives(3, false, :aai) || [] %>
-          <% cr.each { |r| %><%= r[0].unmiga_name %>: <%= r[1] %>%<br/><% } %>
+          <% cr.each { |r| %><%= r[1] %>% - <%= r[0].unmiga_name %><br/><% } %>
         </td>
         <td>
           <b><%= (genome.miga_object&.metadata || {})[:tax] %></b><br/>
           <% cr = genome.miga_object&.closest_relatives(3, true, :aai) || [] %>
-          <% cr.each { |r| %><%= r[0].unmiga_name %>: <%= r[1] %>%<br/><% } %>
+          <% cr.each { |r| %><%= r[1] %>% - <%= r[0].unmiga_name %><br/><% } %>
         </td>
       </tr>
     <% end %>
