@@ -25,7 +25,7 @@ module Genome::ExternalResources
       source_accessions.each do |acc|
         ephemeral_report.section "SRA:#{acc}"
         biosample = external_sra_to_biosample(acc)
-        ephemeral_resource << "Linked to BioSample#{biosample}"
+        ephemeral_report << "Linked to BioSample#{biosample}"
         data[biosample] ||=
           { from_sra: [] }.merge(external_biosample_hash(biosample))
         data[biosample][:from_sra] << acc
