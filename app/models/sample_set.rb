@@ -173,7 +173,7 @@ class GenomeSampleAttribute
     def missing
       [
         'not provided', 'not collected', 'unavailable', 'not applicable',
-        'missing', '-', 'n/a', 'null', ''
+        'restricted access', 'missing', '-', 'n/a', 'null', ''
       ]
     end
 
@@ -283,7 +283,7 @@ class GenomeSampleAttribute
   end
 
   def as_location
-    return unless missing_value? || location?
+    return if missing_value? || !location?
 
     coord = /([-+] *)?(\d+(?:[\.\,]\d+)?|\d+°(?:\d+['"])*)( *[NSEW])?/
     if location_type == :lat_lon
