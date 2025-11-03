@@ -22,7 +22,7 @@ class RegistersController < ApplicationController
     only: %i[
       return return_commit endorse validate
       internal_notes nomenclature_review genomics_review snooze_curation
-      recheck_pdf_files curation_genomics map
+      recheck_pdf_files curation_genomics
     ]
   )
   before_action(
