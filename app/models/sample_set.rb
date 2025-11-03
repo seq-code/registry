@@ -102,7 +102,13 @@ class SampleSet
       end
     end
 
-    [rng[:lat][0], rng[:lon][0], rng[:lat][1], rng[:lon][1]]
+
+    [
+      [rng[:lat][0],  -90.0].max,
+      [rng[:lon][0], -180.0].max,
+      [rng[:lat][1],   90.0].min,
+      [rng[:lon][1],  180.0].min
+    ]
   end
 
   def known_biosamples
