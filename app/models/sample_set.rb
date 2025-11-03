@@ -193,6 +193,7 @@ class GenomeSampleAttribute
     end
 
     def parse_location_coordinate(string, type)
+      type = type.to_s.downcase.to_sym
       # A simple (positive) number, no captures
       num = /[\d\.,]+/
       # A sexagesimal coordinate (without direction), captures:
@@ -217,6 +218,11 @@ class GenomeSampleAttribute
         else
           m[1].gsub(',', '.').to_f
         end
+
+      if decimal.abs > 180.0 || (type == :lat && decimal.abs > 90.0)
+        warn 'unexpectedly large value for %s: %.2f' % [type, decimal]
+        return nil
+      end
 
       allowed_dir = { lat: %w[S s N n], lon: %w[W w E e] }
       if m[2].present? && !allowed_dir[type.to_sym].include?(m[2])
