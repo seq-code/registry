@@ -4,7 +4,7 @@
   <hr/>
 <% end %>
 
-<% locs = @sample_set.locations.compact %>
+<% locs = @sample_set.locations_complete %>
 <% if locs.present? %>
   <% if params[:content].present? %>
     <div id="map" style="width: 400px; height: 300px;" class="mx-auto"></div>
