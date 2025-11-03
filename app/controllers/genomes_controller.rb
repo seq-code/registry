@@ -77,10 +77,11 @@ class GenomesController < ApplicationController
   end
 
   # GET /genomes/1/sample_map
+  # GET /genomes/1/sample_map.json
   def sample_map
     @crumbs = [['Genomes', genomes_url], [@genome.title(''), @genome], 'Map']
     @sample_set = @genome.sample_set
-    render('sample_map', layout: !params[:content].present?)
+    render(layout: !params[:content].present?)
   end
 
   private
