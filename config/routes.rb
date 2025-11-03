@@ -139,6 +139,9 @@ Rails.application.routes.draw do
   # Register lists
   # --> Standard resources
   resources(:registers, param: :accession) do
+    collection do
+      get  :map
+    end
     member do
       # --> Display
       get  :table
