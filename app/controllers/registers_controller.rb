@@ -97,7 +97,7 @@ class RegistersController < ApplicationController
   def map
     @crumbs     = [['Lists', registers_url], 'Map']
     @registers  = Register.where(validated: true)
-    @sample_set = CollectioSampleSet.new(@registers)
+    @sample_set = CollectionSampleSet.new(@registers)
     render('genomes/sample_map', layout: !params[:content].present?)
   end
 
