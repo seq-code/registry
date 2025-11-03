@@ -85,9 +85,10 @@ class SampleSet
     return unless loc.present?
 
     rng = {
-      lat: loc.map { |i| i[0] }.minmax,
-      lon: loc.map { |i| i[1] }.minmax
+      lat: loc.map(&:first).compact.minmax,
+      lon: loc.map(&:second).compact.minmax
     }
+    return unless rng.values.all?(&:present?)
 
     rng.each do |k, v|
       width = v.inject(:-).abs
