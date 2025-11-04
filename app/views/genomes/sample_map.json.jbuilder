@@ -49,10 +49,10 @@ json.features(
       } if sample.lat_lon?
     end.compact
   else
-    @sample_set.select(&:lat_lon?).map(&:lon_lat).uniq.map do |lat_lon|
+    @sample_set.select(&:lat_lon?).map(&:lon_lat).uniq.map do |xy|
       {
         type: 'Feature',
-        geometry: { type: 'Point', coordinates: lon_lat }
+        geometry: { type: 'Point', coordinates: xy }
       }
     end
   end
