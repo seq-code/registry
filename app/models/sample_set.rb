@@ -186,11 +186,11 @@ class GenomeSample
   end
 
   def lat_lon?
-    lat_lon && lat_lon[0].present? && lat_lon[1].present?
+    lat_lon.present? && lat_lon[0].present? && lat_lon[1].present?
   end
 
   def lon_lat
-    lat_lon? ? nil : [lat_lon[1], lat_lon[0]]
+    lat_lon? ? [lat_lon[1], lat_lon[0]] : nil
   end
 end
 
