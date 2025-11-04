@@ -32,7 +32,7 @@ class SampleSet
   include Enumerable
 
   attr :samples
-  
+
   def each(&blk)
     samples.each(&blk)
   end
@@ -77,7 +77,7 @@ class SampleSet
   ##
   # Returns only complete locations
   def locations_complete
-    locations.compact.select { |i| i[0].present? && i[1].present? }
+    select(&:lat_lon?).map(&:lat_lon)
   end
 
   ##
@@ -162,6 +162,13 @@ class GenomeSample
     attribute(key)
   end
 
+  def attributes_by_type(type)
+    SampleSet
+      .important_sample_attributes[type.to_sym]
+      .map { |key| self[key] }
+      .compact
+  end
+
   def lat_lon
     @lat_lon ||=
       [].tap do |a|
@@ -176,6 +183,14 @@ class GenomeSample
           end
         end
       end
+  end
+
+  def lat_lon?
+    lat_lon && lat_lon[0].present? && lat_lon[1].present?
+  end
+
+  def lon_lat
+    lat_lon? ? nil : [lat_lon[1], lat_lon[0]]
   end
 end
 
