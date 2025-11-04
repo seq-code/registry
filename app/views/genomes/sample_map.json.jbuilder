@@ -11,7 +11,7 @@ json.features(
           type: 'Feature',
           geometry: {
             type: 'MultiPoint',
-            coordinates: genome.sample_set.map(&:lon_lat).compact
+            coordinates: genome.sample_set.map(&:lon_lat).compact.uniq
           },
           properties: {
             name: genome.typified_names.first.try(:name),
@@ -29,7 +29,7 @@ json.features(
         type: 'Feature',
         geometry: {
           type: 'MultiPoint',
-          coordinates: register.sample_set.map(&:lon_lat).compact
+          coordinates: register.sample_set.map(&:lon_lat).compact.uniq
         },
         properties: {
           register: register.acc_url,
