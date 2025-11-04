@@ -44,7 +44,7 @@ json.features(
         geometry: { type: 'Point', coordinates: sample.lon_lat },
         properties: {
           sample: sample.accession,
-          toponym: sample.attributes_by_type(:toponym).first.value
+          toponym: sample.attributes_by_type(:toponym).first.try(:value)
         }
       } if sample.lat_lon?
     end.compact
