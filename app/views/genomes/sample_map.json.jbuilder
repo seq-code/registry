@@ -23,6 +23,7 @@ json.features(
       end.compact
     end.reduce([], :+)
   when 'register', 'registers'
+    @registers ||= [@register]
     @registers.map do |register|
       {
         type: 'Feature',
