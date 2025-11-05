@@ -98,7 +98,11 @@ class RegistersController < ApplicationController
     @crumbs     = [['Lists', registers_url], 'Map']
     @registers  = Register.where(validated: true)
     @sample_set = CollectionSampleSet.new(@registers)
-    render('genomes/sample_map', layout: !params[:content].present?)
+    render(
+      'genomes/sample_map',
+      layout: !params[:content].present?,
+      cached: [params[:content], params[:label]]
+    )
   end
 
   # GET /registers/r:abcd
