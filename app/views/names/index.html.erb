@@ -4,6 +4,7 @@
   npar[:sort]   = @sort if @sort.present?
   npar[:user]   = @user.username if @user.present?
 %>
+<% provide(:canonical_url, canonical_url(npar)) %>
 <%= download_buttons(
       [[names_url(npar.merge(format: :json)), 'file-code', 'JSON']]
     ) %>

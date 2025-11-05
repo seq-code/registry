@@ -661,7 +661,7 @@ class Name < ApplicationRecord
   # This method always return +nil+ for names that are not at (inferred) rank
   # of genus or species
   # 
-  # Find names similar to the current one (using the cannonical spelling
+  # Find names similar to the current one (using the canonical spelling
   # from +base_name+) with Levenshtein ≤ 3, considering a search space
   # defined by the taxonomic rank and +among+:
   # - valid: All validly published names of genera or species of the same genus

@@ -1,6 +1,8 @@
 module ApplicationHelper
-  def cannonical_url
-    url_for(only_path: false, protocol: 'https', host: 'registry.seqco.de')
+  def canonical_url(opts = {})
+    url_for({
+      only_path: false, protocol: 'https', host: 'registry.seqco.de'
+    }.merge(opts))
   end
 
   def report_history(obj, text: 'Report history')
