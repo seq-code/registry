@@ -3,10 +3,11 @@
   npar[:status] = @status if @status.present?
   npar[:sort]   = @sort if @sort.present?
   npar[:user]   = @user.username if @user.present?
+  ppar = { page: params[:page] || 1 }.merge(npar)
 %>
-<% provide(:canonical_url, canonical_url(npar)) %>
+<% provide(:canonical_url, canonical_url(ppar)) %>
 <%= download_buttons(
-      [[names_url(npar.merge(format: :json)), 'file-code', 'JSON']]
+      [[names_url(ppar.merge(format: :json)), 'file-code', 'JSON']]
     ) %>
 
 <h1>
