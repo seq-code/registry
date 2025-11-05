@@ -1,5 +1,11 @@
+
+<%
+  npar = {}
+  ppar = { page: params[:page] || 1 }.merge(npar)
+%>
+<% provide(:canonical_url, canonical_url(ppar)) %>
 <%= download_buttons(
-      [[genomes_url(format: :json), 'file-code', 'JSON']]
+      [[genomes_url(ppar.merge(format: :json)), 'file-code', 'JSON']]
     ) %>
 
 <h1>

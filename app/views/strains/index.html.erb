@@ -1,3 +1,8 @@
+<%
+  npar = {}
+  ppar = { page: params[:page] || 1 }.merge(npar)
+%>
+<% provide(:canonical_url, canonical_url(ppar)) %>
 <div class="text-right pt-4 float-right"><%= list_type_selector %></div>
 <h1>
   Strains

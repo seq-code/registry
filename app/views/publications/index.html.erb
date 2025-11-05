@@ -1,5 +1,11 @@
+<%
+  npar = {}
+  npar[:sort]   = @sort if @sort.present?
+  ppar = { page: params[:page] || 1 }.merge(npar)
+%>
+<% provide(:canonical_url, canonical_url(ppar)) %>
 <%= download_buttons(
-      [[publications_url(format: :json), 'file-code', 'JSON']]
+      [[publications_url(ppar.merge(format: :json)), 'file-code', 'JSON']]
     ) %>
 
 <h1>
@@ -13,7 +19,8 @@
       <b>Sort by</b>
       <% %w[date names].map do |sort| %>
         <span class="text-muted">•</span>
-        <%= sort == @sort ? sort : link_to(sort, publications_path(sort: sort)) %>
+        <%= sort == @sort ?
+              sort : link_to(sort, publications_path(sort: sort)) %>
       <% end %>
       <br/>
       <b>Browse by</b>
