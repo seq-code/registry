@@ -3,7 +3,7 @@ namespace :authors do
   task :clean => :environment do |t, args|
     km = 0
     ks = 0
-    Author.each do |author|
+    Author.all.each do |author|
       next if author.standard_name?
 
       par = {

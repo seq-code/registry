@@ -37,7 +37,7 @@ class Author < ApplicationRecord
   end
 
   def standard_name?
-    family == self.class.standardized_family(family) &&
-      given == self.class.standardized_given(given)
+    family == self.class.standardize_family(family) &&
+      given == self.class.standardize_given(given)
   end
 end
