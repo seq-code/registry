@@ -16,9 +16,21 @@ class Author < ApplicationRecord
     end
 
     def standardize_given(given)
-      if given.to_s.match(/\A[A-Z]( [A-Z])* ?\z/)
-        given.to_s.gsub(/( | ?$)/, '. ').gsub(/ $/, '')
+      case given.to_s
+      when /\A\p{Lu}\z/
+        # A single uppercase letter
+        given + '.'
+      when /\A.{0,3}\z/
+        # Too short to tell, it could be initials
+        given
+      when /\A\p{Lu}( \p{Lu})* ?\z/
+        # Initials separated by spaces
+        given.gsub(/( | ?$)/, '. ').gsub(/ $/, '')
+      when /\A(\p{Lu}\.)+\z/
+        # Initials separated by dots
+        given.gsub(/\./, '. ').gsub(/ $/, '')
       else
+        # Treat as a full name
         standardize_family(given)
       end
     end

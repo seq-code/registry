@@ -17,7 +17,11 @@ namespace :authors do
         author.publication_authors.update(author: s_author)
         author.contacts.update(author: s_author)
         # And remove
-        author.destroy
+        # TODO
+        # For some reason `destroy` rolls-back the above replacements, so for
+        # now I'm manually running the task, uncommenting the line below, and
+        # rerunning it.
+        # author.destroy
         km += 1
       else
         puts '~ Standardizing %s' % [author.full_name]
