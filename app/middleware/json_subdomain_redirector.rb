@@ -15,10 +15,12 @@ class JsonSubdomainRedirector
     request = Rack::Request.new(env)
 
     if on_api_subdomain?(request)
-      redirect_to_gui(request) unless is_api_call?(request)
+      return redirect_to_gui(request) unless is_api_call?(request)
     else
-      redirect_to_api(request) if is_api_call?(request)
+      return redirect_to_api(request) if is_api_call?(request)
     end
+
+    @app.call(env)
   end
 
   def redirect_to_api(request)
@@ -30,7 +32,7 @@ class JsonSubdomainRedirector
     uri.host = @api_domain
     uri.path = new_path
 
-    return [
+    [
       301,
       { 'Location' => uri.to_s, 'Content-Type' => 'text/html' },
       ['Moved Permanently']
@@ -45,7 +47,7 @@ class JsonSubdomainRedirector
     uri.host = @gui_domain
     uri.path = new_path
 
-    return [
+    [
       301,
       { 'Location' => uri.to_s, 'Content-Type' => 'text/html' },
       ['Moved Permanently']
