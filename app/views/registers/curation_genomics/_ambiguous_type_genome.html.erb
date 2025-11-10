@@ -12,7 +12,6 @@
   <tbody>
     <% @names.each do |name| %>
       <% genome = name.type_genome %>
-      <% next unless genome %>
       <tr>
         <td><%= display_link(name) %>, <%= display_link(genome) %></td>
         <td class="curator-checklist">
@@ -34,15 +33,27 @@
             <% end %>
           <% end %>
         </td>
-        <td>
-          <% cr = genome.miga_object&.closest_relatives(3, false, :aai) || [] %>
-          <% cr.each { |r| %><%= r[1] %>% - <%= r[0].unmiga_name %><br/><% } %>
-        </td>
-        <td>
-          <b><%= (genome.miga_object&.metadata || {})[:tax] %></b><br/>
-          <% cr = genome.miga_object&.closest_relatives(3, true, :aai) || [] %>
-          <% cr.each { |r| %><%= r[1] %>% - <%= r[0].unmiga_name %><br/><% } %>
-        </td>
+        <% if genome %>
+          <td colspan=2 class="text-danger">
+            Undefined type genome
+          </td>
+          <% next %>
+        <% else %>
+          <% miga_obj = genome.miga_object %>
+          <td>
+            <% cr = miga_obj&.closest_relatives(3, false, :aai) || [] %>
+            <% cr.each do |r| %>
+              <%= r[1] %>% - <%= r[0].unmiga_name %><br/>
+            <% end %>
+          </td>
+          <td>
+            <b><%= (miga_obj&.metadata || {})[:tax] %></b><br/>
+            <% cr = miga_obj&.closest_relatives(3, true, :aai) || [] %>
+            <% cr.each do |r| %>
+              <%= r[1] %>% - <%= r[0].unmiga_name %><br/>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
