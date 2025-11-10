@@ -172,7 +172,7 @@ class Register < ApplicationRecord
   def can_view_correspondence?(user)
     return true if can_edit?(user)
     return false if published?
-    user?(user) || coauthor?(user)
+    user.curator? || user?(user) || coauthor?(user)
   end
 
   def display(_html = true)
