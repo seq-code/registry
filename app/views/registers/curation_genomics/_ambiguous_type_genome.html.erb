@@ -34,11 +34,6 @@
           <% end %>
         </td>
         <% if genome %>
-          <td colspan=2 class="text-danger">
-            Undefined type genome
-          </td>
-          <% next %>
-        <% else %>
           <% miga_obj = genome.miga_object %>
           <td>
             <% cr = miga_obj&.closest_relatives(3, false, :aai) || [] %>
@@ -53,6 +48,9 @@
               <%= r[1] %>% - <%= r[0].unmiga_name %><br/>
             <% end %>
           </td>
+        <% else %>
+          <td colspan=2 class="text-danger">Undefined type genome</td>
+          <% next %>
         <% end %>
       </tr>
     <% end %>
