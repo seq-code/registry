@@ -12,6 +12,7 @@
   <tbody>
     <% @names.each do |name| %>
       <% genome = name.type_genome %>
+      <% next unless genome %>
       <tr>
         <td><%= display_link(name) %>, <%= display_link(genome) %></td>
         <td class="curator-checklist">
