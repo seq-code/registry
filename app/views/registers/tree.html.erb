@@ -6,6 +6,9 @@
 
 <% def render_tree_node(n, contents) %>
   <% if n.present? %>
+    <% if current_curator? %>
+      <%= render(partial: 'curations/name_ticks', locals: { name: n }) %>
+    <% end %>
     <% if n.incertae_sedis? %>
       <span class="text-muted small">(<i>incertae sedis</i>)</span>
     <% end %>

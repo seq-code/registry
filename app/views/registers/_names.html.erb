@@ -34,46 +34,8 @@
       <tr>
         <% if current_curator? && !@register.validated? %>
           <td>
-            <%
-              kinds = { nomenclature: 'pen-fancy' }
-              kinds[:genomics] = 'dna' if name.sp_or_subsp?
-            %>
-            <% id = modal('Name curation status') do %>
-              <h2><%= display_link(name) %></h2>
-              <dl class="main-section name-details p-4 mb-0">
-                <% kinds.each do |k, v| %>
-                  <dt><%= fa_icon(v) %> <%= k.to_s.capitalize %> checklist</dt>
-                  <dd>
-                    <% curation = name.curation_kind(k) %>
-                    <%= simple_form_for(curation) do |f| %>
-                      <%= f.input(:name_id, as: :hidden) %>
-                      <%= f.input(:kind_int, as: :hidden) %>
-                      <div class="text-<%= curation.color %> mb-3">
-                        <b>Current status:</b>
-                        <%= curation.status.to_s.capitalize %>
-                      </div>
-                      <%= f.input(
-                            :status_int, label: 'Status',
-                            collection: Curation.status_opt
-                          ) %>
-                      <%= f.input(:notes) %>
-                      <% if curation.user %>
-                        <div class="text-muted mb-3">
-                          Last updated by <%= display_link(curation.user) %>
-                          <%= time_ago_with_date(curation.updated_at) %>
-                        </div>
-                      <% end %>
-                      <%= f.submit(class: 'btn btn-primary') %>
-                    <% end %>
-                  </dd>
-                <% end %>
-              </dl>
-            <% end %>
-            <%= modal_button(id, class: 'btn p-0') do %>
-              <% kinds.each do |k, v| %>
-                <%= fa_icon(v, class: "text-#{name.curation_kind(k).color}") %>
-              <% end %>
-            <% end %>
+            <%= render(
+                  partial: 'curations/name_ticks', locals: { name: name } ) %>
           </td>
         <% end %>
         <td><%= link_to(name.name_html, name) %></td>
