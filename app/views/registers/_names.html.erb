@@ -43,7 +43,7 @@
                   <dd>
                     <% curation = name.curation_kind(k) %>
                     <%= simple_form_for(curation) do |f| %>
-                      <%= f.input(:name, as: :hidden) %>
+                      <%= f.input(:name_id, as: :hidden) %>
                       <div class="text-<%= curation.color %> mb-3">
                         <b>Current status:</b>
                         <%= curation.status.to_s.capitalize %>
