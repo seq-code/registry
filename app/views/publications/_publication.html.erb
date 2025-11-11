@@ -8,7 +8,7 @@
       <% id = modal(
             'Publication names',
             async: names_publication_url(publication, content: true)
-          ) %>
+          ) { %> Loading names... <% } %>
        <%= modal_button(id, class: 'badge badge-secondary') do %>
          <%= fa_icon('ellipsis-h') %>
          <%= pluralize(publication.names.count, 'Name') %>
