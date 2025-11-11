@@ -64,7 +64,7 @@
                 <% end %>
               </dl>
             <% end %>
-            <%= modal_button(id, as_anchor: true) %>
+            <%= modal_button(id, as_anchor: true) do %>
               <% kinds.each do |k, v| %>
                 <%= fa_icon(v, class: "text-#{@name.curation_color(k)}") %>
               <% end %>
