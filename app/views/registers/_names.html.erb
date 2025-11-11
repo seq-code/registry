@@ -55,9 +55,9 @@
                           ) %>
                       <%= f.input(:notes) %>
                       <% if curation.user %>
-                        <div class="text-muted">
+                        <div class="text-muted mb-3">
                           Last updated by <%= display_link(curation.user) %>
-                          time_ago_with_date(curation.updated_at)
+                          <%= time_ago_with_date(curation.updated_at) %>
                         </div>
                       <% end %>
                       <%= f.submit(class: 'btn btn-primary') %>
