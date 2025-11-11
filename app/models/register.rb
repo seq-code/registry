@@ -175,6 +175,10 @@ class Register < ApplicationRecord
     user.curator? || user?(user) || coauthor?(user)
   end
 
+  def correspondence_monitored?
+    in_curation? || observing_curators?
+  end
+
   def display(_html = true)
     'Register List %s' % accession
   end

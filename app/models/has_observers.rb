@@ -61,4 +61,15 @@ module HasObservers
     @status_alert = 'An unexpected error occurred'
     false
   end
+
+  ## ============ --- HELPER FUNCTIONS FOR CURATION --- ============
+
+  def observing_curators
+    @observing_curators ||=
+      observers.where(curator: true).where.not(id: created_by_id)
+  end
+
+  def observing_curators?
+    observing_curators.any?
+  end
 end

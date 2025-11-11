@@ -852,6 +852,10 @@ class Name < ApplicationRecord
     can_edit?(user) || user?(user)
   end
 
+  def correspondence_monitored?
+    in_curation? || observing_curators?
+  end
+
   def can_claim?(user)
     return false unless user.try(:contributor?)
     return true if auto?
