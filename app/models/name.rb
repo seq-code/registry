@@ -35,6 +35,7 @@ class Name < ApplicationRecord
     :typified_names, -> { where(redirect_id: nil) },
     class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
   )
+  has_many(:curations)
 
   belongs_to(:nomenclatural_type, polymorphic: true, optional: true)
   belongs_to(
@@ -940,6 +941,18 @@ class Name < ApplicationRecord
     # prevents breaking large transactions, as in batch uploads
   rescue ActiveRecord::RecordNotUnique
     true
+  end
+
+  ##
+  # Status reported by curators, which may or may not be accurate, simply
+  # meant as a curation aid and should never be used to evaluate the actual
+  # status of the curation for reporting
+  def curation_kind(kind)
+    kind = kind.to_sym
+    @curation_kind ||= {}
+    @curation_kind[kind] ||=
+      curations.find { |c| c.kind == kind.to_sym } ||
+        Curation.new(name: self, kind_int: Curation.kind_int(kind))
   end
 
   # ============ --- TAXONOMY --- ============

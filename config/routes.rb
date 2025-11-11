@@ -217,6 +217,7 @@ Rails.application.routes.draw do
       get  :template
     end
   end
+  resources(:curations, only: %i[create update])
 
   # Reports
   get 'reports/genomes/:id', to: 'reports#genome', as: :reports_genome
