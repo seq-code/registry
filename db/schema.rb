@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_20_054238) do
+ActiveRecord::Schema.define(version: 2025_11_11_135930) do
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -81,6 +81,18 @@ ActiveRecord::Schema.define(version: 2025_10_20_054238) do
     t.index ["author_id"], name: "index_contacts_on_author_id"
     t.index ["publication_id"], name: "index_contacts_on_publication_id"
     t.index ["user_id"], name: "index_contacts_on_user_id"
+  end
+
+  create_table "curations", force: :cascade do |t|
+    t.integer "name_id", null: false
+    t.integer "user_id", null: false
+    t.integer "kind_int", null: false
+    t.integer "status_int", default: 0
+    t.text "notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name_id"], name: "index_curations_on_name_id"
+    t.index ["user_id"], name: "index_curations_on_user_id"
   end
 
   create_table "generic_type_materials", force: :cascade do |t|
@@ -517,6 +529,8 @@ ActiveRecord::Schema.define(version: 2025_10_20_054238) do
   add_foreign_key "contacts", "authors"
   add_foreign_key "contacts", "publications"
   add_foreign_key "contacts", "users"
+  add_foreign_key "curations", "names"
+  add_foreign_key "curations", "users"
   add_foreign_key "genome_sequencing_experiments", "genomes"
   add_foreign_key "genome_sequencing_experiments", "sequencing_experiments"
   add_foreign_key "genomes", "strains"
