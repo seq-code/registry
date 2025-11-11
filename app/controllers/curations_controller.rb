@@ -33,7 +33,7 @@ class CurationsController < ApplicationController
     def curation_params
       params
         .require(:curation)
-        .permit(:name_id, :status_int, :notes)
+        .permit(:name_id, :status_int, :kind_int, :notes)
         .merge(user: current_user)
     end
 end
