@@ -7,7 +7,8 @@
     <% if publication.names.count > 10 %>
       <% id = modal(
             'Publication names',
-            async: names_publication_url(publication, content: true)
+            async: names_publication_url(publication, content: true),
+            size: 'xl'
           ) { %> Loading names... <% } %>
        <%= modal_button(id, class: 'badge badge-secondary') do %>
          <%= fa_icon('ellipsis-h') %>
