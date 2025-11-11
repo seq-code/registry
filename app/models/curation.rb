@@ -20,8 +20,8 @@ class Curation < ApplicationRecord
       %i[secondary danger warning success]
     end
 
-    def kind_int(kind)
-      kind.index(kind.to_sym)
+    def kind_int(kind_sym)
+      kind.index(kind_sym.to_sym)
     end
 
     def status_opt
