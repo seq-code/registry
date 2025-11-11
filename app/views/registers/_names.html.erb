@@ -34,7 +34,10 @@
       <tr>
         <% if current_curator? && !@register.validated? %>
           <td>
-            <% kinds = { nomenclature: 'pen-fancy', genomics: 'dna' } %>
+            <%
+              kinds = { nomenclature: 'pen-fancy' }
+              kinds[:genomics] = 'dna' if name.sp_or_subsp?
+            %>
             <% id = modal('Name curation status') do %>
               <h2><%= display_link(name) %></h2>
               <dl class="main-section name-details p-4 mb-0">
