@@ -6,7 +6,8 @@
 
 <% def render_tree_node(n, contents) %>
   <% if n.present? %>
-    <% if current_curator? %>
+    <% name_in_register = @register.names.include?(n) %>
+    <% if current_curator? && name_in_register %>
       <%= render(
             partial: 'curations/name_ticks',
             locals: { name: n, btn_class: 'btn btn-sm p-0' }) %>
@@ -14,7 +15,7 @@
     <% if n.incertae_sedis? %>
       <span class="text-muted small">(<i>incertae sedis</i>)</span>
     <% end %>
-    <%= content_tag(@register.names.include?(n) ? :b : :span) do %>
+    <%= content_tag(name_in_register ? :b : :span) do %>
       <%= display_link(n, :formal_html) %>
     <% end %>
 
