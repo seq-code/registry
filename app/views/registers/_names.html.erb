@@ -49,7 +49,7 @@
                         <%= curation.status.to_s.capitalize %>
                       </div>
                       <%= f.input(
-                            :status_int, label: :status,
+                            :status_int, label: 'Status',
                             collection: Curation.status_opt
                           ) %>
                       <%= f.input(:notes) %>
