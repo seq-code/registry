@@ -418,10 +418,10 @@ class NamesController < ApplicationController
       flash[:notice] = params[:delete_corrigenda] ?
         'Corrigendum removed successfully' :
         'Corrigendum successfully registered'
-      redirect_to(@name)
+      redirect_to(name_path(@name))
     elsif params[:delete_corrigenda]
       flash[:alert] = 'Corrigendum could not be removed'
-      redirect_to(@name)
+      redirect_to(name_path(@name))
     else
       flash.now[:alert] = 'There was an issue registering the corrigendum'
       params[:publication_id] = par[:corrigendum_in_id]
