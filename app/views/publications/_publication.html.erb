@@ -18,12 +18,6 @@
             partial: 'publications/names',
             locals: { publication: publication }) %>
     <% end %>
-    <% if current_contributor? %>
-      <%= link_to(
-            link_publication_name_path(publication),
-            class: 'badge badge-pill badge-info', title: 'link names'
-          ) { %><%= fa_icon('link') %><% } %>
-    <% end %>
   <% end %>
 
   <%= adaptable_value(entry, 'Abstract') do %>
