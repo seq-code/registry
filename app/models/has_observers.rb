@@ -66,7 +66,7 @@ module HasObservers
 
   def observing_curators
     @observing_curators ||=
-      observers.where(curator: true).where.not(id: created_by_id)
+      observers.where(curator: true).where.not(id: created_by.id)
   end
 
   def observing_curators?
