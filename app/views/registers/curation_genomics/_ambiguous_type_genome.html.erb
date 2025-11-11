@@ -1,4 +1,12 @@
 <%= pager(@names) %>
+<% def show_aai(cr) %>
+  <% cr.each do |r| %>
+    <span class="<%= 'text-danger' if r[1].to_f > 95.0 %>">
+      <%= r[1] %>% - <%= r[0].unmiga_name %><br/>
+    </span>
+  <% end %>
+<% end %>
+
 <table class="table table-hover table-responsive">
   <thead>
     <tr>
@@ -37,16 +45,12 @@
           <% miga_obj = genome.miga_object %>
           <td>
             <% cr = miga_obj&.closest_relatives(3, false, :aai) || [] %>
-            <% cr.each do |r| %>
-              <%= r[1] %>% - <%= r[0].unmiga_name %><br/>
-            <% end %>
+            <%= show_aai(cr) %>
           </td>
           <td>
             <b><%= (miga_obj&.metadata || {})[:tax] %></b><br/>
             <% cr = miga_obj&.closest_relatives(3, true, :aai) || [] %>
-            <% cr.each do |r| %>
-              <%= r[1] %>% - <%= r[0].unmiga_name %><br/>
-            <% end %>
+            <%= show_aai(cr) %>
           </td>
         <% else %>
           <td colspan=2 class="text-danger">Undefined type genome</td>
