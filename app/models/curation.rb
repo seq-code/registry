@@ -25,7 +25,7 @@ class Curation < ApplicationRecord
     end
 
     def status_opt
-      status.each_with_index.map { |k, v| [v, k] }
+      status.each_with_index.to_a
     end
   end
 
