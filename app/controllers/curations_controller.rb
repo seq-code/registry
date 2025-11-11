@@ -11,7 +11,7 @@ class CurationsController < ApplicationController
     else
       flash.now[:danger] = 'Curation tracking could not be registered'
     end
-    redirect_back(fallback_location: curation.name&.register)
+    redirect_back(fallback_location: @curation.name&.register)
   end
 
   # POST /curations/1
@@ -21,7 +21,7 @@ class CurationsController < ApplicationController
     else
       flash.now[:danger] = 'Curation tracking could not be registered'
     end
-    redirect_back(fallback_location: curation.name&.register)
+    redirect_back(fallback_location: @curation.name&.register)
   end
 
   private
