@@ -4,19 +4,19 @@
   <% end %>
 
   <%= adaptable_value(entry, 'Names') do %>
-    <% if publication.names.any? %>
-      <% publication.publication_names.each do |publication_name| %>
-        <% name = publication_name.name %>
-        <%= link_to(
-              name.abbr_name, name, class: 'badge badge-pill badge-primary') %>
-        <% if current_contributor? %>
-          <%= link_to(
-                publication_name, method: :delete,
-                class: 'badge badge-pill badge-info', title: 'unlink name',
-                data: { confirm: 'Are you sure?' }
-              ) { %><%= fa_icon('trash-alt') %><% } %>
-        <% end %>
-      <% end %>
+    <% if publication.names.count > 10 %>
+      <% id = modal(
+            'Publication names',
+            async: names_publication_url(publication, content: true)
+          ) %>
+       <%= modal_button(id, class: 'badge badge-secondary') do %>
+         <%= fa_icon('ellipsis-h') %>
+         <%= pluralize(publication.names.count, 'Name') %>
+       <% end %>
+    <% else %>
+      <%= render(
+            partial: 'publications/names',
+            locals: { publication: publication }) %>
     <% end %>
     <% if current_contributor? %>
       <%= link_to(
@@ -53,7 +53,7 @@
       </li>
       <li class="list-inline-item m-0">
         <%= link_to(publication, title: 'See more') do %>
-          <%= fa_icon('arrow-circle-right') %>
+          <%= fa_icon('arrow-circle-right') %> Text
         <% end %>
       </li>
     </ul>

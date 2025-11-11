@@ -194,6 +194,9 @@ Rails.application.routes.draw do
   # Publications
   resources(:publications, concerns: :autocompletable) do
     resources(:contacts, only: %i[new create show index])
+    member do
+      get  :names
+    end
   end
   get  'doi/:doi' => 'publications#show', as: :doi, doi: /.+/
   resources(:contacts, only: []) do

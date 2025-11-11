@@ -1,7 +1,7 @@
 class PublicationsController < ApplicationController
   before_action(
     :set_publication,
-    only: %i[show edit update destroy]
+    only: %i[show edit update destroy names]
   )
   before_action(
     :authenticate_contributor!, only: %i[new edit create update destroy]
@@ -32,6 +32,11 @@ class PublicationsController < ApplicationController
   # GET /publications/1.json
   def show
     @crumbs = [['Publications', publications_path], @publication.short_citation]
+  end
+
+  # GET /publications/1/names
+  def names
+    render(layout: !params[:content].present?)
   end
 
   # GET /publications/new
