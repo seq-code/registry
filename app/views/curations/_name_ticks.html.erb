@@ -1,6 +1,7 @@
 <%
   kinds = { nomenclature: 'pen-fancy' }
   kinds[:genomics] = 'dna' if name.sp_or_subsp?
+  btn_class ||= 'btn p-0'
 %>
 <% id = modal('Name curation status') do %>
   <h2><%= display_link(name) %></h2>
@@ -33,7 +34,7 @@
     <% end %>
   </dl>
 <% end %>
-<%= modal_button(id, class: 'btn p-0') do %>
+<%= modal_button(id, class: btn_class) do %>
   <% kinds.each do |k, v| %>
     <%= fa_icon(v, class: "text-#{name.curation_kind(k).color}") %>
   <% end %>
