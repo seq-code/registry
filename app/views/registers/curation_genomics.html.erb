@@ -4,13 +4,15 @@
 
 <%= render(partial: 'title') %>
 <%= form_tag(curation_genomics_register_url(@register)) do %>
+  <%= label_tag(:check, 'Genomic check') %>
   <%= select_tag(
         :check,
         options_for_select(
           @checks.keys.map { |i| [i.to_s.titleize, i] },
           @check
-        )) %>
-  <%= @check.to_s.gsub(/_/, ' ').capitalize %>
+        ),
+        class: 'form-control'
+      ) %>
 <% end %>
 
 <%= render(partial: 'registers/curation_genomics/%s' % @check) %>
