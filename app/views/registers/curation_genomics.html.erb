@@ -3,6 +3,15 @@
 <% end %>
 
 <%= render(partial: 'title') %>
-<h3><%= @check.to_s.gsub(/_/, ' ').capitalize %></h3>
+<%= form_tag(curation_genomics_register_url(@register)) do %>
+  <%= select_tag(
+        :check,
+        options_for_select(
+          @checks.keys.map { |i| [i.to_s.titleize, i] },
+          @check
+        )) %>
+  <%= @check.to_s.gsub(/_/, ' ').capitalize %>
+<% end %>
+
 <%= render(partial: 'registers/curation_genomics/%s' % @check) %>
 
