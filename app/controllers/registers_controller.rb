@@ -570,8 +570,8 @@ class RegistersController < ApplicationController
       inconsistent_16s_assignment: [:inconsistent_16s_assignment],
       missing_metadata_in_databases: [:missing_metadata_in_databases]
     }
-    @check_k = (params[:check] || 0).to_i
-    @check = @checks.keys[@check_k]
+    @check = (params[:check] || @checks.keys.first).to_sym
+    @check_k = @checks.keys.index(@check)
     @crumbs = [
       ['Lists', registers_url],
       [@register.acc_url, @register],
