@@ -3,7 +3,10 @@
 <% end %>
 
 <%= render(partial: 'title') %>
-<%= form_tag(curation_genomics_register_url(@register)) do %>
+<%= form_tag(
+      curation_genomics_register_url(@register),
+      id: 'register-check'
+    ) do %>
   <%= label_tag(:check, 'Genomic check') %>
   <%= select_tag(
         :check,
@@ -17,3 +20,8 @@
 
 <%= render(partial: 'registers/curation_genomics/%s' % @check) %>
 
+<script>
+  $('#register-check select').on('change', function() {
+    $('#register-check').trigger('submit');
+  });
+</script>
