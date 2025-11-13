@@ -5,7 +5,7 @@
 <%= render(partial: 'title') %>
 <%= form_tag(
       curation_genomics_register_url(@register),
-      id: 'register-check'
+      method: :get, id: 'register-check', class: 'mb-3'
     ) do %>
   <%= label_tag(:check, 'Genomic check') %>
   <%= select_tag(
