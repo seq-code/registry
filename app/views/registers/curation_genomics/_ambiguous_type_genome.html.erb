@@ -2,7 +2,7 @@
 <% def show_aai(cr) %>
   <% cr.each do |r| %>
     <div class="<%=
-      r[1].to_f > 95.0 ? 'text-danger' : r[1].to_f > 60.0 ? 'text-warning' : ''
+      r[1].to_f > 95.0 ? 'text-danger' : r[1].to_f > 60.0 ? '' : 'text-muted'
     %>">
       <%= r[1] %>% - <%= r[0].unmiga_name %>
     </div>
