@@ -160,19 +160,19 @@ class Register < ApplicationRecord
     return true if correct_reviewer_token?(token)
     return false unless user
 
-    user.curator? || user?(user)
+    user.try(:curator?) || user?(user)
   end
 
   def can_view_publication?(user)
     return false unless user && publication_pdf.attached?
 
-    user.curator? || user?(user)
+    user.try(:curator?) || user?(user)
   end
 
   def can_view_correspondence?(user)
     return true if can_edit?(user)
     return false if published?
-    user.curator? || user?(user) || coauthor?(user)
+    user.try(:curator?) || user?(user) || coauthor?(user)
   end
 
   def correspondence_monitored?
