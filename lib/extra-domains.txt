@@ -50,3 +50,5 @@ myumanitoba.ca
 list.lu
 inserm.fr
 mdc-berlin.de
+pg.cibnor.mx
+jiangnan.edu.cn

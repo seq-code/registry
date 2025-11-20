@@ -1,7 +1,5 @@
 student.eit.edu.au
 nusaputra.ac.id
-std.kyrenia.edu.tr
-kyrenia.edu.tr
 regent.edu.gh
 student.wab.edu.pl
 wab.edu.pl
@@ -1554,6 +1552,9 @@ newcastle.edu.au
 nt.gov.au
 qut.edu.au
 rmit.edu.au
+smtafe.wa.edu.au
+southmetrotafe.wa.edu.au
+tafe.wa.edu.au
 scu.edu.au
 swin.edu.au
 une.edu.au
@@ -4280,6 +4281,7 @@ nmu.ac.in
 nsut.ac.in
 osmania.ac.in
 padmavatiwomen-univ.org
+pdeu.ac.in
 pdpu.ac.in
 pau.edu
 pdkv.ac.in
@@ -4843,6 +4845,7 @@ nui.ie
 rcpi.ie
 rcsi.ie
 shannoncollege.com
+tus.ie
 tcd.ie
 ucc.ie
 ucd.ie
@@ -4908,6 +4911,7 @@ uniba.it
 unibas.it
 unibg.it
 unibocconi.it
+studbocconi.it
 unibo.it
 unibs.it
 unibz.it
@@ -6237,7 +6241,7 @@ itam.mx
 ita.mx
 itc.mx
 itdurango.edu.mx
-itesm.mx
+tec.mx
 iteso.mx
 itleon.edu.mx
 itmina.edu.mx
@@ -7984,6 +7988,7 @@ wyb.ac.lk
 nsbm.lk
 nibm.lk
 iit.ac.lk
+esoft.academy
 aau.edu.sd
 ahfad.edu.sd
 bakhtalruda.edu.sd
@@ -8359,6 +8364,8 @@ anadolu.edu.tr
 ankara.edu.tr
 arel.edu.tr
 atauni.edu.tr
+std.kyrenia.edu.tr
+kyrenia.edu.tr
 atilim.edu.tr
 bahcesehir.edu.tr
 balikesir.edu.tr
@@ -8985,6 +8992,7 @@ iszu.edu.tr
 ieu.edu.tr
 izmirekonomi.edu.tr
 karatay.edu.tr
+aybu.edu.tr
 gidatarim.edu.tr
 mef.edu.tr
 nisantasi.edu.tr
@@ -9032,6 +9040,7 @@ coconino.edu
 eac.edu
 gatewaycc.edu
 gccaz.edu
+minerva.edu
 mesacc.edu
 maricopa.edu
 mohave.edu
@@ -10003,6 +10012,8 @@ hbc.edu.cn
 thm.de
 hwg-lu.de
 iiitm.ac.in
+coeruniversity.ac.in
+coer.ac.in
 leuphana.de
 oth-aw.de
 fatecie.edu.br
@@ -10274,7 +10285,6 @@ scccd.edu
 davidsondavie.edu
 duytan.edu.vn
 berkeleycollege.edu
-aybu.edu.tr
 floridauniversitaria.es
 schiller.edu
 uenp.edu.br
@@ -10498,6 +10508,8 @@ skltshu.ac.in
 telanganauniversity.ac.in
 dallascollege.edu
 untdallas.edu
+w-hs.de
+cduestc.cn
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10550,3 +10562,5 @@ myumanitoba.ca
 list.lu
 inserm.fr
 mdc-berlin.de
+pg.cibnor.mx
+jiangnan.edu.cn
