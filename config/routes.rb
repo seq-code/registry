@@ -173,6 +173,8 @@ Rails.application.routes.draw do
       post :merge, action: :merge_commit
       get  :coauthors
       post :coauthors, action: :coauthors_commit
+      get  :transfer_user
+      post :transfer_user, action: :transfer_user_commit
       # --> Special curation pages
       get  :curation_genomics
       post :snooze_curation

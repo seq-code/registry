@@ -7,7 +7,7 @@ class RegistersController < ApplicationController
       notify notify_commit validate coauthors coauthors_commit
       editorial_checks publish publish_commit new_correspondence
       internal_notes nomenclature_review genomics_review snooze_curation
-      recheck_pdf_files curation_genomics
+      recheck_pdf_files curation_genomics transfer_user transfer_user_commit
       observe unobserve merge merge_commit sample_map
       reviewer_token reviewer_token_create reviewer_token_delete
     ]
@@ -22,7 +22,7 @@ class RegistersController < ApplicationController
     only: %i[
       return return_commit endorse validate
       internal_notes nomenclature_review genomics_review snooze_curation
-      recheck_pdf_files curation_genomics
+      recheck_pdf_files curation_genomics transfer_user transfer_user_commit
     ]
   )
   before_action(
@@ -493,6 +493,14 @@ class RegistersController < ApplicationController
       flash[:alert] = 'The list has not been notified'
     end
     redirect_back(fallback_location: @register)
+  end
+
+  # GET /register/r:abc/transfer_user
+  def transfer_user
+  end
+
+  # POST /register/r:abc/transfer_user
+  def transfer_user_commit
   end
 
   # GET /registers/r:abc/merge

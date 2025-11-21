@@ -1,7 +1,4 @@
-<% if @register.title? %>
-  <% provide(:title, @register.title) %>
-<% end %>
-
+<% provide(:title, @register.title) if @register.title? %>
 <%= render(partial: 'title') %>
 
 <% def render_tree_node(n, contents) %>
