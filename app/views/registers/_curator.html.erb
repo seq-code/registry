@@ -12,6 +12,7 @@
           <%= fa_icon('check-square') %> See correspondence
         <% end %>
         &raquo; Show historic record of communication with curators
+        <hr/>
       <% else %>
         <% unless @register.all_endorsed? %>
           <% id = modal('Are you sure?') do %>
@@ -53,6 +54,7 @@
           &raquo; Mark all names in the list as endorsed in batch
           <hr/>
         <% end %>
+
         <%= link_to(
               return_register_url(@register),
               class: 'btn btn-primary btn-sm'
@@ -62,6 +64,17 @@
         &raquo; Return all names in this list to the status of draft and
         notify submitter
         <hr/>
+
+        <%= link_to(
+              transfer_user_register_url(@register),
+              class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('people-arrows') %> Transfer to another user
+        <% end %>
+        &raquo; Transfer the list and all included names to a different
+        contributor and notify the current owner
+        <hr/>
+
         <% if @register.notified? %>
           <%= link_to(
                 recheck_pdf_files_register_url(@register), method: :post,
@@ -72,6 +85,7 @@
           &raquo; Rerun automated checks for the publication and supplementary
           files
           <hr/>
+
           <%= link_to(
                 notify_register_url(@register),
                 class: 'btn btn-primary btn-sm'
@@ -81,6 +95,7 @@
           &raquo; Edit the notification form, including minor changes in title
           and abstract
           <hr/>
+
           <% id = modal('Are you sure?') do %>
             <h5>Validate names in the list</h5>
             <p>

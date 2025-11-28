@@ -501,6 +501,7 @@ class RegistersController < ApplicationController
 
   # POST /register/r:abc/transfer_user
   def transfer_user_commit
+    old_user = @register.user
     username = params.require(:register)[:user]
     user = User.find_by_email_or_username(username)
 
@@ -508,6 +509,11 @@ class RegistersController < ApplicationController
       flash[:alert] = 'The user could not be found'
       render :transfer_user
     elsif @register.transfer(current_user, user)
+      add_automatic_correspondence(
+        'SeqCode Register transferred from %s to %s' % [
+          old_user&.username, user&.username
+        ]
+      )
       flash[:notice] =
         'List and name(s) successfully transferred to the new user'
       redirect_to(@register)
