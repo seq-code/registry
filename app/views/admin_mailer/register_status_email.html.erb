@@ -117,5 +117,25 @@
       <%= @register.notes.body %>
     </p>
   <% end %>
+<% when 'transfer' %>
+  <p>
+    The register list
+    <%= link_to(@register.acc_url, @register.acc_url(true)) %>
+    has been transferred to a different user.
+  </p>
+  <br/>
+
+  <h2>What does this mean?</h2>
+  <p>
+    You are no longer authorized to modify this list's data and metadata.
+  </p>
+  <br/>
+
+  <h2>What to do next?</h2>
+  <p>
+    If you were aware and agree with this, you don't need to take any further
+    actions. If you think this was a mistake, please
+    <%= link_to('contact us', page_connect_url) %>.
+  </p>
 <% end %>
 

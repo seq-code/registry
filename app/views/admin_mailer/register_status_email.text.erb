@@ -81,4 +81,18 @@
   ========================
   <%= @register.notes.body.to_plain_text %>
   <% end %>
+<% when 'transfer' %>
+  The register list <%= @register.acc_url %> has been transferred
+  to a different user.
+
+  What does this mean?
+  ====================
+  You are no longer authorized to modify this list's data and metadata.
+
+  What to do next?
+  ================
+  If you were aware and agree with this, you don't need to take any further
+  actions. If you think this was a mistake, please contact us at:
+  <%= page_connect_url %>
 <% end %>
+
