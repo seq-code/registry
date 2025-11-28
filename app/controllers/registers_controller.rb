@@ -501,6 +501,22 @@ class RegistersController < ApplicationController
 
   # POST /register/r:abc/transfer_user
   def transfer_user_commit
+    username = params.require(:register)[:user]
+    user = User.find_by_email_or_username(username)
+
+    if !user.present?
+      flash[:alert] = 'The user could not be found'
+      render :transfer_user
+    elsif @register.transfer(current_user, user)
+      flash[:notice] =
+        'List and name(s) successfully transferred to the new user'
+      redirect_back(fallback_location: @register)
+    else
+      flash[:alert] =
+        'The list has not been transferred due to a failed check: ' +
+        @register.status_alert
+      render :transfer_user
+    end
   end
 
   # GET /registers/r:abc/merge

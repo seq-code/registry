@@ -273,7 +273,12 @@ module Register::Status
     end
 
     ActiveRecord::Base.transaction do
-      names.each { |name| name.transfer(user, to_user) }
+      names.each do |name|
+        unless name.transfer(user, to_user)
+          @status_alert = "#{name.name}: #{name.status_alert}"
+          return false
+        end
+      end
       update_status_with_alert(user: to_user) or return false
     end
     notify_status_change(:transfer, user)
