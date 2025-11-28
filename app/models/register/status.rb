@@ -62,14 +62,17 @@ module Register::Status
   ##
   # Submit the list for evaluation
   # 
-  # user: The user submitting the list (the current user)
+  # user: The user submitting the list (the current user, a contributor)
   def submit(user)
+    unless user.contributor?
+      @status_alert = 'User cannot submit list'
+      return false
+    end
+
     assert_status_with_alert(draft?, 'submit') or return false
     ActiveRecord::Base.transaction do
       par = { status: 10, submitted_at: Time.now, submitted_by: user }
-      names.each do |name|
-        name.update!(par)
-      end
+      names.each { |name| name.update!(par) }
       update_status_with_alert(
         submitted: true, submitted_at: Time.now,
         genomics_review: false, nomenclature_review: false
@@ -81,9 +84,14 @@ module Register::Status
   ##
   # Return the register (and all associated names) to the authors
   #
-  # user: The user returning the liat (the current user, a curator)
+  # user: The user returning the list (the current user, a curator)
   # notes: Notes to add to the list, overwritting any old notes
   def return(user, notes)
+    unless user.curator?
+      @status_alert = 'User cannot return list'
+      return false
+    end
+
     assert_status_with_alert(in_curation?, 'return') or return false
     ActiveRecord::Base.transaction do
       names.each { |name| name.update!(status: 5) unless name.validated? }
@@ -99,6 +107,11 @@ module Register::Status
   #
   # user: The user endorsing the list (the current user, a curator)
   def endorse(user)
+    unless user.curator?
+      @status_alert = 'User cannot endorse list'
+      return false
+    end
+
     ActiveRecord::Base.transaction do
       par = { status: 12, endorsed_by: user, endorsed_at: Time.now }
       names.each { |name| name.update!(par) unless name.after_endorsement? }
@@ -154,6 +167,11 @@ module Register::Status
   #
   # user: The user validating the list (the current user, a curator)
   def validate(user)
+    unless user.curator?
+      @status_alert = 'User cannot validate list'
+      return false
+    end
+
     ActiveRecord::Base.transaction do
       par = { validated_by: user, validated_at: Time.now }
       names.each { |name| name.update!(par.merge(status: 15)) }
@@ -169,6 +187,11 @@ module Register::Status
   # action: The type of action to trigger on DataCite, one of: 'publish',
   #   'update', or 'none'.
   def publish(user, action)
+    unless user.editor?
+      @status_alert = 'User cannot publish list'
+      return false
+    end
+
     assert_status_with_alert(validated?, 'publish') or return false
     action = action.present? ? action.to_sym : :none
 
@@ -236,6 +259,24 @@ module Register::Status
     HeavyMethodJob.perform_later(:post_publication, self)
     true
     # No notification for published lists
+  end
+
+  ##
+  # Transfer the register list and all associated names to +to_user+
+  #
+  # user: The user transferring the list (the current user, a curator)
+  # to_user: New owner of the list (any user, ideally a contributor)
+  def transfer(user, to_user)
+    unless user.curator?
+      @status_alert = 'User cannot transfer list'
+      return false
+    end
+
+    ActiveRecord::Base.transaction do
+      names.each { |name| name.transfer(user, to_user) }
+      update_status_with_alert(user: to_user) or return false
+    end
+    notify_status_change(:transfer, user)
   end
 
   # ============ --- TASKS ASSOCIATED TO STATUS CHANGE --- ============

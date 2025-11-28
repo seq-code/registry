@@ -151,7 +151,7 @@ module Name::Status
   #
   # user: The user demoting the name
   def demote(user)
-    if !user.admin?
+    unless user.admin?
       @status_alert = 'User cannot demote name'
       return false
     end
@@ -159,6 +159,22 @@ module Name::Status
     update_status_with_alert(status: 0) or return false
     # This change does not trigger notifications, as it is intended only for
     # internal curation
+    true
+  end
+
+  ##
+  # Transfer the name to a new owner
+  #
+  # user: The user transferring the name (the current user, a curator)
+  # to_user: New owner of the name (any user, ideally a contributor)
+  def transfer(user, to_user)
+    if !user.curator?
+      @status_alert = 'User cannot transfer name'
+      return false
+    end
+
+    update_status_with_alert(created_by: to_user) or return false
+    notify_status_change(:transfer, user)
     true
   end
 end
