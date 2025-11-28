@@ -510,7 +510,7 @@ class RegistersController < ApplicationController
     elsif @register.transfer(current_user, user)
       flash[:notice] =
         'List and name(s) successfully transferred to the new user'
-      redirect_back(fallback_location: @register)
+      redirect_to(@register)
     else
       flash[:alert] =
         'The list has not been transferred due to a failed check: ' +
