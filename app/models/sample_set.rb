@@ -7,8 +7,11 @@ class SampleSet
         date: %i[collection_date event_date_time_start event_date_time_end],
         location: GenomeSampleAttribute.location_keys.values.flatten,
         toponym: %i[
-          geo_loc_name geographic_location_country_and_or_sea marine_region
+          geo_loc_name
+          geographic_location_country_and_or_sea
           geographic_location_country_and_or_sea_region
+          geographic_location_region_and_locality
+          marine_region
         ],
         environment: %i[
           env_material sample_type env_biome isolation_source analyte_type
