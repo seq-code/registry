@@ -24,7 +24,8 @@
         </td>
         <td>
           <% if genome %>
-            <% rdp_cl = genome.miga_object&.result(:ssu)&.[](:classification) %>
+            <% rdp_cl = genome
+                  .miga_object&.result(:ssu)&.file_path(:classification) %>
             <%= rdp_cl %>
           <% end %>
         </td>
