@@ -1,0 +1,36 @@
+<%= pager(@names) %>
+
+<table class="table table-hover table-responsive">
+  <thead>
+    <tr>
+      <th>Name, Type</th>
+      <th>Checks</th>
+      <th>RDP Classification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @names.each do |name| %>
+      <% genome = name.type_genome %>
+      <tr>
+        <td><%= display_link(name) %>, <%= display_link(genome) %></td>
+        <td class="curator-checklist">
+          <% @checks[@check].each do |check_type| %>
+            <% warn = name.qc_warnings[check_type] or next %>
+            <%= render(
+                  partial: 'checks/curator',
+                  locals: { warn: warn, no_message: true, no_section: true }
+                ) %>
+          <% end %>
+        </td>
+        <td>
+          <% if genome %>
+            <% rdp_cl = genome.miga_object&.result(:ssu)&.[](:classification) %>
+            <%= rdp_cl %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= render(partial: 'checks/curator_script') %>
+<%= pager(@names) %>
