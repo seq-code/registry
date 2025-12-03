@@ -28,7 +28,7 @@
                .miga_object&.result(:ssu)
                &.file_path(:classification) %>
             <% if rdp_file %>
-              <% Zlib::GzipReader.open(rdp_file) |fh| %>
+              <% Zlib::GzipReader.open(rdp_file) do |fh| %>
                 <% fh.each do |ln| %>
                   <% next if ln =~ /^#/ %>
                   <% row = ln.split("\t") %>
