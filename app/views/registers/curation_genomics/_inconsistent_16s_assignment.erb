@@ -5,6 +5,7 @@
     <tr>
       <th>Name, Type</th>
       <th>Checks</th>
+      <th>Reported Classification</th>
       <th>RDP Classification</th>
     </tr>
   </thead>
@@ -22,11 +23,11 @@
                 ) %>
           <% end %>
         </td>
+        <td><% name.lineage.map(&:name).join(' > ') %></td>
         <td>
           <% if genome %>
-            <% rdp_file = genome
-               .miga_object&.result(:ssu)
-               &.file_path(:classification) %>
+            <% rdp_file =
+                genome.miga_object&.result(:ssu)&.file_path(:classification) %>
             <% if rdp_file %>
               <% Zlib::GzipReader.open(rdp_file) do |fh| %>
                 <% fh.each do |ln| %>
@@ -36,8 +37,8 @@
                   <ul>
                     <% while (tax = row.shift(3)).any? %>
                       <li>
-                        <%= tax[0] %>
-                        <span class="text-muted">(<%= tax[2] %>)</span>
+                        <%= tax[1] %>
+                        <span class="text-muted">(<%= tax[0] %>)</span>
                       </li>
                     <% end %>
                   </ul>
