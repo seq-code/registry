@@ -35,10 +35,11 @@
                   <% row = ln.split("\t") %>
                   <b><%= row.shift %></b>
                   <ul>
+                    <% row.shift %>
                     <% while (tax = row.shift(3)).any? %>
                       <li>
-                        <%= tax[1] %>
-                        <span class="text-muted">(<%= tax[0] %>)</span>
+                        <%= tax[0] %>
+                        <span class="text-muted">(<%= tax[2] %>)</span>
                       </li>
                     <% end %>
                   </ul>
