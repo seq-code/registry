@@ -23,7 +23,7 @@
                 ) %>
           <% end %>
         </td>
-        <td><% name.lineage.map(&:name).join(' > ') %></td>
+        <td><%= name.lineage.map(&:name).join(' > ') %></td>
         <td>
           <% if genome %>
             <% rdp_file =
