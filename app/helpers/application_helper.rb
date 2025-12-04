@@ -1,8 +1,16 @@
 module ApplicationHelper
   def canonical_url(opts = {})
+    # Clean-up options 
+    opts_parse = {}
+    opts.keys.map(&:to_s).sort.each do |k_s|
+      k = k_s.to_sym
+      next if k_s == 'page' and opts[k] == 1
+      opts_parse[k] = opts[k]
+    end
+
     url_for({
       only_path: false, protocol: 'https', host: 'registry.seqco.de'
-    }.merge(opts))
+    }.merge(opts_parse))
   end
 
   def report_history(obj, text: 'Report history')
