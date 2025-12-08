@@ -51,6 +51,7 @@
                 <ul>
                   <% row.shift %>
                   <% while (tax = row.shift(3)).any? %>
+                    <% break if tax[2].to_f < 0.5 %>
                     <li>
                       <% show_tax_string(tax[1] + ':' + tax[0]) %>
                       <span class="text-muted">(<%= tax[2] %>)</span>
