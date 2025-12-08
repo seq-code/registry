@@ -23,7 +23,8 @@
           <% end %>
         </td>
         <td>
-          <%= render(partial: 'genomes/samples', locals: { genome: genome }) %>
+          <%= render(partial: 'genomes/samples',
+                locals: { genome: genome, nolayout: true }) %>
         </td>
       </tr>
     <% end %>

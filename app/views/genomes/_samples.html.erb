@@ -1,10 +1,13 @@
 <% genome ||= @genome %>
+<% nolayout ||= false %>
 <% if genome.try(:source_hash).present? %>
   <dl name="samples" class="main-section name-details">
-    <h2>
-      <%= fa_icon('atlas', class: 'float-right') %>
-      Sample Metadata
-    </h2>
+    <% unless nolayout %>
+      <h2>
+        <%= fa_icon('atlas', class: 'float-right') %>
+        Sample Metadata
+      </h2>
+    <% end %>
 
     <% if genome.biosample_accessions.present? %>
       <dt><%= fa_icon('database') %> BioSample entries</dt>
@@ -176,7 +179,7 @@
       <% end %>
     </dd>
 
-    <% if genome.source_hash[:retrieved_at] %>
+    <% if !nolayout && genome.source_hash[:retrieved_at] %>
       <div class="text-muted">
         <hr/>
         Metadata retrieved
