@@ -1,5 +1,14 @@
 <%= pager(@names) %>
 
+<% def show_tax_string(string) %>
+  <% string.split(' > ').each do |i| %>
+    <% r, n = i.split(':', 2) %>
+    <% r_deg = (%w[x d p c o f g s].index(r.to_s[0]) || 0) * 360 / 8 %>
+    &raquo;
+    <span style="color: hsl(<%= r_deg %>deg 80% 20%);"><%= n %></span>
+  <% end %>
+<% end %>
+
 <table class="table table-hover table-responsive">
   <thead>
     <tr>
@@ -24,7 +33,12 @@
                 ) %>
           <% end %>
         </td>
-        <td><%= name.lineage.map(&:name).join(' > ') %></td>
+        <td>
+          <% show_tax_string(
+                name.lineage.map { |i| "#{i.inferred_rank}:#{name.name}" }
+                    .join(' > ')
+              ) %>
+        </td>
         <td>
           <% rdp_file =
               genome&.miga_object&.result(:ssu)&.file_path(:classification) %>
@@ -38,7 +52,7 @@
                   <% row.shift %>
                   <% while (tax = row.shift(3)).any? %>
                     <li>
-                      <%= tax[0] %>
+                      <% show_tax_string(tax[1] + ':' + tax[0]) %>
                       <span class="text-muted">(<%= tax[2] %>)</span>
                     </li>
                   <% end %>
@@ -49,7 +63,9 @@
         </td>
         <td>
           <% miga_classif = genome&.miga_object&.metadata&.[](:tax) %>
-          <%= miga_classif %>
+          <% show_tax_string(
+                miga_classif.ranks.map { |i| "#{i[0]}:#{i[1]}" }.join(' > ')
+              ) %>
         </td>
       </tr>
     <% end %>
