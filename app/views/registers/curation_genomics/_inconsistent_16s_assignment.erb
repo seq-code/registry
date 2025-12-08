@@ -5,7 +5,7 @@
     <% r, n = i.split(':', 2) %>
     <% r_deg = (%w[x d p c o f g s].index(r.to_s[0]) || 0) * 360 / 8 %>
     &raquo;
-    <span style="color: hsl(<%= r_deg %>deg 80% 40%);"><%= n %></span>
+    <span style="color: hsl(<%= r_deg %>deg 80% 30%);"><%= n %></span>
   <% end %>
 <% end %>
 
@@ -35,7 +35,7 @@
         </td>
         <td>
           <% show_tax_string(
-                name.lineage.map { |i| "#{i.inferred_rank}:#{name.name}" }
+                name.lineage.map { |i| "#{i.inferred_rank}:#{i.name}" }
                     .join(' > ')
               ) %>
         </td>
