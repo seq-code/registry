@@ -74,6 +74,15 @@
         contributor and notify the current owner
         <hr/>
 
+        <%= link_to(
+              curation_genomics_register_url(@register),
+              class: 'btn btn-primary btn-sm'
+            ) do %>
+          <%= fa_icon('dna') %> Batch genomics curation
+        <% end %>
+        &raquo; Enter batch mode for genomics curation using per-check tables
+        <hr/>
+
         <% if @register.notified? %>
           <%= link_to(
                 recheck_pdf_files_register_url(@register), method: :post,
