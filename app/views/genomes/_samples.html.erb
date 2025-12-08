@@ -1,15 +1,16 @@
-<% if @genome.try(:source_hash).present? %>
+<% genome ||= @genome %>
+<% if genome.try(:source_hash).present? %>
   <dl name="samples" class="main-section name-details">
     <h2>
       <%= fa_icon('atlas', class: 'float-right') %>
       Sample Metadata
     </h2>
 
-    <% if @genome.biosample_accessions.present? %>
+    <% if genome.biosample_accessions.present? %>
       <dt><%= fa_icon('database') %> BioSample entries</dt>
       <dd>
         <%= longer_list('All entries') do %>
-          <% @genome.biosample_accessions.map do |acc| %>
+          <% genome.biosample_accessions.map do |acc| %>
             <%= link_to("https://www.ncbi.nlm.nih.gov/biosample/#{acc}",
                         target: '_blank') do %>
               BioSample: <%= acc %> <%= fa_icon('external-link-alt') %>
@@ -28,8 +29,8 @@
     <% attributes_icon.each do |group, icon| %>
       <dt><%= fa_icon(icon) %> <%= group.to_s.capitalize %></dt>
       <dd>
-        <% if @genome.sample_set.grouped_attributes[group].present? %>
-          <% @genome.sample_set.grouped_attributes[group].each do |k, v_att| %>
+        <% if genome.sample_set.grouped_attributes[group].present? %>
+          <% genome.sample_set.grouped_attributes[group].each do |k, v_att| %>
             <% v = v_att.map(&:value_to_s) %>
             <div>
               <b><%= k.to_s.tr('_', ' ').titleize %>:</b>
@@ -94,7 +95,7 @@
           <% if group == :location %>
             <% id = modal(
                       'Sampling locations', size: :lg,
-                      async: sample_map_genome_url(@genome, content: true)
+                      async: sample_map_genome_url(genome, content: true)
                     ) {} %>
             <%= modal_button(id, as_anchor: true) do %>
               View map of sampling locations
@@ -107,20 +108,20 @@
       </dd>
     <% end%>
 
-    <% if @genome.sample_set.extra_biosamples.present? %>
+    <% if genome.sample_set.extra_biosamples.present? %>
       <dt><%= fa_icon('link') %> Additional Accessions</dt>
       <dd>
-        <%= @genome.sample_set.extra_biosamples.join(', ') %>
-        <% if @genome.can_edit?(current_user) &&
-              @genome.source_database == 'biosample' %>
+        <%= genome.sample_set.extra_biosamples.join(', ') %>
+        <% if genome.can_edit?(current_user) &&
+              genome.source_database == 'biosample' %>
           <%
-            par = { genome: {}, return_to: genome_path(@genome) }
+            par = { genome: {}, return_to: genome_path(genome) }
             par[:genome][:source_accession] =
-              @genome.source_accession + ', ' +
-              @genome.sample_set.extra_biosamples.join(', ')
+              genome.source_accession + ', ' +
+              genome.sample_set.extra_biosamples.join(', ')
           %>
           <%= link_to(
-                genome_url(@genome, par),
+                genome_url(genome, par),
                 method: :patch,
                 class: 'badge badge-pill badge-info'
               ) do %>
@@ -132,13 +133,13 @@
 
     <dt><%= fa_icon('flask') %> All retrieved samples</dt>
     <dd>
-      <% if @genome.source_hash[:samples].empty? %>
+      <% if genome.source_hash[:samples].empty? %>
         <div class="alert alert-warning">
           No BioSample metadata was found associated to this genome.
         </div>
       <% else %>
         <ul>
-          <% @genome.source_hash[:samples].each do |acc, sample| %>
+          <% genome.source_hash[:samples].each do |acc, sample| %>
             <% id = modal(acc, size: 'lg') do %>
               <% if sample[:from_sra] || sample[:api] %>
                 <div class="alert alert-info">
@@ -175,13 +176,13 @@
       <% end %>
     </dd>
 
-    <% if @genome.source_hash[:retrieved_at] %>
+    <% if genome.source_hash[:retrieved_at] %>
       <div class="text-muted">
         <hr/>
         Metadata retrieved
-        <%= time_ago_with_date(@genome.source_hash[:retrieved_at]) %>
-        <% if @genome.queued_for_external_resources %>
-          (queued for update <%= time_ago_with_date(@genome.queued_external) %>)
+        <%= time_ago_with_date(genome.source_hash[:retrieved_at]) %>
+        <% if genome.queued_for_external_resources %>
+          (queued for update <%= time_ago_with_date(genome.queued_external) %>)
         <% end %>
       </div>
     <% end %>
