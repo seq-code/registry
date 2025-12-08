@@ -3,7 +3,7 @@
 <% def show_tax_string(string) %>
   <% string.split(' > ').each do |i| %>
     <% r, n = i.split(':', 2) %>
-    <% r_deg = (%w[x d p c o f g s].index(r.to_s[0]) || 0) * 360 / 8 %>
+    <% r_deg = (%w[x d k p c o f g s].index(r.to_s[0]) || 0) * 360 / 9 %>
     &raquo;
     <span style="color: hsl(<%= r_deg %>deg 80% 30%);"><%= n %></span>
   <% end %>
