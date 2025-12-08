@@ -8489,6 +8489,7 @@ forest.lviv.ua
 franko.lviv.ua
 hneu.edu.ua
 ifdtung.if.ua
+nung.edu.ua
 kdpu.edu.ua
 khadi.kharkov.ua
 khai.edu
@@ -10564,3 +10565,4 @@ inserm.fr
 mdc-berlin.de
 pg.cibnor.mx
 jiangnan.edu.cn
+genoscope.cns.fr

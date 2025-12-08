@@ -52,3 +52,4 @@ inserm.fr
 mdc-berlin.de
 pg.cibnor.mx
 jiangnan.edu.cn
+genoscope.cns.fr
