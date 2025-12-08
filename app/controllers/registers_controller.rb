@@ -598,7 +598,8 @@ class RegistersController < ApplicationController
     @checks = {
       ambiguous_type_genome: [:ambiguous_type_genome],
       inconsistent_16s_assignment: [:inconsistent_16s_assignment],
-      missing_metadata_in_databases: [:missing_metadata_in_databases]
+      missing_metadata_in_databases: [:missing_metadata_in_databases],
+      all_genomics: []
     }
     @check = (params[:check] || @checks.keys.first).to_sym
     @check_k = @checks.keys.index(@check)
