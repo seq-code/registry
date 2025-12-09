@@ -19,10 +19,27 @@
 <% end %>
 
 <%= render(partial: 'registers/curation_genomics/%s' % @check) %>
+<span class="check-links">
+  <%= link_to('#', class: 'text-secondary', id: 'skip-all-btn') do %>
+    <%= fa_icon('minus-circle') %> Skip all checks
+  <% end %>
+  <%= link_to('#', class: 'text-success', id: 'pass-all-btn') do %>
+    <%= fa_icon('check-circle') %> Pass all checks
+  <% end %>
+  <%= link_to('#', class: 'text-danger', id: 'fail-all-btn') do %>
+    <%= fa_icon('exclamation-circle') %> Fail all checks
+  <% end %>
+</span>
 <%= render(partial: 'shared/cc') %>
 
 <script>
   $('#register-check select').on('change', function() {
     $('#register-check').trigger('submit');
   });
+  $("#skip-all-btn").on("click",
+    function() { $("[data-do=skip]").click(); return false; });
+  $("#pass-all-btn").on("click",
+    function() { $("[data-do=pass]").click(); return false; });
+  $("#fail-all-btn").on("click",
+    function() { $("[data-do=fail]").click(); return false; });
 </script>
