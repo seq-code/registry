@@ -19,14 +19,14 @@
 <% end %>
 
 <%= render(partial: 'registers/curation_genomics/%s' % @check) %>
-<span class="check-links">
-  <%= link_to('#', class: 'text-secondary', id: 'skip-all-btn') do %>
+<div class="check-links text-center m-4">
+  <%= link_to('#', class: 'text-secondary m-2', id: 'skip-all-btn') do %>
     <%= fa_icon('minus-circle') %> Skip all checks
   <% end %>
-  <%= link_to('#', class: 'text-success', id: 'pass-all-btn') do %>
+  <%= link_to('#', class: 'text-success m-2', id: 'pass-all-btn') do %>
     <%= fa_icon('check-circle') %> Pass all checks
   <% end %>
-  <%= link_to('#', class: 'text-danger', id: 'fail-all-btn') do %>
+  <%= link_to('#', class: 'text-danger m-2', id: 'fail-all-btn') do %>
     <%= fa_icon('exclamation-circle') %> Fail all checks
   <% end %>
 </span>
