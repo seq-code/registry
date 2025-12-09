@@ -27,7 +27,7 @@
 <table class="table table-hover table-responsive">
   <thead>
     <tr>
-      <th>Name, Type, Reported Classification</th>
+      <th>Name, Type</th>
       <th>Checks</th>
       <th>Discrepancies</th>
       <th>MiGA Distances (top 3 AAI)</th>
@@ -76,6 +76,7 @@
       </tr>
       <tr>
         <td colspan=3>
+          <b>Reported Classification:</b><br/>
           <% show_tax_string(
                 name.lineage.map { |i| "#{i.inferred_rank}:#{i.name}" }
                     .join(' > ')
