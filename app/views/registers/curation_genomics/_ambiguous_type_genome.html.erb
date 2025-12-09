@@ -27,10 +27,9 @@
 <table class="table table-hover table-responsive">
   <thead>
     <tr>
-      <th>Name, Type</th>
+      <th>Name, Type, Reported Classification</th>
       <th>Checks</th>
       <th>Discrepancies</th>
-      <th>Reported Classification</th>
       <th>MiGA Distances (top 3 AAI)</th>
       <th>MiGA Taxonomy (top 3 AAI)</th>
     </tr>
@@ -59,27 +58,29 @@
             <% end %>
           <% end %>
         </td>
-        <td>
-          <% show_tax_string(
-                name.lineage.map { |i| "#{i.inferred_rank}:#{i.name}" }
-                    .join(' > ')
-              ) %>
-        </td>
         <% if genome %>
           <% miga_obj = genome.miga_object %>
-          <td>
+          <td rowspan=2>
             <% cr = miga_obj&.closest_relatives(3, false, :aai) || [] %>
             <% show_aai(cr) %>
           </td>
-          <td>
+          <td rowspan=2>
             <b><%= (miga_obj&.metadata || {})[:tax] %></b><br/>
             <% cr = miga_obj&.closest_relatives(3, true, :aai) || [] %>
             <% show_aai(cr) %>
           </td>
         <% else %>
-          <td colspan=2 class="text-danger">Undefined type genome</td>
+          <td colspan=2 rowspan=2 class="text-danger">Undefined type genome</td>
           <% next %>
         <% end %>
+      </tr>
+      <tr>
+        <td colspan=3>
+          <% show_tax_string(
+                name.lineage.map { |i| "#{i.inferred_rank}:#{i.name}" }
+                    .join(' > ')
+              ) %>
+        </td>
       </tr>
     <% end %>
   </tbody>
