@@ -50,18 +50,15 @@
         </td>
         <td rowspan=2>
           <% miga_classif = genome&.miga_object&.metadata&.[](:tax) %>
-          <%= show_tax_string(
-                miga_classif.ranks.map { |i| "#{i[0]}:#{i[1]}" }.join(' > '),
-                id: "tax-#{name.id}-miga"
-              ) %>
+          <%= show_tax_string(miga_classif, id: "tax-#{name.id}-miga") %>
         </td>
       </tr>
       <tr>
         <td colspan=2>
           <b>Reported Classification</b><br/>
-          <% show_tax_string(
-                name.lineage.map { |i| "#{i.inferred_rank}:#{i.name}" }
-                    .join(' > ')
+          <%= show_tax_string(
+                name.lineage.map { |i| "#{i.inferred_rank}:#{i.name}" },
+                id: "tax-#{name.id}-reported"
               ) %>
         </td>
       </tr>

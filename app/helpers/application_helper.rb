@@ -1,17 +1,22 @@
+require 'miga/taxonomy'
+
 module ApplicationHelper
-  def show_tax_string(string, opts = {})
+  def show_tax_string(tax, opts = {})
     opts[:class] ||= 'tax-string'
+    tax ||= []
+    tax = tax.ranks.to_a if tax.is_a?(MiGA::Taxonomy)
+    tax = tax.split(/ (>|&raquo;|\/) /) unless tax.is_a?(Array)
+
     content_tag(:span, opts) do
-      string = string.split(/ (>|&raquo;|\/) /) unless string.is_a?(Array)
-      string.each_with_index.map do |i, k|
-        r, n  = i.split(':', 2)
+      tax.each_with_index.map do |i, k|
+        r, n  = i.is_a?(String) ? i.split(':', 2) : i
         r_key = r.to_s[0].to_sym
 
         content_tag(:span, k == 0 ? '' : ' &raquo; '.html_safe) +
-        content_tag(
-          :span, n, title: Name.rank_keys[r_key],
-          data: { kind: :taxonomy, rank: r_key, value: n }
-        )
+          content_tag(
+            :span, n, title: Name.rank_keys[r_key],
+            data: { kind: :taxonomy, rank: r_key, value: n }
+          )
       end.inject(:+)
     end
   end

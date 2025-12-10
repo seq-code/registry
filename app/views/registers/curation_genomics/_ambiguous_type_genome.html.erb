@@ -56,13 +56,9 @@
             <% show_aai(cr) %>
           </td>
           <td rowspan=2>
-            <b>
-              <%= show_tax_string(
-                    (miga_obj&.metadata || {})[:tax]
-                      &.ranks&.map { |k, v| "#{k}:#{v}" } || [],
-                    id: "tax-#{name.id}-miga"
-                  ) %>
-            </b><br/>
+            <% miga_classif = miga_obj&.metadata&.[](:tax) %>
+            <%= show_tax_string(miga_classif, id: "tax-#{name.id}-miga") %>
+            <br/>
             <% cr = miga_obj&.closest_relatives(3, true, :aai) || [] %>
             <% show_aai(cr) %>
           </td>
