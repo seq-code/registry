@@ -1,5 +1,3 @@
-require 'miga/taxonomy'
-
 module ApplicationHelper
   def show_tax_string(tax, opts = {})
     opts[:class] ||= 'tax-string'
