@@ -262,7 +262,7 @@ class Name < ApplicationRecord
 
     def rank_keys
       {
-        k: :kingdom, p: :phylum, c: :class, o: :order,
+        d: :domain, k: :kingdom, p: :phylum, c: :class, o: :order,
         f: :family, g: :genus, s: :species
       }
     end
