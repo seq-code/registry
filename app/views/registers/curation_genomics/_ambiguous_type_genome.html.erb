@@ -68,9 +68,10 @@
       <tr>
         <td colspan=3>
           <b>Reported Classification:</b><br/>
-          <% show_tax_string(
+          <%= show_tax_string(
                 name.lineage.map { |i| "#{i.inferred_rank}:#{i.name}" }
-                    .join(' > ')
+                    .join(' > '),
+                id: "tax-#{name.id}-reported"
               ) %>
         </td>
       </tr>

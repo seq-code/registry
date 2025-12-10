@@ -37,7 +37,9 @@
                   <% while (tax = row.shift(3)).any? %>
                     <% break if tax[2].to_f < 0.5 %>
                     <li>
-                      <% show_tax_string(tax[1] + ':' + tax[0]) %>
+                      <%= show_tax_string(
+                            tax[1] + ':' + tax[0], id: "tax-#{name.id}-16s"
+                          ) %>
                       <span class="text-muted">(<%= tax[2] %>)</span>
                     </li>
                   <% end %>
@@ -48,8 +50,9 @@
         </td>
         <td rowspan=2>
           <% miga_classif = genome&.miga_object&.metadata&.[](:tax) %>
-          <% show_tax_string(
-                miga_classif.ranks.map { |i| "#{i[0]}:#{i[1]}" }.join(' > ')
+          <%= show_tax_string(
+                miga_classif.ranks.map { |i| "#{i[0]}:#{i[1]}" }.join(' > '),
+                id: "tax-#{name.id}-miga"
               ) %>
         </td>
       </tr>
