@@ -351,3 +351,17 @@ nav.navbar {
   left: 0;
   bottom: 0;
 }
+
+.tax-string {
+  color: var(--secondary);
+  [data-rank=x] { color: hsl(000deg 00% 30%); }
+  [data-rank=d] { color: hsl(040deg 80% 30%); }
+  [data-rank=k] { color: hsl(080deg 80% 30%); }
+  [data-rank=p] { color: hsl(120deg 80% 30%); }
+  [data-rank=c] { color: hsl(160deg 80% 30%); }
+  [data-rank=o] { color: hsl(200deg 80% 30%); }
+  [data-rank=f] { color: hsl(240deg 80% 30%); }
+  [data-rank=g] { color: hsl(280deg 80% 30%); }
+  [data-rank=s] { color: hsl(320deg 80% 30%); }
+}
+

@@ -254,7 +254,17 @@ class Name < ApplicationRecord
     end
 
     def rank_suffixes
-      { phylum: 'ota', class: 'ia', order: 'ales', family: 'aceae' }
+      {
+        kingdom: 'ati', phylum: 'ota', class: 'ia', order: 'ales',
+        family: 'aceae'
+      }
+    end
+
+    def rank_keys
+      {
+        k: :kingdom, p: :phylum, c: :class, o: :order,
+        f: :family, g: :genus, s: :species
+      }
     end
 
     def rank_variant(rank, opts = {})
