@@ -2,11 +2,12 @@ module ApplicationHelper
   def show_tax_string(string, opts = {})
     opts[:class] ||= 'tax-string'
     content_tag(:span, opts) do
-      string.split(/ (>|&raquo;|\/) /).each_with_index.map do |i, k|
+      string = string.split(/ (>|&raquo;|\/) /) unless string.is_a?(Array)
+      string.each_with_index.map do |i, k|
         r, n  = i.split(':', 2)
         r_key = r.to_s[0].to_sym
 
-        content_tag(:span, k == 0 ? '' : '&raquo;') +
+        content_tag(:span, k == 0 ? '' : ' &raquo; '.html_safe) +
         content_tag(
           :span, n, title: Name.rank_keys[r_key],
           data: { kind: :taxonomy, rank: r_key, value: n }
