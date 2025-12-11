@@ -29,6 +29,10 @@ class PageController < ApplicationController
       Date.parse(`cd "#{seqcode_path}" && git log -1 --format=%cd`.chomp)
   end
 
+  # GET /page/videos
+  def videos
+  end
+
   # GET /page/initiative
   def initiative
     redirect_to 'https://www.isme-microbes.org/seqcode-initiative'
@@ -64,6 +68,8 @@ class PageController < ApplicationController
   # GET /help/topic
   def help(topic = nil)
     topic ||= params[:topic]
+    redirect_to(help_index_path) unless topic.present?
+
     topic = topic.gsub(/[^A-Za-z0-9_]/, '').to_sym
     category = help_topic_categories[topic]
     unless category

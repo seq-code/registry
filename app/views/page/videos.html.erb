@@ -1,0 +1,17 @@
+<h1>Videos related to the SeqCode Registry</h1>
+
+<%
+  yt_videos = %w[
+    y3T7yGgLD6E 3-wkZO1C0ME eldxwOAS4JQ LqCpRTrxdcE oD9By6dG4-A zS4ybk8Cv1k
+  ]
+%>
+
+<% yt_videos.each do |code| %>
+<div class="text-center mt-3 mb-5">
+<iframe width="560" height="315" frameborder="0"
+  src="https://www.youtube.com/embed/<%= code %>"
+  title="YouTube video player"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen></iframe>
+</div>
+<% end %>
