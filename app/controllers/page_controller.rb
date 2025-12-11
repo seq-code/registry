@@ -68,7 +68,7 @@ class PageController < ApplicationController
   # GET /help/topic
   def help(topic = nil)
     topic ||= params[:topic]
-    redirect_to(help_index_path) unless topic.present?
+    return redirect_to(help_index_path) unless topic.present?
 
     topic = topic.gsub(/[^A-Za-z0-9_]/, '').to_sym
     category = help_topic_categories[topic]

@@ -5,7 +5,7 @@
   <% old_cat = nil %>
   <% @topics.each do |cat, topics| %>
     <% if cat != old_cat %>
-        <div class="mt-3 text-muted"><b>[ <%= cat %> ]</b></div>
+      <h3 class="mt-3 text-muted"><%= cat.to_s.capitalize %></h3>
     <% end %>
 
     <% topics.each do |k, topic| %>
