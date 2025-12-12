@@ -35,6 +35,10 @@ class Name < ApplicationRecord
     :typified_names, -> { where(redirect_id: nil) },
     class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
   )
+  has_many(
+    :combinational_derivatives, class_name: 'Name', foreign_key: 'basonym_id',
+    dependent: :nullify # Inverse of basonym
+  )
   has_many(:curations)
 
   belongs_to(:nomenclatural_type, polymorphic: true, optional: true)
@@ -76,6 +80,9 @@ class Name < ApplicationRecord
   belongs_to(
     :genomics_review_by, optional: true,
     class_name: 'User', foreign_key: 'genomics_review_by_id'
+  )
+  belongs_to(
+    :basonym, optional: true, class_name: 'Name', foreign_key: 'basonym_id'
   )
   belongs_to(:register, optional: true)
   belongs_to(:tutorial, optional: true)
