@@ -131,10 +131,10 @@
     <dd><%= display_link(@name.basonym) %></dd>
   <% end %>
 
-  <% if @name.combinatorial_derivatives.any? %>
-    <dt><%= fa_icon('file-export') %> Combinatorial derivatives</dt>
+  <% if @name.combinational_derivatives.any? %>
+    <dt><%= fa_icon('file-export') %> Combinational derivatives</dt>
     <dd><ul>
-      <% @name.combinatorial_derivatives.each do |comb_nov| %>
+      <% @name.combinational_derivatives.each do |comb_nov| %>
         <li><%= display_link(comb_nov) %></li>
       <% end %>
     </ul></dd>
