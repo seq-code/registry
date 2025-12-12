@@ -1,41 +1,14 @@
 class PageController < ApplicationController
-  # GET /page/publications
-  def publications
-  end
-
   # GET /page/about
   def about
   end
 
-  # GET /page/status
-  # GET /page/status.json
-  def status
-    respond_to do |format|
-      format.html do
-        redirect_to 'https://stats.uptimerobot.com/OcQhKQJ19N'
-      end
-      format.json
-    end
+  # GET /api
+  def api
   end
 
-  # GET /page/seqcode
-  def seqcode
-    render = SeqCodeDown.new(with_toc_data: true)
-    @markdown = Redcarpet::Markdown.new(render, autolink: true, tables: true)
-    seqcode_path = Rails.root.join('seqcode')
-    @seqcode = File.read(seqcode_path.join('README.md'))
-    @tag = `cd "#{seqcode_path}" && git describe --tags --abbrev=0`.chomp
-    @last_modified =
-      Date.parse(`cd "#{seqcode_path}" && git log -1 --format=%cd`.chomp)
-  end
-
-  # GET /page/videos
-  def videos
-  end
-
-  # GET /page/initiative
-  def initiative
-    redirect_to 'https://www.isme-microbes.org/seqcode-initiative'
+  # GET /page/committee
+  def committee
   end
 
   # GET /page/connect
@@ -45,24 +18,8 @@ class PageController < ApplicationController
                 'zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
   end
 
-  # GET /page/join
-  def join
-    # Generated September 15 2022 (Google form)
-    redirect_to 'https://forms.gle/ZJQVu3XqZwBp4jb4A'
-  end
-
-  # GET /page/committee
-  def committee
-  end
-
-  # GET /page/prize
-  def prize
-  end
-
-  # GET /help
-  def help_index
-    @topics = help_topics
-    @crumbs = ['Help']
+  # GET /page/publications
+  def publications
   end
 
   # GET /help/topic
@@ -90,8 +47,26 @@ class PageController < ApplicationController
     render('help', layout: !params[:content].present?)
   end
 
-  # GET /api
-  def api
+  # GET /help
+  def help_index
+    @topics = help_topics
+    @crumbs = ['Help']
+  end
+
+  # GET /page/initiative
+  def initiative
+    redirect_to 'https://www.isme-microbes.org/seqcode-initiative'
+  end
+
+  # GET /page/issues
+  def issues
+    redirect_to 'https://github.com/seq-code/registry/issues'
+  end
+
+  # GET /page/join
+  def join
+    # Generated September 15 2022 (Google form)
+    redirect_to 'https://forms.gle/ZJQVu3XqZwBp4jb4A'
   end
 
   # GET /page/linkout.xml
@@ -102,9 +77,24 @@ class PageController < ApplicationController
     end
   end
 
+  # GET /page/prize
+  def prize
+  end
+
   # GET /page/sandbox
   def sandbox
     redirect_to(etymology_sandbox_names_path)
+  end
+
+  # GET /page/seqcode
+  def seqcode
+    render = SeqCodeDown.new(with_toc_data: true)
+    @markdown = Redcarpet::Markdown.new(render, autolink: true, tables: true)
+    seqcode_path = Rails.root.join('seqcode')
+    @seqcode = File.read(seqcode_path.join('README.md'))
+    @tag = `cd "#{seqcode_path}" && git describe --tags --abbrev=0`.chomp
+    @last_modified =
+      Date.parse(`cd "#{seqcode_path}" && git log -1 --format=%cd`.chomp)
   end
 
   # GET /page/stats
@@ -117,6 +107,21 @@ class PageController < ApplicationController
         end
       ]
     end
+  end
+
+  # GET /page/status
+  # GET /page/status.json
+  def status
+    respond_to do |format|
+      format.html do
+        redirect_to 'https://stats.uptimerobot.com/OcQhKQJ19N'
+      end
+      format.json
+    end
+  end
+
+  # GET /page/videos
+  def videos
   end
 
   private
