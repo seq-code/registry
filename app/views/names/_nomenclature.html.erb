@@ -120,12 +120,6 @@
     </dd>
   <% end %>
 
-  <% if @name.nomenclatural_status? || @name.seqcode? %>
-    <dt><%= fa_icon('clipboard-check') %> Nomenclatural status</dt>
-    <dd><%= @name.nomenclatural_status&.upcase_first ||
-              'Validly published under the SeqCode' %></dd>
-  <% end %>
-
   <% if @name.basonym.present? %>
     <dt><%= fa_icon('file-import') %> Basonym</dt>
     <dd><%= display_link(@name.basonym) %></dd>
@@ -138,5 +132,11 @@
         <li><%= display_link(comb_nov) %></li>
       <% end %>
     </ul></dd>
+  <% end %>
+
+  <% if @name.nomenclatural_status? || @name.seqcode? %>
+    <dt><%= fa_icon('clipboard-check') %> Nomenclatural status</dt>
+    <dd><%= @name.nomenclatural_status&.upcase_first ||
+              'Validly published under the SeqCode' %></dd>
   <% end %>
 </dl>
