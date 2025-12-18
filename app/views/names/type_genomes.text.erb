@@ -25,7 +25,7 @@
          name.lineage_class.try(:type_name).try(:name),
            name.lineage_phylum.try(:type_name).try(:name),
          name.lineage.map { |i| "#{i.rank}: #{i.name}" }.join('; '),
-           name.publication.try(:citation),
+           name.proposed_in.try(:citation),
            name.created_at, name.updated_at, name.seqcode_url
        ].map(&:to_s).join("\t")
 %>
