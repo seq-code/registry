@@ -991,7 +991,7 @@ class Name < ApplicationRecord
 
   def lineage(with_self: false)
     @lineage ||= nil
-    return @lineage unless @lineage.nil?
+    return @lineage[with_self ? 0.. : 1..] unless @lineage.nil?
 
     @lineage ||= [self]
     while par = @lineage.first.lineage_parent
@@ -1002,8 +1002,7 @@ class Name < ApplicationRecord
       end
       @lineage.unshift(par)
     end
-    @lineage.pop unless with_self
-    @lineage
+    @lineage[with_self ? 0.. : 1..]
   end
 
   def lineage_parent
@@ -1158,8 +1157,14 @@ class Name < ApplicationRecord
     lineage_find(:genus)
   end
 
+  Name.ranks.each do |i|
+    define_method("lineage_#{i}") do
+      lineage_find(i)
+    end
+  end
+
   def lineage_find(rank)
-    lineage.find { |par| par.rank == rank.to_s }
+    lineage(true).find { |par| par.inferred_rank == rank.to_s }
   end
 
   def rank_index

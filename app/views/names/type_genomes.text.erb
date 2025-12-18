@@ -1,10 +1,44 @@
-<%= %w[taxonomy name database accession].join("\t") %>
-<% @names.except(:limit, :offset).each do |name| %>
-<%= 
-     genome = name.type_genome or next
-     [
-       name.lineage.map { |i| "#{i.rank}: #{i.name}" }.join('; '),
-       name.name, genome.database, genome.accession
-     ].join("\t")
+<% case params[:endpoint].to_s.downcase %>
+<% when 'gtdb' %>
+<%=  %w[
+       type_material_accn id name rank species_status priority_date
+       genus_status family_status order_status class_status phylum_status
+       type_species_of_genus type_genus_of_family type_genus_of_order
+       type_genus_of_class type_genus_of_phylum
+       classification proposed_in created_at updated_at url
+     ].join("\t") %>
+<%   @names.except(:limit, :offset).each do |name| %>
+<%=
+       genome = name.type_genome or next
+       [
+         genome.accession, name.id, name.name, name.inferred_rank,
+           name.lineage_species.try(:status_name),
+           name.lineage_species.try(:priority_date),
+         name.lineage_genus.try(:status_name),
+           name.lineage_family.try(:status_name),
+           name.lineage_order.try(:status_name),
+           name.lineage_class.try(:status_name),
+           name.lineage_phylum.try(:status_name),
+         name.lineage_genus.try(:type_name).try(:name),
+           name.lineage_family.try(:type_name).try(:name),
+           name.lineage_order.try(:type_name).try(:name),
+         name.lineage_class.try(:type_name).try(:name),
+           name.lineage_phylum.try(:type_name).try(:name),
+         name.lineage.map { |i| "#{i.rank}: #{i.name}" }.join('; '),
+           name.publication.try(:citation),
+           name.created_at, name.updated_at, name.seqcode_url
+       ].map(&:to_s).join("\t")
 %>
+<%   end %>
+<% else %>
+<%=  %w[taxonomy name database accession].join("\t") %>
+<%   @names.except(:limit, :offset).each do |name| %>
+<%=
+       genome = name.type_genome or next
+       [
+         name.lineage.map { |i| "#{i.rank}: #{i.name}" }.join('; '),
+         name.name, genome.database, genome.accession
+       ].join("\t")
+%>
+<%   end %>
 <% end %>
