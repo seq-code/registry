@@ -1164,7 +1164,7 @@ class Name < ApplicationRecord
   end
 
   def lineage_find(rank)
-    lineage(true).find { |par| par.inferred_rank == rank.to_s }
+    lineage(with_self: true).find { |par| par.inferred_rank == rank.to_s }
   end
 
   def rank_index
