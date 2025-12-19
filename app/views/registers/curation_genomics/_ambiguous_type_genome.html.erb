@@ -148,12 +148,12 @@
 
   $("#smart-checks").on("click", function() {
     var passed = 0;
-    $(".curator-checklist .check-skip").each(function() {
+    var all = $(".curator-checklist .check-skip").each(function() {
       var skip = $(this);
       var name_id = skip.find("a[data-do=skip]").data("name");
       if (auto_check_name(name_id)) passed += 1;
-    });
-    alert(`Auto-passed ${passed} names`);
+    }).length;
+    alert(`Auto-passed ${passed} names of ${all} checked`);
     return false;
   });
 </script>
