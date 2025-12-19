@@ -108,8 +108,8 @@
         // The name is in the list, now check if any of the AAI values are too
         // high and should be manually checked
         var aai = $(`[data-type=aai][data-name=${name_id}][data-value]`);
-        var max_aai = Math.max.apply(
-          null, aai.map(function(){ reuturn $(this).data("value"); })
+        var max_aai = Math.max.apply(null,
+          aai.map(function(){ return $(this).data("value"); })
         );
         if (max_aai >= 90.0) {
           aai.parents("td").addClass("bg-warning");
