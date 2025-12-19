@@ -1,18 +1,28 @@
 <%= pager(@names) %>
+<%
+  def show_aai(cr, opts = {})
+    opts[:data] ||= {}
 
-<% def show_aai(cr) %>
-  <% cr.each do |r| %>
-    <div class="<%=
-      r[1].to_f > 95.0 ? 'text-danger' : r[1].to_f > 60.0 ? '' : 'text-muted'
-    %> mb-2">
-      <%= r[1] %>% -
-      <% if r[0] =~ /^genome_(\d+)$/%>
-        <%= link_to(r[0].unmiga_name, genome_url($1)) %>
-      <% else %>
-        <%= r[0].unmiga_name %>
-      <% end %>
-    </div>
-  <% end %>
+    cr.map do |r|
+      c_class = r[1].to_f > 95.0 ? 'text-danger' :
+                r[1].to_f > 60.0 ? '' : 'text-muted'
+      content_tag(:div,
+            class: c_class,
+            opts.merge(type: :aai, value: r[1])
+          ) do
+        content_tag(:span, "#{r[1]}% - ") +
+          if r[0] =~ /^genome_(\d+)$/
+            link_to(r[0].unmiga_name, genome_url($1))
+          else
+            r[0].unmiga_name
+          end
+      end
+    end.inject(:+)
+  end
+%>
+
+<%= link_to('#', class: 'btn btn-primary btn-lg', id: 'smart-checks') do %>
+  <%= fa_icon('robot') %> Smart-check easy cases
 <% end %>
 
 <table class="table table-hover table-responsive">
@@ -53,14 +63,14 @@
           <% miga_obj = genome.miga_object %>
           <td rowspan=2>
             <% cr = miga_obj&.closest_relatives(3, false, :aai) || [] %>
-            <% show_aai(cr) %>
+            <%= show_aai(cr, data: { name: name.id, result: :distances }) %>
           </td>
           <td rowspan=2>
             <% miga_classif = miga_obj&.metadata&.[](:tax) %>
             <%= show_tax_string(miga_classif, id: "tax-#{name.id}-miga") %>
             <br/>
             <% cr = miga_obj&.closest_relatives(3, true, :aai) || [] %>
-            <% show_aai(cr) %>
+            <%= show_aai(cr, data: { name: name.id, result: :taxonomy }) %>
           </td>
         <% else %>
           <td colspan=2 rowspan=2 class="text-danger">Undefined type genome</td>
@@ -81,3 +91,29 @@
 </table>
 <%= render(partial: 'checks/curator_script') %>
 <%= pager(@names) %>
+
+<script>
+  $("#smart-checks").on("click", function() {
+    $(".curator-checklist .check-skip").each(function() {
+      var skip = $(this);
+      var name_id = skip.find("a[data-do=skip]").data("name");
+      if (name_id) {
+        // The name is in the list, now check if any of the AAI values are too
+        // high and should be manually checked
+        var aai_high = $(`[data-type=aai][data-name=${name_id}][data-value]`)
+        
+        var miga = $(`#tax-${name_id}-miga [data-kind=taxonomy]`).last();
+        var same = $(
+          `#tax-${name_id}-reported ` +
+            `[data-kind=taxonomy][data-rank=${miga.data("rank")}]` +
+            `[data-value=${miga.data("value")}]`
+        )
+        if (same.length > 0) {
+          // MiGA and Reported taxonomy coincide at the lowest MiGA rank
+          
+        }
+      }
+    });
+  });
+</script>
+
