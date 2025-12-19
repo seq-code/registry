@@ -97,8 +97,8 @@ module Genome::ExternalResources
       h[:description] = ch.dig(:description, 0, :text)
       h[:attributes] = {}
       ch.each do |k, v|
-        v.select! { |i| i[:text].present? && i[:tag] == 'attribute' }
-        h[:attributes][k] = v.map { |i| i[:text] }.join('; ')
+        vv = v.map { |i| i[:text] if i[:tag] == 'attribute' }.select(&:present?)
+        h[:attributes][k] = vv.join('; ') if vv.present?
       end
       # TODO
       # - Also import structuredData from trusted Webin accounts, including:
