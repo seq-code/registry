@@ -7,8 +7,7 @@
       c_class = r[1].to_f > 95.0 ? 'text-danger' :
                 r[1].to_f > 60.0 ? '' : 'text-muted'
       content_tag(:div,
-            class: c_class,
-            opts.merge(type: :aai, value: r[1])
+            opts.merge(class: c_class, type: :aai, value: r[1])
           ) do
         content_tag(:span, "#{r[1]}% - ") +
           if r[0] =~ /^genome_(\d+)$/
@@ -21,7 +20,7 @@
   end
 %>
 
-<%= link_to('#', class: 'btn btn-primary btn-lg', id: 'smart-checks') do %>
+<%= link_to('#', class: 'btn btn-primary text-center m-4', id: 'smart-checks') do %>
   <%= fa_icon('robot') %> Smart-check easy cases
 <% end %>
 
