@@ -116,8 +116,8 @@
     var miga = $(`#tax-${name_id}-miga [data-kind=taxonomy]`).last();
     var same = $(
       `#tax-${name_id}-reported ` +
-        `[data-kind=taxonomy][data-rank=${miga.data("rank")}]` +
-        `[data-value=${miga.data("value")}]`
+        `[data-kind=taxonomy][data-rank="${miga.data("rank")}"]` +
+        `[data-value="${miga.data("value")}"]`
     )
     if (same.length == 0) {
       miga.parents("td").addClass("bg-warning");
