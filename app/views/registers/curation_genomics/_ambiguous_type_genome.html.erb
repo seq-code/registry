@@ -98,6 +98,7 @@
 
 <script>
   $("#smart-checks").on("click", function() {
+    var passed = 0;
     $(".curator-checklist .check-skip").each(function() {
       var skip = $(this);
       var name_id = skip.find("a[data-do=skip]").data("name");
@@ -138,11 +139,16 @@
         // If all is good, auto-check the button, but only if it's currently
         // in "skip" status (i.e., not yet passed or failed)
         if (name_fail == 0) {
-          $(`.check-skip .check-links [data-name=${name_id}][data-do=pass]`)
-            .click();
+          var check =
+            $(`.check-skip .check-links [data-name=${name_id}][data-do=pass]`);
+          if (check.length == 1) {
+            passed += 1;
+            check.click();
+          }
         }
       }
     });
+    alert(`Auto-passed ${passed} names`);
     return false;
   });
 </script>
