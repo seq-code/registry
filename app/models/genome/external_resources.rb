@@ -75,14 +75,48 @@ module Genome::ExternalResources
   # Retrieve BioSample metadata and return as a parsed Hash
   def external_biosample_hash(acc)
     y = external_biosample_hash_ebi(acc)
+    y = external_biosample_hash_ebi_ena(acc) unless y.present?
     y = external_biosample_hash_ncbi(acc) unless y.present?
     y = { biosample_accessions: [acc] } unless y.present?
     y
   end
 
   ##
-  # Retrieve BioSample metadata and return as a parsed Hash from EBI
+  # Retrieve BioSample metadata and returnb as a parsed Hash from EBI's
+  # BioSample
   def external_biosample_hash_ebi(acc)
+    uri = "https://www.ebi.ac.uk/biosamples/samples/#{acc}.json"
+    body = external_request(uri)
+    return unless body.present?
+
+    js = JSON.parse(body, symbolize_names: true)
+    {}.tap do |hash|
+      h = { api: 'EBI BioSample' }
+      ch = js[:characteristics] || {}
+      h[:title] = ch.dig(:title, 0, :text)
+      h[:description] = ch.dig(:description, 0, :text)
+      h[:attributes] = {}
+      ch.each do |k, v|
+        v.select! { |i| i[:text].present? && i[:tag] == 'attribute' }
+        h[:attributes][k] = v.map { |i| i[:text] }.join('; ')
+      end
+      # TODO
+      # - Also import structuredData from trusted Webin accounts, including:
+      #   - Webin-41583
+      h[:biosample_accessions] = [
+        acc, js[:accession], js[:sraAccession],
+        (ch[:"External Id"] || [])
+          .select { |i| i[:tag] == 'Namespace:BioSample' }.map { |i| i[:text] }
+      ].flatten.select(&:present?).uniq
+      h.each { |k, v| hash[k] = h[k] if h[k].present? }
+    end
+  rescue JSON::ParserError
+    return nil
+  end
+
+  ##
+  # Retrieve BioSample metadata and return as a parsed Hash from EBI's ENA
+  def external_biosample_hash_ebi_ena(acc)
     uri = "https://www.ebi.ac.uk/ena/browser/api/xml/#{acc}?includeLinks=false"
     body = external_request(uri)
     return unless body.present?
@@ -90,7 +124,7 @@ module Genome::ExternalResources
     ng = Nokogiri::XML(body)
     sample = ng.xpath('//SAMPLE_SET/SAMPLE').first or return
     {}.tap do |hash|
-      h = { api: 'EBI' }
+      h = { api: 'EBI ENA' }
       h[:title] = sample.xpath('./TITLE').text
       h[:description] = sample.xpath('./DESCRIPTION').text
       h[:attributes] = Hash[
