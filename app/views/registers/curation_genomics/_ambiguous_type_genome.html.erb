@@ -7,7 +7,7 @@
       c_class = r[1].to_f > 95.0 ? 'text-danger' :
                 r[1].to_f > 60.0 ? '' : 'text-muted'
       content_tag(:div,
-            opts.merge(class: c_class, type: :aai, value: r[1])
+            opts.merge(class: c_class, data: { type: :aai, value: r[1] })
           ) do
         content_tag(:span, "#{r[1]}% - ") +
           if r[0] =~ /^genome_(\d+)$/
@@ -51,10 +51,13 @@
         <td>
           <% name.qc_warnings.each do |warn| %>
             <% if warn.type.to_s =~ /^discrepant_/ %>
-              <%= render(
-                    partial: 'checks/check',
-                    locals: { warn: warn, no_message: true, no_action: true }
-                  ) %>
+              <div data-type="qc-warning" data-name="<%= name.id %>"
+                   data-kind="<%= warn.type %>">
+                <%= render(
+                      partial: 'checks/check',
+                      locals: { warn: warn, no_message: true, no_action: true }
+                    ) %>
+               </div>
             <% end %>
           <% end %>
         </td>
@@ -97,22 +100,48 @@
       var skip = $(this);
       var name_id = skip.find("a[data-do=skip]").data("name");
       if (name_id) {
+        var name_fail = 0;
+
         // The name is in the list, now check if any of the AAI values are too
         // high and should be manually checked
-        var aai_high = $(`[data-type=aai][data-name=${name_id}][data-value]`)
-        
+        var aai = $(`[data-type=aai][data-name=${name_id}][data-value]`);
+        var max_aai = Math.max.apply(
+          null, aai.map(function(){ reuturn $(this).data("value"); })
+        );
+        if (max_aai >= 90.0) {
+          aai.parents("td").addClass("bg-warning");
+          name_fail += 1;
+        }
+
+        // Check if the MiGA classification matches the reported one
         var miga = $(`#tax-${name_id}-miga [data-kind=taxonomy]`).last();
         var same = $(
           `#tax-${name_id}-reported ` +
             `[data-kind=taxonomy][data-rank=${miga.data("rank")}]` +
             `[data-value=${miga.data("value")}]`
         )
-        if (same.length > 0) {
-          // MiGA and Reported taxonomy coincide at the lowest MiGA rank
-          
+        if (same.length == 0) {
+          miga.parents("td").addClass("bg-warning");
+          $(`#tax-${name_id}-reported`).parents("td").addClass("bg-warning");
+          name_fail += 1;
+        }
+
+        // And check if there are any other discrepancies detected
+        var warn = $(`[data-type=qc-warning][data-name=${name_id}][data-kind]`);
+        if (warn.length > 0) {
+          warn.parents("td").addClass("bg-warning");
+          name_fail += 1;
+        }
+
+        // If all is good, auto-check the button, but only if it's currently
+        // in "skip" status (i.e., not yet passed or failed)
+        if (name_fail == 0) {
+          $(`.check-skip .check-links [data-name=${name_id}][data-do=pass]`)
+            .click();
         }
       }
     });
+    return false;
   });
 </script>
 
