@@ -1,5 +1,11 @@
 <%= pager(@names) %>
 
+<div class="text-center mb-4 w-100">
+  <%= link_to('#', class: 'btn btn-primary', id: 'smart-checks') do %>
+    <%= fa_icon('robot') %> Smart-check easy cases
+  <% end %>
+</div>
+
 <table class="table table-hover table-responsive">
   <thead>
     <tr>
@@ -67,3 +73,40 @@
 </table>
 <%= render(partial: 'checks/curator_script') %>
 <%= pager(@names) %>
+
+<script>
+  function auto_check_name(name_id) {
+    if (!name_id) return false;
+
+    // Check if the MiGA classification matches the 16S one
+    var miga = $(`#tax-${name_id}-miga [data-kind=taxonomy]`).last();
+    var copies = $(`ul:has(#tax-${name_id}-16s)`).length;
+    var same = $(
+      `#tax-${name_id}-16s ` +
+        `[data-kind=taxonomy][data-rank="${miga.data("rank")}"]` +
+        `[data-value="${miga.data("value")}"]`
+    );
+    if (same.length != copies) {
+      miga.parents("td").addClass("bg-warning");
+      $(`#tax-${name_id}-16s`).parents("ul").addClass("bg-warning");
+      return false;
+    }
+
+    // If all is good, auto-check the button, but only if it's currently
+    // in "skip" status (i.e., not yet passed or failed)
+    $(`.check-skip .check-links [data-name=${name_id}][data-do=pass]`).click();
+    return true;
+  }
+
+  $("#smart-checks").on("click", function() {
+    var passed = 0;
+    var all = $(".curator-checklist .check-skip").each(function() {
+      var skip = $(this);
+      var name_id = skip.find("a[data-do=skip]").data("name");
+      if (auto_check_name(name_id)) passed += 1;
+    }).length;
+    alert(`Auto-passed ${passed} names of ${all} checked`);
+    return false;
+  });
+</script>
+
