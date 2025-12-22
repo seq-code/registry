@@ -79,18 +79,23 @@
     if (!name_id) return false;
 
     // Check if the MiGA classification matches the 16S one
+    var success = true;
     var miga = $(`#tax-${name_id}-miga [data-kind=taxonomy]`).last();
-    var copies = $(`ul:has(#tax-${name_id}-16s)`).length;
-    var same = $(
-      `#tax-${name_id}-16s ` +
-        `[data-kind=taxonomy][data-rank="${miga.data("rank")}"]` +
-        `[data-value="${miga.data("value")}"]`
-    );
-    if (same.length != copies) {
-      miga.parents("td").addClass("bg-warning");
-      $(`#tax-${name_id}-16s`).parents("ul").addClass("bg-warning");
-      return false;
-    }
+    var copies = $(`ul:has(#tax-${name_id}-16s)`);
+    copies.each(function() {
+      var ul = $(this);
+      var expected = ul.find(
+        `#tax-${name_id}-16s ` +
+          `[data-kind=taxonomy][data-rank="${miga.data("rank")}"]` +
+          `[data-value="${miga.data("value")}"]`
+      );
+      if (expected.length == 0) {
+        success = false;
+        miga.parents("td").addClass("bg-warning");
+        ul.addClass("bg-warning");
+      }
+    });
+    if (!success) return false;
 
     // If all is good, auto-check the button, but only if it's currently
     // in "skip" status (i.e., not yet passed or failed)
