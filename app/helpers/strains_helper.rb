@@ -40,11 +40,18 @@ module StrainsHelper
           str.url, sanitize(str.catalogue&.name), sanitize(str.number), ext
         ]
       elsif str.is_a?(StrainCode::Number) && str.catalogue&.name.present?
-        '<abbr title="%s - %s">%s</abbr>' % [
+        ('<abbr title="%s - %s">%s</abbr>' % [
           sanitize(str.catalogue.name),
           sanitize(str.accession),
           sanitize(str.number)
-        ]
+        ]) +
+          if str.catalogue.url.present?
+            ' (<a href="%s" title="catalogue" target="_blank">cat %s</a>)' % [
+              str.catalogue.url, ext
+            ]
+          else
+            ''
+          end
       else
         str
       end
