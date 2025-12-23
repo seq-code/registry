@@ -151,7 +151,7 @@
           <% end %>
         </div>
         <script>
-          $("#name-<%= @name.id %>-children-filter").each(function() {
+          $("#name-<%= @name.id %>-children-filter a").each(function() {
             $(this).on("click", function() {
               var btn      = $(this);
               var feat     = btn.data("feat");
@@ -169,7 +169,7 @@
               } else {
                 children.show();
                 btn.data("visible", true);
-                btn.find("span").html(`Hid ${feat}`);
+                btn.find("span").html(`Hide ${feat}`);
                 btn.find("i").removeClass("fa-eye");
                 btn.find("i").addClass("fa-eye-slash");
               }
