@@ -180,8 +180,10 @@
                 btn.find("i").removeClass("fa-eye");
                 btn.find("i").addClass("fa-eye-slash");
               }
-              visible = $(`ul#name-${name_id}-children li[data-visible=true]`);
-              $(`#name-${name_id}-children-count`).html(`(${visible.length})`);
+              var all = $(`ul#name-${name_id}-children li`).length;
+              var visible = $(`ul#name-${name_id}-children li:visible`).length;
+              var cnt = $(`#name-${name_id}-children-count`);
+              cnt.html(all == visible ? `(${all})` : `(${visible}/${all})`);
               return false;
             });
           });
