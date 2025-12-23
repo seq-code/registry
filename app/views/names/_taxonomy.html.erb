@@ -138,7 +138,46 @@
     <% unless @name.children.empty? %>
       <dt><%= fa_icon('sort-amount-down-alt') %> Children
           <span class="text-muted">(<%= @name.children.count %>)</span><dt>
-      <dd><ul class='pl-3'>
+      <dd>
+      <% if @name.children.length > 50 %>
+        <div id="name-<%= @name.id %>-children-filter">
+          <% %w[candidatus validated correct].each do |feat| %>
+          <%= link_to('#',
+                class: 'badge badge-pill badge-primary',
+                data: { feat: feat, visible: true, name: @name.id }
+              ) do %>
+            <%= fa_icon('eye-slash') %> <span>Hide <%= feat %></span>
+          <% end %>
+        </div>
+        <script>
+          $("#name-<%= @name.id %>-children-filter").each(function() {
+            $(this).on("click", function() {
+              var btn      = $(this);
+              var feat     = btn.data("feat");
+              var name_id  = btn.data("name");
+              var children = $(
+                `ul#name-${name_id}-children ` +
+                `[data-type="name"][data-${feat}=1]`
+              );
+              if (btn.data("visible")) {
+                children.hide();
+                btn.data("visible", false);
+                btn.find("span").html(`Show ${feat}`);
+                btn.find("i").removeClass("fa-eye-slash");
+                btn.find("i").addClass("fa-eye");
+              } else {
+                children.show();
+                btn.data("visible", true);
+                btn.find("span").html(`Hid ${feat}`);
+                btn.find("i").removeClass("fa-eye");
+                btn.find("i").addClass("fa-eye-slash");
+              }
+              return false;
+            });
+          });
+        </script>
+      <% end %>
+      <ul class='pl-3' id="name-<%= @name.id %>-children">
         <%
           set_type = @name.can_edit?(current_user) && @name.rank? &&
                      %w[genus family].include?(@name.rank)
