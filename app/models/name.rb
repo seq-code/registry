@@ -991,7 +991,7 @@ class Name < ApplicationRecord
 
   def lineage(with_self: false)
     @lineage ||= nil
-    return @lineage[with_self ? 0.. : 1..] unless @lineage.nil?
+    return @lineage[with_self ? ..-1 : ..-2] unless @lineage.nil?
 
     @lineage ||= [self]
     while par = @lineage.first.lineage_parent
@@ -1002,7 +1002,7 @@ class Name < ApplicationRecord
       end
       @lineage.unshift(par)
     end
-    @lineage[with_self ? 0.. : 1..]
+    @lineage[with_self ? ..-1 : ..-2]
   end
 
   def lineage_parent
