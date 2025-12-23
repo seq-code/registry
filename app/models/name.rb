@@ -517,22 +517,29 @@ class Name < ApplicationRecord
 
   def name_html(name: nil, assume_valid: false, check_correctness: false)
     name = sanitize(name || self.name)
-    if candidatus?
-      name.gsub(/^Candidatus /, '<i>Candidatus</i> ').html_safe
-    elsif (assume_valid || validated?) && name =~ /(.+) subsp\. (.+)/
-      y = "<i>#{$1}</i> subsp. <i>#{$2}</i>"
-      y = "<b>#{y}</b>" if check_correctness && correct?
-      y.html_safe
-    elsif (assume_valid || validated?) || inferred_rank == 'domain'
-      y = "<i>#{name}</i>"
-      y = "<b>#{y}</b>" if check_correctness && correct?
-      y.html_safe +
-        if is_type_species?
-          "<sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
-        end
-    else
-      "&#8220;#{name}&#8221;".html_safe
-    end
+    name_html =
+      if candidatus?
+        name.gsub(/^Candidatus /, '<i>Candidatus</i> ')
+      elsif (assume_valid || validated?) && name =~ /(.+) subsp\. (.+)/
+        y = "<i>#{$1}</i> subsp. <i>#{$2}</i>"
+        y = "<b>#{y}</b>" if check_correctness && correct?
+        y
+      elsif (assume_valid || validated?) || inferred_rank == 'domain'
+        y = "<i>#{name}</i>"
+        y = "<b>#{y}</b>" if check_correctness && correct?
+        y +
+          if is_type_species?
+            "<sup>T#{'s' unless icnp? || icn?}</sup>"
+          end
+      else
+        "&#8220;#{name}&#8221;"
+      end
+
+    (
+      "<span data-type=name data-value=\"#{name}\" data-id=\"#{id}\" " \
+      "data-validated=#{validated? ? 1 : 0} data-correct=#{correct? ? 1 : 0} " \
+      "data-candidatus=#{candidatus? ? 1 : 0}>#{y}</span>"
+    ).html_safe
   end
 
   def name_html_correctness
