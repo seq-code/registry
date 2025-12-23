@@ -166,32 +166,28 @@
                 `[data-type="name"][data-${feat}=0])`
               );
               if (btn.data("visible")) {
-                children.each(function() { $(this).data("visible", false); });
-                children.hide(400);
+                children.hide("slow", function() { update_count(name_id) });
                 btn.data("visible", false);
                 btn.find("span").html("Show");
                 btn.find("i").removeClass("fa-eye-slash");
                 btn.find("i").addClass("fa-eye");
               } else {
-                children.each(function() { $(this).data("visible", true); });
-                children.show(400);
+                children.show("slow", function() { update_count(name_id) });
                 btn.data("visible", true);
                 btn.find("span").html("Hide");
                 btn.find("i").removeClass("fa-eye");
                 btn.find("i").addClass("fa-eye-slash");
               }
-              var all = $(`ul#name-${name_id}-children li`).length;
-              var visible = $(
-                // I cannot use the :visible selector because of the 400ms delay
-                // in the animation
-                `ul#name-${name_id}-children li[data-visible=true]`
-              ).length;
-              var cnt = $(`#name-${name_id}-children-count`);
-              var txt = all == visible ? `(${all})` : `(${visible}/${all})`;
-              cnt.html(all == visible ? `(${all})` : `(${visible}/${all})`);
               return false;
             });
           });
+
+          function update_count(name_id) {
+            var all = $(`ul#name-${name_id}-children li`).length;
+            var visible = $(`ul#name-${name_id}-children li:visible`).length;
+            $(`#name-${name_id}-children-count`)
+              .html(all == visible ? `(${all})` : `(${visible}/${all})`);
+          }
         </script>
       <% end %>
       <ul class='pl-3' id="name-<%= @name.id %>-children">
