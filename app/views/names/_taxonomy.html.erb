@@ -166,22 +166,26 @@
                 `[data-type="name"][data-${feat}=0])`
               );
               if (btn.data("visible")) {
+                children.each(function() { $(this).data("visible", false); };
                 children.hide(400);
-                children.data("visible", false);
                 btn.data("visible", false);
                 btn.find("span").html("Show");
                 btn.find("i").removeClass("fa-eye-slash");
                 btn.find("i").addClass("fa-eye");
               } else {
+                children.each(function() { $(this).data("visible", true); };
                 children.show(400);
-                children.data("visible", true);
                 btn.data("visible", true);
                 btn.find("span").html("Hide");
                 btn.find("i").removeClass("fa-eye");
                 btn.find("i").addClass("fa-eye-slash");
               }
               var all = $(`ul#name-${name_id}-children li`).length;
-              var visible = $(`ul#name-${name_id}-children li:visible`).length;
+              var visible = $(
+                // I cannot use the :visible selector because of the 400ms delay
+                // in the animation
+                `ul#name-${name_id}-children li[data-visible=true]`
+              ).length;
               var cnt = $(`#name-${name_id}-children-count`);
               cnt.html(all == visible ? `(${all})` : `(${visible}/${all})`);
               return false;
