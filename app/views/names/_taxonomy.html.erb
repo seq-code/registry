@@ -143,7 +143,7 @@
         <div id="name-<%= @name.id %>-children-filter">
           <% %w[candidatus validated correct].each do |feat| %>
             <%= link_to('#',
-                  class: 'badge badge-pill badge-primary mr-3',
+                  class: 'badge badge-pill badge-primary mr-2',
                   data: { feat: feat, visible: true, name: @name.id }
                 ) do %>
               <%= fa_icon('eye-slash') %> <span>Hide <%= feat %></span>
