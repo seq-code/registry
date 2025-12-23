@@ -46,7 +46,7 @@ module StrainsHelper
           sanitize(str.number)
         ]) +
           if str.catalogue.url.present?
-            ' (<a href="%s" title="catalogue" target="_blank">cat %s</a>)' % [
+            ' (<a href="%s" title="Catalogue" target="_blank">Cat. %s</a>)' % [
               str.catalogue.url, ext
             ]
           else
