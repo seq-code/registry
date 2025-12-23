@@ -139,7 +139,7 @@
       <dt><%= fa_icon('sort-amount-down-alt') %> Children
           <span class="text-muted">(<%= @name.children.count %>)</span><dt>
       <dd>
-      <% if @name.children.length > 50 %>
+      <% if @name.children.length >= 12 %>
         <div id="name-<%= @name.id %>-children-filter">
           <% %w[candidatus validated correct].each do |feat| %>
             <%= link_to('#',
@@ -157,8 +157,8 @@
               var feat     = btn.data("feat");
               var name_id  = btn.data("name");
               var children = $(
-                `ul#name-${name_id}-children ` +
-                `[data-type="name"][data-${feat}=1]`
+                `ul#name-${name_id}-children li:has(` +
+                `[data-type="name"][data-${feat}=1])`
               );
               if (btn.data("visible")) {
                 children.hide();
