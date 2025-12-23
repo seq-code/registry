@@ -538,7 +538,7 @@ class Name < ApplicationRecord
     (
       "<span data-type=name data-value=\"#{name}\" data-id=\"#{id}\" " \
       "data-validated=#{validated? ? 1 : 0} data-correct=#{correct? ? 1 : 0} " \
-      "data-candidatus=#{candidatus? ? 1 : 0}>#{y}</span>"
+      "data-candidatus=#{candidatus? ? 1 : 0}>#{name_html}</span>"
     ).html_safe
   end
 
