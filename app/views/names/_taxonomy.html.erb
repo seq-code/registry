@@ -137,17 +137,21 @@
 
     <% unless @name.children.empty? %>
       <dt><%= fa_icon('sort-amount-down-alt') %> Children
-          <span class="text-muted">(<%= @name.children.count %>)</span><dt>
+          <span class="text-muted" id="name-<%= @name.id %>-children-count">(<%=
+                @name.children.count %>)</span><dt>
       <dd>
       <% if @name.children.length >= 12 %>
         <div id="name-<%= @name.id %>-children-filter">
-          <% { validated: 'non-validly published', correct: 'incorrect'
-                }.each do |feat, txt| %>
+          <% {
+               validated: 'non-validly published',
+               correct: 'validly published but incorrect'
+             }.each do |feat, txt| %>
             <%= link_to('#',
-                  class: 'badge badge-pill badge-primary mr-2',
+                  class: 'badge badge-pill badge-primary mr-1',
                   data: { feat: feat, visible: true, name: @name.id }
                 ) do %>
-              <%= fa_icon('eye-slash') %> <span>Hide</span> <%= txt %> names
+              <%= fa_icon('eye-slash', class: 'mr-2') %>
+              <span>Hide</span> <%= txt %> names
             <% end %>
           <% end %>
         </div>
@@ -163,17 +167,21 @@
               );
               if (btn.data("visible")) {
                 children.hide(400);
+                children.data("visible", false);
                 btn.data("visible", false);
                 btn.find("span").html("Show");
                 btn.find("i").removeClass("fa-eye-slash");
                 btn.find("i").addClass("fa-eye");
               } else {
                 children.show(400);
+                children.data("visible", true);
                 btn.data("visible", true);
                 btn.find("span").html("Hide");
                 btn.find("i").removeClass("fa-eye");
                 btn.find("i").addClass("fa-eye-slash");
               }
+              visible = $(`ul#name-${name_id}-children li[data-visible=true]`);
+              $(`#name-${name_id}-children-count`).html(`(${visible.length})`);
               return false;
             });
           });
