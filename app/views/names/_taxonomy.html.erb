@@ -141,12 +141,13 @@
       <dd>
       <% if @name.children.length >= 12 %>
         <div id="name-<%= @name.id %>-children-filter">
-          <% %w[candidatus validated correct].each do |feat| %>
+          <% { validated: 'non-validly published', correct: 'incorrect'
+                }.each do |feat, txt| %>
             <%= link_to('#',
                   class: 'badge badge-pill badge-primary mr-2',
                   data: { feat: feat, visible: true, name: @name.id }
                 ) do %>
-              <%= fa_icon('eye-slash') %> <span>Hide <%= feat %></span>
+              <%= fa_icon('eye-slash') %> <span>Hide</span> <%= txt %> names
             <% end %>
           <% end %>
         </div>
@@ -158,18 +159,18 @@
               var name_id  = btn.data("name");
               var children = $(
                 `ul#name-${name_id}-children li:has(` +
-                `[data-type="name"][data-${feat}=1])`
+                `[data-type="name"][data-${feat}=0])`
               );
               if (btn.data("visible")) {
-                children.hide();
+                children.hide(400);
                 btn.data("visible", false);
-                btn.find("span").html(`Show ${feat}`);
+                btn.find("span").html("Show");
                 btn.find("i").removeClass("fa-eye-slash");
                 btn.find("i").addClass("fa-eye");
               } else {
-                children.show();
+                children.show(400);
                 btn.data("visible", true);
-                btn.find("span").html(`Hide ${feat}`);
+                btn.find("span").html("Hide");
                 btn.find("i").removeClass("fa-eye");
                 btn.find("i").addClass("fa-eye-slash");
               }
