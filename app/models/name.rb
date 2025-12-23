@@ -527,10 +527,7 @@ class Name < ApplicationRecord
       elsif (assume_valid || validated?) || inferred_rank == 'domain'
         y = "<i>#{name}</i>"
         y = "<b>#{y}</b>" if check_correctness && correct?
-        y.to_s +
-          if is_type_species?
-            "<sup>T#{'s' unless icnp? || icn?}</sup>"
-          end
+        y + (is_type_species? ? "<sup>T#{'s' unless icnp? || icn?}</sup>" : '')
       else
         "&#8220;#{name}&#8221;"
       end
