@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
       names:             [:abbr_name, [:names, sort: :date]],
       publications:      [:short_citation, [:publications, sort: :date]],
       register_lists:    [:acc_url, [:registers, status: :validated]],
-      genomes:           [:text, :genomes],
+      genomes:           [:title, :genomes],
       strains:           [:title, :strains]
     }
   end

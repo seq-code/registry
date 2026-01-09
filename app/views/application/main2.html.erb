@@ -133,17 +133,18 @@
       <hr/>
     </div>
     <% @entries.each do |k, v| %>
+      <% title = k.to_s.gsub(/_/, ' ') %>
       <div class="col-lg-4 pb-2">
         <div class="text-center bg-light rounded-lg border p-5 h-100
                     recent-entries-list">
-          <h3><%= k.to_s.capitalize %></h3>
+          <h3><%= title.titleize %></h3>
           <% v.first(5).each do |i| %>
             <%= link_to(i) do %>
               <div><%= i.send(@display[k][0]) %></div>
             <% end %>
           <% end %>
-          <%= link_to(@display[k][1], class: 'btn btn-primary mt-2') do %>
-            See all
+          <%= link_to(@display[k][1], class: 'btn btn-primary mt-4') do %>
+            All <%= title %>
           <% end %>
         </div>
       </div>
