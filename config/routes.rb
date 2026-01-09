@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   resources :tags
   # General configuration
   root(to: 'application#main')
-  get 'main2' => 'application#main2'
   concern(:autocompletable) do
     get  :autocomplete, on: :collection
   end

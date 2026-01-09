@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   }
 
   # GET /
-  def main2
+  def main
     @entries = {
       validly_published: Name.where(status: 15).order(validated_at: :desc),
       names: Name.all_public.order(created_at: :desc),
@@ -52,16 +52,6 @@ class ApplicationController < ActionController::Base
       register_lists:    [:acc_url, [:registers, status: :validated]],
       genomes:           [:title, :genomes],
       strains:           [:title, :strains]
-    }
-  end
-
-  def main
-    @publications = Publication.all.order(journal_date: :desc)
-    @authors = Author.all.order(created_at: :desc)
-    @names = Name.where(status: Name.public_status).order(created_at: :desc)
-    @validated = {
-      names: Name.where(status: 15).order(validated_at: :desc),
-      registers: Register.where(validated: true)
     }
   end
 

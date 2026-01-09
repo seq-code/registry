@@ -88,17 +88,18 @@
         <%= render(partial: 'shared/search_bar') %>
       </div>
       <p class="small mt-4">
-        We have identified
-        <%= link_to(pluralize(@names.count, 'name'), names_path) %>, including
-        <%= link_to(
-              pluralize(@validated[:names].count, 'name'),
-              names_path(status: 'SeqCode')
-            )
-        %> validly published under the SeqCode in
-        <%= link_to(
-              pluralize(@validated[:registers].count, 'register list'),
-              registers_path(status: 'validated')
-            )
+        We have identified <%=
+          link_to(pluralize(@entries[:names].count, 'name'), names_path)
+        %>, including <%=
+          link_to(
+            pluralize(@entries[:validly_published].count, 'name'),
+            names_path(status: 'SeqCode')
+          )
+        %> validly published under the SeqCode in <%=
+          link_to(
+            pluralize(@entries[:register_lists].count, 'register list'),
+            registers_path(status: 'validated')
+          )
         %>.
       </p>
     </div>
@@ -128,48 +129,26 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12 text-center mt-5">
-      <h1>Recent entries</h1>
+      <h2>Recent entries</h1>
       <hr/>
     </div>
-    <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5 h-100 recent-entries-list">
-        <h2>Names</h2>
-        <% @names.first(5).each do |name| %>
-          <%= link_to(name) do %>
-            <div><%= name.abbr_name %></div>
+    <% @entries.each do |k, v| %>
+      <% title = k.to_s.gsub(/_/, ' ') %>
+      <div class="col-lg-4 mb-4">
+        <div class="text-center bg-light rounded-lg border p-4 h-100
+                    recent-entries-list">
+          <h3><%= title.titleize %></h3>
+          <% v.first(5).each do |i| %>
+            <%= link_to(i) do %>
+              <div><%= i.send(@display[k][0]) %></div>
+            <% end %>
           <% end %>
-        <% end %>
-        <%= link_to(names_path(sort: :date)) do %>
-          <div>more...</div>
-        <% end %>
-      </div>
-    </div>
-    <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5 h-100 recent-entries-list">
-        <h2>Publications</h2>
-        <% @publications.first(5).each do |publication| %>
-          <%= link_to(publication) do %>
-            <div><%= publication.short_citation %></div>
+          <%= link_to(@display[k][1], class: 'btn btn-primary mt-4') do %>
+            All <%= title %>
           <% end %>
-        <% end %>
-        <%= link_to(publications_path(sort: :date)) do %>
-          <div>more...</div>
-        <% end %>
+        </div>
       </div>
-    </div>
-    <div class="col-lg-4 pb-5">
-      <div class="text-center bg-light rounded-lg border p-5 h-100 recent-entries-list">
-        <h2>Validly published</h2>
-        <% @validated[:names].first(5).each do |name| %>
-          <%= link_to(name) do %>
-            <div><%= name.abbr_name %></div>
-          <% end %>
-        <% end %>
-        <%= link_to(names_path(sort: :date, status: :SeqCode)) do %>
-          <div>more...</div>
-        <% end %>
-      </div>
-    </div>
+    <% end %>  
   </div>
 </div>
 
