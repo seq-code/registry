@@ -37,25 +37,25 @@ class ApplicationController < ActionController::Base
 
   # GET /
   def main2
-    @services = {
-      validly_published: Name.where(status: 15).order(validated_at: :desc),
-      names: Name.all_public.order(created_at: :desc),
-      publications: Publication.all.order(journal_date: :desc),
-      register_lists: Registers.where(validated: true).order(updated_at: :desc),
-      genomes: Genome.all.order(created_at: :desc),
-      strains: Strain.all.order(created_at: :desc)
-    }
-    @display = {
-      validly_published:
-               [:abbr_name, [:names_path, sort: :date, status: :SeqCode]]
-      names:   [:abbr_name, [:names_path, sort: :date]]
-      publications:
-               [:short_citation, [:publications_path, sort: :date]]
-      register_lists:
-               [:acc_url, [:registers_path, status: :validated]]
-      genomes: [:text, :genomes_path]
-      strains: [:title, :strains_path]
-    }
+  #  @services = {
+  #    validly_published: Name.where(status: 15).order(validated_at: :desc),
+  #    names: Name.all_public.order(created_at: :desc),
+  #    publications: Publication.all.order(journal_date: :desc),
+  #    register_lists: Registers.where(validated: true).order(updated_at: :desc),
+  #    genomes: Genome.all.order(created_at: :desc),
+  #    strains: Strain.all.order(created_at: :desc)
+  #  }
+  #  @display = {
+  #    validly_published:
+  #             [:abbr_name, [:names_path, sort: :date, status: :SeqCode]]
+  #    names:   [:abbr_name, [:names_path, sort: :date]]
+  #    publications:
+  #             [:short_citation, [:publications_path, sort: :date]]
+  #    register_lists:
+  #             [:acc_url, [:registers_path, status: :validated]]
+  #    genomes: [:text, :genomes_path]
+  #    strains: [:title, :strains_path]
+  #  }
   end
 
   def main
