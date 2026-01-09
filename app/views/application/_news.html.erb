@@ -1,9 +1,10 @@
 <% all ||= false %>
+<% ht = all ? 'h1' : 'h2' %>
 
 <div class="container news">
   <div class="row mx-1">
     <div class="col-lg-12 text-center">
-      <h1>SeqCode News</h1>
+      <<%= ht %>>SeqCode News</<%= ht %>>
       <hr/>
     </div>
     <dl class="col-lg-12">

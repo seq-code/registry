@@ -41,6 +41,10 @@ class Strain < ApplicationRecord
     '%ssc|%07i' % [prefix, id]
   end
 
+  def text
+    title('')
+  end
+
   def seqcode_url(protocol = true)
     "#{'https://' if protocol}seqco.de/s:#{id}"
   end
