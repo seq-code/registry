@@ -38,7 +38,10 @@ class ApplicationController < ActionController::Base
   # GET /
   def main2
     @services = {
-      register_lists: Registers.where(validated: true).order(updated_at: :desc),
+      validly_published: Name.where(status: 15).order(validated_at: :desc),
+      names: Name.all_public.order(created_at: :desc),
+      publications: Publication.all.order(journal_date: :desc),
+      register_lists: Register.where(validated: true).order(updated_at: :desc),
       genomes: Genome.all.order(created_at: :desc),
       strains: Strain.all.order(created_at: :desc)
     }
