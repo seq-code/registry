@@ -37,6 +37,17 @@ class ApplicationController < ActionController::Base
 
   # GET /
   def main2
+    @display = {
+      validly_published:
+               [:abbr_name, [:names_path, sort: :date, status: :SeqCode]],
+      names:   [:abbr_name, [:names_path, sort: :date]],
+      publications:
+               [:short_citation, [:publications_path, sort: :date]],
+      register_lists:
+               [:acc_url, [:registers_path, status: :validated]],
+      genomes: [:text, :genomes_path],
+      strains: [:title, :strains_path]
+    }
   end
 
   def main
