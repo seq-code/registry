@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
 
   # GET /
   def main2
-    @services = {
+    @entries = {
       validly_published: Name.where(status: 15).order(validated_at: :desc),
       names: Name.all_public.order(created_at: :desc),
       publications: Publication.all.order(journal_date: :desc),
