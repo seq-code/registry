@@ -37,6 +37,9 @@ class ApplicationController < ActionController::Base
 
   # GET /
   def main2
+    @services = {
+      strains: Strain.all.order(created_at: :desc)
+    }
     @display = {
       validly_published:
                [:abbr_name, [:names_path, sort: :date, status: :SeqCode]],
