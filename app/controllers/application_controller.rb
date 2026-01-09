@@ -38,6 +38,8 @@ class ApplicationController < ActionController::Base
   # GET /
   def main2
     @services = {
+      register_lists: Registers.where(validated: true).order(updated_at: :desc),
+      genomes: Genome.all.order(created_at: :desc),
       strains: Strain.all.order(created_at: :desc)
     }
     @display = {
