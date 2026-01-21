@@ -2935,6 +2935,7 @@ neu.edu.tr
 ouc.ac.cy
 ucy.ac.cy
 unic.ac.cy
+ncc.metu.edu.tr
 aauni.edu
 cuni.cz
 cvut.cz
@@ -4147,6 +4148,8 @@ iitd.ac.in
 iitgn.ac.in
 iitg.ernet.in
 iitg.ac.in
+op.iitg.ac.in
+rnd.iitg.ac.in
 iith.ac.in
 iitk.ac.in
 iitkgp.ernet.in
@@ -6016,6 +6019,7 @@ uni.li
 info.kma.lt
 ism.lt
 ktu.lt
+ktu.edu
 ku.lt
 lcc.lt
 lka.lt
@@ -8412,6 +8416,7 @@ itu.edu.tr
 iyte.edu.tr
 kafkas.edu.tr
 karaelmas.edu.tr
+beun.edu.tr
 khas.edu.tr
 kilis.edu.tr
 kku.edu.tr
@@ -8454,6 +8459,13 @@ ybu.edu.tr
 yeditepe.edu.tr
 yildiz.edu.tr
 yyu.edu.tr
+aku.edu.tr
+hbv.edu.tr
+giresun.edu.tr
+nigde.edu.tr
+istinye.edu.tr
+antalya.edu.tr
+topkapi.edu.tr
 ittu.edu.tm
 charismauniversity.org
 busitema.ac.ug
@@ -10511,6 +10523,7 @@ dallascollege.edu
 untdallas.edu
 w-hs.de
 cduestc.cn
+thu.de
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10566,3 +10579,5 @@ mdc-berlin.de
 pg.cibnor.mx
 jiangnan.edu.cn
 genoscope.cns.fr
+cnrs.fr
+uniabuja.edu.ng

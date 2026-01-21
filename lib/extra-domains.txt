@@ -53,3 +53,5 @@ mdc-berlin.de
 pg.cibnor.mx
 jiangnan.edu.cn
 genoscope.cns.fr
+cnrs.fr
+uniabuja.edu.ng
