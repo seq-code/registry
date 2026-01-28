@@ -12,8 +12,10 @@
   <div class="container-fluid d-flex flex-row">
     <div class="navbar-brand p-0 m-0">
       <%= link_to(root_url, class: 'navbar-brand') do %>
-        <%= image_tag('logo.svg', size: 20, class: 'mr-1',
-              style: 'margin-bottom: 0.25rem;') %>
+        <%= image_tag('logo.svg',
+              size: 20, class: 'mr-1', style: 'margin-bottom: 0.25rem;',
+              alt: 'SeqCode Logo'
+            ) %>
         SeqCode Registry
       <% end %>
     </div>
