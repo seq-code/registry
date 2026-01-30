@@ -9,6 +9,7 @@ class NamesController < ApplicationController
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       edit_redirect autofill_etymology edit_parent
       return validate endorse claim unclaim demote temporary_editable
+      transfer_user transfer_user_commit
       new_correspondence observe unobserve
     ]
   )
@@ -24,7 +25,8 @@ class NamesController < ApplicationController
   )
   before_action(:authenticate_can_edit_type!, only: [:edit_type])
   before_action(
-    :authenticate_owner_or_curator!, only: %i[unclaim new_correspondence]
+    :authenticate_owner_or_curator!,
+    only: %i[unclaim new_correspondence transfer_user transfer_user_commit]
   )
   before_action(:authenticate_contributor!, only: %i[new create claim])
   before_action(:authenticate_admin!, only: %i[demote temporary_editable])
@@ -474,6 +476,36 @@ class NamesController < ApplicationController
     change_status(:unclaim, 'Name successfully claimed', current_user)
   end
 
+  # GET /names/1/transfer_user
+  def transfer_user
+  end
+
+  # POST /names/1/transfer_user
+  def transfer_user_commit
+    old_user = @name.user
+    username = params.require(:name)[:user]
+    user = User.find_by_email_or_username(username)
+
+    if !user.present?
+      flash[:alert] = 'The user could not be found'
+      render :transfer_user
+    elsif @name.transfer(current_user, user)
+      add_automatic_correspondence(
+        'SeqCode Register transferred from %s to %s' % [
+          old_user&.username, user&.username
+        ]
+      )
+      flash[:notice] =
+        'Name successfully transferred to the new user'
+      redirect_to(@name)
+    else
+      flash[:alert] =
+        'The list has not been transferred due to a failed check: ' +
+        @name.status_alert
+      render :transfer_user
+    end
+  end
+
   # POST /names/1/demote
   def demote
     change_status(:demote, 'Name successfully demoted', current_user)
@@ -626,4 +658,12 @@ class NamesController < ApplicationController
         inv.record.errors.map { |e| "#{e.attribute} #{e.message}" }.to_sentence
       redirect_to(inv.record)
     end
+
+    def add_automatic_correspondence(message)
+      NameCorrespondence.new(
+        message: message, notify: '0', automatic: true,
+        user: current_user, name: @name
+      ).save
+    end
+
 end

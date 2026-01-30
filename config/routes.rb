@@ -93,6 +93,8 @@ Rails.application.routes.draw do
       post :claim
       post :unclaim
       post :demote
+      get  :transfer_user
+      post :transfer_user, action: :transfer_user_commit
       # --> Edit name relationships
       get  :edit_parent
       post :new_correspondence

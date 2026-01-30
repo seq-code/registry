@@ -1,0 +1,24 @@
+<% provide(:title, @name.abbr_name_raw) %>
+<%= render(partial: 'title') %>
+
+<h2>Transfer user</h2>
+<p class="lead">
+  Use this option with reserve. Consider contacting the current submitter
+  before you proceed, and make sure you give them at least one month to
+  respond before transfering the list.
+</p>
+<%= simple_form_for(
+      @name, url: transfer_user_name_url(@name),
+      method: :post) do |f| %>
+  <div>
+    The current submitter is: <%= display_link(@name.user) %>
+  </div>
+  <%= f.input(
+        :user, label: 'Username or email',
+        input_html: { value: f.object.user&.username }) %>
+  <br/>
+  <%= f.button(:submit, 'Transfer register list') %>
+  <%= link_to('Cancel', @name, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+
