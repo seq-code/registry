@@ -21,17 +21,17 @@
           <% end %>
           &raquo; Remove ownership of this name and make it public
           <hr/>
-        <% end %>
 
-        <%= link_to(
-              transfer_user_name_url(@name),
-              class: 'btn btn-primary btn-sm'
-            ) do %>
-          <%= fa_icon('people-arrows') %> Transfer to another user
+          <%= link_to(
+                transfer_user_name_url(@name),
+                class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('people-arrows') %> Transfer to another user
+          <% end %>
+          &raquo; Transfer the name ownership to a different contributor and
+          notify the current owner
+          <hr/>
         <% end %>
-        &raquo; Transfer the name ownership to a different contributor and
-        notify the current owner
-        <hr/>
 
         <% unless @name.after_endorsement? || !@name.register %>
           <% id = modal('Are you sure?') do %>
