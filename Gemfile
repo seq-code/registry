@@ -18,7 +18,7 @@ gem 'dartsass-sprockets' # Sass engine (required by bootstrap
 gem 'devise'
 gem 'dkim', '~> 1.1'
 gem 'font_awesome5_rails', '~> 1.5'
-gem 'httparty', '~> 0.23'
+gem 'httparty', '~> 0.24'
 gem 'image_processing', '~> 1.2'
 gem 'inline_svg', '~> 1.8'
 gem 'irb'
