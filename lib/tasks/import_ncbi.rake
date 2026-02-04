@@ -25,7 +25,7 @@ namespace :ncbi do
     end
 
     def read_names_dmp(file)
-      $stderr.puts "Reading: #{file}"
+      $stderr.puts "[1/4] Reading: #{file}"
       names = {}
       File.open(file) do |fh|
         fh.each_with_index do |ln, k|
@@ -40,7 +40,7 @@ namespace :ncbi do
     end
 
     def read_nodes_dmp(file)
-      $stderr.puts "Reading: #{file}"
+      $stderr.puts "[2/4] Reading: #{file}"
       nodes = []
       File.open(file) do |fh|
         fh.each_with_index do |ln, k|
@@ -64,7 +64,7 @@ namespace :ncbi do
     end
 
     def filter_names_by_domain(names, nodes, ranks)
-      $stderr.puts 'Using only prokaryotic names'
+      $stderr.puts '[3/4] Using only prokaryotic names'
       non_epithet = %w[bacterium archaeon cyanobacterium]
       new_names = {}
       i = 0
@@ -119,7 +119,7 @@ namespace :ncbi do
     nodes = read_nodes_dmp(File.join(args[:dir], 'nodes.dmp'))
     names = filter_names_by_domain(names, nodes, ranks)
 
-    $stderr.puts 'Traversing names'
+    $stderr.puts '[4/4] Traversing names'
     Placement.update_all(ncbi_taxonomy: false)
     @n_name = 0
     i = 0
