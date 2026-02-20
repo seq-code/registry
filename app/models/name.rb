@@ -586,6 +586,7 @@ class Name < ApplicationRecord
 
   def page_description
     y  = base_name + ' is a'
+    y += 'n' if !candidatus? && rank? && rank =~ /^[aeiou]/
     y += ' candidate' if candidatus?
     y += ' ' + rank if rank?
     y += ' name'
