@@ -202,7 +202,7 @@ class GenomeSampleAttribute
     def missing
       [
         'not provided', 'not collected', 'unavailable', 'not applicable',
-        'restricted access', 'missing', '-', 'n/a', 'null', ''
+        'restricted access', 'missing', '-', 'n/a', 'na', 'null', ''
       ]
     end
 
