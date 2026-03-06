@@ -44,7 +44,7 @@ module ApplicationHelper
   end
 
   def list_preference
-    cookies[:list] || 'cards'
+    cookies[:list] || 'table'
   end
 
   def download_link(file, name = nil)
