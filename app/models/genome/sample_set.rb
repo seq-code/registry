@@ -33,7 +33,7 @@ class GenomeSampleSet < SampleSet
         next unless attr = unique_attributes[attribute]
 
         attr.map do |i|
-          i.value.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *,(?: and)? */)
+          i.value.gsub(/.*: */, '').gsub(/[\.]/, '').split(/ *[,;-](?: and)? */)
         end
       end.flatten.compact.uniq - known_biosamples
   end
