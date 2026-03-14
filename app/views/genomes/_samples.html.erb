@@ -45,7 +45,7 @@
                   v.map! do |i|
                     y = sanitize(i)
                     %w[ENVO PCO UBERON OHMI].each do |ont|
-                      osl4 = "#{base}/#{ont.downcase}/classes/"
+                      osl4 = "#{osl4_base}/#{ont.downcase}/classes/"
                       purl = "http://purl.obolibrary.org/obo/#{ont}_"
                       lnk  = osl4 + ERB::Util.u(purl)
                       y = y.gsub(
