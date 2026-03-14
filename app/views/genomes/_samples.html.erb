@@ -46,10 +46,10 @@
                     y = sanitize(i)
                     %w[ENVO PCO UBERON OHMI].each do |ont|
                       purl = "http://purl.obolibrary.org/obo/#{ont}_"
-                      o_url = osl4 + ERB::Util.u(purl)
+                      lnk  = osl4 + ERB::Util.u(purl)
                       y = y.gsub(
                         /(^\s*|[^A-Z\d])#{ont}[:_](\d{7,8})(\s*$|[^A-Z\d])/i,
-                        "\\1<a href='#{o_url}\\2' target=_blank>ENVO:\\2</a>\\3"
+                        "\\1<a href='#{lnk}\\2' target=_blank>#{ont}:\\2</a>\\3"
                       )
                     end
                     y
