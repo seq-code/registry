@@ -44,7 +44,7 @@
                   osl4 = 'https://www.ebi.ac.uk/ols4/ontologies/envo/classes/'
                   v.map! do |i|
                     y = sanitize(i)
-                    %w[ENVO PCO OBERON OHMI].each do |ont|
+                    %w[ENVO PCO UBERON OHMI].each do |ont|
                       purl = "http://purl.obolibrary.org/obo/#{ont}_"
                       o_url = osl4 + ERB::Util.u(purl)
                       y = y.gsub(
