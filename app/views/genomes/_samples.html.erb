@@ -41,10 +41,11 @@
                 # Key-based formatting
                 case group
                 when :environment
-                  osl4 = 'https://www.ebi.ac.uk/ols4/ontologies/envo/classes/'
+                  osl4_base = "https://www.ebi.ac.uk/ols4/ontologies"
                   v.map! do |i|
                     y = sanitize(i)
                     %w[ENVO PCO UBERON OHMI].each do |ont|
+                      osl4 = "#{base}/#{ont.downcase}/classes/"
                       purl = "http://purl.obolibrary.org/obo/#{ont}_"
                       lnk  = osl4 + ERB::Util.u(purl)
                       y = y.gsub(
