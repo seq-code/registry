@@ -1,5 +1,7 @@
 module ApplicationHelper
   def show_tax_string(tax, opts = {})
+    require 'miga'
+
     opts[:class] ||= 'tax-string'
     tax ||= []
     tax = tax.ranks.to_a if tax.is_a?(MiGA::Taxonomy)
