@@ -140,8 +140,11 @@ class PageController < ApplicationController
           curation: 'How are names internally curated?'
         },
         explanation: {
-          register: 'What are Register Lists?',
           open_data: 'What data is publicly released and how?',
+          authorship: 'Can I submit names I didn\'t author?'
+        },
+        reference: {
+          register: 'What are Register Lists?',
           paths: 'What are the paths to validation?'
         }
       }
