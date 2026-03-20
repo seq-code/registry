@@ -10,13 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_11_11_135930) do
+ActiveRecord::Schema.define(version: 2025_12_12_101910) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "fuzzystrmatch"
+  enable_extension "pg_trgm"
+  enable_extension "plpgsql"
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
     t.string "record_type", null: false
-    t.integer "record_id", null: false
+    t.bigint "record_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
@@ -25,8 +30,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
-    t.integer "record_id", null: false
-    t.integer "blob_id", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
@@ -37,7 +42,7 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
     t.string "filename", null: false
     t.string "content_type"
     t.text "metadata"
-    t.integer "byte_size", null: false
+    t.bigint "byte_size", null: false
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.string "service_name", null: false
@@ -45,7 +50,7 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "active_storage_variant_records", force: :cascade do |t|
-    t.integer "blob_id", null: false
+    t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
@@ -59,8 +64,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "checks", force: :cascade do |t|
-    t.integer "name_id", null: false
-    t.integer "user_id"
+    t.bigint "name_id", null: false
+    t.bigint "user_id"
     t.text "kind", null: false
     t.boolean "pass"
     t.datetime "updated_at", precision: 6, null: false
@@ -70,12 +75,12 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "contacts", force: :cascade do |t|
-    t.integer "publication_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "publication_id", null: false
+    t.bigint "user_id", null: false
     t.string "to"
     t.string "cc"
     t.string "subject"
-    t.integer "author_id", null: false
+    t.bigint "author_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["author_id"], name: "index_contacts_on_author_id"
@@ -84,8 +89,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "curations", force: :cascade do |t|
-    t.integer "name_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "name_id", null: false
+    t.bigint "user_id", null: false
     t.integer "kind_int", null: false
     t.integer "status_int", default: 0
     t.text "notes"
@@ -102,8 +107,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "genome_sequencing_experiments", force: :cascade do |t|
-    t.integer "genome_id", null: false
-    t.integer "sequencing_experiment_id", null: false
+    t.bigint "genome_id", null: false
+    t.bigint "sequencing_experiment_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["genome_id", "sequencing_experiment_id"], name: "genome_sequencing_experiments_uniqueness", unique: true
@@ -149,15 +154,15 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
     t.datetime "queued_external"
     t.text "source_json"
     t.integer "largest_contig_auto"
-    t.integer "strain_id"
+    t.bigint "strain_id"
     t.index ["database", "accession"], name: "index_genomes_uniqueness", unique: true
     t.index ["strain_id"], name: "index_genomes_on_strain_id"
     t.index ["updated_by_id"], name: "index_genomes_on_updated_by_id"
   end
 
   create_table "name_correspondences", force: :cascade do |t|
-    t.integer "name_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "name_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "automatic", default: false
@@ -212,14 +217,14 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
     t.datetime "itis_at"
     t.integer "endorsed_by_id"
     t.datetime "endorsed_at"
-    t.integer "register_id"
+    t.bigint "register_id"
     t.text "irmng_json"
     t.datetime "irmng_at"
     t.text "col_json"
     t.datetime "col_at"
     t.string "incertae_sedis"
-    t.integer "tutorial_id"
-    t.integer "genome_id"
+    t.bigint "tutorial_id"
+    t.bigint "genome_id"
     t.text "gbif_json"
     t.datetime "gbif_at"
     t.datetime "queued_external"
@@ -244,12 +249,14 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
     t.text "wikispecies_issues_text"
     t.text "name_order"
     t.string "nomenclatural_type_type"
-    t.integer "nomenclatural_type_id"
+    t.bigint "nomenclatural_type_id"
     t.datetime "claimed_at"
     t.string "protect_from_lpsn"
     t.string "wikidata_item"
+    t.integer "basonym_id"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
+    t.index ["name"], name: "index_names_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["name_order"], name: "index_names_on_name_order"
     t.index ["nomenclatural_type_type", "nomenclatural_type_id"], name: "index_names_on_nomenclatural_type"
     t.index ["parent_id"], name: "index_names_on_parent_id"
@@ -260,11 +267,11 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   create_table "notifications", force: :cascade do |t|
     t.boolean "seen", default: false
     t.boolean "notified_email", default: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.string "notifiable_type", null: false
-    t.integer "notifiable_id", null: false
+    t.bigint "notifiable_id", null: false
     t.string "linkeable_type"
-    t.integer "linkeable_id"
+    t.bigint "linkeable_id"
     t.string "action"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -275,8 +282,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "observe_names", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "name_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "name_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name_id"], name: "index_observe_names_on_name_id"
@@ -285,8 +292,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "observe_registers", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "register_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "register_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["register_id"], name: "index_observe_registers_on_register_id"
@@ -295,9 +302,9 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "placements", force: :cascade do |t|
-    t.integer "name_id", null: false
+    t.bigint "name_id", null: false
     t.integer "parent_id"
-    t.integer "publication_id"
+    t.bigint "publication_id"
     t.boolean "preferred", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -310,12 +317,13 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
 
   create_table "pseudonyms", force: :cascade do |t|
     t.string "pseudonym"
-    t.integer "name_id", null: false
+    t.bigint "name_id", null: false
     t.string "kind"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name_id"], name: "index_pseudonyms_on_name_id"
     t.index ["pseudonym", "name_id"], name: "index_pseudonyms_on_pseudonym_and_name_id", unique: true
+    t.index ["pseudonym"], name: "index_pseudonyms_on_pseudonym_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "publication_authors", force: :cascade do |t|
@@ -370,8 +378,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "register_coauthors", force: :cascade do |t|
-    t.integer "register_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "register_id", null: false
+    t.bigint "user_id", null: false
     t.integer "order"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -380,8 +388,8 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
   end
 
   create_table "register_correspondences", force: :cascade do |t|
-    t.integer "register_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "register_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "automatic", default: false
@@ -391,11 +399,11 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
 
   create_table "registers", force: :cascade do |t|
     t.string "accession"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.integer "validated_by_id"
     t.boolean "submitted", default: false
     t.boolean "validated", default: false
-    t.integer "publication_id"
+    t.bigint "publication_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "title"
@@ -424,12 +432,12 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
 
   create_table "reports", force: :cascade do |t|
     t.string "linkeable_type", null: false
-    t.integer "linkeable_id", null: false
+    t.bigint "linkeable_id", null: false
     t.text "text"
     t.text "html"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["linkeable_type", "linkeable_id"], name: "index_reports_on_linkeable"
     t.index ["user_id"], name: "index_reports_on_user_id"
   end
@@ -471,7 +479,7 @@ ActiveRecord::Schema.define(version: 2025_11_11_135930) do
 
   create_table "tutorials", force: :cascade do |t|
     t.string "pipeline"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.boolean "ongoing"
     t.integer "step"
     t.datetime "created_at", precision: 6, null: false
