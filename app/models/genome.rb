@@ -85,7 +85,12 @@ class Genome < ApplicationRecord
     end
 
     def all_public
-      where(typified_names: Name.all_public)
+      # TODO: Refactor to improve efficiency
+      where(
+        id: Name.all_public
+                .where(nomenclatural_type_type: :Genome)
+                .pluck(:nomenclatural_type_id)
+      )
     end
   end
   
