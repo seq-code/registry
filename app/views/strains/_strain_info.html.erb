@@ -181,7 +181,7 @@
       <% end %>
     </dl>
   <% end %>
-<% else # if @strain.strain_info_data.present? %>
+<% elsif !stand_alone # if @strain.strain_info_data.present? %>
   <dl class="jumbotron py-4 mb-3 mt-1 main-section name-details">
     <h4>
       <%= fa_icon('frown-open', type: 'far', class: 'mr-2') %>
