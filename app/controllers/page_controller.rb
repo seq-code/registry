@@ -1,4 +1,6 @@
 class PageController < ApplicationController
+  include HelpTopics
+
   # GET /page/about
   def about
   end
