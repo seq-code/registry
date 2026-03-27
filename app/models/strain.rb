@@ -12,6 +12,12 @@ class Strain < ApplicationRecord
   include HasExternalResources
   include Strain::ExternalResources
 
+  class << self
+    def all_public
+      where(typified_names: Name.all_public)
+    end
+  end
+
   def numbers
     numbers_string.split(' = ')
   end

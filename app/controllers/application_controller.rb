@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
       names: Name.all_public.order(created_at: :desc),
       publications: Publication.all.order(journal_date: :desc),
       register_lists: Register.where(validated: true).order(updated_at: :desc),
-      genomes: Genome.all.order(created_at: :desc),
+      genomes: Genome.all_public.order(created_at: :desc),
       strains: Strain.all.order(created_at: :desc)
     }
     @display = {

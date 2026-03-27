@@ -80,9 +80,12 @@ class Genome < ApplicationRecord
       ]
     end
 
-
     def miga_project_path
       File.join(Rails.root, '..', 'miga_check')
+    end
+
+    def all_public
+      where(typified_names: Name.all_public)
     end
   end
   
