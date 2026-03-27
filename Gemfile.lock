@@ -386,6 +386,8 @@ GEM
     simple_form (5.2.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
+    sitemap_generator (6.3.0)
+      builder (~> 3.0)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -501,6 +503,7 @@ DEPENDENCIES
   selenium-webdriver
   serrano (~> 1.0)
   simple_form (~> 5.2.0)
+  sitemap_generator
   spring
   spring-watcher-listen (~> 2.0.0)
   strain-code (~> 0.3)
