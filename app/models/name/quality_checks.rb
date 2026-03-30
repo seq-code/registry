@@ -7,7 +7,7 @@ module Name::QualityChecks
 
     # Attributes supported for warnings
     @@attributes = %i[
-      scope validity_test
+      scope failure
       message link_text link_to rules recommendations rule_notes
       can_endorse link_public checklist area
     ]
@@ -46,7 +46,7 @@ module Name::QualityChecks
       candidatus_modifier: {
         message: 'The name has a Candidatus modifier that should be removed',
         area: :nomenclature,
-        validity_test: lambda { |w| w.name.candidatus? }
+        failure: lambda { |w| w.name.candidatus? }
       }.merge(@@link_to_edit_spelling),
       inconsistent_syllabification: {
         message: 'The syllabification does not correspond to the proposed ' \
@@ -121,7 +121,8 @@ module Name::QualityChecks
         link_text: 'Define rank',
         link_to: lambda { |w| [:edit_rank, w.name] },
         recommendations: %w[7],
-        rules: %w[26.4]
+        rules: %w[26.4],
+        failure: lambda { |w| !w.name.rank? }
       },
       missing_parent: {
         message: 'The taxon has not been assigned to a higher classification',
@@ -874,14 +875,16 @@ module Name::QualityChecks
 
     ##
     # Uses the quality check definition to evaluate it in the current name and
-    # returns +false+ if it's out of scope or the test is valid (i.e., not a
-    # concern for the present name), +true+ if it's in scope and the test is not
-    # valid (i.e., a concern), or +nil+ if no validity test is defined
+    # returns:
+    # - +nil+   if the failure test is undefined
+    # - +false+ if the name is out of scope or the failure test is not triggered
+    #           (i.e., not a concern)
+    # - +true+  if the name is in scope and the failure test is triggered
+    #           (i.e., a concern)
     def evaluate(type, opts = {})
       qc = QcWarning.new(type, opts.merge(name: name))
-      return unless qc.variable_validity_test
-      return false unless qc.scope
-      return false unless qc.validity_test
+      return unless qc.variable_failure
+      return false unless qc.scope && qc.failure
 
       self << qc
       true
@@ -953,7 +956,6 @@ module Name::QualityChecks
     @qc_warnings = QcWarningSet.new(self)
     return @qc_warnings if inferred_rank == 'domain'
 
-    #@qc_warnings.add(:candidatus_modifier) if candidatus?
     @qc_warnings.evaluate(:candidatus_modifier)
     @qc_warnings.add(:missing_rank) unless rank?
     @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
