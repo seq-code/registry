@@ -587,7 +587,18 @@ module Name::QualityChecks
       missing_genome_source: {
         message: 'The source of the type genome has not been specified',
         area: :genomics,
-        rules: %w[26.2 appendix-i]
+        rules: lambda { |w|
+          # Only a warning for publications before 1st January 2023
+          # or for pending genomes
+          (w.name.type_genome.pending? || w.name.proposed_before_2023?) ?
+            [] : %w[26.2 appendix-i]
+        },
+        recommendations: lambda { |w|
+          (w.name.type_genome.pending? || w.name.proposed_before_2023?) ?
+            %w[appendix-i] : []
+        },
+        scope: lambda { |w| w.name.type_is_genome? },
+        failure: lambda { |w| !w.name.type_genome.source? }
       }.merge(@@link_to_edit_genome),
       missing_genome_sequencing_depth: {
         message:
@@ -665,7 +676,8 @@ module Name::QualityChecks
         message: 'Descriptive metadata should be available in INSDC databases',
         checklist: :genomics,
         area: :genomics,
-        recommendations: %w[26]
+        recommendations: %w[26],
+        scope: lambda { |w| w.name.type_is_genome? && w.name.type_genome.source? }
       }.merge(@@link_to_edit_genome),
       # - Rule 27 requires addressing new combinations [TODO: issue #30],
       #   but it would not require additional checks
@@ -1011,32 +1023,16 @@ module Name::QualityChecks
       missing_type unrecognized_type_material non_valid_name_as_type
       non_valid_parent_genus missing_reference_strain
       unavailable_reference_strain missing_genome_kind sequence_not_found
+      missing_genome_source
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
     %i[
       missing_publication_of_emendation unavailable_english_description
-      ambiguous_type_genome
+      ambiguous_type_genome missing_metadata_in_databases
     ].each { |i| @qc_warnings.evaluate(i) }
 
     if type_is_genome?
-      if type_genome.source?
-        @qc_warnings.add(:missing_metadata_in_databases) # check
-      else
-        if type_genome.pending? ||
-            (proposed_in && proposed_in.journal_date.year < 2023)
-          # Only a warning for publications before 1st January 2023
-          # or for pending genomes
-          @qc_warnings.add(
-            :missing_genome_source,
-            rules: [],
-            recommendations: %w[appendix-i],
-          )
-        else
-          @qc_warnings.add(:missing_genome_source)
-        end
-      end
-
       # Sequencing depth checks
       seq_depth_extra = {}
       if type_genome.mag_or_sag?
@@ -1400,5 +1396,9 @@ module Name::QualityChecks
     return true unless syllabication?
 
     last_epithet.downcase == syllabication.gsub(/[^A-Za-z]/, '').downcase
+  end
+
+  def proposed_before_2023?
+    proposed_in && proposed_in.journal_date.year < 2023
   end
 end
