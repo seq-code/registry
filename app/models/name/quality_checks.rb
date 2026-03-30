@@ -892,7 +892,6 @@ module Name::QualityChecks
     ##
     # Uses the quality check definition to evaluate it in the current name and
     # returns:
-    # - +nil+   if the failure test is undefined
     # - +false+ if the name is out of scope or the failure test is not triggered
     #           (i.e., not a concern)
     # - +true+  if the name is in scope and the failure test is triggered or the
@@ -900,7 +899,6 @@ module Name::QualityChecks
     #
     def evaluate(type, opts = {})
       qc = QcWarning.new(type, opts.merge(name: name))
-      return unless qc.variable_failure
       return false unless qc.scope && (qc.failure || qc.checklist)
 
       self << qc
@@ -980,9 +978,8 @@ module Name::QualityChecks
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
-    @qc_warnings.add(:missing_publication_of_emendation)
     %i[
-      unavailable_english_description
+      missing_publication_of_emendation unavailable_english_description
     ].each { |i| @qc_warnings.evaluate(i) }
 
     if !type?
