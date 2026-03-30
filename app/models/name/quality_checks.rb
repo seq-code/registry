@@ -859,7 +859,7 @@ module Name::QualityChecks
 
     def add(type_or_qc, opts = {})
       qc = type_or_qc.is_a?(QcWarning) ? type_or_qc :
-           QcWarning.new(type, opts.merge(name: name))
+           QcWarning.new(type_or_type, opts.merge(name: name))
       @checks_h[qc.type] = qc if qc.checklist
       if (!qc.checklist && !qc.check) || (qc.check && qc.check.fail?)
         @set_h[qc.type] = qc
