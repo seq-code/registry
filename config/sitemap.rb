@@ -1,13 +1,6 @@
 SitemapGenerator::Sitemap.default_host  = 'https://registry.seqco.de'
-SitemapGenerator::Sitemap.sitemaps_path = '/'
 
 SitemapGenerator::Sitemap.create do
-
-  # Global index
-  # %w[pages names genomes strains registers].each do |base|
-  #   add_to_index 'sitemaps/%s.xml.gz' % base
-  # end
-
   # Top-level pages
   group(filename: :pages, sitemaps_path: 'sitemaps/') do
     extend HelpTopics
@@ -53,9 +46,9 @@ SitemapGenerator::Sitemap.create do
   group(filename: :names, sitemaps_path: 'sitemaps/') do
     Name.all_public.find_each do |name|
       add name_path(name), lastmod: name.updated_at,
-          changefreq: :weekly, priority: 0.6
+          changefreq: :monthly, priority: 0.6
       add wiki_name_path(name), lastmod: name.updated_at,
-          changefreq: :weekly, priority: 0.1
+          changefreq: :monthly, priority: 0.1
       # TODO:
       # - add network
     end
@@ -65,7 +58,7 @@ SitemapGenerator::Sitemap.create do
   group(filename: :genomes, sitemaps_path: 'sitemaps/') do
     Genome.all_public.find_each do |genome|
       add genome_path(genome), lastmod: genome.updated_at,
-          changefreq: :weekly, priority: 0.4
+          changefreq: :monthly, priority: 0.4
       # TODO:
       # - add sample_map
     end
@@ -75,7 +68,7 @@ SitemapGenerator::Sitemap.create do
   group(filename: :strains, sitemaps_path: 'sitemaps/') do
     Strain.find_each do |strain|
       add strain_path(strain), lastmod: strain.updated_at,
-          changefreq: :weekly, priority: 0.4
+          changefreq: :monthly, priority: 0.4
     end
   end
 
@@ -83,20 +76,47 @@ SitemapGenerator::Sitemap.create do
   group(filename: :registers, sitemaps_path: 'sitemaps/') do
     Register.where(validated: true).find_each do |register|
       add register_path(register), lastmod: register.updated_at,
-          changefreq: :weekly, priority: 0.6
+          changefreq: :monthly, priority: 0.6
+      add table_register_path(register), lastmod: register.updated_at,
+          changefreq: :monthly, priority: 0.2
+      add list_register_path(register), lastmod: register.updated_at,
+          changefreq: :monthly, priority: 0.2
       # TODO:
-      # - add table
-      # - add list
       # - add sample_map
       # - add tree
     end
   end
 
-  # TODO Add members for:
-  # - authors
-  # - journals
-  # - publications
-  # - subjects
+  # Authors
+  group(filename: :authors, sitemaps_path: 'sitemaps/') do
+    Author.find_each do |author|
+      add author_path(author), lastmod: author.updated_at,
+          changefreq: :monthly, priority: 0.2
+    end
+  end
 
+  # Journals
+  group(filename: :journals, sitemaps_path: 'sitemaps/') do
+    Publication.journals.find_each do |journal|
+      add journal_path(journal.journal),
+          changefreq: :monthly, priority: 0.2
+    end
+  end
+
+  # Publications
+  group(filename: :publications, sitemaps_path: 'sitemaps/') do
+    Publication.find_each do |publication|
+      add publication_path(publication), lastmod: publication.updated_at,
+          changefreq: :monthly, priority: 0.2
+    end
+  end
+
+  # Subjects
+  group(filename: :subjects, sitemaps_path: 'sitemaps/') do
+    Subject.find_each do |subject|
+      add subject_path(subject), lastmod: subject.updated_at,
+          changefreq: :monthly, priority: 0.1
+    end
+  end
 end
 
