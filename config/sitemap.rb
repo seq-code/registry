@@ -1,6 +1,7 @@
 SitemapGenerator::Sitemap.default_host  = 'https://registry.seqco.de'
+SitemapGenerator
 
-SitemapGenerator::Sitemap.create do
+SitemapGenerator::Sitemap.create(max_sitemap_links: 20_000) do
   # Top-level pages
   group(filename: :pages, sitemaps_path: 'sitemaps/') do
     extend HelpTopics
