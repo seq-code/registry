@@ -413,7 +413,8 @@ module Name::QualityChecks
             %w[subspecies species].include?(w.name.inferred_rank) ? %w[18a] :
               %w[genus].include?(w.name.inferred_rank) ? %w[21a] : []
           )
-        }
+        },
+        failure: lambda { |w| !w.name.type? }
       }.merge(@@link_to_edit_type),
       inconsistent_type_rank: {
         message: lambda { |w|
@@ -431,13 +432,19 @@ module Name::QualityChecks
         message: 'A sequence used as type material must be available ' \
                  'in the INSDC databases',
         area: :nomenclature,
-        rules: %w[18a 26.3]
+        rules: %w[18a 26.3],
+        scope: lambda { |w| w.name.type? },
+        failure: lambda { |w|
+          w.name.nomenclatural_type_type != w.name.expected_type_type
+        }
       }.merge(@@link_to_edit_type),
       sequence_not_found: {
         message: 'A sequence used as type material must be available ' \
                  'in the INSDC databases',
         area: :genomics,
-        rules: %w[18a 26.3]
+        rules: %w[18a 26.3],
+        scope: lambda { |w| w.name.type_is_genome? },
+        failure: lambda { |w| w.name.type_genome.auto_failed.present? }
       }.merge(@@link_to_edit_type),
       # - Rule 18b [Checklist-G, TODO: issue #98]:
       #   The type of a species or subspecies must allow the unambiguous
@@ -447,7 +454,8 @@ module Name::QualityChecks
         message: 'The type material must identify the taxon unambiguously',
         checklist: :genomics,
         area: :genomics,
-        rules: %w[18b]
+        rules: %w[18b],
+        scope: lambda { |w| w.name.type_is_genome? }
       }.merge(@@link_to_edit_type),
       # - Rule 18c requires the implementation of neotype designations
       #   [TODO: issue #12] no checks are to be implemented
@@ -457,13 +465,18 @@ module Name::QualityChecks
         message: 'A reference strain should be established when the type ' \
                  'genome is reported as derived from an isolate',
         area: :nomenclature,
-        recommendations: %w[19]
+        recommendations: %w[19],
+        scope: lambda { |w| w.name.type_is_genome? && w.name.isolate? },
+        failure: lambda { |w| !genome.strain.present? }
       }.merge(@@link_to_edit_type),
       unavailable_reference_strain: {
+        # TODO: Update if the paratype amendment is implemented to 1 collection
         message: 'If isolated, reference strains should be submitted to two ' \
                  'culture collections',
         area: :nomenclature,
-        recommendations: %w[19]
+        recommendations: %w[19],
+        scope: lambda { |w| w.name.type_is_genome? && genome.strain.present? },
+        failure: lambda { |w| w.name.genome.strain.collections.count < 2 }
       }.merge(@@link_to_edit_type),
       #   When a strain belonging to a taxon named under the SeqCode is
       #   isolated, a reference strain should be designated and submitted to two
@@ -475,7 +488,12 @@ module Name::QualityChecks
                  'type',
         area: :nomenclature,
         rules: %w[20],
-        can_endorse: false
+        can_endorse: false,
+        scope: lambda { |w| w.name.type_is_name? },
+        failure: lambda { |w|
+          !w.name.type_name.validated? &&
+            !register&.names&.include?(type_name)
+        }
       }.merge(@@link_to_edit_type),
       # - Rule 21a [Checklist-N]
       later_species_as_genus_type: {
@@ -556,7 +574,9 @@ module Name::QualityChecks
       missing_genome_kind: {
         message: 'The kind of genome used as type has not been specified',
         area: :genomics,
-        rules: %w[26.2]
+        rules: %w[26.2],
+        scope: lambda { |w| w.name.type_is_genome? },
+        failure: lambda { |w| !w.name.type_genome.kind.present? }
       }.merge(@@link_to_edit_genome),
       missing_genome_source: {
         message: 'The source of the type genome has not been specified',
@@ -608,7 +628,13 @@ module Name::QualityChecks
         message: 'A species must be established in a validly published genus',
         area: :nomenclature,
         rule_notes: %w[26#1],
-        can_endorse: false
+        can_endorse: false,
+        scope: lambda { |w|
+          w.name.inferred_rank == 'species' && w.name.parent.present?
+        },
+        failure: lambda { |w|
+          !w.name.parent.validated? && !w.name.register&.names&.include?(parent)
+        }
       }.merge(@@link_to_edit_parent),
       # - Rule 26 Note 2
       effective_publication_missing_accession: {
@@ -975,40 +1001,18 @@ module Name::QualityChecks
       candidatus_modifier missing_rank identical_base_name
       identical_external_name missing_description invalid_effective_publication
       missing_effective_publication inconsistent_format incorrect_suffix
+      missing_type unrecognized_type_material non_valid_name_as_type
+      non_valid_parent_genus missing_reference_strain
+      unavailable_reference_strain missing_genome_kind sequence_not_found
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
     %i[
       missing_publication_of_emendation unavailable_english_description
+      ambiguous_type_genome
     ].each { |i| @qc_warnings.evaluate(i) }
 
-    if !type?
-      @qc_warnings.add(:missing_type)
-    elsif nomenclatural_type_type != expected_type_type
-      @qc_warnings.add(:unrecognized_type_material)
-    end
-
-    if type_is_name? && !type_name.validated?
-      unless register&.names&.include?(type_name)
-        @qc_warnings.add(:non_valid_name_as_type)
-      end
-    end
-
-    if inferred_rank == 'species' && parent.present? &&
-        !parent.validated? && !register&.names&.include?(parent)
-      @qc_warnings.add(:non_valid_parent_genus)
-    end
     if type_is_genome?
-      @qc_warnings.add(:ambiguous_type_genome) # check
-      if genome.isolate? && !genome.strain.present?
-        @qc_warnings.add(:missing_reference_strain)
-      end
-      if genome.strain.present? && genome.strain.collections.count < 2
-        @qc_warnings.add(:unavailable_reference_strain)
-      end
-      @qc_warnings.add(:missing_genome_kind) unless type_genome.kind.present?
-      @qc_warnings.add(:sequence_not_found) if type_genome.auto_failed.present?
-
       if type_genome.source?
         @qc_warnings.add(:missing_metadata_in_databases) # check
       else
