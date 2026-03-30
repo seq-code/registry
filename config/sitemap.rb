@@ -97,9 +97,8 @@ SitemapGenerator::Sitemap.create do
 
   # Journals
   group(filename: :journals, sitemaps_path: 'sitemaps/') do
-    Publication.journals.find_each do |journal|
-      add journal_path(journal.journal),
-          changefreq: :monthly, priority: 0.2
+    Publication.journals.pluck(:journal).each do |journal|
+      add journal_path(journal), changefreq: :monthly, priority: 0.2
     end
   end
 
