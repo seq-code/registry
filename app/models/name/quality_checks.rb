@@ -7,6 +7,7 @@ module Name::QualityChecks
 
     # Attributes supported for warnings
     @@attributes = %i[
+      scope validity_test
       message link_text link_to rules recommendations rule_notes
       can_endorse link_public checklist area
     ]
@@ -44,7 +45,8 @@ module Name::QualityChecks
       },
       candidatus_modifier: {
         message: 'The name has a Candidatus modifier that should be removed',
-        area: :nomenclature
+        area: :nomenclature,
+        validity_test: lambda { |w| w.name.candidatus? }
       }.merge(@@link_to_edit_spelling),
       inconsistent_syllabification: {
         message: 'The syllabification does not correspond to the proposed ' \
@@ -780,14 +782,18 @@ module Name::QualityChecks
     attr_writer *@@attributes
 
     @@attributes.each do |k|
+      define_method("variable_#{k}") do
+        instance_variable_get("@#{k}")
+      end
       define_method(k) do
-        v = instance_variable_get("@#{k}")
+        v = send("variable_#{k}")
         v.is_a?(Proc) ? v.call(self) : v
       end
     end
 
     def initialize(type, opts)
       @type = type.to_sym
+      @scope = true # always in-scope unless explicitly defined
       defaults.each { |k, v| send("#{k}=", v) }
       opts.each { |k, v| send("#{k}=", v) }
     end
@@ -851,14 +857,34 @@ module Name::QualityChecks
       @bypassed_h = {}
     end
 
-    def add(type, opts = {})
-      qc = QcWarning.new(type, opts.merge(name: name))
+    def add(type_or_qc, opts = {})
+      qc = type_or_qc.is_a?(QcWarning) ? type_or_qc :
+           QcWarning.new(type, opts.merge(name: name))
       @checks_h[qc.type] = qc if qc.checklist
       if (!qc.checklist && !qc.check) || (qc.check && qc.check.fail?)
         @set_h[qc.type] = qc
       elsif qc.bypassed?
         @bypassed_h[qc.type] = qc
       end
+    end
+
+    def <<(qc)
+      add(qc)
+    end
+
+    ##
+    # Uses the quality check definition to evaluate it in the current name and
+    # returns +false+ if it's out of scope or the test is valid (i.e., not a
+    # concern for the present name), +true+ if it's in scope and the test is not
+    # valid (i.e., a concern), or +nil+ if no validity test is defined
+    def evaluate(type, opts = {})
+      qc = QcWarning.new(type, opts.merge(name: name))
+      return unless qc.variable_validity_test
+      return false unless qc.scope
+      return false unless qc.validity_test
+
+      self << qc
+      true
     end
 
     def set
@@ -927,7 +953,8 @@ module Name::QualityChecks
     @qc_warnings = QcWarningSet.new(self)
     return @qc_warnings if inferred_rank == 'domain'
 
-    @qc_warnings.add(:candidatus_modifier) if candidatus?
+    #@qc_warnings.add(:candidatus_modifier) if candidatus?
+    @qc_warnings.evaluate(:candidatus_modifier)
     @qc_warnings.add(:missing_rank) unless rank?
     @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
     @qc_warnings.add(:identical_external_name) unless external_homonyms.empty?
