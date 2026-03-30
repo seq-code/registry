@@ -156,7 +156,13 @@ module Name::QualityChecks
           )
         },
         failure: lambda { |w|
-          w.name.base_name !~ /\A[A-Z][a-z ]+( subsp\. )?[a-z ]+\z/
+          regexp =
+            case w.name.inferred_rank
+            when 'subspecies'; /\A[A-Z][a-z]+ [a-z]+ subsp\. [a-z]+\z/
+            when 'species';    /\A[A-Z][a-z]+ [a-z]+\z/
+            else               /\A[A-Z][a-z]+\z/
+            end
+          w.name.base_name !~ regexp
         }
       }.merge(@@link_to_edit_spelling),
       binary_name_above_species: {
@@ -467,7 +473,7 @@ module Name::QualityChecks
         area: :nomenclature,
         recommendations: %w[19],
         scope: lambda { |w| w.name.type_is_genome? && w.name.isolate? },
-        failure: lambda { |w| !genome.strain.present? }
+        failure: lambda { |w| !w.name.genome.strain.present? }
       }.merge(@@link_to_edit_type),
       unavailable_reference_strain: {
         # TODO: Update if the paratype amendment is implemented to 1 collection
@@ -475,7 +481,7 @@ module Name::QualityChecks
                  'culture collections',
         area: :nomenclature,
         recommendations: %w[19],
-        scope: lambda { |w| w.name.type_is_genome? && genome.strain.present? },
+        scope: lambda { |w| w.name.type_is_genome? && w.name.genome.strain.present? },
         failure: lambda { |w| w.name.genome.strain.collections.count < 2 }
       }.merge(@@link_to_edit_type),
       #   When a strain belonging to a taxon named under the SeqCode is
@@ -633,7 +639,8 @@ module Name::QualityChecks
           w.name.inferred_rank == 'species' && w.name.parent.present?
         },
         failure: lambda { |w|
-          !w.name.parent.validated? && !w.name.register&.names&.include?(parent)
+          !w.name.parent.validated? &&
+            !w.name.register&.names&.include?(w.name.parent)
         }
       }.merge(@@link_to_edit_parent),
       # - Rule 26 Note 2
