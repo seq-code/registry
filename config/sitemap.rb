@@ -1,7 +1,19 @@
-SitemapGenerator::Sitemap.default_host = 'https://registry.seqco.de'
+SitemapGenerator::Sitemap.default_host  = 'https://registry.seqco.de'
 SitemapGenerator::Sitemap.sitemaps_path = 'sitemaps/'
+SitemapGenerator::Sitemap.sitemaps_host = '%s/%s' % [
+  SitemapGenerator::Sitemap.default_host,
+  SitemapGenerator::Sitemap.sitemaps_path
+]
+
+# Global index
+SitemapGenerator::Sitemap.adapter = SitemapGenerator::FileAdapter.new(
+  :path => 'public/',
+  :filename => 'sitemap.xml'
+)
+SitemapGenerator::Sitemap.create_index = true
 
 # Top-level pages
+SitemapGenerator::Sitemap.namer = SitemapGenerator::SimpleNamer.new(:pages)
 SitemapGenerator::Sitemap.create do
   extend HelpTopics
   add root_path, changefreq: :daily, priority: 1.0
@@ -47,8 +59,9 @@ SitemapGenerator::Sitemap.create do
   Name.all_public.find_each do |name|
     add name_path(name), lastmod: name.updated_at,
         changefreq: :weekly, priority: 0.6
+    add wiki_name_path(name), lastmod: name.updated_at,
+        changefreq: :weekly, priority: 0.1
     # TODO:
-    # - add wiki
     # - add network
   end
 end
