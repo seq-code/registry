@@ -2,7 +2,6 @@ SitemapGenerator::Sitemap.default_host  = 'https://registry.seqco.de'
 SitemapGenerator::Sitemap.sitemaps_path = '/'
 
 SitemapGenerator::Sitemap.create do
-  extend HelpTopics
 
   # Global index
   # %w[pages names genomes strains registers].each do |base|
@@ -11,6 +10,8 @@ SitemapGenerator::Sitemap.create do
 
   # Top-level pages
   group(filename: :pages, sitemaps_path: 'sitemaps/') do
+    extend HelpTopics
+
     add root_path, changefreq: :daily, priority: 1.0
 
     # Pages
