@@ -980,8 +980,9 @@ module Name::QualityChecks
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
+    @qc_warnings.add(:missing_publication_of_emendation)
     %i[
-      missing_publication_of_emendation unavailable_english_description
+      unavailable_english_description
     ].each { |i| @qc_warnings.evaluate(i) }
 
     if !type?
