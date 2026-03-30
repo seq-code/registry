@@ -492,7 +492,7 @@ module Name::QualityChecks
         scope: lambda { |w| w.name.type_is_name? },
         failure: lambda { |w|
           !w.name.type_name.validated? &&
-            !register&.names&.include?(type_name)
+            !w.name.register&.names&.include?(w.name.type_name)
         }
       }.merge(@@link_to_edit_type),
       # - Rule 21a [Checklist-N]
