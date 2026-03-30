@@ -154,6 +154,9 @@ module Name::QualityChecks
             else %w[14]
             end
           )
+        },
+        failure: lambda { |w|
+          w.name.base_name !~ /\A[A-Z][a-z ]+( subsp\. )?[a-z ]+\z/
         }
       }.merge(@@link_to_edit_spelling),
       binary_name_above_species: {
@@ -378,7 +381,8 @@ module Name::QualityChecks
             "rank of #{w.name.rank}"
         },
         area: :nomenclature,
-        rules: %w[15]
+        rules: %w[15],
+        failure: lambda { |w| !w.name.correct_suffix? }
       }.merge(@@link_to_edit_spelling),
       inconsistent_etymology_with_type_genus: {
         message: lambda { |w|
@@ -516,7 +520,12 @@ module Name::QualityChecks
         link_text: 'Register publication',
         link_to: lambda { |w| [:new_publication, { link_name: w.name.id }] },
         rules: %w[24a],
-        can_endorse: true
+        can_endorse: true,
+        scope: lambda { |w|
+          r = w.name.register
+          r.nil? || r.notified? || r.validated?
+        },
+        failure: lambda { |w| w.name.proposed_in.nil? }
       },
       # - Rule 24b [Checklist-N]
       unavailable_english_description: {
@@ -526,7 +535,8 @@ module Name::QualityChecks
         area: :nomenclature,
         link_text: 'Edit description',
         link_to: lambda { |w| [:edit_description, w.name] },
-        rules: %w[24b]
+        rules: %w[24b],
+        scope: lambda { |w| w.name.proposed_in }
       },
       # - Rule 24c
       invalid_effective_publication: {
@@ -615,7 +625,8 @@ module Name::QualityChecks
                  'in the effective publication',
         checklist: :nomenclature,
         area: :nomenclature,
-        recommendations: %w[26]
+        recommendations: %w[26],
+        scope: lambda { |w| w.name.proposed_in }
       },
       missing_metadata_in_databases: {
         message: 'Descriptive metadata should be available in INSDC databases',
@@ -884,12 +895,13 @@ module Name::QualityChecks
     # - +nil+   if the failure test is undefined
     # - +false+ if the name is out of scope or the failure test is not triggered
     #           (i.e., not a concern)
-    # - +true+  if the name is in scope and the failure test is triggered
-    #           (i.e., a concern)
+    # - +true+  if the name is in scope and the failure test is triggered or the
+    #           quality check is part of a checklist (i.e., a concern)
+    #
     def evaluate(type, opts = {})
       qc = QcWarning.new(type, opts.merge(name: name))
       return unless qc.variable_failure
-      return false unless qc.scope && qc.failure
+      return false unless qc.scope && (qc.failure || qc.checklist)
 
       self << qc
       true
@@ -964,23 +976,13 @@ module Name::QualityChecks
     %i[
       candidatus_modifier missing_rank identical_base_name
       identical_external_name missing_description invalid_effective_publication
+      missing_effective_publication inconsistent_format incorrect_suffix
     ].each { |i| @qc_warnings.evaluate(i) }
-    @qc_warnings.add(:missing_publication_of_emendation) # check
-    if proposed_in.nil? &&
-        (register.nil? || register.notified? || register.validated?)
-      @qc_warnings.add(:missing_effective_publication)
-    end
 
-    if proposed_in
-      @qc_warnings.add(:missing_description_in_publication) # check
-      @qc_warnings.add(:unavailable_english_description) # check
-    end
-
-    unless base_name =~ /\A[A-Z][a-z ]+( subsp\. )?[a-z ]+\z/
-      @qc_warnings.add(:inconsistent_format)
-    end
-
-    @qc_warnings.add(:incorrect_suffix) unless correct_suffix?
+    # check (separate for now until thoroughly tested)
+    %i[
+      missing_publication_of_emendation unavailable_english_description
+    ].each { |i| @qc_warnings.evaluate(i) }
 
     if !type?
       @qc_warnings.add(:missing_type)
