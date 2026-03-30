@@ -957,7 +957,7 @@ module Name::QualityChecks
     return @qc_warnings if inferred_rank == 'domain'
 
     @qc_warnings.evaluate(:candidatus_modifier)
-    @qc_warnings.add(:missing_rank) unless rank?
+    @qc_warnings.evaluate(:missing_rank)
     @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
     @qc_warnings.add(:identical_external_name) unless external_homonyms.empty?
     @qc_warnings.add(:missing_description) unless description?
