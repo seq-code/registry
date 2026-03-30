@@ -17,7 +17,7 @@ every 1.day do
 end
 
 every 1.week do
-  rake 'sitemap:refresh'
+  rake 'sitemap:refresh:no_ping'
 end
 
 every 1.month do
