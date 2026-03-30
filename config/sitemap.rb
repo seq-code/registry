@@ -6,11 +6,9 @@ SitemapGenerator::Sitemap.sitemaps_host = '%s/%s' % [
 ]
 
 # Global index
-SitemapGenerator::Sitemap.adapter = SitemapGenerator::FileAdapter.new(
-  :path => 'public/',
-  :filename => 'sitemap.xml'
-)
-SitemapGenerator::Sitemap.create_index = true
+SitemapGenerator::Sitemap.adapter       = SitemapGenerator::FileAdapter.new
+SitemapGenerator::Sitemap.filename      = 'sitemap.xml'
+SitemapGenerator::Sitemap.create_index  = true
 
 # Top-level pages
 SitemapGenerator::Sitemap.namer = SitemapGenerator::SimpleNamer.new(:pages)
