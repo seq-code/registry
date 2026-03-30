@@ -80,7 +80,6 @@ SitemapGenerator::Sitemap.create do
 
   # Registers
   group(filename: :registers, sitemaps_path: 'sitemaps/') do
-  SitemapGenerator::Sitemap.create do
     Register.where(validated: true).find_each do |register|
       add register_path(register), lastmod: register.updated_at,
           changefreq: :weekly, priority: 0.6
