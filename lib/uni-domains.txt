@@ -6254,6 +6254,7 @@ mnu.edu.mv
 ml.refer.org
 eieonline.com
 itismalta.com
+mcast.edu.mt
 um.edu.mt
 univ-nkc.mr
 uom.ac.mu
