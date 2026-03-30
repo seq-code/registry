@@ -41,7 +41,8 @@ module Name::QualityChecks
         message: 'The name has no registered description',
         area: :nomenclature,
         link_text: 'Edit description',
-        link_to: lambda { |w| [:edit_description, w.name] }
+        link_to: lambda { |w| [:edit_description, w.name] },
+        failure: lambda { |w| !w.name.description? }
       },
       candidatus_modifier: {
         message: 'The name has a Candidatus modifier that should be removed',
@@ -180,7 +181,8 @@ module Name::QualityChecks
         recommendations: %w[9.2],
         link_text: lambda { |w| w.name.identical_base_name.abbr_name },
         link_to: lambda { |w| w.name.identical_base_name },
-        link_public: true
+        link_public: true,
+        failure: lambda { |w| !w.name.identical_base_name.nil? }
       },
       identical_external_name: {
         message: lambda { |w|
@@ -189,7 +191,8 @@ module Name::QualityChecks
         },
         area: :nomenclature,
         rules: %w[9b],
-        recommendations: %w[9.2]
+        recommendations: %w[9.2],
+        failure: lambda { |w| !w.name.external_homonyms.empty? }
       }.merge(@@link_to_edit_spelling),
       long_name: {
         message: 'Consider reducing the length of the name',
@@ -532,7 +535,9 @@ module Name::QualityChecks
         area: :nomenclature,
         link_text: 'Register another publication',
         link_to: lambda { |w| [:new_publication, { link_name: w.name.id }] },
-        rules: %w[24c]
+        rules: %w[24c],
+        scope: lambda { |w| !w.name.proposed_in.nil? },
+        failure: lambda { |w| w.name.proposed_in.prepub? }
       },
       # - Rule 25 is automatically enforced by SeqCode Registry
       #   (but see issue #97)
@@ -956,12 +961,10 @@ module Name::QualityChecks
     @qc_warnings = QcWarningSet.new(self)
     return @qc_warnings if inferred_rank == 'domain'
 
-    @qc_warnings.evaluate(:candidatus_modifier)
-    @qc_warnings.evaluate(:missing_rank)
-    @qc_warnings.add(:identical_base_name) unless identical_base_name.nil?
-    @qc_warnings.add(:identical_external_name) unless external_homonyms.empty?
-    @qc_warnings.add(:missing_description) unless description?
-    @qc_warnings.add(:invalid_effective_publication) if proposed_in&.prepub?
+    %i[
+      candidatus_modifier missing_rank identical_base_name
+      identical_external_name missing_description invalid_effective_publication
+    ].each { |i| @qc_warnings.evaluate(i) }
     @qc_warnings.add(:missing_publication_of_emendation) # check
     if proposed_in.nil? &&
         (register.nil? || register.notified? || register.validated?)
