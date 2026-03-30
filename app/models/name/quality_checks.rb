@@ -472,7 +472,7 @@ module Name::QualityChecks
                  'genome is reported as derived from an isolate',
         area: :nomenclature,
         recommendations: %w[19],
-        scope: lambda { |w| w.name.type_is_genome? && w.name.isolate? },
+        scope: lambda { |w| w.name.type_is_genome? && w.name.genome.isolate? },
         failure: lambda { |w| !w.name.genome.strain.present? }
       }.merge(@@link_to_edit_type),
       unavailable_reference_strain: {
