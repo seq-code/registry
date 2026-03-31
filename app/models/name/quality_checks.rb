@@ -623,7 +623,7 @@ module Name::QualityChecks
           w.name.type_genome.mag_or_sag? ? %w[appendix-i] : []
         },
         scope: ->(w) { w.name.type_is_genome? },
-        failure: ->(w) { !w.type_genome.seq_depth? }
+        failure: ->(w) { !w.name.type_genome.seq_depth? }
       }.merge(@@link_to_edit_genome),
       missing_genome_completeness: {
         message: 'The completeness of the type genome has not been ' \
