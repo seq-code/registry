@@ -32,7 +32,7 @@ gem 'mutex_m'
 gem 'pdf-reader'
 gem 'pg'
 gem 'puma', '~> 5.6'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 8.1'
 gem 'rack-attack'
 gem 'redcarpet', '~> 3.5'
 gem 'redirect_safely', '~> 1.0'
@@ -40,7 +40,7 @@ gem 'rexml'
 gem 'roo', '~> 2.9.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
-gem 'serrano', '~> 1.0'
+gem 'serrano', '~> 1.7'
 # simple_form 5.3.0 introduced a bug that prevents custom inputs from being
 # loaded (see https://github.com/heartcombo/simple_form/issues/1824)
 gem 'simple_form', '~> 5.2.0'
