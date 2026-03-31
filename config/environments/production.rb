@@ -146,4 +146,7 @@ Rails.application.configure do
   # API Configuration
   config.api_only = ENV['RAILS_SEQCODE_API_ONLY'].present?
   config.api_server = 'https://api.seqco.de/v1'
+
+  # Activate Rack middleware
+  config.middleware.use Rack::Attack
 end
