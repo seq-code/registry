@@ -1049,7 +1049,8 @@ module Name::QualityChecks
       missing_type unrecognized_type_material non_valid_name_as_type
       non_valid_parent_genus missing_reference_strain
       unavailable_reference_strain missing_genome_kind sequence_not_found
-      missing_genome_source
+      missing_genome_source missing_genome_sequencing_depth
+      low_genome_sequencing_depth
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
@@ -1059,19 +1060,6 @@ module Name::QualityChecks
     ].each { |i| @qc_warnings.evaluate(i) }
 
     if type_is_genome?
-      # Sequencing depth checks
-      seq_depth_extra = {}
-      if type_genome.mag_or_sag?
-        # Sequencing depth (≥10x) is only a recommendation for MAGs/SAGs
-        seq_depth_extra = { recommendations: %w[appendix-i], rules: [] }
-      end
-
-      if !type_genome.seq_depth?
-        @qc_warnings.add(:missing_genome_sequencing_depth, seq_depth_extra)
-      elsif type_genome.seq_depth < 10.0
-        @qc_warnings.add(:low_genome_sequencing_depth, seq_depth_extra)
-      end
-
       # Completeness and contamination are only required for MAGs/SAGs
       if type_genome.mag_or_sag?
         if !type_genome.completeness_any?
