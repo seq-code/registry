@@ -10,7 +10,7 @@ class NamesController < ApplicationController
       edit_redirect autofill_etymology edit_parent
       return validate endorse claim unclaim demote temporary_editable
       transfer_user transfer_user_commit
-      new_correspondence observe unobserve
+      new_correspondence observe unobserve quality_checks
     ]
   )
   before_action(
@@ -557,6 +557,11 @@ class NamesController < ApplicationController
     else
       redirect_back(fallback_location: @name)
     end
+  end
+
+  # GET /names/1/quality_checks
+  def quality_checks
+    render('quality_checks', layout: !params[:content].present?)
   end
 
   private
