@@ -828,7 +828,7 @@ module Name::QualityChecks
             w.name.type_genome.mag_or_sag? &&
             w.name.type_genome.completeness_any?
         },
-        failure: ->(w) { !w.name.type_genome.completeness_any <= 90.0 }
+        failure: ->(w) { w.name.type_genome.completeness_any <= 90.0 }
       }.merge(@@link_to_edit_genome),
       high_genome_contamination: {
         message: 'The contamination of the type genome should be below 5%',

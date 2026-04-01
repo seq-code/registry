@@ -136,7 +136,7 @@
       <% if @name.validated? %>
         <li>
           <% id = modal(
-               'Quality Checks', size: 'lg',
+               'Quality Checks', size: 'xl',
                async: quality_checks_name_url(@name, content: true)
              ) %>
           <%= modal_button(id, as_anchor: true) do %>
