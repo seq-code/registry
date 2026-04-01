@@ -824,7 +824,7 @@ module Name::QualityChecks
         message: 'The contamination of the type genome should be below 5%',
         area:    :genomics,
         rules:   %w[18a appendix-i],
-        scope:   ->(_w, _n, g) { g&.type_genome&.contamination_any? },
+        scope:   ->(_w, _n, g) { g&.contamination_any? },
         failure: ->(_w, _n, g) { g.contamination_any >= 5.0 }
       }.merge(@@link_to_edit_genome),
       inconsistent_16s_assignment: {
