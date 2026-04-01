@@ -139,7 +139,7 @@ module Name::QualityChecks
         link_text: 'Link parent',
         link_to: ->(_w, n) { [:edit_parent, n] },
         recommendations: %w[7],
-        scope:   ->(_w, n) { n.rank? && !n.top_rank? }
+        scope:   ->(_w, n) { n.rank? && !n.top_rank? },
         failure: ->(_w, n) { !n.incertae_sedis? && !n.parent.present? }
       },
 
@@ -165,7 +165,7 @@ module Name::QualityChecks
             end
           )
         },
-        failure: ->(_w. n) {
+        failure: ->(_w, n) {
           regexp =
             case n.inferred_rank
             when 'subspecies'; /\A[A-Z][a-z]+ [a-z]+ subsp\. [a-z]+\z/
@@ -451,7 +451,7 @@ module Name::QualityChecks
         rules:   ->(_w, n) {
           %w[16] + (n.inferred_rank == 'genus' ? %w[21a] : [])
         },
-        scope:   ->(_w, n) { n.rank? && n.type_is_name? }
+        scope:   ->(_w, n) { n.rank? && n.type_is_name? },
         failure: ->(_w, n) { n.type_name&.rank == n.expected_type_rank }
       }.merge(@@link_to_edit_type),
       # - Rule 17 covered in § Rule 16
