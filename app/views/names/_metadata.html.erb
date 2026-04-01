@@ -135,10 +135,10 @@
       <% end %>
       <% if @name.validated? %>
         <li>
-          <% id = modal('Quality Checks', size: 'xl') do %>
-            <%= render(partial: 'quality_checks',
-                       locals: { force_qc_view: true }) %>
-          <% end %>
+          <% id = modal(
+               'Quality Checks', size: 'lg',
+               async: quality_checks_name_url(@name, content: true)
+             ) %>
           <%= modal_button(id, as_anchor: true) do %>
             Quality checks before valid publication
           <% end %>
