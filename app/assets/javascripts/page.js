@@ -11,6 +11,10 @@ $(document).on("turbolinks:load", function() {
         $.get(container.data("async"), function(data) {
           container.find(".modal-body").html(data);
           t.data("loaded", true);
+        }).fail(function(data, err) {
+          container.find(".modal-body").html(
+            "Request failed with status " + data.status + " " + err
+          );
         });
     });
   });
