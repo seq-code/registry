@@ -629,13 +629,21 @@ module Name::QualityChecks
         message: 'The completeness of the type genome has not been ' \
                  'specified and will be automatically filled',
         area: :genomics,
-        recommendations: %w[appendix-i]
+        recommendations: %w[appendix-i],
+        scope: ->(w) {
+          w.name.type_is_genome? && w.name.type_genome.mag_or_sag?
+        },
+        failure: ->(w) { !w.name.type_genome.completeness_any? }
       }.merge(@@link_to_edit_genome),
       missing_genome_contamination: {
         message: 'The contamination of the type genome has not been' \
                  'specified and will be automatically filled',
         area: :genomics,
-        recommendations: %w[appendix-i]
+        recommendations: %w[appendix-i],
+        scope: ->(w) {
+          w.name.type_is_genome? && w.name.type_genome.mag_or_sag?
+        },
+        failure: ->(w) { !w.name.type_genome.contamination_any? }
       }.merge(@@link_to_edit_genome),
       # - Rule 26.3 covered in § Rule 16 and § Rule 18a
       # - Rule 26.4 covered in § Recommendation 7
@@ -814,18 +822,33 @@ module Name::QualityChecks
       low_genome_completeness: {
         message: 'The completeness of the type genome should be above 90%',
         area: :genomics,
-        rules: %w[18a appendix-i]
+        rules: %w[18a appendix-i],
+        scope: ->(w) {
+          w.name.type_is_genome? &&
+            w.name.type_genome.mag_or_sag? &&
+            w.name.type_genome.completeness_any?
+        },
+        failure: ->(w) { !w.name.type_genome.completeness_any <= 90.0 }
       }.merge(@@link_to_edit_genome),
       high_genome_contamination: {
         message: 'The contamination of the type genome should be below 5%',
         area: :genomics,
-        rules: %w[18a appendix-i]
+        rules: %w[18a appendix-i],
+        scope: ->(w) {
+          w.name.type_is_genome? && w.name.type_genome.contamination_any?
+        },
+        failure: ->(w) { w.name.type_genome.contamination_any >= 5.0 }
       }.merge(@@link_to_edit_genome),
       inconsistent_16s_assignment: {
         message: 'The 16S rRNA genes should agree with the genome taxonomy',
         checklist: :genomics,
         area: :genomics,
-        rules: %w[18a appendix-i]
+        rules: %w[18a appendix-i],
+        scope: ->(w) {
+          w.name.type_is_genome? &&
+            w.name.type_genome.number_of_16s_any? &&
+            !w.name.type_genome.number_of_16s_any.zero?
+        }
       }.merge(@@link_to_edit_genome),
       low_genome_16s_count: {
         message: 'At least one 16S rRNA gene should be identified',
@@ -1049,37 +1072,20 @@ module Name::QualityChecks
       missing_type unrecognized_type_material non_valid_name_as_type
       non_valid_parent_genus missing_reference_strain
       unavailable_reference_strain missing_genome_kind sequence_not_found
-      missing_genome_source missing_genome_sequencing_depth
-      low_genome_sequencing_depth
+      missing_genome_source
+      missing_genome_sequencing_depth low_genome_sequencing_depth
+      missing_genome_completeness low_genome_completeness
+      missing_genome_contamination high_genome_contamination
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
     %i[
       missing_publication_of_emendation unavailable_english_description
       ambiguous_type_genome missing_metadata_in_databases
+      inconsistent_16s_assignment
     ].each { |i| @qc_warnings.evaluate(i) }
 
     if type_is_genome?
-      # Completeness and contamination are only required for MAGs/SAGs
-      if type_genome.mag_or_sag?
-        if !type_genome.completeness_any?
-          @qc_warnings.add(:missing_genome_completeness)
-        elsif type_genome.completeness_any <= 90.0
-          @qc_warnings.add(:low_genome_completeness)
-        end
-
-        if !type_genome.contamination_any?
-          @qc_warnings.add(:missing_genome_contamination)
-        elsif type_genome.contamination_any >= 5.0
-          @qc_warnings.add(:high_genome_contamination)
-        end
-      end # type_genome.mag_or_sag?
-
-      if type_genome.number_of_16s_any? &&
-         !type_genome.number_of_16s_any.zero?
-        @qc_warnings.add(:inconsistent_16s_assignment) # check
-      end
-
       if type_genome.number_of_16s_any? &&
          type_genome.number_of_16s_any.zero?
         @qc_warnings.add(:low_genome_16s_count)
