@@ -1,9 +1,10 @@
 class NamesController < ApplicationController
   before_action(:set_tutorial)
+  before_action(:set_name_and_notifications, only: %i[show])
   before_action(
     :set_name,
     only: %i[
-      show edit update destroy network wiki
+      edit update destroy network wiki
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
@@ -567,17 +568,24 @@ class NamesController < ApplicationController
   private
 
     # Use callbacks to share common setup or constraints between actions
+    def set_name_and_notifications
+      if set_name
+        current_user
+          &.unseen_notifications
+          &.where(notifiable: @name)
+          &.update(seen: true)
+      end
+    end
+
     def set_name
       @name = Name.find(params[:id])
 
       if @name&.can_view?(current_user, cookies[:reviewer_token])
         @register = @name.try(:register)
-        current_user
-          &.unseen_notifications
-          &.where(notifiable: @name)
-          &.update(seen: true)
+        true
       else
         render 'hidden'
+        false
       end
     end
 
