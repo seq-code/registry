@@ -833,7 +833,7 @@ module Name::QualityChecks
         area:    :genomics,
         rules:   %w[18a appendix-i],
         scope:   ->(_w, _n, g) {
-          g.present? && g.number_of_16s_any? && !g.number_of_16s_any.nonzero?
+          g.present? && g.number_of_16s_any? && g.number_of_16s_any.nonzero?
         }
       }.merge(@@link_to_edit_genome),
       low_genome_16s_count: {
@@ -850,7 +850,7 @@ module Name::QualityChecks
         scope:   ->(_w, _n, g) {
           g.present? &&
             g.number_of_16s_any? &&
-            !g.number_of_16s_any.zero? &&
+            g.number_of_16s_any.nonzero? &&
             g.most_complete_16s_any?
         },
         failure: ->(_w, _n, g) { g.most_complete_16s_any <= 75.0 }
