@@ -1,16 +1,17 @@
 class NamesController < ApplicationController
   before_action(:set_tutorial)
+  before_action(:set_name_and_notifications, only: %i[show])
   before_action(
     :set_name,
     only: %i[
-      show edit update destroy network wiki
+      edit update destroy network wiki
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
       edit_redirect autofill_etymology edit_parent
       return validate endorse claim unclaim demote temporary_editable
       transfer_user transfer_user_commit
-      new_correspondence observe unobserve
+      new_correspondence observe unobserve quality_checks
     ]
   )
   before_action(
@@ -256,7 +257,7 @@ class NamesController < ApplicationController
 
   # GET /names/1/wiki
   def wiki
-    @crumbs = [['Names', names_path], [@name.name_html, @name], 'Wiki source']
+    @crumbs = [['Names', names_path], [@name.abbr_name, @name], 'Wiki source']
     @name.check_wikispecies if current_user # Force re-check for logged users
   end
 
@@ -559,20 +560,37 @@ class NamesController < ApplicationController
     end
   end
 
+  # GET /names/1/quality_checks
+  def quality_checks
+    @crumbs = [
+      ['Names', names_path],
+      [@name.abbr_name, @name],
+      'Quality Checks'
+    ]
+    render('quality_checks', layout: !params[:content].present?)
+  end
+
   private
 
     # Use callbacks to share common setup or constraints between actions
+    def set_name_and_notifications
+      if set_name
+        current_user
+          &.unseen_notifications
+          &.where(notifiable: @name)
+          &.update(seen: true)
+      end
+    end
+
     def set_name
       @name = Name.find(params[:id])
 
       if @name&.can_view?(current_user, cookies[:reviewer_token])
         @register = @name.try(:register)
-        current_user
-          &.unseen_notifications
-          &.where(notifiable: @name)
-          &.update(seen: true)
+        true
       else
         render 'hidden'
+        false
       end
     end
 

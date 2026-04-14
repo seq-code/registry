@@ -2,9 +2,8 @@ class JournalsController < ApplicationController
   # GET /journals
   # GET /journals.json
   def index
-    @journals = Publication.where.not(journal: ['', nil])
-          .select(:journal).reorder(:journal).distinct
-          .paginate(page: params[:page], per_page: 100)
+    @journals =
+      Publication.journals.paginate(page: params[:page], per_page: 100)
     @crumbs = ['Journals']
   end
 

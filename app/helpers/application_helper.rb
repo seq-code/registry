@@ -252,7 +252,15 @@ module ApplicationHelper
                 end
             end +
             content_tag(:div, class: opts[:body_class]) do
-              yield if block_given?
+              if block_given?
+                yield
+              elsif opts[:async]
+                content_tag(
+                  :div,
+                  class: 'text-center w-100 p-3',
+                  style: 'font-size: 200%;'
+                ) { fa_icon(:spinner, class: 'fa-spin') + ' Loading...' }
+              end
             end +
             if opts[:footer]
               content_tag(:div, opts[:footer], class: 'modal-footer')

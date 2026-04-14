@@ -74,6 +74,7 @@ Rails.application.routes.draw do
       get  :network
       get  :linkout
       get  :wiki
+      get  :quality_checks
       # --> Edit name
       get  :edit_description
       get  :edit_type

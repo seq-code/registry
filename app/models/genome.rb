@@ -80,9 +80,17 @@ class Genome < ApplicationRecord
       ]
     end
 
-
     def miga_project_path
       File.join(Rails.root, '..', 'miga_check')
+    end
+
+    def all_public
+      # TODO: Refactor to improve efficiency
+      where(
+        id: Name.all_public
+                .where(nomenclatural_type_type: :Genome)
+                .pluck(:nomenclatural_type_id)
+      )
     end
   end
   

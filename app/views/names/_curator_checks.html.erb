@@ -1,5 +1,6 @@
 <% if current_curator? && !@name.validated? %>
-  <% unless @name.qc_warnings.checks.empty? && @name.qc_warnings.bypass.empty? %>
+  <% unless @name.qc_warnings.checks.empty? &&
+            @name.qc_warnings.bypassed.empty? %>
     <div>
       <%= link_to('#curator-checklist-%i' % @name.id,
                   class: 'btn btn-primary btn-curator-checklist',

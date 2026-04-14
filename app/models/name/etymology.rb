@@ -305,7 +305,7 @@ module Name::Etymology
       self.etymology_p1_grammar = type_name.grammar
       self.etymology_p1_particle = type_name.base_name
       self.etymology_p1_description =
-        "referring to the type #{type_name.rank} #{type_name.base_name}"
+        "referring to the type #{type_name.rank} _#{type_name.base_name}_"
       gen = %w[family order].include?(rank) ? 'fem.' : 'neut.'
 
       # Suffix
@@ -320,7 +320,7 @@ module Name::Etymology
       # Full word
       self.etymology_xx_lang = 'N.L.'
       self.etymology_xx_grammar = "#{gen} pl. n."
-      self.etymology_xx_description = "the #{type_name.base_name} #{rank}"
+      self.etymology_xx_description = "the _#{type_name.base_name}_ #{rank}"
     else
       # Based on another (sub)species with the same epithet
       self.autofilled_etymology_method = :same_word

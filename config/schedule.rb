@@ -16,6 +16,10 @@ every 1.day do
   rake 'wikidata:push'
 end
 
+every 1.week do
+  rake 'sitemap:refresh:no_ping'
+end
+
 every 1.month do
   runner 'ReminderMail.register_reminder'
   rake 'genomes:clean'

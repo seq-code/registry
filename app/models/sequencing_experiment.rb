@@ -65,6 +65,21 @@ class SequencingExperiment < ApplicationRecord
     %w[amplicon].include? strategy.downcase
   end
 
+  def transcriptome?
+    source = metadata_xpath(
+      '//EXPERIMENT_SET/EXPERIMENT/DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_SOURCE'
+    )&.text or return
+    %w[transcriptomic].include? source.downcase
+  end
+
+  def genomic?
+    !amplicon? && !transcriptome?
+  end
+
+  def strategy
+    amplicon? ? :amplicon : transcriptome? ? :transcriptome : :genomic
+  end
+
   def load_and_save_metadata!
     unless metadata_xml.present?
       reload_metadata!

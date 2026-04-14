@@ -33,6 +33,7 @@ gem 'pdf-reader'
 gem 'pg'
 gem 'puma', '~> 5.6'
 gem 'rails', '~> 6.1'
+gem 'rack-attack'
 gem 'redcarpet', '~> 3.5'
 gem 'redirect_safely', '~> 1.0'
 gem 'rexml'
@@ -43,6 +44,7 @@ gem 'serrano', '~> 1.0'
 # simple_form 5.3.0 introduced a bug that prevents custom inputs from being
 # loaded (see https://github.com/heartcombo/simple_form/issues/1824)
 gem 'simple_form', '~> 5.2.0'
+gem 'sitemap_generator'
 gem 'strain-code', '~> 0.3'
 # Turbolinks makes navigating your web application faster.
 # Read more: https://github.com/turbolinks/turbolinks

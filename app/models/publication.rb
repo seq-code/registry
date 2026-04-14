@@ -173,6 +173,10 @@ class Publication < ApplicationRecord
       publications
     end
 
+    def journals
+      where.not(journal: ['', nil]).select(:journal).reorder(:journal).distinct
+    end
+
   end
 
   def authors_et_al(format = :text)
