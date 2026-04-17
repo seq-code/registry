@@ -1286,6 +1286,12 @@ class Name < ApplicationRecord
     register_names[index_in_register + 1] unless index_in_register.nil?
   end
 
+  def relative_position_in_register
+    index_in_register.nil? ? nil :
+      register_names.count == 1 ? 1.0 :
+      index_in_register.to_f / register_names.count
+  end
+
   def notified?
     !!register.try(:notified?)
   end

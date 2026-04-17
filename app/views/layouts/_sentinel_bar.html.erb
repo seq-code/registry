@@ -34,6 +34,7 @@
   <% end %>
 
   <% if sentinel_bar[:register] %>
+    <% @name_page ||= :name %>
     <div class="btn-group">
       <%= link_to(
             sentinel_bar[:register], class: 'btn btn-primary btn-sm',
@@ -45,7 +46,8 @@
 
       <% if @name && @name.previous_register_name %>
         <%= link_to(
-              @name.previous_register_name, class: 'btn btn-primary btn-sm',
+              [@name_page, @name.previous_register_name],
+              class: 'btn btn-primary btn-sm',
               style: 'margin-left: 0.1rem;',
               title: 'Previous name in register', data: { toggle: 'tooltip' }
             ) do %>
@@ -53,9 +55,14 @@
         <% end %>
       <% end %>
 
+      <% if @name && @name.relative_position_in_register %>
+        <%= (@name.relative_position_in_register * 100).round %>%
+      <% end %>
+
       <% if @name && @name.next_register_name %>
         <%= link_to(
-              @name.next_register_name, class: 'btn btn-primary btn-sm',
+              [@name_page, @name.next_register_name],
+              class: 'btn btn-primary btn-sm',
               style: 'margin-left: 0.1rem;',
               title: 'Next name in register', data: { toggle: 'tooltip' }
             ) do %>

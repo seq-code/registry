@@ -259,6 +259,7 @@ class NamesController < ApplicationController
   def wiki
     @crumbs = [['Names', names_path], [@name.abbr_name, @name], 'Wiki source']
     @name.check_wikispecies if current_user # Force re-check for logged users
+    @name_page = :wiki_name
   end
 
   # GET /names/new
