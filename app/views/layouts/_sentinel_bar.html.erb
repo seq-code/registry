@@ -34,7 +34,7 @@
   <% end %>
 
   <% if sentinel_bar[:register] %>
-    <% @name_page ||= :name %>
+    <% @name_page ||= nil %>
     <div class="btn-group">
       <%= link_to(
             sentinel_bar[:register], class: 'btn btn-primary btn-sm',
