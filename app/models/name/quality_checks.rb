@@ -452,7 +452,7 @@ module Name::QualityChecks
           %w[16] + (n.inferred_rank == 'genus' ? %w[21a] : [])
         },
         scope:   ->(_w, n) { n.rank? && n.type_is_name? },
-        failure: ->(_w, n) { n.type_name&.rank == n.expected_type_rank }
+        failure: ->(_w, n) { n.type_name&.rank != n.expected_type_rank }
       }.merge(@@link_to_edit_type),
       # - Rule 17 covered in § Rule 16
       # - Rule 18a covered in § Appendix I and also:
