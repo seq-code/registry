@@ -1287,8 +1287,7 @@ class Name < ApplicationRecord
   end
 
   def relative_position_in_register
-    index_in_register.nil? ? nil :
-      register_names.count == 1 ? 1.0 :
+    index_in_register.nil? || register_names.count < 3 ? nil :
       index_in_register.to_f / register_names.count
   end
 
