@@ -62,3 +62,11 @@
     including <%= link_to(wiki_name_url(n)) { %><%= n.name_html %><% } %>
   </div>
 <% end %>
+
+<% if @register.abstract_similar_to_publication? %>
+  <div class="alert alert-warning">
+    <h4>Abstract too similar to publication's abstract</h4>
+    The register list abstract is meant to describe the name proposal, and
+    should not be the same as the abstract for the effective publication.
+  </div>
+<% end %>
