@@ -379,6 +379,7 @@ GEM
       multi_json (~> 1.19, >= 1.19.1)
       rexml (~> 3.4, >= 3.4.4)
       thor (~> 1.5)
+    similar_text (0.0.4)
     simple_form (5.2.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
@@ -499,6 +500,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   selenium-webdriver
   serrano (~> 1.0)
+  similar_text
   simple_form (~> 5.2.0)
   sitemap_generator
   spring

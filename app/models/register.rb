@@ -437,6 +437,17 @@ class Register < ApplicationRecord
     names.any? { |n| n.type_genome.try(:pending?) }
   end
 
+  def abstract_similar_to_publication?
+    abstract_similarity_to_publication &&
+      abstract_similarity_to_publication > 0.9
+  end
+
+  def abstract_similarity_to_publication
+    return unless abstract? && publication&.abstract?
+    @abstract_similarity_to_publication ||=
+      publication.abstract.similar(abstract.to_s)
+  end
+
   # ============ --- FILES --- ============
   %i[publication supplementary].each do |file|
     define_method(:"#{file}_file") do
