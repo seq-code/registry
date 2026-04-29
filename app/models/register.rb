@@ -439,7 +439,7 @@ class Register < ApplicationRecord
 
   def abstract_similar_to_publication?
     abstract_similarity_to_publication &&
-      abstract_similarity_to_publication > 0.9
+      abstract_similarity_to_publication > 90.0
   end
 
   def abstract_similarity_to_publication
