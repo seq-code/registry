@@ -32,7 +32,7 @@ gem 'mutex_m'
 gem 'pdf-reader'
 gem 'pg'
 gem 'puma', '~> 5.6'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 8.1'
 gem 'rack-attack'
 gem 'redcarpet', '~> 3.5'
 gem 'redirect_safely', '~> 1.0'
@@ -83,7 +83,7 @@ group :development do
 end
 
 group :rubocop do
-  gem 'rubocop', '~> 1.62', require: false
+  gem 'rubocop', '~> 1.86', require: false
   gem 'rubocop-packaging', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
