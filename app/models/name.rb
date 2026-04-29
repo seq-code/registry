@@ -1288,7 +1288,7 @@ class Name < ApplicationRecord
 
   def relative_position_in_register
     index_in_register.nil? || register_names.count < 3 ? nil :
-      index_in_register.to_f / register_names.count
+      index_in_register.to_f / (register_names.count - 1.0)
   end
 
   def notified?
