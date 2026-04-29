@@ -114,7 +114,7 @@ GEM
       warden (~> 1.2.3)
     dkim (1.1.0)
     drb (2.2.3)
-    erb (6.0.2)
+    erb (6.0.4)
     erubi (1.13.1)
     execjs (2.10.1)
     faraday (2.14.1)
