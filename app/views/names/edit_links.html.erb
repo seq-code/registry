@@ -13,6 +13,8 @@
   <% else %>
     <%= f.input(:algaebase_taxonomy, label: 'AlgaeBase Taxon ID') %>
   <% end %>
+  <%= f.input(:wikispecies_entry, label: 'Wikispecies page',
+        hint: 'The page title unless it\'s the same as the base name') %>
   <br/>
 
   <% if @tutorial %>

@@ -43,19 +43,23 @@ module Name::Wiki
     base_name.tr(' ', '_')
   end
 
+  def wikispecies_url_name
+    wikispecies_entry.present? ? wikispecies_entry.tr(' ', '_') : wiki_url_name
+  end
+
   def edit_wikispecies_page_link
     'https://species.wikimedia.org/w/index.php?title=%s&action=edit' %
-      wiki_url_name
+      wikispecies_url_name
   end
 
   def edit_wikispecies_template_link
     'https://species.wikimedia.org/w/index.php?title=Template:%s&action=edit' %
-      wiki_url_name
+      wikispecies_url_name
   end
 
   def wikispecies_url
     'https://species.wikimedia.org/wiki/%s' %
-      wiki_url_name
+      wikispecies_url_name
   end
 
   def check_wikispecies

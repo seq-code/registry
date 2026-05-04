@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_12_12_101910) do
+ActiveRecord::Schema.define(version: 2026_05_04_121446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -254,6 +254,7 @@ ActiveRecord::Schema.define(version: 2025_12_12_101910) do
     t.string "protect_from_lpsn"
     t.string "wikidata_item"
     t.integer "basonym_id"
+    t.string "wikispecies_entry"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["name"], name: "index_names_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
