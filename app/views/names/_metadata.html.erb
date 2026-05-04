@@ -75,7 +75,7 @@
         <% if @name.public? %>
           <li>
             <%= link_to(@name.wikispecies_url, target: '_blank') do %>
-              Wikispecies: <%= @name.base_name %>
+              Wikispecies: <%= @name.wikispecies_entry || @name.base_name %>
               <%= fa_icon('external-link-alt') %><% end %>
             <% if user_signed_in? %>
               (<%= link_to('see reference source', wiki_name_url(@name)) %>)
