@@ -635,7 +635,7 @@ class NamesController < ApplicationController
       if @name.can_edit_validated?(current_user)
         fields += %i[
           notes ncbi_taxonomy lpsn_url gtdb_accession algaebase_species
-          algaebase_taxonomy
+          algaebase_taxonomy wikispecies_entry
         ]
         unless @name.type?
           fields += %i[
