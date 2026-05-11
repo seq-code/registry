@@ -21,7 +21,8 @@ class SampleSet
           environmental_medium
         ],
         other: %i[
-          host ph depth temp temperature rel_to_oxygen geographic_location_depth
+          host host_life_stage tissue
+          ph depth temp temperature rel_to_oxygen geographic_location_depth
           chlorophyll isol_growth_condt salinity turbidity dissolved_solids
           conductivity dissolved_oxygen
         ],
