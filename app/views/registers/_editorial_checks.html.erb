@@ -184,8 +184,8 @@
           var tag = " <span class=text-muted>(from ROR)</span>"
 
           // Report results
-          $("#user-" + user + "-", field, "-ror").html(r["name"] + tag);
-          $("#user-" + user + "-", field, "_ror-ror").html(
+          $("#user-" + user + "-" + field + "-ror").html(r["name"] + tag);
+          $("#user-" + user + "-" + field + "-ror-ror").html(
             r["id"] + tag + " / " + data["number_of_results"] + " results"
           );
         }
@@ -214,20 +214,21 @@
           var tag = " <span class=text-muted>(from ROR)</span>";
 
           // Report results
-          $("#user-" + user + "-", field, "-ror").html(names.join(", ") + tag);
+          alert("#user-" + user + "-", field, "-ror");
+          $("#user-" + user + "-" + field + "-ror").html(names.join(", ") + tag);
 
           // Highlight inconsistencies
-          if (!names.includes($("#user-" + user + "-", field).val())) {
-            $("#user-" + user + "-", field, "-ror").addClass("text-danger");
+          if (!names.includes($("#user-" + user + "-" + field).val())) {
+            $("#user-" + user + "-" + field + "-ror").addClass("text-danger");
           }
           var ror_url = "https://ror.org/" +
-                $("#user-" + user + "-", field, "_ror").val();
+                $("#user-" + user + "-" + field + "-ror").val();
           if (r["id"] != ror_url) {
-            $("#user-" + user + "-", field, "_ror-ror").html(r["id"] + tag);
-            $("#user-" + user + "-", field, "_ror-ror").addClass("text-danger");
+            $("#user-" + user + "-" + field + "-ror-ror").html(r["id"] + tag);
+            $("#user-" + user + "-" + field + "-ror-ror").addClass("text-danger");
           }
         } else {
-          var o = $("#user-" + user + "-", field, "_ror-ror");
+          var o = $("#user-" + user + "-" + field + "-ror-ror");
           o.html("ROR not found!");
           o.addClass("text-danger");
         }
