@@ -49,63 +49,63 @@ Rails.application.routes.draw do
   end
 
   # Names
-  # --> Index
-  get  'type-genomes(.:format)' => 'names#type_genomes', as: :name_type_genomes
   # --> Standard resources
-  resources(:names) do
+  resources(:names, controller: 'names/main') do
     collection do
       # --> Index
-      get  :submitted
-      get  :endorsed
-      get  :draft
-      get  :user
-      get  :observing
-      get  :linkout
+      get  :type_genomes, controller: 'names/filtering'
+      # --> Filtering
+      get  :submitted, controller: 'names/filtering'
+      get  :endorsed, controller: 'names/filtering'
+      get  :draft, controller: 'names/filtering'
+      get  :user, controller: 'names/filtering'
+      get  :observing, controller: 'names/filtering'
+      get  :linkout, controller: 'names/utility'
       # --> User utilities
-      get  :autocomplete
-      get  :etymology_sandbox
-      get  :syllabify
+      get  :autocomplete, controller: 'names/utility'
+      get  :etymology_sandbox, controller: 'names/utility'
+      get  :syllabify, controller: 'names/utility'
       # --> Curator utilities
-      get  :unranked
-      get  :unknown_proposal
+      get  :unranked, controller: 'names/filtering'
+      get  :unknown_proposal, controller: 'names/filtering'
     end
     member do
       # --> Display name
-      get  :network
-      get  :linkout
-      get  :wiki
-      get  :quality_checks
+      get  :network, controller: 'names/network'
+      get  :linkout, controller: 'names/utility'
+      get  :wiki, controller: 'names/wiki'
+      get  :quality_checks, controller: 'names/utility'
       # --> Edit name
-      get  :edit_description
-      get  :edit_type
-      get  :edit_etymology
-      get  :autofill_etymology
-      get  :edit_notes
-      get  :edit_rank
-      get  :edit_links
-      get  :edit_redirect
-      post :return
-      post :validate
-      post :endorse
-      post :temporary_editable
+      get  :edit_description, controller: 'names/editing'
+      get  :edit_type, controller: 'names/editing'
+      get  :edit_etymology, controller: 'names/editing'
+      get  :autofill_etymology, controller: 'names/editing'
+      get  :edit_notes, controller: 'names/editing'
+      get  :edit_rank, controller: 'names/editing'
+      get  :edit_links, controller: 'names/editing'
+      get  :edit_redirect, controller: 'names/editing'
+      post :return, controller: 'names/status'
+      post :validate, controller: 'names/status'
+      post :endorse, controller: 'names/status'
+      post :temporary_editable, controller: 'names/status'
       # --> Edit user relationship to name
-      get  :observe
-      get  :unobserve
-      post :claim
-      post :unclaim
-      post :demote
-      get  :transfer_user
-      post :transfer_user, action: :transfer_user_commit
+      get  :observe, controller: 'names/user_actions'
+      get  :unobserve, controller: 'names/user_actions'
+      post :claim, controller: 'names/status'
+      post :unclaim, controller: 'names/status'
+      post :demote, controller: 'names/status'
+      get  :transfer_user, controller: 'names/user_actions'
+      post :transfer_user, action: :transfer_user_commit, controller: 'names/user_actions'
       # --> Edit name relationships
-      get  :edit_parent
-      post :new_correspondence
-      post :proposed_in, path: '/proposed_in/:publication_id'
-      get  :corrigendum_in
-      post :corrigendum
-      post :emended_in, path: '/emended_in/:publication_id'
-      post :assigned_in, path: '/assigned_in/:publication_id'
+      get  :edit_parent, controller: 'names/editing'
+      post :new_correspondence, controller: 'names/user_actions'
+      post :proposed_in, path: '/proposed_in/:publication_id', controller: 'names/publications'
+      get  :corrigendum_in, controller: 'names/publications'
+      post :corrigendum, controller: 'names/publications'
+      post :emended_in, path: '/emended_in/:publication_id', controller: 'names/publications'
+      post :assigned_in, path: '/assigned_in/:publication_id', controller: 'names/publications'
       post :not_validly_proposed_in,
-           path: '/not_validly_proposed_in/:publication_id'
+           path: '/not_validly_proposed_in/:publication_id', controller: 'names/publications'
     end
     resources :pseudonyms
   end
