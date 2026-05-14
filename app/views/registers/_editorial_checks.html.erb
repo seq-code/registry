@@ -13,13 +13,14 @@
   users += @register.coauthors.map { |i| [i, :coauthor] }
   users += @register.curators.map { |i| [i, :curator] }
   required = [
-    ['Given name',  :given?,  :given],
-    ['Family name', :family?, :family],
-    ['ORCID',       :orcid?,  [:orcid, :orcid_url]],
-    ['Affiliation', :affiliation?, :affiliation],
-    ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url]],
-    ['Secondary affiliation', :affiliation_2?, :affiliation_2],
-    ['Secondary affiliation ROR', :affiliation_2_ror?, [:affiliation_2_ror, :ror_2_url]]
+    # Human-readable name, method to check if it's present, field to display, whether it's required
+    ['Given name',  :given?,  :given, true],
+    ['Family name', :family?, :family, true],
+    ['ORCID',       :orcid?,  [:orcid, :orcid_url], true],
+    ['Affiliation', :affiliation?, :affiliation, true],
+    ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url], true],
+    ['Secondary affiliation', :affiliation_2?, :affiliation_2, false],
+    ['Secondary affiliation ROR', :affiliation_2_ror?, [:affiliation_2_ror, :ror_2_url], false]
   ]
 %>
 <% users.each_with_index do |user, k| %>
@@ -32,7 +33,7 @@
     <%= simple_form_for(user[0], method: :post) do |f| %>
       <dl>
         <% required.each do |req| %>
-          <% good  = user[0].send(req[1])%>
+          <% good  = !req[3] || user[0].send(req[1]) %>
           <% field = req[2].is_a?(Array) ? req[2][0] : req[2] %>
           <dt>
             <%= fa_icon(good ? 'check-circle' : 'times-circle',
@@ -151,7 +152,7 @@
           if (r["family-names"] != $("#user-" + user + "-family").val()) {
             $("#user-" + user + "-family-orcid").addClass("text-danger");
           }
-          if (!r["institution-name"].include($("#user-" + user + "-affiliation").val())) {
+          if (!r["institution-name"].includes($("#user-" + user + "-affiliation").val())) {
             $("#user-" + user + "-affiliation-orcid").addClass("text-danger");
           }
         }
@@ -218,7 +219,7 @@
           $("#user-" + user + "-", field, "-ror").html(names.join(", ") + tag);
 
           // Highlight inconsistencies
-          if (!names.include($("#user-" + user + "-", field).val())) {
+          if (!names.includes($("#user-" + user + "-", field).val())) {
             $("#user-" + user + "-", field_dash, "-ror").addClass("text-danger");
           }
           var ror_url = "https://ror.org/" +
