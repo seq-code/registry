@@ -1,0 +1,1014 @@
+openapi: 3.0.0
+info:
+  title: SeqCode Registry API
+  description: |
+    The SeqCode Registry API provides programmatic access to the SeqCode Registry,
+    a database of prokaryotic names described from sequence data.
+    
+    This API allows you to retrieve information about names, genomes, registers,
+    publications, and more.
+  version: 1.0.0
+  license:
+    name: Creative Commons Attribution 4.0 International
+    url: https://creativecommons.org/licenses/by/4.0/
+  contact:
+    name: SeqCode Initiative
+    url: https://seqco.de
+
+servers:
+  - url: https://api.seqco.de/v1
+    description: Production server
+
+tags:
+  - name: Names
+    description: Operations related to taxonomic names
+  - name: Genomes
+    description: Operations related to genomes
+  - name: Registers
+    description: Operations related to register lists
+  - name: Publications
+    description: Operations related to publications
+  - name: Strains
+    description: Operations related to strains
+  - name: Authors
+    description: Operations related to authors
+  - name: Subjects
+    description: Operations related to publication subjects
+  - name: Page
+    description: General API operations
+
+paths:
+  /page/status:
+    get:
+      tags:
+        - Page
+      summary: Check API status
+      description: Checks that the API is accessible
+      responses:
+        '200':
+          description: API is accessible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+
+  /names:
+    get:
+      tags:
+        - Names
+      summary: List all names
+      description: Retrieve a paginated list of names with optional filtering
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - name: status
+          in: query
+          description: Filter names by status
+          schema:
+            type: string
+            enum: [public, automated, SeqCode, ICNP, ICNafp, valid]
+        - name: rank
+          in: query
+          description: Filter names by taxonomic rank
+          schema:
+            type: string
+            enum: [domain, kingdom, phylum, class, order, family, genus, species, subspecies]
+      responses:
+        '200':
+          description: A list of names
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNamesResponse'
+
+  /names/{id}:
+    get:
+      tags:
+        - Names
+      summary: Get a specific name
+      description: Retrieve detailed information about a specific name
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Detailed information about the name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Name'
+        '404':
+          description: Name not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /genomes:
+    get:
+      tags:
+        - Genomes
+      summary: List all genomes
+      description: Retrieve a paginated list of genomes
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: A list of genomes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGenomesResponse'
+
+  /genomes/{id}:
+    get:
+      tags:
+        - Genomes
+      summary: Get a specific genome
+      description: Retrieve detailed information about a specific genome
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Detailed information about the genome
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genome'
+        '404':
+          description: Genome not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /type-genomes:
+    get:
+      tags:
+        - Genomes
+      summary: List type genomes
+      description: Retrieve a list of type genomes from validly published names
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: A list of type genomes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/Response'
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TypeGenome'
+
+  /registers:
+    get:
+      tags:
+        - Registers
+      summary: List all registers
+      description: Retrieve a paginated list of register lists
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: A list of registers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRegistersResponse'
+
+  /registers/{acc}:
+    get:
+      tags:
+        - Registers
+      summary: Get a specific register
+      description: Retrieve detailed information about a specific register list
+      parameters:
+        - name: acc
+          in: path
+          description: The accession of the register
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: Detailed information about the register
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+        '404':
+          description: Register not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /publications:
+    get:
+      tags:
+        - Publications
+      summary: List all publications
+      description: Retrieve a paginated list of publications
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: A list of publications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPublicationsResponse'
+
+  /publications/{id}:
+    get:
+      tags:
+        - Publications
+      summary: Get a specific publication
+      description: Retrieve detailed information about a specific publication
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Detailed information about the publication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publication'
+        '404':
+          description: Publication not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /authors:
+    get:
+      tags:
+        - Authors
+      summary: List all authors
+      description: Retrieve a paginated list of authors
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: A list of authors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuthorsResponse'
+
+  /authors/{id}:
+    get:
+      tags:
+        - Authors
+      summary: Get a specific author
+      description: Retrieve detailed information about a specific author
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Detailed information about the author
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Author not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /strains/{id}:
+    get:
+      tags:
+        - Strains
+      summary: Get a specific strain
+      description: Retrieve detailed information about a specific strain
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Detailed information about the strain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Strain'
+        '404':
+          description: Strain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /subjects:
+    get:
+      tags:
+        - Subjects
+      summary: List all subjects
+      description: Retrieve a paginated list of publication subjects
+      parameters:
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: A list of subjects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubjectsResponse'
+
+  /subjects/{id}:
+    get:
+      tags:
+        - Subjects
+      summary: Get a specific subject
+      description: Retrieve detailed information about a specific subject
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Detailed information about the subject
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+        '404':
+          description: Subject not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    StatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+      required:
+        - status
+
+    Response:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        message_type:
+          type: string
+      required:
+        - status
+
+    PaginatedResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        message_type:
+          type: string
+        count:
+          type: integer
+        current_page:
+          type: integer
+        total_pages:
+          type: integer
+        next:
+          type: string
+          format: uri
+      required:
+        - status
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+        code:
+          type: integer
+      required:
+        - status
+        - message
+
+    NomenclaturalType:
+      type: object
+      description: |
+        The nomenclatural type associated with a name. This is a hash (object) with a `class` key
+        that determines the type of the nomenclatural type.
+      properties:
+        class:
+          type: string
+          description: The type of the nomenclatural type
+          enum: [Name, Genome, Strain, Other, unknown]
+          example: Name
+        id:
+          type: integer
+          description: The unique identifier of the nomenclatural type (if applicable)
+          example: 26160
+        url:
+          type: string
+          format: uri
+          description: The URL to the nomenclatural type resource (if applicable)
+          example: https://api.seqco.de/v1/names/26160.json
+        uri:
+          type: string
+          format: uri
+          description: The URI of the nomenclatural type (if applicable)
+          example: https://seqco.de/i:26160
+        display:
+          type: string
+          description: A human-readable display name for the nomenclatural type (if applicable)
+          example: Desulfogranum mediterraneum
+
+    Classification:
+      type: array
+      description: An array of taxonomic ranks, ordered from highest to lowest
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          rank:
+            type: string
+            enum: [domain, kingdom, phylum, class, order, family, genus, species, subspecies]
+          status_name:
+            type: string
+            enum: [public, automated, SeqCode, ICNP, ICNafp, valid]
+          priority_date:
+            type: string
+            format: date-time
+          nomenclatural_type:
+            $ref: '#/components/schemas/NomenclaturalType'
+          url:
+            type: string
+            format: uri
+          uri:
+            type: string
+            format: uri
+
+    Name:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rank:
+          type: string
+          enum: [domain, kingdom, phylum, class, order, family, genus, species, subspecies]
+        status_name:
+          type: string
+          enum: [public, automated, SeqCode, ICNP, ICNafp, valid]
+        syllabication:
+          type: string
+        priority_date:
+          type: string
+          format: date-time
+        formal_styling:
+          type: object
+          properties:
+            raw:
+              type: string
+            html:
+              type: string
+        etymology:
+          type: string
+        nomenclatural_type:
+          $ref: '#/components/schemas/NomenclaturalType'
+        description:
+          type: string
+        notes:
+          type: string
+        classification:
+          $ref: '#/components/schemas/Classification'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Name'
+        qc_warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/QCWarning'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+
+    NameItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rank:
+          type: string
+          enum: [domain, kingdom, phylum, class, order, family, genus, species, subspecies]
+        status_name:
+          type: string
+          enum: [public, automated, SeqCode, ICNP, ICNafp, valid]
+        priority_date:
+          type: string
+          format: date-time
+        nomenclatural_type:
+          type: object
+          properties:
+            class:
+              type: string
+              enum: [Name, Genome, Strain, Other, unknown]
+            id:
+              type: integer
+            url:
+              type: string
+              format: uri
+            uri:
+              type: string
+              format: uri
+            display:
+              type: string
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+
+    PaginatedNamesResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/PaginatedResponse'
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameItem'
+
+    Genome:
+      type: object
+      properties:
+        id:
+          type: integer
+        database:
+          type: string
+          enum: [assembly, nuccore]
+        accession:
+          type: string
+        kind:
+          type: string
+          enum: [isolate, enrichment, mag, sag, null]
+        sample:
+          type: object
+          properties:
+            source_database:
+              type: string
+              enum: [biosample, sra, "", null]
+            source_accessions:
+              type: array
+              items:
+                type: string
+        genomic_features:
+          type: object
+          properties:
+            auto_check:
+              type: boolean
+            seq_depth:
+              type: integer
+            gc_content:
+              type: number
+            most_complete_16s:
+              type: number
+            number_of_16s:
+              type: integer
+            most_complete_23s:
+              type: number
+            number_of_23s:
+              type: integer
+            number_of_trnas:
+              type: integer
+            coding_density:
+              type: number
+            codon_table:
+              type: integer
+            n50:
+              type: number
+            contigs:
+              type: integer
+            largest_contig:
+              type: integer
+            assembly_length:
+              type: integer
+            ambiguous_fraction:
+              type: number
+        names:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameItem'
+        strain:
+          $ref: '#/components/schemas/Strain'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+
+    GenomeItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        database:
+          type: string
+          enum: [assembly, nuccore]
+        accession:
+          type: string
+        kind:
+          type: string
+          enum: [isolate, enrichment, mag, sag, null]
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+
+    PaginatedGenomesResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/PaginatedResponse'
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenomeItem'
+
+    TypeGenome:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rank:
+          type: string
+          enum: [domain, kingdom, phylum, class, order, family, genus, species, subspecies]
+        status_name:
+          type: string
+          enum: [public, automated, SeqCode, ICNP, ICNafp, valid]
+        priority_date:
+          type: string
+          format: date-time
+        nomenclatural_type:
+          type: object
+          properties:
+            assembly:
+              type: string
+            nuccore:
+              type: string
+        classification:
+          $ref: '#/components/schemas/Classification'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+
+    Register:
+      type: object
+      properties:
+        acc_url:
+          type: string
+        title:
+          type: string
+        priority_date:
+          type: string
+          format: date-time
+        submitted:
+          type: boolean
+        validated:
+          type: boolean
+        validated_by:
+          type: string
+        submitter:
+          type: string
+        authors:
+          type: array
+          items:
+            type: string
+        effective_publication:
+          $ref: '#/components/schemas/Publication'
+        doi:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+        names:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameItem'
+
+    RegisterItem:
+      type: object
+      properties:
+        acc_url:
+          type: string
+        title:
+          type: string
+        priority_date:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+
+    PaginatedRegistersResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/PaginatedResponse'
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegisterItem'
+
+    Publication:
+      type: object
+      properties:
+        id:
+          type: integer
+        citation:
+          type: string
+        doi:
+          type: string
+        journal:
+          type: string
+        journal_loc:
+          type: string
+        journal_date:
+          type: string
+          format: date
+        pub_type:
+          type: string
+        abstract:
+          type: string
+        long_citation_html:
+          type: string
+        link_ext:
+          type: string
+        title:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        names:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameItem'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subject'
+
+    PublicationItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        citation:
+          type: string
+        doi:
+          type: string
+        url:
+          type: string
+          format: uri
+
+    PaginatedPublicationsResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/PaginatedResponse'
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicationItem'
+
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+        given:
+          type: string
+        family:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        publications:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicationItem'
+
+    AuthorItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        given:
+          type: string
+        family:
+          type: string
+        url:
+          type: string
+          format: uri
+
+    PaginatedAuthorsResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/PaginatedResponse'
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorItem'
+
+    Strain:
+      type: object
+      properties:
+        id:
+          type: integer
+        strain_numbers:
+          type: array
+          items:
+            type: string
+        typified_names:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameItem'
+        genomes:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenomeItem'
+        strain_info_dois:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+
+    StrainItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        strain_numbers:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+          format: uri
+        uri:
+          type: string
+          format: uri
+
+    Subject:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        publications:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicationItem'
+
+    SubjectItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+
+    PaginatedSubjectsResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/PaginatedResponse'
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectItem'
+
+    QCWarning:
+      type: object
+      properties:
+        message:
+          type: string
+        rules:
+          type: array
+          items:
+            type: string
+        recommendations:
+          type: array
+          items:
+            type: string
+        rule_notes:
+          type: array
+          items:
+            type: string
+        can_endorse:
+          type: boolean
+        checklist:
+          type: string
+
+  parameters:
+    page:
+      name: page
+      in: query
+      description: The page number for pagination
+      schema:
+        type: integer
+        default: 1
+    id:
+      name: id
+      in: path
+      description: The ID of the resource
+      required: true
+      schema:
+        type: integer
