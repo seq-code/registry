@@ -19,6 +19,14 @@
     <% else %>
       <%= user.affiliation %>
     <% end %>
+    <% if user.affiliation_2? %>
+      | Secondary:
+      <% if user.affiliation_2_ror? %>
+        <%= link_to(user.affiliation_2, user.ror_2_url, target: '_blank') %>
+      <% else %>
+        <%= user.affiliation_2 %>
+      <% end %>
+    <% end %>
   <% end %>
 
   <%= adaptable_value(entry, 'Roles') do %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_05_11_100000) do
+ActiveRecord::Schema.define(version: 2026_05_14_135351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -534,6 +534,8 @@ ActiveRecord::Schema.define(version: 2026_05_11_100000) do
     t.boolean "opt_regular_email", default: true
     t.boolean "opt_notification", default: true
     t.boolean "opt_message_email", default: true
+    t.string "affiliation_2"
+    t.string "affiliation_2_ror"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

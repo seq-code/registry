@@ -22,6 +22,11 @@
       <% elsif author.affiliation? %>
       <affiliation><%= author.affiliation %></affiliation>
       <% end %>
+      <% if author.affiliation_2_ror? %>
+      <affiliation affiliationIdentifier="<%= author.ror_2_url %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= author.affiliation_2 %></affiliation>
+      <% elsif author.affiliation_2? %>
+      <affiliation><%= author.affiliation_2 %></affiliation>
+      <% end %>
     </creator>
     <% end %>
   </creators>
@@ -46,12 +51,17 @@
       <familyName><%= curator.family %></familyName>
       <% end %>
       <% if curator.orcid? %>
-      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org">https://orcid.org/<%= curator.orcid %></nameIdentifier>
+      <nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org"><%= curator.orcid_url %></nameIdentifier>
       <% else %>
       <nameIdentifier nameIdentifierScheme="" schemeURI=""/>
       <% end %>
       <% if curator.affiliation_ror? %>
-      <affiliation affiliationIdentifier="https://ror.org/<%= curator.affiliation_ror %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= curator.affiliation %></affiliation>
+      <affiliation affiliationIdentifier="<%= curator.ror_url %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= curator.affiliation %></affiliation>
+      <% elsif curator.affiliation? %>
+      <affiliation><%= curator.affiliation %></affiliation>
+      <% end %>
+      <% if curator.affiliation_2_ror? %>
+      <affiliation affiliationIdentifier="<%= curator.ror_2_url %>" affiliationIdentifierScheme="ROR" schemeURI="https://ror.org"><%= curator.affiliation_2 %></affiliation>
       <% elsif curator.affiliation? %>
       <affiliation><%= curator.affiliation %></affiliation>
       <% end %>
