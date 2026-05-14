@@ -66,13 +66,13 @@
               <%= link_to('#', class: 'btn btn-primary',
                     data: { user: k, ror: user[0].send("#{aff}_ror"),
                             action: 'ror', field: aff }) do %>
-                Verify ROR affiliation
+                Verify ROR <%= aff.gsub('_', ' ') %>
               <% end %>
             <% elsif user[0].send("#{aff}?") %>
               <%= link_to('#', class: 'btn btn-primary',
                     data: { user: k, affiliation: user[0].send(aff),
                             action: 'ror_search', field: aff }) do %>
-                Search affiliation in ROR
+                Search <%= aff.gsub('_', ' ') %> in ROR
               <% end %>
             <% end %>
           <% end %>
@@ -168,7 +168,6 @@
     var affiliation = $(this).data("affiliation");
     var user = $(this).data("user");
     var field = $(this).data("field");
-    var field_dash = field.replace("_", "-");
     var api = "https://api.ror.org/organizations?query=" + affiliation;
     $.ajax({
       beforeSend: function(request) {
@@ -177,7 +176,7 @@
       dataType: "json", url: api,
       success: function(data) {
         if(data["number_of_results"] == 0) {
-          var o = $("#user-" + user + "-", field_dash, "-ror");
+          var o = $("#user-" + user + "-", field, "-ror");
           o.html("Organization not found in ROR!");
           o.addClass("text-danger");
         } else {
@@ -185,7 +184,7 @@
           var tag = " <span class=text-muted>(from ROR)</span>"
 
           // Report results
-          $("#user-" + user + "-", field_dash, "-ror").html(r["name"] + tag);
+          $("#user-" + user + "-", field, "-ror").html(r["name"] + tag);
           $("#user-" + user + "-", field, "_ror-ror").html(
             r["id"] + tag + " / " + data["number_of_results"] + " results"
           );
@@ -202,7 +201,6 @@
     var ror  = $(this).data("ror");
     var user = $(this).data("user");
     var field = $(this).data("field");
-    var field_dash = field.replace("_", "-");
     var api = "https://api.ror.org/organizations/" + ror;
     $.ajax({
       beforeSend: function(request) {
@@ -220,7 +218,7 @@
 
           // Highlight inconsistencies
           if (!names.includes($("#user-" + user + "-", field).val())) {
-            $("#user-" + user + "-", field_dash, "-ror").addClass("text-danger");
+            $("#user-" + user + "-", field, "-ror").addClass("text-danger");
           }
           var ror_url = "https://ror.org/" +
                 $("#user-" + user + "-", field, "_ror").val();
