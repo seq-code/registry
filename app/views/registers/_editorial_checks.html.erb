@@ -17,7 +17,9 @@
     ['Family name', :family?, :family],
     ['ORCID',       :orcid?,  [:orcid, :orcid_url]],
     ['Affiliation', :affiliation?, :affiliation],
-    ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url]]
+    ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url]],
+    ['Secondary affiliation', :affiliation_2?, :affiliation_2],
+    ['Secondary affiliation ROR', :affiliation_2_ror?, [:affiliation_2_ror, :ror_2_url]]
   ]
 %>
 <% users.each_with_index do |user, k| %>
