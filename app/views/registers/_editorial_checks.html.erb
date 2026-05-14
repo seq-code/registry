@@ -45,7 +45,7 @@
                   input_html: { id: "user-#{k}-#{field}" }) %>
             <%= content_tag(:div, '', id: "user-#{k}-#{field}-orcid") %>
             <%= content_tag(:div, '', id: "user-#{k}-#{field}-ror") %>
-            <% if good && req[2].is_a?(Array) %>
+            <% if user[0].send(req[1]) && req[2].is_a?(Array) %>
               <%= link_to(user[0].send(req[2][0]), user[0].send(req[2][1]),
                     target: '_blank') %>
             <% end %>
