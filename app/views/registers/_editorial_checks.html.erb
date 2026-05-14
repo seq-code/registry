@@ -58,17 +58,19 @@
               Verify ORCID data
             <% end %>
           <% end %>
-          <% if user[0].affiliation_ror? %>
-            <%= link_to('#', class: 'btn btn-primary',
-                  data: { user: k, ror: user[0].affiliation_ror,
-                          action: 'ror' }) do %>
-              Verify ROR affiliation
-            <% end %>
-          <% elsif user[0].affiliation? %>
-            <%= link_to('#', class: 'btn btn-primary',
-                  data: { user: k, affiliation: user[0].affiliation,
-                          action: 'ror_search' }) do %>
-              Search affiliation in ROR
+          <% ['affiliation', 'affiliation_2'].each do |aff| %>
+            <% if user[0].send("#{aff}_ror?") %>
+              <%= link_to('#', class: 'btn btn-primary',
+                    data: { user: k, ror: user[0].send("#{aff}_ror"),
+                            action: 'ror', field: aff }) do %>
+                Verify ROR affiliation
+              <% end %>
+            <% elsif user[0].send("#{aff}?") %>
+              <%= link_to('#', class: 'btn btn-primary',
+                    data: { user: k, affiliation: user[0].send(aff),
+                            action: 'ror_search', field: aff }) do %>
+                Search affiliation in ROR
+              <% end %>
             <% end %>
           <% end %>
         </dd>
@@ -162,6 +164,8 @@
     submit.addClass("disabled");
     var affiliation = $(this).data("affiliation");
     var user = $(this).data("user");
+    var field = $(this).data("field");
+    var field_dash = field.replace("_", "-");
     var api = "https://api.ror.org/organizations?query=" + affiliation;
     $.ajax({
       beforeSend: function(request) {
@@ -170,7 +174,7 @@
       dataType: "json", url: api,
       success: function(data) {
         if(data["number_of_results"] == 0) {
-          var o = $("#user-" + user + "-affiliation-ror");
+          var o = $("#user-" + user + "-", field_dash, "-ror");
           o.html("Organization not found in ROR!");
           o.addClass("text-danger");
         } else {
@@ -178,8 +182,8 @@
           var tag = " <span class=text-muted>(from ROR)</span>"
 
           // Report results
-          $("#user-" + user + "-affiliation-ror").html(r["name"] + tag);
-          $("#user-" + user + "-affiliation_ror-ror").html(
+          $("#user-" + user + "-", field_dash, "-ror").html(r["name"] + tag);
+          $("#user-" + user + "-", field, "_ror-ror").html(
             r["id"] + tag + " / " + data["number_of_results"] + " results"
           );
         }
@@ -194,6 +198,8 @@
     submit.addClass("disabled");
     var ror  = $(this).data("ror");
     var user = $(this).data("user");
+    var field = $(this).data("field");
+    var field_dash = field.replace("_", "-");
     var api = "https://api.ror.org/organizations/" + ror;
     $.ajax({
       beforeSend: function(request) {
@@ -207,20 +213,20 @@
           var tag = " <span class=text-muted>(from ROR)</span>";
 
           // Report results
-          $("#user-" + user + "-affiliation-ror").html(names.join(", ") + tag);
+          $("#user-" + user + "-", field, "-ror").html(names.join(", ") + tag);
 
           // Highlight inconsistencies
-          if (!names.include($("#user-" + user + "-affiliation").val())) {
-            $("#user-" + user + "-affiliation-ror").addClass("text-danger");
+          if (!names.include($("#user-" + user + "-", field).val())) {
+            $("#user-" + user + "-", field_dash, "-ror").addClass("text-danger");
           }
           var ror_url = "https://ror.org/" +
-                $("#user-" + user + "-affiliation_ror").val();
+                $("#user-" + user + "-", field, "_ror").val();
           if (r["id"] != ror_url) {
-            $("#user-" + user + "-affiliation_ror-ror").html(r["id"] + tag);
-            $("#user-" + user + "-affiliation_ror-ror").addClass("text-danger");
+            $("#user-" + user + "-", field, "_ror-ror").html(r["id"] + tag);
+            $("#user-" + user + "-", field, "_ror-ror").addClass("text-danger");
           }
         } else {
-          var o = $("#user-" + user + "-affiliation_ror-ror");
+          var o = $("#user-" + user + "-", field, "_ror-ror");
           o.html("ROR not found!");
           o.addClass("text-danger");
         }
