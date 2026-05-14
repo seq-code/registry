@@ -1,7 +1,6 @@
 class AddIndexesToNames < ActiveRecord::Migration[6.1]
   def change
     # Add indexes for frequently queried columns
-    add_index :names, :name
     add_index :names, :rank
     add_index :names, :status
     add_index :names, :redirect_id
