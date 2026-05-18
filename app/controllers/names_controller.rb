@@ -1,4 +1,12 @@
+# frozen_string_literal: true
+
+# Controller for managing names in the SeqCode Registry.
+# Uses concerns for modularity and service objects for business logic.
 class NamesController < ApplicationController
+  include Paginatable
+  include Filterable
+  include NameFilterable
+
   before_action(:set_tutorial)
   before_action(:set_name_and_notifications, only: %i[show])
   before_action(
@@ -46,11 +54,13 @@ class NamesController < ApplicationController
   def autocomplete
     name = params[:q].downcase
     rank = params[:rank]&.downcase
-    @names =
-      Name.where('LOWER(name) LIKE ?', "#{name}%")
-          .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
-          .limit(20)
-    @names = @names.where(rank: rank) if rank
+    @names = Services::Name::FuzzySearch.call(
+      name,
+      method: :similarity,
+      threshold: 0.7,
+      limit: 20,
+      selection: rank ? Name.where(rank: rank) : Name.all
+    )
   end
 
   # GET /names
@@ -72,37 +82,12 @@ class NamesController < ApplicationController
     ].compact.join(' ')
     opts[:rank] = params[:rank] if params[:rank].present?
 
-    opts[:status] ||=
-      case @status.to_s.downcase
-      when 'public';    Name.public_status
-      when 'automated'; 0
-      when 'seqcode';   15
-      when 'icnp';      20
-      when 'icnafp';    25
-      when 'valid';     Name.valid_status
-      end
+    opts[:status] ||= map_status_to_value(@status)
 
-    @names ||=
-      case @sort.to_s.downcase
-      when 'date'
-        if opts[:status] == 15
-          Name.order(validated_at: :desc)
-        else
-          Name.order(created_at: :desc)
-        end
-      when 'citations'
-        Name
-          .left_joins(:publication_names).group(:id)
-          .order('COUNT(publication_names.id) DESC')
-      else
-        @sort = 'alphabetically'
-        Name.order(name: :asc)
-      end
+    @names ||= apply_name_sort(Name.all)
+    @names = apply_name_filters(@names, opts)
     @names = @names.where(redirect: nil)
-    @names = @names.where(status: opts[:status]) if opts[:status]
-    @names = @names.where(rank: opts[:rank]) if opts[:rank]
-    @names = @names.where(opts[:where]) if opts[:where]
-    @names = @names.paginate(page: params[:page], per_page: 30)
+    @names = paginate(@names)
 
     @count = @names.count
     @count = @count.size if @count.is_a? Hash
@@ -238,10 +223,7 @@ class NamesController < ApplicationController
         Name.where('status >= 15')
             .where.not(ncbi_taxonomy: nil)
             .order(created_at: :asc)
-    @names =
-      @names.paginate(
-        page: params[:page] || 1, per_page: params[:per_page] || 10
-      )
+    @names = paginate(@names, per_page: params[:per_page] || 10)
   end
 
   # GET /names/1/network
@@ -366,13 +348,13 @@ class NamesController < ApplicationController
   # GET /names/unranked
   def unranked
     @names = Name.where(rank: nil).order(created_at: :asc)
-    @names = @names.paginate(page: params[:page], per_page: 30)
+    @names = paginate(@names)
   end
 
   # GET /names/unknown_proposal
   def unknown_proposal
     @names = Name.where(proposed_in: nil).where('name LIKE ?', 'Candidatus %').order(created_at: :asc)
-    @names = @names.paginate(page: params[:page], per_page: 30)
+    @names = paginate(@names)
   end
 
   # POST /names/1/proposed_in/2
@@ -475,7 +457,7 @@ class NamesController < ApplicationController
 
   # POST /names/1/unclaim
   def unclaim
-    change_status(:unclaim, 'Name successfully claimed', current_user)
+    change_status(:unclaim, 'Name successfully unclaimed', current_user)
   end
 
   # GET /names/1/transfer_user
@@ -628,8 +610,7 @@ class NamesController < ApplicationController
       end
     end
 
-    # Never trust parameters from the scary internet, only allow the white list
-    # through
+    # Never trust parameters from the scary internet, only allow the white list through
     def name_params
       fields = []
       if @name.can_edit_validated?(current_user)
