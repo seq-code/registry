@@ -69,7 +69,7 @@ class SequencingExperiment < ApplicationRecord
     source = metadata_xpath(
       '//EXPERIMENT_SET/EXPERIMENT/DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_SOURCE'
     )&.text or return
-    %w[transcriptomic].include? source.downcase
+    %w[transcriptomic metatranscriptomic].include? source.downcase
   end
 
   def genomic?
