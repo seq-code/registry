@@ -19,12 +19,14 @@ class SampleSet
           environment_biome environment_feature gold_ecosystem_classification
           broad_scale_environmental_context local_environmental_context
           environmental_medium
-        ],
+        ], # To consider (environment? other?): host_body_habitat
         other: %i[
-          host host_life_stage tissue
-          ph depth temp temperature rel_to_oxygen geographic_location_depth
-          chlorophyll isol_growth_condt salinity turbidity dissolved_solids
-          conductivity dissolved_oxygen
+          host host_life_stage host_common_name host_body_product host_body_site
+          tissue
+          ph depth geographic_location_depth
+          temp temperature rel_to_oxygen chlorophyll salinity turbidity
+          dissolved_solids conductivity dissolved_oxygen
+          isol_growth_condt
         ],
         package: %i[
           ncbi_package ena_checklist ncbi_submission_package biosamplemodel
