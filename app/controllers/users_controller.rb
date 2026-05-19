@@ -31,7 +31,7 @@ class UsersController < ApplicationController
   # POST /sysusers/:username
   def update
     par = params.require(:user).permit(
-      :given, :family, :orcid, :affiliation, :affiliation_ror
+      :given, :family, :orcid, :affiliation, :affiliation_ror, :affiliation_2, :affiliation_2_ror
     )
     if @user.update(par)
       flash[:notice] = 'User updated successfully'

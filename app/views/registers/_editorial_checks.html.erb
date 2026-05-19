@@ -13,11 +13,14 @@
   users += @register.coauthors.map { |i| [i, :coauthor] }
   users += @register.curators.map { |i| [i, :curator] }
   required = [
-    ['Given name',  :given?,  :given],
-    ['Family name', :family?, :family],
-    ['ORCID',       :orcid?,  [:orcid, :orcid_url]],
-    ['Affiliation', :affiliation?, :affiliation],
-    ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url]]
+    # Human-readable name, method to check if it's present, field to display, whether it's required
+    ['Given name',  :given?,  :given, true],
+    ['Family name', :family?, :family, true],
+    ['ORCID',       :orcid?,  [:orcid, :orcid_url], true],
+    ['Affiliation', :affiliation?, :affiliation, true],
+    ['Affiliation ROR', :affiliation_ror?, [:affiliation_ror, :ror_url], true],
+    ['Secondary affiliation', :affiliation_2?, :affiliation_2, false],
+    ['Secondary affiliation ROR', :affiliation_2_ror?, [:affiliation_2_ror, :ror_2_url], false]
   ]
 %>
 <% users.each_with_index do |user, k| %>
@@ -30,7 +33,7 @@
     <%= simple_form_for(user[0], method: :post) do |f| %>
       <dl>
         <% required.each do |req| %>
-          <% good  = user[0].send(req[1])%>
+          <% good  = !req[3] || user[0].send(req[1]) %>
           <% field = req[2].is_a?(Array) ? req[2][0] : req[2] %>
           <dt>
             <%= fa_icon(good ? 'check-circle' : 'times-circle',
@@ -42,7 +45,7 @@
                   input_html: { id: "user-#{k}-#{field}" }) %>
             <%= content_tag(:div, '', id: "user-#{k}-#{field}-orcid") %>
             <%= content_tag(:div, '', id: "user-#{k}-#{field}-ror") %>
-            <% if good && req[2].is_a?(Array) %>
+            <% if user[0].send(req[1]) && req[2].is_a?(Array) %>
               <%= link_to(user[0].send(req[2][0]), user[0].send(req[2][1]),
                     target: '_blank') %>
             <% end %>
@@ -58,17 +61,19 @@
               Verify ORCID data
             <% end %>
           <% end %>
-          <% if user[0].affiliation_ror? %>
-            <%= link_to('#', class: 'btn btn-primary',
-                  data: { user: k, ror: user[0].affiliation_ror,
-                          action: 'ror' }) do %>
-              Verify ROR affiliation
-            <% end %>
-          <% elsif user[0].affiliation? %>
-            <%= link_to('#', class: 'btn btn-primary',
-                  data: { user: k, affiliation: user[0].affiliation,
-                          action: 'ror_search' }) do %>
-              Search affiliation in ROR
+          <% ['affiliation', 'affiliation_2'].each do |aff| %>
+            <% if user[0].send("#{aff}_ror?") %>
+              <%= link_to('#', class: 'btn btn-primary',
+                    data: { user: k, ror: user[0].send("#{aff}_ror"),
+                            action: 'ror', field: aff }) do %>
+                Verify ROR <%= aff.gsub('_', ' ') %>
+              <% end %>
+            <% elsif user[0].send("#{aff}?") %>
+              <%= link_to('#', class: 'btn btn-primary',
+                    data: { user: k, affiliation: user[0].send(aff),
+                            action: 'ror_search', field: aff }) do %>
+                Search <%= aff.gsub('_', ' ') %> in ROR
+              <% end %>
             <% end %>
           <% end %>
         </dd>
@@ -147,7 +152,7 @@
           if (r["family-names"] != $("#user-" + user + "-family").val()) {
             $("#user-" + user + "-family-orcid").addClass("text-danger");
           }
-          if (!r["institution-name"].include($("#user-" + user + "-affiliation").val())) {
+          if (!r["institution-name"].includes($("#user-" + user + "-affiliation").val())) {
             $("#user-" + user + "-affiliation-orcid").addClass("text-danger");
           }
         }
@@ -162,6 +167,7 @@
     submit.addClass("disabled");
     var affiliation = $(this).data("affiliation");
     var user = $(this).data("user");
+    var field = $(this).data("field");
     var api = "https://api.ror.org/organizations?query=" + affiliation;
     $.ajax({
       beforeSend: function(request) {
@@ -170,7 +176,7 @@
       dataType: "json", url: api,
       success: function(data) {
         if(data["number_of_results"] == 0) {
-          var o = $("#user-" + user + "-affiliation-ror");
+          var o = $("#user-" + user + "-", field, "-ror");
           o.html("Organization not found in ROR!");
           o.addClass("text-danger");
         } else {
@@ -178,8 +184,8 @@
           var tag = " <span class=text-muted>(from ROR)</span>"
 
           // Report results
-          $("#user-" + user + "-affiliation-ror").html(r["name"] + tag);
-          $("#user-" + user + "-affiliation_ror-ror").html(
+          $("#user-" + user + "-" + field + "-ror").html(r["name"] + tag);
+          $("#user-" + user + "-" + field + "-ror-ror").html(
             r["id"] + tag + " / " + data["number_of_results"] + " results"
           );
         }
@@ -194,6 +200,7 @@
     submit.addClass("disabled");
     var ror  = $(this).data("ror");
     var user = $(this).data("user");
+    var field = $(this).data("field");
     var api = "https://api.ror.org/organizations/" + ror;
     $.ajax({
       beforeSend: function(request) {
@@ -207,20 +214,20 @@
           var tag = " <span class=text-muted>(from ROR)</span>";
 
           // Report results
-          $("#user-" + user + "-affiliation-ror").html(names.join(", ") + tag);
+          $("#user-" + user + "-" + field + "-ror").html(names.join(", ") + tag);
 
           // Highlight inconsistencies
-          if (!names.include($("#user-" + user + "-affiliation").val())) {
-            $("#user-" + user + "-affiliation-ror").addClass("text-danger");
+          if (!names.includes($("#user-" + user + "-" + field).val())) {
+            $("#user-" + user + "-" + field + "-ror").addClass("text-danger");
           }
           var ror_url = "https://ror.org/" +
-                $("#user-" + user + "-affiliation_ror").val();
+                $("#user-" + user + "-" + field + "-ror").val();
           if (r["id"] != ror_url) {
-            $("#user-" + user + "-affiliation_ror-ror").html(r["id"] + tag);
-            $("#user-" + user + "-affiliation_ror-ror").addClass("text-danger");
+            $("#user-" + user + "-" + field + "-ror-ror").html(r["id"] + tag);
+            $("#user-" + user + "-" + field + "-ror-ror").addClass("text-danger");
           }
         } else {
-          var o = $("#user-" + user + "-affiliation_ror-ror");
+          var o = $("#user-" + user + "-" + field + "-ror-ror");
           o.html("ROR not found!");
           o.addClass("text-danger");
         }

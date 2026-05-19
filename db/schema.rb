@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_05_04_121446) do
+ActiveRecord::Schema.define(version: 2026_05_14_135351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -255,14 +255,24 @@ ActiveRecord::Schema.define(version: 2026_05_04_121446) do
     t.string "wikidata_item"
     t.integer "basonym_id"
     t.string "wikispecies_entry"
+    t.index ["created_by_id"], name: "index_names_on_created_by_id"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true
     t.index ["name"], name: "index_names_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["name_order"], name: "index_names_on_name_order"
+    t.index ["nomenclatural_type_id"], name: "index_names_on_nomenclatural_type_id"
     t.index ["nomenclatural_type_type", "nomenclatural_type_id"], name: "index_names_on_nomenclatural_type"
+    t.index ["nomenclatural_type_type"], name: "index_names_on_nomenclatural_type_type"
     t.index ["parent_id"], name: "index_names_on_parent_id"
+    t.index ["priority_date"], name: "index_names_on_priority_date"
+    t.index ["rank", "status"], name: "index_names_on_rank_and_status"
+    t.index ["rank"], name: "index_names_on_rank"
+    t.index ["redirect_id"], name: "index_names_on_redirect_id"
     t.index ["register_id"], name: "index_names_on_register_id"
+    t.index ["status", "priority_date"], name: "index_names_on_status_and_priority_date"
+    t.index ["status"], name: "index_names_on_status"
     t.index ["tutorial_id"], name: "index_names_on_tutorial_id"
+    t.index ["validated_by_id"], name: "index_names_on_validated_by_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -524,6 +534,8 @@ ActiveRecord::Schema.define(version: 2026_05_04_121446) do
     t.boolean "opt_regular_email", default: true
     t.boolean "opt_notification", default: true
     t.boolean "opt_message_email", default: true
+    t.string "affiliation_2"
+    t.string "affiliation_2_ror"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

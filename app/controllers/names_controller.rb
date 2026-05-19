@@ -684,5 +684,4 @@ class NamesController < ApplicationController
         user: current_user, name: @name
       ).save
     end
-
 end

@@ -25,6 +25,9 @@
     <%= f.input(:affiliation,
                 hint: 'Institution to which you belong',
                 input_html: { autocomplete: 'affiliation' }) %>
+    <%= f.input(:affiliation_2, label: 'Secondary affiliation',
+                hint: 'Secondary institution',
+                input_html: { autocomplete: 'affiliation_2' }) %>
     <%= f.input(:password,
                 required: true,
                 hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),

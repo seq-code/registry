@@ -107,10 +107,10 @@
   <% end %>
 
   <% if @register.published? %>
-    <dt><%= fa_icon('newspaper') %> Edited</dt>
+    <dt><%= fa_icon('newspaper') %> Published</dt>
     <dd>
       <%= time_ago_with_date(@register.published_at, true) %>
-      by <%= display_link(@register.published_by) %>
+      by <%= display_link(@register.published_by) %> (handling editor)
     </dd>
   <% end %>
 

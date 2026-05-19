@@ -120,6 +120,10 @@ class User < ApplicationRecord
     affiliation_ror? ? "https://ror.org/#{affiliation_ror}" : nil
   end
 
+  def ror_2_url
+    affiliation_2_ror? ? "https://ror.org/#{affiliation_2_ror}" : nil
+  end
+
   def academic_email?
     uni_dom = Rails.root.join('lib', 'uni-domains.txt')
     File.open(uni_dom, 'r') do |fh|

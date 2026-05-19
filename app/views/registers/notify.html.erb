@@ -3,7 +3,7 @@
 </h1>
 <hr/>
 
-<% unless @register.user.full_name? &&  @register.user.affiliation? %>
+<% unless @register.user.full_name? && @register.user.affiliation? %>
   <div class="alert alert-danger">
     <% if @register.user == current_user %>
       Please indicate your full name and affiliation before the validation of
