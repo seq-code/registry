@@ -45,7 +45,7 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
 
   // Grammatical options (analysis)
   $.ajax({
-    url: perseus + "/xmlmorph",
+    url: perseus + "xmlmorph",
     data: { lang: 'la', lookup: part },
     dataType: 'xml'
   }).done(function(data) {
@@ -163,7 +163,7 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
 
   // Definition
   $.ajax({
-    url: perseus + "/loadquery",
+    url: perseus + "loadquery",
     data: { doc: dicts[src] + ':entry=' + part }
   }).done(function(data) {
     // Fix result for embedding
