@@ -64,11 +64,13 @@ gem 'wkhtmltopdf-binary', '<= 0.12.6.6' # TODO Temporary fix for large gem
 gem 'yui-compressor', '>= 0.12'
 
 group :development, :test do
+  # Rails 6.1's test runner is not compatible with Minitest 6's run signature.
+  gem 'minitest', '< 6'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
   # console
   gem 'byebug', platforms: %i[mri windows]
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '~> 2.13'
+  gem 'capybara', '>= 3.26'
   gem 'selenium-webdriver'
 end
 
