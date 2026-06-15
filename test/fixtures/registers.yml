@@ -3,15 +3,15 @@
 one:
   accession: MyString
   user: one
-  validated_by: 1
+  validated_by: one
   submitted: false
   validated: false
   publication: one
 
 two:
-  accession: MyString
+  accession: MyOtherString
   user: two
-  validated_by: 1
+  validated_by: two
   submitted: false
   validated: false
   publication: two

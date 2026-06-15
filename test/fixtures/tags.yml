@@ -5,5 +5,5 @@ one:
   color: MyString
 
 two:
-  name: MyString
+  name: MyOtherString
   color: MyString

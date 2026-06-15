@@ -3,7 +3,6 @@
 one:
   database: MyString
   accession: MyString
-  type: 
   gc_content: 1.5
   completeness: 1.5
   contamination: 1.5
@@ -13,13 +12,12 @@ one:
   most_complete_23s: 1.5
   number_of_23s: 1
   number_of_trnas: 1
-  updated_by: 1
+  updated_by: one
   auto_check: false
 
 two:
   database: MyString
-  accession: MyString
-  type: 
+  accession: MyOtherString
   gc_content: 1.5
   completeness: 1.5
   contamination: 1.5
@@ -29,5 +27,5 @@ two:
   most_complete_23s: 1.5
   number_of_23s: 1
   number_of_trnas: 1
-  updated_by: 1
+  updated_by: two
   auto_check: false

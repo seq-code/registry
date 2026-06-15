@@ -1,13 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  parent_id: 1
-  child_id: 1
-  assigned_by: 1
+  name: one
+  parent: one
   preferred: false
 
 two:
-  parent_id: 1
-  child_id: 1
-  assigned_by: 1
+  name: two
+  parent: two
   preferred: false
