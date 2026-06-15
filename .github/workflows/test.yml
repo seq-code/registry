@@ -1,0 +1,48 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: registry_test
+          POSTGRES_USER: registry_test
+          POSTGRES_PASSWORD: registry_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U registry_test -d registry_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      PGHOST: localhost
+      PGPORT: 5432
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Prepare database
+        run: bin/rails db:prepare
+
+      - name: Run tests
+        run: bin/rails test:all
