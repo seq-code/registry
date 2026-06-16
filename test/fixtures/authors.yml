@@ -5,5 +5,5 @@ one:
   family: MyString
 
 two:
-  given: MyString
+  given: MyOtherString
   family: MyString

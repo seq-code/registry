@@ -1,9 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  publication_id: 1
-  name_id: 1
+  publication: one
+  name: one
 
 two:
-  publication_id: 1
-  name_id: 1
+  publication: two
+  name: two

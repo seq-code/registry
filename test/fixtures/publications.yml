@@ -7,7 +7,6 @@ one:
   journal_date: 2019-04-11
   doi: MyString
   url: MyString
-  type: 
   crossref_json: MyString
 
 two:
@@ -15,7 +14,6 @@ two:
   journal: MyString
   journal_loc: MyString
   journal_date: 2019-04-11
-  doi: MyString
+  doi: MyOtherString
   url: MyString
-  type: 
   crossref_json: MyString

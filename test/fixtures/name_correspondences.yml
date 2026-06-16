@@ -3,9 +3,7 @@
 one:
   name: one
   user: one
-  message: MyText
 
 two:
   name: two
   user: two
-  message: MyText
