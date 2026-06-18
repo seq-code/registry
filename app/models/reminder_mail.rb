@@ -18,7 +18,7 @@ class ReminderMail < ApplicationRecord
         unless registers.empty?
           AdminMailer.with(user: user, registers: registers)
                      .register_reminder_email
-                     .deliver_later
+                     .deliver_now
         end
       end
     end
