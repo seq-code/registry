@@ -1,4 +1,4 @@
-<%= form_with(model: publication, local: true) do |form| %>
+<%= form_with(model: publication) do |form| %>
   <% if publication.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(publication.errors.count, 'error') %>
