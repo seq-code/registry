@@ -190,6 +190,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # API v1 Routes (for api.seqco.de subdomain)
+  namespace :v1, path: '/v1' do
+    resources :names, only: [:index, :show]
+  end
+
   # Authors
   resources(:authors, concerns: :autocompletable)
 
