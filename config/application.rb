@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module CandidatusExcubia
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    config.load_defaults 6.1
 
     # Boolean handling of SQLite3
     config.active_record.sqlite3&.represent_boolean_as_integer = true

@@ -1,4 +1,4 @@
-<%= form_with(model: author, local: true) do |form| %>
+<%= form_with(model: author) do |form| %>
   <% if author.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(author.errors.count, "error") %> prohibited this author from being saved:</h2>
