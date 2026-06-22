@@ -37,14 +37,10 @@ module NameFilterable
       next if value.nil?
 
       case key.to_sym
-      when :status
-        query = query.where(status: map_status_to_value(value))
-      when :rank
-        query = query.where(rank: value)
-      when :redirect
-        query = query.where(redirect: value)
-      else
+      when :rank, :redirect, :status
         query = query.where(key => value)
+      when :where
+        query = query.where(value)
       end
     end
     query
