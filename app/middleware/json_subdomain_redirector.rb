@@ -16,7 +16,7 @@ class JsonSubdomainRedirector
 
     if on_api_subdomain?(request)
       return redirect_to_gui(request) unless is_api_call?(request)
-    else
+    elsif on_gui_subdomain?(request)
       return redirect_to_api(request) if is_api_call?(request)
     end
 
@@ -72,5 +72,9 @@ class JsonSubdomainRedirector
 
   def on_api_subdomain?(request)
     request.host == @api_domain
+  end
+
+  def on_gui_subdomain?(request)
+    request.host == @gui_domain
   end
 end
