@@ -1,4 +1,6 @@
+fho.edu.br
 noah.edu.gr
+uan.edu.co
 student.eit.edu.au
 nusaputra.ac.id
 regent.edu.gh
@@ -1229,7 +1231,7 @@ ursinus.edu
 usu.edu
 uvsc.edu
 valdosta.edu
-vcsu.nodak.edu
+vcsu.edu
 valpo.edu
 vgcc.edu
 vanderbilt.edu
@@ -1540,7 +1542,7 @@ isalud.edu.ar
 hospitalitaliano.edu.ar
 uspt.edu.ar
 iucbc.edu.ar
-iucbc.edu.ar
+eut.edu.ar
 armmed.am
 asau.am
 asue.am
@@ -1710,7 +1712,7 @@ aust.edu
 bau.edu.bd
 bgctrustbd.org
 bou.edu.bd
-bracuniversity.net
+bracu.ac.bd
 brur.ac.bd
 bsmmu.edu.bd
 bsmrau.edu.bd
@@ -1829,7 +1831,6 @@ ful.ac.be
 fundp.ac.be
 fusl.ac.be
 ha.be
-howest.be
 hzs.be
 ichec.be
 kdg.be
@@ -1962,7 +1963,6 @@ saojudas.br
 smarcos.br
 sp.senac.br
 stcecilia.br
-technet.com.br
 toledo.br
 ucb.br
 ucg.br
@@ -2077,7 +2077,6 @@ unit.br
 uniube.br
 univale.br
 univali.rct-sc.br
-univap.br
 univasf.edu.br
 universo.br
 unoesc.edu.br
@@ -2095,7 +2094,6 @@ usp.br
 usu.br
 uva.br
 uvanet.br
-web.prover.com.br
 itb.edu.bn
 ubd.edu.bn
 unissa.edu.bn
@@ -2254,7 +2252,6 @@ rmc.ca
 royalroads.ca
 ryerson.ca
 sait.ca
-saskweb.com
 sauder.ubc.ca
 scar.utoronto.ca
 selkirk.bc.ca
@@ -2784,7 +2781,7 @@ zzgc.edu.cn
 zzut.edu.cn
 autonoma.edu.co
 bellasartes.edu.co
-bundenet.com
+conservatoriodeltolima.edu.co
 cesa.edu.co
 ces.edu.co
 cuao.edu.co
@@ -3158,7 +3155,7 @@ ufe.edu.eg
 usenghor-francophonie.org
 zu.edu.eg
 cdb.edu.sv
-netcomsa.com
+uls.edu.sv
 uae.edu.sv
 ucad.edu.sv
 uca.edu.sv
@@ -3358,7 +3355,7 @@ epf.fr
 esa-purpan.fr
 esc-bordeaux.fr
 esc-brest.fr
-esc-clermont.fr
+clermont-sb.fr
 escdijon.com
 escem.fr
 esc-lille.fr
@@ -3408,7 +3405,7 @@ insa-rouen.fr
 insa-tlse.fr
 inseec.fr
 int-evry.fr
-iota.u-psud.fr
+iso.fr
 ircam.fr
 ireste.fr
 isab.fr
@@ -3467,7 +3464,6 @@ univ-brest.fr
 univ-catholyon.fr
 univ-corse.fr
 univ-evry.fr
-univ-inpt.fr
 univ-lehavre.fr
 univ-lemans.fr
 univ-lille1.fr
@@ -4083,7 +4079,7 @@ bharathuniv.com
 bharatividyapeeth.edu
 bhavuni.edu
 bhu.ac.in
-bhub.ori.nic.in
+ouat.ac.in
 bitmesraranchi.org
 bits-pilani.ac.in
 bnmu.in
@@ -4116,7 +4112,7 @@ davuniversity.org
 davv.ac.in
 dbatechuni.org
 dbskkv.org
-dbs.tn.nic.in
+tnau.ac.in
 dceonline.net
 ddugu.edu.in
 deccancollegepune.ac.in
@@ -4230,7 +4226,6 @@ kanchiuniv.ac.in
 kannadauniversity.org
 kannuruniversity.ac.in
 kanpuruniversity.org
-kanpuruniversity.org
 karnatakastateopenuniversity.in
 karpagamuniv.com
 karunya.edu
@@ -4257,7 +4252,7 @@ macfast.org
 magadhuniversity.org
 mangaloreuniversity.ac.in
 manipal.edu
-manipur.nic.in
+manipuruniv.ac.in
 manuu.ac.in
 mcu.ac.in
 mdsuajmer.ac.in
@@ -4278,7 +4273,6 @@ nagarjunauniversity.ac.in
 nagauniv.org.in
 nagpur-university.com
 nalandaopenuniversity.info
-nationalmuseumindia.org
 nbu.ac.in
 ndri.nic.in
 nduat.nic.in
@@ -4400,7 +4394,7 @@ tmbu.org
 tmv.edu.in
 tndalu.org
 tnmmu.ac.in
-tnuniv.ac.in
+avinuty.ac.in
 manit.ac.in
 mnit.ac.in
 tripurauniv.in
@@ -5175,7 +5169,7 @@ jobu.ac.jp
 josai.ac.jp
 joshibi.ac.jp
 juen.ac.jp
-juntan.k-junshin.ac.jp
+k-junshin.ac.jp
 juntendo.ac.jp
 jwu.ac.jp
 kagawa-u.ac.jp
@@ -6000,7 +5994,7 @@ lka.edu.lv
 llu.lv
 lbtu.lv
 lma.lv
-lmuza.lv
+jvlma.lv
 lspa.lanet.lv
 lu.lv
 mil.lv
@@ -6064,7 +6058,7 @@ lkka.lt
 lmta.lt
 lva.lt
 lzua.lt
-mch.mii.lt
+vda.lt
 mruni.eu
 su.lt
 vdu.lt
@@ -6103,7 +6097,6 @@ mubas.ac.mw
 must.ac.mw
 luanar.ac.mw
 unima.mw
-acms.edu.my
 aeu.edu.my
 aimst.edu.my
 aiu.edu.my
@@ -6153,7 +6146,7 @@ iptips.edu.my
 iucn.edu.my
 iuctt.edu.my
 kbu.edu.my
-kdu.edu.my
+uow.edu.my
 kias.edu.my
 kidu-darululum.blogspot.com
 kiperak.edu.my
@@ -6168,7 +6161,7 @@ kptm.edu.my
 ktd.edu.my
 kudqi.net.my
 kuim.edu.my
-kuin.edu.my
+unishams.edu.my
 kuis.edu.my
 limkokwing.edu.my
 linton.edu.my
@@ -6249,9 +6242,9 @@ uum.edu.my
 westminster.edu.my
 wou.edu.my
 cyryxcollege.edu.mv
-mandhu.com
+mandhu.edu.mv
 mnu.edu.mv
-ml.refer.org
+usttb.edu.ml
 eieonline.com
 itismalta.com
 mcast.edu.mt
@@ -6295,7 +6288,7 @@ itson.mx
 iztapalapa.uam.mx
 lef.upn.mx
 leon.uia.mx
-members.rotfl.com
+uvp.mx
 motolinia.com.mx
 olmeca.edu.mx
 poligto.edu.mx
@@ -6434,7 +6427,6 @@ usmf.md
 usm.md
 ust.md
 utm.md
-riviera.fr
 hsum-ac.mn
 humanities.mn
 icb.edu.mn
@@ -6711,7 +6703,7 @@ nla.no
 nlh.no
 nmh.no
 ntnu.no
-ska.khio.no
+khio.no
 uib.no
 uio.no
 uis.no
@@ -7092,7 +7084,7 @@ vmuf.edu.ph
 wesleyan.edu.ph
 wmsu.edu.ph
 wvsu.edu.ph
-www2.mozcom.com
+clsu.edu.ph
 xu.edu.ph
 asp.krakow.pl
 ae.katowice.pl
@@ -7172,7 +7164,7 @@ pwst.krakow.pl
 pwsz.eu
 pwsz.pila.pl
 pz.zgora.pl
-qdnet.pl
+chat.edu.pl
 sggw.waw.pl
 sgh.waw.pl
 slam.katowice.pl
@@ -7263,7 +7255,6 @@ ispgaya.pt
 istec.pt
 istp.pt
 isvouga.com
-oml.pt
 pedago.pt
 uac.pt
 ualg.pt
@@ -7395,7 +7386,7 @@ aspu.ru
 astu.org
 astu.secna.ru
 asu.ru
-avtlg.ru
+volgogradstatemedicaluniversity.in
 bashedu.ru
 bigpi.biysk.ru
 bmstu.ru
@@ -7425,7 +7416,6 @@ esstu.ru
 eu.spb.ru
 fa.ru
 festu.ru
-filine.centro.ru
 ftacademy.ru
 gasu.ru
 gitis.net
@@ -7469,7 +7459,7 @@ kai.ru
 kalmsu.ru
 kamgu.ru
 kantiana.ru
-karelia.ru
+petrsu.ru
 kazanconservatory.ru
 kbsu.ru
 kemsu.ru
@@ -7478,7 +7468,7 @@ kgpu.ru
 kgtu.runnet.ru
 khspu.ru
 khstu.ru
-kirovballet.com
+vaganovaacademy.ru
 kiu.ru
 klgtu.ru
 knastu.ru
@@ -7769,7 +7759,7 @@ rug.edu.sa
 saadcollege.com
 su.edu.sa
 taibahu.edu.sa
-tnmeyah.net
+jazanu.edu.sa
 tu.edu.sa
 ucj.edu.sa
 ud.edu.sa
@@ -8291,7 +8281,6 @@ dit.ac.tz
 hkmu.ac.tz
 iaa.ac.tz
 ifm.ac.tz
-imtu.edu
 kcmc.ac.tz
 mmu.ac.tz
 mnma.ac.tz
@@ -8301,7 +8290,7 @@ mzumbe.ac.tz
 out.ac.tz
 saut.ac.tz
 sekuco.org
-stjosephtanzania.com
+stjosephsgroup.org
 suanet.ac.tz
 tumaini.ac.tz
 udom.ac.tz
@@ -8419,7 +8408,7 @@ beykent.edu.tr
 bilecik.edu.tr
 bilgi.edu.tr
 bilkent.edu.tr
-boun.edu.tr
+bogazici.edu.tr
 cag.edu.tr
 cankaya.edu.tr
 comu.edu.tr
@@ -8455,7 +8444,6 @@ itu.edu.tr
 iyte.edu.tr
 kafkas.edu.tr
 karaelmas.edu.tr
-beun.edu.tr
 khas.edu.tr
 kilis.edu.tr
 kku.edu.tr
@@ -8466,6 +8454,7 @@ ktu.edu.tr
 ku.edu.tr
 maltepe.edu.tr
 marmara.edu.tr
+marun.edu.tr
 mersin.edu.tr
 mku.edu.tr
 msu.edu.tr
@@ -8475,17 +8464,16 @@ ohu.edu.tr
 nku.edu.tr
 metu.edu.tr
 ogu.edu.tr
-omu.edu.tr
+samsun.edu.tr
 odu.edu.tr
 ozyegin.edu.tr
 ozu.edu.tr
-pamukkale.edu.tr
-sabanciuniv.edu.tr
+pau.edu.tr
 sabanciuniv.edu
 sau.edu.tr
 sakarya.edu.tr
+subu.edu.tr
 sdu.edu.tr
-sehir.edu.tr
 selcuk.edu.tr
 tarsus.edu.tr
 tau.edu.tr
@@ -8655,7 +8643,7 @@ bham.ac.uk
 bolton.ac.uk
 bournemouth.ac.uk
 brad.ac.uk
-brijnet.org
+lsjs.ac.uk
 bristol.ac.uk
 bris.ac.uk
 brookes.ac.uk
@@ -8853,7 +8841,7 @@ tuit.uz
 uwed.uz
 uzswlu.uz
 wiut.uz
-luz.ve
+secretarialuz.org
 uba.edu.ve
 ubv.edu.ve
 ucab.edu.ve
@@ -9015,6 +9003,7 @@ artuklu.edu.tr
 mehmetakif.edu.tr
 msgsu.edu.tr
 alparslan.edu.tr
+atu.edu.tr
 nevsehir.edu.tr
 osmaniye.edu.tr
 erdogan.edu.tr
@@ -9041,8 +9030,6 @@ kemerburgaz.edu.tr
 medipol.edu.tr
 rumeli.edu.tr
 iszu.edu.tr
-ieu.edu.tr
-izmirekonomi.edu.tr
 karatay.edu.tr
 aybu.edu.tr
 gidatarim.edu.tr
@@ -9054,8 +9041,6 @@ pirireis.edu.tr
 sanko.edu.tr
 tedu.edu.tr
 toros.edu.tr
-thk.edu.tr
-antalya.edu.tr
 uskudar.edu.tr
 yeniyuzyil.edu.tr
 yuksekihtisasuniversitesi.edu.tr
@@ -9094,7 +9079,6 @@ gatewaycc.edu
 gccaz.edu
 minerva.edu
 mesacc.edu
-maricopa.edu
 mohave.edu
 npc.edu
 pvc.maricopa.edu
@@ -9184,7 +9168,7 @@ laspositascollege.edu
 lassencollege.edu
 lbcc.edu
 lacitycollege.edu
-ladhs.org
+lacounty.org
 lahc.edu
 lamission.edu
 piercecollege.edu
@@ -9219,11 +9203,8 @@ scc.losrios.edu
 saddleback.edu
 valleycollege.edu
 sdcity.edu
-student.sdccd.edu
 sdmesa.edu
-student.sdccd.edu
 sdmiramar.edu
-student.sdccd.edu
 deltacollege.edu
 sjvc.edu
 sjcc.edu
@@ -9336,7 +9317,6 @@ kcc.edu
 kaskaskia.edu
 kishwaukeecollege.edu
 lakeland.cc.il.us
-chefs.edu
 lc.edu
 llcc.edu
 maccormac.edu
@@ -9465,7 +9445,7 @@ alpenacc.edu
 baycollege.edu
 bmcc.edu
 delta.edu
-glenoaks.cc.mi.us
+glenoaks.edu
 gogebic.edu
 grcc.edu
 hfcc.edu
@@ -9651,7 +9631,7 @@ secon.edu
 sunysccc.edu
 www3.sunysuffolk.edu
 sunysullivan.edu
-www.sunybroome.edu
+sunybroome.edu
 sunywcc.edu
 tcicollege.edu
 tc3.edu
@@ -9863,7 +9843,6 @@ mclennan.edu
 navarrocollege.edu
 nctc.edu
 ntcc.edu
-northlakecollege.edu
 odessa.edu
 alamo.edu
 panola.edu
@@ -10057,8 +10036,6 @@ jedlik.eu
 students.jedlik.eu
 northwood.edu
 infnet.edu.br
-al.infnet.edu.br
-prof.infnet.edu.br
 ssst.edu.ba
 hbc.edu.cn
 thm.de
@@ -10317,8 +10294,6 @@ esmad.ipp.pt
 www.esmad.ipp.pt
 univesp.br
 ac-bordeaux.fr
-insead.edu
-thk.edu.tr
 if-pan.krakow.pl
 camk.edu.pl
 lamar.org.mx
@@ -10327,6 +10302,7 @@ idti.edu
 baypath.edu
 universite-paris-saclay.fr
 mtu.ie
+mymtu.ie
 uaysen.cl
 snuniv.ac.in
 asmildkloster.dk
@@ -10342,7 +10318,6 @@ schiller.edu
 uenp.edu.br
 en.syau.edu.cn
 universidadean.edu.co
-univ-jfc.fr
 ifmparis.fr
 amsterdam.tech
 tecmilenio.mx
@@ -10354,7 +10329,6 @@ greensboro.edu
 vvsaz.org
 uplearnbusinessschool.com
 oglethorpe.edu
-cambriancollege.ca
 dsdt.edu
 northcentralcollege.edu
 ncl-coll.ac.uk
@@ -10437,7 +10411,6 @@ claremont.edu
 students.vizja.pl
 rcbc.edu
 jefferson.edu
-inteli.edu.br
 bou.ac.bw
 georgiancollege.ca
 lethbridgecollege.ca
@@ -10495,9 +10468,6 @@ vermontlaw.edu
 wnc.edu
 westernu.edu
 itpu.uz
-escp.eu
-escp.eu
-escp.eu
 stmarytx.edu
 southflorida.edu
 pass26.edu.mk
@@ -10546,7 +10516,6 @@ citystgeorges.ac.uk
 student.staffs.ac.uk
 sgul.ac.uk
 trinitycollegebristol.ac.uk
-trinitycollegebristol.ac.uk
 cca.edu
 student.kuleuven.be
 knruhs.telangana.gov.in
@@ -10562,7 +10531,48 @@ dallascollege.edu
 untdallas.edu
 w-hs.de
 cduestc.cn
+xmu.edu.my
+southamptonmalaysia.edu.my
+reading.edu.my
+rumc.edu.my
+newinti.edu.my
+qiu.edu.my
+geomatika.edu.my
+amu.edu.my
+gmi.edu.my
 thu.de
+hanu.edu.vn
+hanu.vn
+tdtu.edu.vn
+udn.vn
+hnue.edu.vn
+hoasen.edu.vn
+vlu.edu.vn
+ntu.edu.vn
+chitkara.edu.in
+chitkarauniversity.edu.in
+fwu.edu.np
+mwu.edu.np
+mbust.edu.np
+b-tu.de
+kpu.ca
+sopocka.edu.pl
+spokane.edu
+tafensw.edu.au
+studytafensw.edu.au
+uauim.ro
+uia.no
+sjcc.edu.in
+reva.edu.in
+gau.edu.bd
+bmu.edu.bd
+rmstu.portal.gov.bd
+kiu.ac.bd
+kau.ac.bd
+iau.edu.bd
+cmu.edu.bd
+neu.ac.bd
+istp.fr
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10620,3 +10630,4 @@ jiangnan.edu.cn
 genoscope.cns.fr
 cnrs.fr
 uniabuja.edu.ng
+charlotte.edu
