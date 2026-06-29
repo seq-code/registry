@@ -2,8 +2,8 @@
 
 one:
   register: one
-  user: one
+  user: contributor
 
 two:
   register: two
-  user: two
+  user: contributor

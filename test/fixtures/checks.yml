@@ -2,12 +2,12 @@
 
 one:
   name: one
-  user: one
+  user: contributor
   kind: MyText
   pass: false
 
 two:
   name: two
-  user: two
+  user: contributor
   kind: MyText
   pass: false

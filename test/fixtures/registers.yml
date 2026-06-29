@@ -1,17 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  accession: MyString
-  user: one
-  validated_by: one
+draft:
+  accession: r:draft01
+  user: contributor
   submitted: false
+  notified: false
   validated: false
   publication: one
 
-two:
-  accession: MyOtherString
-  user: two
-  validated_by: two
-  submitted: false
+submitted:
+  accession: r:sumbit01
+  user: contributor
+  submitted: true
+  notified: false
   validated: false
-  publication: two
+  publication: one

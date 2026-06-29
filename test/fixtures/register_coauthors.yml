@@ -2,10 +2,10 @@
 
 one:
   register: one
-  user: one
+  user: contributor
   order: 1
 
 two:
   register: two
-  user: two
+  user: contributor
   order: 1

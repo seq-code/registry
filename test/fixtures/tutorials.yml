@@ -2,12 +2,12 @@
 
 one:
   pipeline: MyString
-  user: one
+  user: contributor
   ongoing: false
   step: 1
 
 two:
   pipeline: MyString
-  user: two
+  user: contributor
   ongoing: false
   step: 1

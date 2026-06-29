@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RegistersControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @register = registers(:one)
+    @register = registers(:draft)
   end
 
 end
