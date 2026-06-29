@@ -1265,6 +1265,11 @@ class Name < ApplicationRecord
   # ============ --- REGISTER LISTS --- ============
 
   def add_to_register(register, user)
+    unless register&.draft?
+      errors.add(:register, 'must be a draft')
+      return false
+    end
+
     self.register = register
     unless created_by
       self.created_by = user
