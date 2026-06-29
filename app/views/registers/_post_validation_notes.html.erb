@@ -5,7 +5,7 @@
     <%= @register.post_validation_note %>
     <br/>
     <div class="text-muted small border-top mt-4 pt-2">
-      <%= time_ago_with_date(@name.updated_at) %>
+      <%= time_ago_with_date(@register.post_validation_note.updated_at) %>
     </div>
   </div>
 <% end %>
