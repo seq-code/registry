@@ -4,6 +4,13 @@ contributor:
   username: contributor
   email: contributor@example.com
   contributor: true
+  curator: false
+  confirmed_at: <%= Time.current %>
+
+curator:
+  username: curator
+  email: curator@example.com
+  contributor: true
   curator: true
   confirmed_at: <%= Time.current %>
 # column: value

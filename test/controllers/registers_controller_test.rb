@@ -4,15 +4,16 @@ class RegistersControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
-    @user = users(:contributor)
+    @contributor = users(:contributor)
+    @curator = users(:curator)
     @register = registers(:draft)
     @submitted_register = registers(:submitted)
     @notified_register = registers(:notified)
-
-    sign_in(@user)
   end
 
   test 'draft index only includes draft registers' do
+    sign_in(@curator)
+
     get registers_path(status: :draft)
 
     assert_response :success
@@ -22,6 +23,8 @@ class RegistersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'new register form only offers draft registers' do
+    sign_in(@contributor)
+
     get new_register_path
 
     assert_response :success
