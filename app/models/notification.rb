@@ -3,7 +3,9 @@ class Notification < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
   belongs_to :linkeable, polymorphic: true, optional: true
 
-  after_create(:send_email_notification)
+  # Enqueue email only after commit to avoid timing issues where the job runs
+  # before the notification creation is visible outside the transaction.
+  after_create_commit(:send_email_notification)
   after_save(:broadcast_notification_count)
   after_create(:broadcast_web_notification)
 

@@ -11,7 +11,9 @@ class Contact < ApplicationRecord
 
   has_rich_text(:message)
 
-  after_create(:send_message)
+  # Enqueue email only after commit to avoid timing issues where the job runs
+  # before the contact creation is visible outside the transaction.
+  after_create_commit(:send_message)
 
   def default_message
     <<~MSG
