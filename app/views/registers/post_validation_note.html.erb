@@ -1,0 +1,23 @@
+<h1>
+  Post-Validation Note
+</h1>
+<hr/>
+
+<%= simple_form_for(
+      @register,
+      url: post_validation_note_register_url(@register), method: :post
+    ) do |f| %>
+  <br/>
+
+  <%=
+    f.input(
+      :post_validation_note, as: :rich_text_area, label: 'Post-validation note'
+    )
+  %>
+
+  <br/>
+  <%= f.button(:submit, 'Save note') %>
+  <%= link_to('Cancel', @register, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>
+

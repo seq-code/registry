@@ -38,6 +38,7 @@ class Register < ApplicationRecord
   has_many(:observers, through: :observe_registers, source: :user)
   has_rich_text(:notes)
   has_rich_text(:abstract)
+  has_rich_text(:post_validation_note)
   has_rich_text(:submitter_authorship_explanation)
 
   before_create(:assign_accession)

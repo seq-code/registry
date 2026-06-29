@@ -1,0 +1,12 @@
+<% if @register.post_validation_note? %>
+  <div class="alert alert-info">
+    <h2><%= fa_icon('info-circle') %> Post-Validation Note</h2>
+    <hr/>
+    <%= @register.post_valudation_note %>
+    <br/>
+    <div class="text-muted small border-top mt-4 pt-2">
+      <%= time_ago_with_date(@name.updated_at) %>
+    </div>
+  </div>
+<% end %>
+

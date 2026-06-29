@@ -10,6 +10,7 @@ class RegistersController < ApplicationController
       recheck_pdf_files curation_genomics transfer_user transfer_user_commit
       observe unobserve merge merge_commit sample_map
       reviewer_token reviewer_token_create reviewer_token_delete
+      post_validation_note post_validation_note_commit
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -26,7 +27,11 @@ class RegistersController < ApplicationController
     ]
   )
   before_action(
-    :authenticate_editor!, only: %i[editorial_checks publish publish_commit]
+    :authenticate_editor!,
+    only: %i[
+      editorial_checks publish publish_commit
+      post_validation_note post_validation_note_commit
+    ]
   )
   before_action(
     :authenticate_can_view!,
@@ -346,6 +351,24 @@ class RegistersController < ApplicationController
       :publish, 'Successfully published the register list', current_user,
       params[:datacite_action]
     )
+  end
+
+  # GET /registers/r:abc/post_validation_note
+  def post_validation_note
+    @crumbs = [
+      ['Lists', registers_url],
+      [@register.acc_url, @register],
+      'Post-validation note'
+    ]
+  end
+
+  # POST /registers/r:abc/post_validation_note
+  def post_validation_note_commit
+    if @register.update(params.require(:register).permit(:post_validation_note))
+      redirect_to(@register, notice: 'Note was updated successfully.')
+    else
+      render(:post_validation_note, status: :unprocessable_entity)
+    end
   end
 
   # GET /registers/r:abc/table
