@@ -20,6 +20,7 @@
         &raquo; Register and transfer documents as displayed above
       <% end %>
       <% if @register.validated? %>
+        <hr/>
         <%= link_to(
               post_validation_note_register_url(@register),
               class: 'btn btn-primary btn-sm'
