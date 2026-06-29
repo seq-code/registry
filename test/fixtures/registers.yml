@@ -15,3 +15,11 @@ submitted:
   notified: false
   validated: false
   publication: one
+
+notified:
+  accession: r:notified01
+  user: contributor
+  submitted: false
+  notified: true
+  validated: false
+  publication: one
