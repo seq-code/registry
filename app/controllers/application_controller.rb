@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
   include PageHelper
 
-  protect_from_forgery(with: :exception)
   before_action(:check_api!)
   before_action(:store_user_location!, if: :storable_location?)
 
