@@ -141,6 +141,7 @@ class Name < ApplicationRecord
   include Name::Inferences
   include Name::Network
   include Name::Wiki
+  include Name::FuzzySearch
 
   attr_accessor :only_display
   attr_accessor :nomenclatural_type_entry
@@ -189,57 +190,6 @@ class Name < ApplicationRecord
 
     def all_public
       where(status: public_status, redirect: nil)
-    end
-
-    ##
-    # Performs a fuzzy search for names similar to +query+. The search
-    # parameters are:
-    # - method: One of +:similarity+ (default) or +:levenshtein+
-    # - threshold: Limit to find matches,
-    #   by default 0.7 (similarity) or 2 (levenshtein)
-    # - limit: Maximum number of results to return
-    # - selection: Pre-selection of names included in the search. One of:
-    #   - all_valid: (default) All validly published names
-    #   - all_public: All publicly visible names
-    #   - valid_genera: All validly published genus names
-    #   - public_genera: All publicly visible genus names
-    #   - An ActiveRecord query on the +names+ table
-    def fuzzy_match(
-          query, method: :similarity, threshold: nil, limit: 10,
-          selection: :all_valid
-        )
-      return unless ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
-
-      case selection
-      when :all_valid
-        selection = all_valid
-      when :all_public
-        selection = all_public
-      when :valid_genera
-        selection = all_valid.where(rank: :genus)
-      when :public_genera
-        selection = all_public.where(rank: :genus)
-      end
-
-      clean_query = ActiveRecord::Base.connection.quote(query)
-      case method.to_sym
-      when :similarity
-        threshold ||= 0.7
-        selection
-          .select("id, name, similarity(name, #{clean_query}) AS score")
-          .where('similarity(name, ?) > ?', query, threshold)
-          .order('score DESC')
-          .limit(limit)
-      when :levenshtein
-        threshold ||= 2
-        selection
-          .select("id, name, levenshtein(name, #{clean_query}) AS score")
-          .where('levenshtein(name, ?) <= ?', query, threshold)
-          .order('score ASC')
-          .limit(limit)
-      else
-        raise ArgumentError, "Unsupported fuzzy match method: #{method}"
-      end
     end
 
     # ============ --- CLASS > ETYMOLOGY --- ============
@@ -465,7 +415,7 @@ class Name < ApplicationRecord
   # which is only possible (under the SeqCode) for genera and species but rank
   # is not evaluated. Use +is_type_species?+ to test for the rank first and
   # avoid unnecessary database queries
-  # 
+  #
   # TODO - Performance issue
   # This loads the full parent, which causes N+1 issues when simply rendering
   # a list of names
@@ -683,7 +633,7 @@ class Name < ApplicationRecord
   ##
   # This method always return +nil+ for names that are not at (inferred) rank
   # of genus or species
-  # 
+  #
   # Find names similar to the current one (using the canonical spelling
   # from +base_name+) with Levenshtein ≤ 3, considering a search space
   # defined by the taxonomic rank and +among+:
@@ -716,7 +666,7 @@ class Name < ApplicationRecord
     end
 
     selection = selection.where.not(id: id)
-    self.class.fuzzy_match(
+    self.class.fuzzy_search(
       base_name, method: :levenshtein, selection: selection
     )
   end
@@ -858,7 +808,7 @@ class Name < ApplicationRecord
     return true if user.curator?
     return true if draft? && user?(user)
     false
-  end 
+  end
 
   def can_edit_validated?(user)
     return false if only_display
@@ -1110,7 +1060,7 @@ class Name < ApplicationRecord
   ##
   # Returns the expected type of type as the String representation of the
   # expected class
-  # 
+  #
   # Note that this differs from +expected_type_rank+ in that the current
   # function uses +inferred_rank+ regardless of defined +rank+
   def expected_type_type

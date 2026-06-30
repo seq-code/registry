@@ -22,7 +22,7 @@ namespace :name do
 
     puts "Searching for fuzzy matches to: '#{query}'\n\n"
 
-    matches = Name.fuzzy_match(query, method: method)
+    matches = Name.fuzzy_search(query, method: method)
     if matches.any?
       matches.each do |match|
         puts "- Match: #{match.name} (Score: #{match.score})"
@@ -32,4 +32,3 @@ namespace :name do
     end
   end
 end
-

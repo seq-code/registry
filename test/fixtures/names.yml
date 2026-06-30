@@ -7,3 +7,28 @@ draft_by_contributor:
   name: Testimonas draftensis
   status: 5 # draft
   created_by: contributor
+
+escherichia:
+  name: Escherichia
+  rank: genus
+  status: 15 # SeqCode
+
+escherichia_coli:
+  name: Escherichia coli
+  rank: species
+  status: 15 # SeqCode
+
+escherichia_colie:
+  name: Escherichia colie
+  rank: species
+  status: 5 # draft
+
+bacillus:
+  name: Bacillus
+  rank: genus
+  status: 15 # SeqCode
+
+bacillus_subtilis:
+  name: Bacillus subtilis
+  rank: species
+  status: 20 # ICNP
