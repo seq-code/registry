@@ -59,7 +59,9 @@
             @name.previous_register_name && @name.next_register_name %>
         <% v = (@name.relative_position_in_register * 100).round %>
         <div class="progress align-items-end rounded-0"
-             style="margin-left: 0.15rem; width: 1rem; height: 1.95rem;">
+             style="margin-left: 0.15rem; width: 1rem; height: 1.95rem;"
+             title="<%= @name.index_in_register %>/<%= @name.register_names.count %>"
+             data-toggle="tooltip">
           <div class="progress-bar" role="progressbar" aria-valuemin="0"
                aria-valuemax="100" aria-valuenow="<%= v %>"
                style="width: 100%; height: <%= v %>%"></div>
