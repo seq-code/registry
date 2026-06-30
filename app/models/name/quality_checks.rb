@@ -454,6 +454,13 @@ module Name::QualityChecks
         scope:   ->(_w, n) { n.rank? && n.type_is_name? },
         failure: ->(_w, n) { n.type_name&.rank != n.expected_type_rank }
       }.merge(@@link_to_edit_type),
+      inconsistent_type_species: {
+        message: 'The type species of a genus must bear the name of that genus',
+        area:    :nomenclature,
+        rules:   %w[16 11],
+        scope:   ->(_w, n) { n.inferred_rank == 'genus' && n.type_is_name? },
+        failure: ->(_w, n) { n.type_name.base_name !~ /^#{n.base_name} / }
+      },
       # - Rule 17 covered in § Rule 16
       # - Rule 18a covered in § Appendix I and also:
       unrecognized_type_material: {
@@ -1099,7 +1106,7 @@ module Name::QualityChecks
       low_genome_trnas_completeness too_many_amino_acids
       large_contig_count low_n50 short_largest_contig
       missing_source_data inconsistent_type_rank missing_parent
-      inconsistent_parent_rank
+      inconsistent_type_species inconsistent_parent_rank
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
