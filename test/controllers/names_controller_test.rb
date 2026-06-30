@@ -21,4 +21,11 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert name.observing?(@user)
     assert_redirected_to name_url(name)
   end
+
+  test 'user names includes draft names' do
+    get user_names_url
+
+    assert_response :success
+    assert_includes @response.body, names(:draft_by_contributor).name
+  end
 end

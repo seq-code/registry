@@ -23,6 +23,8 @@ module NameFilterable
     # @return [Integer, Array<Integer>] The status value(s).
     def map_status_to_value(status)
       status = status.to_s.downcase
+      return nil if status == 'all'
+
       status = 'icnafp' if status == 'icn'
       name_status_filters[status] || status
     end

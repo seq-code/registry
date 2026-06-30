@@ -3,6 +3,11 @@
 unregistered:
   name: MyString
 
+draft_by_contributor:
+  name: Testimonas draftensis
+  status: 5 # draft
+  created_by: contributor
+
 escherichia:
   name: Escherichia
   rank: genus
