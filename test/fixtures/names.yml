@@ -1,4 +1,30 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+<% status = ->(symbol) { Name.status_hash.find { |_, attrs| attrs[:symbol] == symbol }.first } %>
 
 unregistered:
   name: MyString
+
+escherichia:
+  name: Escherichia
+  rank: genus
+  status: <%= status.call(:seqcode) %>
+
+escherichia_coli:
+  name: Escherichia coli
+  rank: species
+  status: <%= status.call(:seqcode) %>
+
+escherichia_colie:
+  name: Escherichia colie
+  rank: species
+  status: <%= status.call(:draft) %>
+
+bacillus:
+  name: Bacillus
+  rank: genus
+  status: <%= status.call(:seqcode) %>
+
+bacillus_subtilis:
+  name: Bacillus subtilis
+  rank: species
+  status: <%= status.call(:icnp) %>
