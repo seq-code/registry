@@ -54,13 +54,11 @@ class NamesController < ApplicationController
   def autocomplete
     name = params[:q].downcase
     rank = params[:rank]&.downcase
-    @names = Services::Name::FuzzySearch.call(
-      name,
-      method: :similarity,
-      threshold: 0.7,
-      limit: 20,
-      selection: rank ? Name.where(rank: rank) : Name.all
-    )
+    @names =
+      Name.where('LOWER(name) LIKE ?', "#{name}%")
+          .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
+          .limit(20)
+    @names = @names.where(rank: rank) if rank
   end
 
   # GET /names
