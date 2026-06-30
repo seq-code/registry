@@ -83,7 +83,7 @@ class RegistersController < ApplicationController
         end
       when :draft
         authenticate_curator! && return
-        Register.where(validated: false, notified: false, submitted: false)
+        Register.drafts
       when :submitted
         authenticate_curator! && return
         Register.where(validated: false, notified: false, submitted: true)
@@ -134,8 +134,7 @@ class RegistersController < ApplicationController
   # GET /registers/new
   def new
     @register = Register.new
-    @registers =
-      current_user.registers.where(submitted: false, validated: false)
+    @registers = current_user.registers.drafts.order(created_at: :desc)
     @crumbs = ['Lists']
   end
 
@@ -150,7 +149,7 @@ class RegistersController < ApplicationController
       @register = Register.where(accession: params[:existing_register]).first
     end
     @register ||= Register.new(user: current_user)
-    @registers = current_user.registers.where(submitted: false)
+    @registers = current_user.registers.drafts.order(created_at: :desc)
 
     if @register.can_edit?(current_user) && @register.save &&
          (!@name || @name.add_to_register(@register, current_user)) &&

@@ -3,7 +3,7 @@
 one:
   seen: false
   notified_email: false
-  user: one
+  user: contributor
   notifiable: one
   notifiable_type: Notifiable
   linkeable: one
@@ -13,7 +13,7 @@ one:
 two:
   seen: false
   notified_email: false
-  user: two
+  user: contributor
   notifiable: two
   notifiable_type: Notifiable
   linkeable: two

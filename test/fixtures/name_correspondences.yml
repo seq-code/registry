@@ -2,8 +2,8 @@
 
 one:
   name: one
-  user: one
+  user: contributor
 
 two:
   name: two
-  user: two
+  user: contributor

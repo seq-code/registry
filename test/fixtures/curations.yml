@@ -2,14 +2,14 @@
 
 one:
   name: one
-  user: one
+  user: curator
   kind_int: 1
   status_int: 1
   notes: MyText
 
 two:
   name: two
-  user: two
+  user: curator
   kind_int: 1
   status_int: 1
   notes: MyText

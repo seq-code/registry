@@ -41,6 +41,8 @@ class Register < ApplicationRecord
   has_rich_text(:post_validation_note)
   has_rich_text(:submitter_authorship_explanation)
 
+  scope :drafts, -> { where(validated: false, notified: false, submitted: false) }
+
   before_create(:assign_accession)
   before_validation(:propose_and_save_title, if: :submitted?)
   before_destroy(:return_names_to_draft)

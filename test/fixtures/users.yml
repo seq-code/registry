@@ -1,10 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  username: user_one
-  email: user_one@example.com
+contributor:
+  username: contributor
+  email: contributor@example.com
+  contributor: true
+  curator: false
+  confirmed_at: <%= Time.current %>
 
-two:
-  username: user_two
-  email: user_two@example.com
+curator:
+  username: curator
+  email: curator@example.com
+  contributor: true
+  curator: true
+  confirmed_at: <%= Time.current %>
 # column: value

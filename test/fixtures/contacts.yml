@@ -2,7 +2,7 @@
 
 one:
   publication: one
-  user: one
+  user: contributor
   to: MyString
   cc: MyString
   subject: MyString
@@ -10,7 +10,7 @@ one:
 
 two:
   publication: two
-  user: two
+  user: contributor
   to: MyString
   cc: MyString
   subject: MyString
