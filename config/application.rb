@@ -14,6 +14,9 @@ module CandidatusExcubia
     # Boolean handling of SQLite3
     config.active_record.sqlite3&.represent_boolean_as_integer = true
 
+    config.semantic_logger.application = 'seqcode-registry'
+    config.semantic_logger.environment = Rails.env
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

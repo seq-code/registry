@@ -286,6 +286,10 @@ GEM
     rails-html-sanitizer (1.7.0)
       loofah (~> 2.25)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails_semantic_logger (4.20.0)
+      rack
+      railties (>= 5.1)
+      semantic_logger (~> 4.16)
     railties (6.1.7.10)
       actionpack (= 6.1.7.10)
       activesupport (= 6.1.7.10)
@@ -382,6 +386,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
+    semantic_logger (4.18.0)
+      concurrent-ruby (~> 1.0)
     semantic_range (3.1.1)
     serrano (1.7)
       faraday (~> 2.14, >= 2.14.1)
@@ -499,6 +505,7 @@ DEPENDENCIES
   rack-attack
   rack-cors
   rails (~> 6.1)
+  rails_semantic_logger (~> 4.20)
   rdoc
   redcarpet (~> 3.5)
   redirect_safely (~> 1.0)
