@@ -19,8 +19,10 @@
     <dd><%= current_user.email %></dd>
 
     <dt>Affiliation (institute / department)</dt>
-    <dd><%= render(partial: 'affiliation',
-              locals: { user: user, department: true }) %>
+    <dd><%= render(
+      partial: 'affiliation',
+      locals: { user: current_user, department: true }
+    ) %></dd>
 
     <dt>Position</dt>
     <dd><%= current_user.position %></dd>
