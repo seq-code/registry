@@ -27,6 +27,17 @@
       <% end %>
     </li>
   <% end %>
+  <% if current_community_member? # If instead of unless just to test TODO %>
+    <li class="nav-item">
+      <%= link_to(
+            'https://forms.gle/FWMb3JnUpVDt7TXXA',
+            class: 'nav-link', target: '_blank'
+          ) do %>
+        <%= fa_icon('users') %> Become a SeqCode Community member
+      <% end %>
+    </li>
+  <% end %>
+
   <% if false # Do not include this option for now %>
     <li class='nav-item'>
       <%= link_to(
