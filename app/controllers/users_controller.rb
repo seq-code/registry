@@ -44,6 +44,7 @@ class UsersController < ApplicationController
   def dashboard
     redirect_to(root_url) unless user_signed_in?
     @pending = { main: current_user.unseen_notifications.count }
+    @crumbs = ['User dashboard']
 
     if current_user.admin?
       @contributor_applications = User.contributor_applications

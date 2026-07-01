@@ -11,7 +11,7 @@
         <%= render(partial: 'about') %>
         <hr/>
         <%= render(partial: 'actions') %>
-      <% when 'admin', 'editor', 'curator', 'contributor' %>
+      <% when 'admin', 'editor', 'curator', 'contributor', 'community_member' %>
         <%= render(partial: which) %>
       <% end %>
     </div>

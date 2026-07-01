@@ -1,0 +1,38 @@
+<% if current_community_member? %>
+  <h1>Community member</h1>
+  <p class="lead">
+    You are registered as a SeqCode Community member. This allows you to
+    actively participate in the governance of the SeqCode Community, including
+    through proposing and voting for SeqCode Committee members, participating in
+    open discussions, and casting ballots on SeqCode ammendments.
+  </p>
+  <br/>
+
+  <dl class="main-section name-details">
+    <h2>
+      <%= fa_icon('user-tie', class: 'float-right') %>
+      Member profile
+    </h2>
+
+    <%
+      {
+        'Given name' => :given,
+        'Family name' => :family,
+        'Email address' => :email,
+        'Affiliation' => render(
+          partial: 'affiliation',
+          locals: { user: current_user, department: true }
+        ),
+        'Position' => :position,
+        'Highest academic degree' => :highest_degree,
+        'Brief description of achievements' => :achievements,
+        'Membership in a microbiological society' => :membership_societies,
+        'Interest in serving in the SeqCode Committee' =>
+          current_user.committee_interest? ? 'Yes' : 'No'
+      }.each do |k, v|
+    %>
+      <dt><%= k %></dt>
+      <dd><%= v.is_a?(Symbol) ? current_user.send(v) : v %></dd>
+    <% end %>
+  </dl>
+<% end %>
