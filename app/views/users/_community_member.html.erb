@@ -7,41 +7,27 @@
     open discussions, and casting ballots on SeqCode ammendments.
   </p>
 
-  <h2>Current profile information</h2>
-  <dl>
-    <dt>Given name</dt>
-    <dd><%= current_user.given %></dd>
-
-    <dt>Family name</dt>
-    <dd><%= current_user.family %></dd>
-
-    <dt>Email address</dt>
-    <dd><%= current_user.email %></dd>
-
-    <dt>Affiliation (institute / department)</dt>
-    <dd><%= render(
-      partial: 'affiliation',
-      locals: { user: current_user, department: true }
-    ) %></dd>
-
-    <dt>Position</dt>
-    <dd><%= current_user.position %></dd>
-
-    <dt>Highest academic degree</dt>
-    <dd><%= current_user.highest_degree %></dd>
-
-    <dt>
-      Brief description of achievements or relevant publications in the field of
-      microbiology and microbial systematics
-    </dt>
-    <dd><%= current_user.achievements %></dd>
-
-    <dt>Membership in a national or international microbiological society</dt>
-    <dd><%= current_user.membership_societies %></dd>
-    <dt>
-      Would you be interested in serving in a SeqCode Committee administrative
-      post?
-    </dt>
-    <dd><%= current_user.committee_interest? ? 'Yes' : 'No' %></dd>
+  <dl class="main-section">
+    <h2><%= fa_icon('user-tie') %> Current profile information</h2>
+    <%
+      {
+        'Given name' => :given,
+        'Family name' => :family,
+        'Email address' => :email,
+        'Affiliation' => render(
+          partial: 'affiliation',
+          locals: { user: current_user, department: true }
+        ),
+        'Position' => :position,
+        'Highest academic degree' => :highest_degree,
+        'Brief description of achievements' => :achievements,
+        'Membership in a microbiological society' => :membership_societies,
+        'Interest in serving in the SeqCode Committee' =>
+          current_user.committee_interest? ? 'Yes' : 'No'
+      }.each do |k, v|
+    %>
+      <dt><%= k %></dt>
+      <dd><%= v.is_a?(Symbol) ? current_user.send(v) : v %></dd>
+    <% end %>
   </dl>
 <% end %>
