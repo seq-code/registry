@@ -42,13 +42,27 @@ namespace :genomes do
     genomes.each_with_index do |genome, k|
       $stderr.puts 'Download genomes:' if k == 0
       $stderr.puts "o #{genome.text} [#{genome.miga_name}]"
-      MiGA::Cli.new([
+
+      # Try in NCBI
+      error = MiGA::Cli.new([
         'get', '--project', p_path, '--dataset', genome.miga_name,
         '--universe', 'ncbi', '--db', genome.database,
         '--metadata', "url=#{genome.uri}",
         '--ids', genome.accession,
         '--type', (genome.kind_miga || 'popgenome')
       ]).launch(false)
+
+      # Otherwise, try in EBI
+      if error.is_a?(MiGA::RemoteDataMissingError) &&
+         genome.database == 'assembly'
+        error = MiGA::Cli.new([
+          'get', '--project', p_path, '--dataset', genome.miga_name,
+          '--universe', 'ebi', '--db', 'embl',
+          '--metadata', "url=#{genome.uri}",
+          '--ids', genome.accession,
+          '--type', (genome.kind_miga || 'popgenome')
+        ]).launch(false)
+      end
 
       md = File.join(p_path, 'metadata', "#{genome.miga_name}.json")
       if File.exist?(md)
