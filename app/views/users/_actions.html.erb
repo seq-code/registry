@@ -27,7 +27,7 @@
       <% end %>
     </li>
   <% end %>
-  <% if current_community_member? # If instead of unless just to test TODO %>
+  <% unless current_community_member? %>
     <li class="nav-item">
       <%= link_to(
             'https://forms.gle/FWMb3JnUpVDt7TXXA',
