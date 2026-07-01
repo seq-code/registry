@@ -1,0 +1,45 @@
+<% if community_member? %>
+  <h1>Community member profile</h1>
+  <p class="lead">
+    You are registered as a SeqCode Community member. This allows you to
+    actively participate in the governance of the SeqCode Community, including
+    through proposing and voting for SeqCode Committee members, participating in
+    open discussions, and casting ballots on SeqCode ammendments.
+  </p>
+
+  <h2>Current profile information</h2>
+  <dl>
+    <dt>Given name</dt>
+    <dd><%= current_user.given %></dd>
+
+    <dt>Family name</dt>
+    <dd><%= current_user.family %></dd>
+
+    <dt>Email address</dt>
+    <dd><%= current_user.email %></dd>
+
+    <dt>Affiliation (institute / department)</dt>
+    <dd><%= render(partial: 'affiliation',
+              locals: { user: user, department: true }) %>
+
+    <dt>Position</dt>
+    <dd><%= current_user.position %></dd>
+
+    <dt>Highest academic degree</dt>
+    <dd><%= current_user.highest_degree %></dd>
+
+    <dt>
+      Brief description of achievements or relevant publications in the field of
+      microbiology and microbial systematics
+    </dt>
+    <dd><%= current_user.achievements %></dd>
+
+    <dt>Membership in a national or international microbiological society</dt>
+    <dd><%= current_user.membership_societies %></dd>
+    <dt>
+      Would you be interested in serving in a SeqCode Committee administrative
+      post?
+    </dt>
+    <dd><%= current_user.committee_interest? ? 'Yes' : 'No' %></dd>
+  </dl>
+<% end %>

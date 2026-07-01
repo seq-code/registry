@@ -1,0 +1,22 @@
+<% department ||= false %>
+
+<% if user.affiliation_ror? %>
+  <%= link_to(user.affiliation, user.ror_url, target: '_blank') %>
+<% else %>
+  <%= user.affiliation %>
+<% end %>
+<% if department && user.department? %>
+  (<%= user.department %>)
+<% end %>
+
+<% if user.affiliation_2? %>
+  |
+  <% if user.affiliation_2_ror? %>
+    <%= link_to(user.affiliation_2, user.ror_2_url, target: '_blank') %>
+  <% else %>
+    <%= user.affiliation_2 %>
+  <% end %>
+  <% if department && user.department_2? %>
+    (<%= user.department_2 %>)
+  <% end %>
+<% end %>

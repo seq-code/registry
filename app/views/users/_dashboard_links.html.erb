@@ -6,6 +6,8 @@
   links[:editor]  = ['user-edit', 'Editor']             if current_editor?
   links[:curator] = ['user-check', 'Curator']           if current_curator?
   links[:contributor] = ['user-plus', 'Contributor']    if current_contributor?
+  links[:community_member] =
+    ['users', 'Community member'] if current_community_member?
 %>
 <div class="btn-group-vertical w-100 pb-4">
   <% links.each do |role, icon| %>
