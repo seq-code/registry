@@ -113,6 +113,10 @@ module ApplicationHelper
     end
   end
 
+  def current_community_member?
+    current_user.try :community_member?
+  end
+
   def current_contributor?
     current_user.try :contributor?
   end
