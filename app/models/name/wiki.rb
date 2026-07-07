@@ -117,11 +117,11 @@ module Name::Wiki
   end
 
   def wikispecies_page_exists?
-    wikispecies_issues.include? 'missing page'
+    !wikispecies_issues.include?('missing page')
   end
 
   def wikispecies_template_exists?
-    wikispecies_issues.include? 'missing template'
+    !wikispecies_issues.include?('missing template')
   end
 end
 
