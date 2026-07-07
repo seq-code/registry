@@ -1200,7 +1200,7 @@ module Name::QualityChecks
       end
     end
 
-    if rank? && above_rank?(:family)
+    if rank? && at_or_above_rank?(:family)
       @qc_warnings.add(:later_taxon_as_type) if type? # check
     end
 
@@ -1221,7 +1221,7 @@ module Name::QualityChecks
         @qc_warnings.add(:grammatical_gender_varies_from_source) # check
       end
 
-      if rank? && !above_rank?(:family)
+      if rank? && !at_or_above_rank?(:family)
         # These checks don't make sense for names in ranks above genus
         @qc_warnings.add(:inapt_personal_name) # check
         @qc_warnings.add(:contentious_name) # check

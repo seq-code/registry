@@ -935,7 +935,7 @@ class Name < ApplicationRecord
 
   ##
   # The current name has a taxonomic rank equal or above +rank+
-  def above_rank?(rank)
+  def at_or_above_rank?(rank)
     self.class.ranks.index(inferred_rank) <= self.class.ranks.index(rank.to_s)
   end
 
@@ -1136,7 +1136,7 @@ class Name < ApplicationRecord
 
   def propose_lineage_name(rank)
     return name if rank.to_s == inferred_rank
-    return if above_rank?(rank)
+    return if at_or_above_rank?(rank)
 
     case rank.to_s
     when 'species'
@@ -1265,7 +1265,7 @@ class Name < ApplicationRecord
   def priority_date
     @priority_date ||= self[:priority_date]
     if !@priority_date && seqcode?
-      if above_rank?(:family)
+      if at_or_above_rank?(:family)
         @priority_date = type_name.try(:priority_date)
       elsif genus_affected_by_23d_amendment?
         # Whitman amendment to Rule 23d

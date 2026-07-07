@@ -94,7 +94,7 @@ module Name::Wiki
       end
     end
 
-    if above_rank?(:genus)
+    if at_or_above_rank?(:genus)
       unless external_request(wikispecies_template_url).present?
         issues << 'missing template'
       end
@@ -106,8 +106,10 @@ module Name::Wiki
     )
   end
 
-  def wikispecies_issues
-    unless wikispecies_checked_at && wikispecies_checked_at > 1.month.ago
+  def wikispecies_issues(force: false)
+    if force ||
+          !wikispecies_checked_at.present? ||
+          wikispecies_checked_at >= 1.month.ago
       check_wikispecies
     end
 
