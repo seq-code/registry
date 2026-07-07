@@ -58,8 +58,11 @@ module Name::Wiki
   end
 
   def wikispecies_url
-    'https://species.wikimedia.org/wiki/%s' %
-      wikispecies_url_name
+    'https://species.wikimedia.org/wiki/%s' % wikispecies_url_name
+  end
+
+  def wikispecies_template_url
+    'https://species.wikimedia.org/wiki/Template:%s' % wikispecies_url_name
   end
 
   def check_wikispecies
@@ -72,6 +75,7 @@ module Name::Wiki
       if xml.xpath("//a[@href='#{seqcode_url(true)}']").empty?
         issues << "SeqCode entry not linked"
       end
+
       if parent && parent.validated? && parent != self
         i = parent.wiki_url_name
         unless xml.xpath("//a[@href='/wiki/#{i}']").any? ||
@@ -79,6 +83,7 @@ module Name::Wiki
           issues << "parent not linked: #{parent.name}"
         end
       end
+
       valid_children.each do |child|
         i = child.wiki_url_name
         unless xml.xpath("//a[@href='/wiki/#{i}']").any? ||
@@ -88,6 +93,13 @@ module Name::Wiki
         end
       end
     end
+
+    if above_rank?(:genus)
+      unless external_request(wikispecies_template_url).present?
+        issues << 'missing template'
+      end
+    end
+
     update_columns(
       wikispecies_checked_at: DateTime.now,
       wikispecies_issues_text: issues.empty? ? nil : issues.join('; ')
@@ -101,4 +113,13 @@ module Name::Wiki
 
     @wikispecies_issues ||= (wikispecies_issues_text || '').split('; ')
   end
+
+  def wikispecies_page_exists?
+    wikispecies_issues.include? 'missing page'
+  end
+
+  def wikispecies_template_exists?
+    wikispecies_issues.include? 'missing template'
+  end
 end
+
