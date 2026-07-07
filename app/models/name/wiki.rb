@@ -109,7 +109,7 @@ module Name::Wiki
   def wikispecies_issues(force: false)
     if force ||
           !wikispecies_checked_at.present? ||
-          wikispecies_checked_at >= 1.month.ago
+          wikispecies_checked_at < 1.month.ago
       check_wikispecies
     end
 
