@@ -134,7 +134,7 @@ class RegistersController < ApplicationController
   # GET /registers/new
   def new
     @register = Register.new
-    @registers = current_user.registers.drafts.order(created_at: :desc)
+    @registers = current_user.registers.drafts.order(updated_at: :asc)
     @crumbs = ['Lists']
   end
 
