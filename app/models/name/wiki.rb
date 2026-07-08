@@ -65,6 +65,10 @@ module Name::Wiki
     'https://species.wikimedia.org/wiki/Template:%s' % wikispecies_url_name
   end
 
+  def wikispecies_needs_template?
+    at_or_above_rank? :genus
+  end
+
   def check_wikispecies
     issues = []
     doc = external_request(wikispecies_url)
@@ -73,7 +77,7 @@ module Name::Wiki
     else
       xml = Nokogiri::HTML.parse(doc)
       if xml.xpath("//a[@href='#{seqcode_url(true)}']").empty?
-        issues << "SeqCode entry not linked"
+        issues << 'SeqCode entry not linked'
       end
 
       if parent && parent.validated? && parent != self
@@ -94,7 +98,7 @@ module Name::Wiki
       end
     end
 
-    if at_or_above_rank?(:genus)
+    if wikispecies_needs_template?
       unless external_request(wikispecies_template_url).present?
         issues << 'missing template'
       end
@@ -122,6 +126,50 @@ module Name::Wiki
 
   def wikispecies_template_exists?
     !wikispecies_issues.include?('missing template')
+  end
+
+  # Rendered from the exact same partials used on the manual "Wiki code" page,
+  # so submission always matches what a curator would see and copy by hand.
+  def wikispecies_page_wikitext
+    ApplicationController.renderer.render(
+      partial: 'names/wiki/wikispecies_page', assigns: { name: self }
+    )
+  end
+
+  def wikispecies_template_wikitext
+    ApplicationController.renderer.render(
+      partial: 'names/wiki/wikispecies_template', assigns: { name: self }
+    )
+  end
+
+  ##
+  # Creates the Wikispecies template (if needed) and page for this name,
+  # using the passed Wikispecies::Client (already authenticated as a user
+  # or bot). Returns a symbol describing what happened, and never
+  # overwrites an existing page (create-only semantics enforced both here
+  # and, redundantly, in the client itself).
+  def submit_to_wikispecies!(client)
+    return :not_validated unless validated?
+    return :page_exists if wikispecies_page_exists?
+
+    if wikispecies_needs_template? && !wikispecies_template_exists?
+      client.create_page(
+        title: "Template:#{wikispecies_url_name}",
+        content: wikispecies_template_wikitext,
+        summary: "Creating taxonavigation template per SeqCode Registry #{register&.acc_url}"
+      )
+    end
+
+    client.create_page(
+      title: wikispecies_url_name,
+      content: wikispecies_page_wikitext,
+      summary: "Creating page per SeqCode Registry #{register&.acc_url}"
+    )
+
+    :created
+  rescue WikispeciesClientService::Error => e
+    Rails.logger.error("Wikispecies submission failed for #{name}: #{e.message}")
+    :error
   end
 end
 
