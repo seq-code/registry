@@ -436,6 +436,14 @@ class Register < ApplicationRecord
     names.any? { |n| n.wikispecies_issues.any? }
   end
 
+  def names_pending_wikispecies_submission
+    return [] unless validated?
+
+    names_by_rank.select do |name|
+      name.validated? && !name.wikispecies_page_exists?
+    end
+  end
+
   def pending_genomes?
     names.any? { |n| n.type_genome.try(:pending?) }
   end

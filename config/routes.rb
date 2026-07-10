@@ -187,6 +187,7 @@ Rails.application.routes.draw do
       get  :post_validation_note
       post :post_validation_note, action: :post_validation_note_commit
       # --> Special curation pages
+      get  :create_wikispecies_pages
       get  :curation_genomics
       post :snooze_curation
       post :recheck_pdf_files

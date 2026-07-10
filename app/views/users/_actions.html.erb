@@ -6,12 +6,14 @@
       See all user notifications
     <% end %>
   </li>
+
   <li class="nav-item">
     <%= link_to(edit_user_registration_path, class: 'nav-link') do %>
       <%= fa_icon('user-cog') %>
       Edit profile information and settings
     <% end %>
   </li>
+
   <% unless current_contributor? %>
     <li class="nav-item">
       <%= link_to(contributor_request_path, class: 'nav-link') do %>
@@ -20,6 +22,7 @@
       <% end %>
     </li>
   <% end %>
+
   <% unless current_curator? %>
     <li class="nav-item">
       <%= link_to(curator_request_path, class: 'nav-link') do %>
@@ -27,6 +30,7 @@
       <% end %>
     </li>
   <% end %>
+
   <% unless current_community_member? %>
     <li class="nav-item">
       <%= link_to(
@@ -38,26 +42,24 @@
     </li>
   <% end %>
 
-  <% if current_editor? %>
-    <li class="nav-item">
-      <% if current_user.wikispecies_credential %>
-        <%= link_to(
-              wikispecies_oauth_disconnect_path, method: :delete,
-              data: { confirm: 'Disconnect your Wikispecies account?' },
-              class: 'nav-link'
-            ) do %>
-          <%= fa_icon('wikipedia-w', type: 'fab') %>
-          Disconnect Wikispecies:
-          <b><%= current_user.wikispecies_credential.wiki_username %></b>
-        <% end %>
-      <% else %>
-        <%= link_to(wikispecies_oauth_authorize_path, class: 'nav-link') do %>
-          <%= fa_icon('wikipedia-w', type: 'fab') %>
-          Connect your Wikispecies account
-        <% end %>
+  <li class="nav-item">
+    <% if current_user.wikispecies_credential %>
+      <%= link_to(
+            wikispecies_oauth_disconnect_path, method: :delete,
+            data: { confirm: 'Disconnect your Wikimedia account?' },
+            class: 'nav-link'
+          ) do %>
+        <%= fa_icon('wikipedia-w', type: 'fab') %>
+        Disconnect Wikimedia:
+        <b><%= current_user.wikispecies_credential.wiki_username %></b>
       <% end %>
-    </li>
-  <% end %>
+    <% else %>
+      <%= link_to(wikispecies_oauth_authorize_path, class: 'nav-link') do %>
+        <%= fa_icon('wikipedia-w', type: 'fab') %>
+        Connect your Wikimedia account
+      <% end %>
+    <% end %>
+  </li>
 
   <% if false # Do not include this option for now %>
     <li class='nav-item'>

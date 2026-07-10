@@ -149,15 +149,21 @@ module Name::Wiki
   # overwrites an existing page (create-only semantics enforced both here
   # and, redundantly, in the client itself).
   def submit_to_wikispecies!(client)
-    return :not_validated unless validated?
-    return :page_exists if wikispecies_page_exists?
+    # Non-validated names are sometimes needed. e.g., as ancestors
+    # return :not_validated unless validated?
 
     if wikispecies_needs_template? && !wikispecies_template_exists?
+      parent.submit_to_wikispecies!(client) if parent.present?
       client.create_page(
         title: "Template:#{wikispecies_url_name}",
         content: wikispecies_template_wikitext,
-        summary: "Creating taxonavigation template per SeqCode Registry #{register&.acc_url}"
+        summary:
+          "Creating taxonavigation template " \
+          "per SeqCode Registry #{register&.acc_url}"
       )
+      return :template_created if wikispecies_page_exists?
+    else
+      return :page_exists if wikispecies_page_exists?
     end
 
     client.create_page(
@@ -168,7 +174,9 @@ module Name::Wiki
 
     :created
   rescue WikispeciesClientService::Error => e
-    Rails.logger.error("Wikispecies submission failed for #{name}: #{e.message}")
+    Rails.logger.error(
+      "Wikispecies submission failed for #{name}: #{e.message}"
+    )
     :error
   end
 end
