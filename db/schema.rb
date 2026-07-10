@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_07_01_164537) do
+ActiveRecord::Schema.define(version: 2026_07_08_151309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -551,6 +551,17 @@ ActiveRecord::Schema.define(version: 2026_07_01_164537) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "wikispecies_credentials", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "encrypted_access_token", null: false
+    t.text "encrypted_refresh_token"
+    t.string "wiki_username", null: false
+    t.datetime "expires_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_wikispecies_credentials_on_user_id", unique: true
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "checks", "names"
@@ -584,4 +595,5 @@ ActiveRecord::Schema.define(version: 2026_07_01_164537) do
   add_foreign_key "registers", "users"
   add_foreign_key "reports", "users"
   add_foreign_key "tutorials", "users"
+  add_foreign_key "wikispecies_credentials", "users"
 end

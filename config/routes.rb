@@ -34,6 +34,12 @@ Rails.application.routes.draw do
   post 'curators/deny/:username' => 'users#curator_deny', as: :curator_deny
   devise_for(:users, controllers: { registrations: 'users/registrations' })
 
+  namespace :wikispecies do
+    get 'oauth/authorize', to: 'oauth#authorize'
+    get 'oauth/callback', to: 'oauth#callback'
+    delete 'oauth', to: 'oauth#disconnect', as: :disconnect_wikispecies_oauth
+  end
+
   # Alerts (Notifications)
   resources(
     :notifications, path: 'alerts',
