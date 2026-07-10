@@ -86,12 +86,18 @@ class RegistersController < ApplicationController
         Register.drafts
       when :submitted
         authenticate_curator! && return
-        Register.where(validated: false, notified: false, submitted: true)
+        Register
+          .where(validated: false, notified: false, submitted: true)
+          .order(submitted_at: :desc)
       when :notified
         authenticate_curator! && return
-        Register.where(validated: false, notified: true)
+        Register
+          .where(validated: false, notified: true)
+          .order(notified_at: :desc)
       else # :validated
-        Register.where(validated: true)
+        Register
+          .where(validated: true)
+          .order(validated_at: :desc)
       end
     @registers &&=
       @registers.order(updated_at: :desc)
