@@ -184,7 +184,10 @@ module Name::Wiki
       action = :created
     end
 
-    check_wikispecies unless action == :page_exists
+    unless action == :page_exists
+      sleep(1)
+      check_wikispecies
+    end
     action
   rescue WikispeciesClientService::Error => e
     Rails.logger.error(
