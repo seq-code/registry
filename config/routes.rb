@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   namespace :wikispecies do
     get 'oauth/authorize', to: 'oauth#authorize'
     get 'oauth/callback', to: 'oauth#callback'
-    delete 'oauth', to: 'oauth#disconnect', as: :disconnect_wikispecies_oauth
+    delete 'oauth', to: 'oauth#disconnect', as: :oauth_disconnect
   end
 
   # Alerts (Notifications)

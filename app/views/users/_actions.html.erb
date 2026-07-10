@@ -42,7 +42,7 @@
     <li class="nav-item">
       <% if current_user.wikispecies_credential %>
         <%= link_to(
-              disconnect_wikispecies_oauth_path, method: :delete,
+              wikispecies_oauth_disconnect_path, method: :delete,
               data: { confirm: 'Disconnect your Wikispecies account?' },
               class: 'nav-link'
             ) do %>
