@@ -40,16 +40,14 @@ class Wikispecies::OauthController < ApplicationController
     )
 
     redirect_to(
-      dashboard_path,
-      notice: "Connected to Wikispecies as #{username}"
+      dashboard_path, notice: "Connected to Wikispecies as #{username}"
     )
   end
 
   def disconnect
     current_user.wikispecies_credential&.destroy
     redirect_to(
-      edit_user_registration_path,
-      notice: 'Wikispecies account disconnected'
+      dashboard_path, notice: 'Wikispecies account disconnected'
     )
   end
 
