@@ -117,7 +117,7 @@ module Name::Wiki
       check_wikispecies
     end
 
-    @wikispecies_issues ||= (wikispecies_issues_text || '').split('; ')
+    (wikispecies_issues_text || '').split('; ')
   end
 
   def wikispecies_page_exists?
@@ -151,6 +151,7 @@ module Name::Wiki
   def submit_to_wikispecies!(client)
     # Non-validated names are sometimes needed. e.g., as ancestors
     # return :not_validated unless validated?
+    action = :page_exists
 
     if wikispecies_needs_template? && !wikispecies_template_exists?
       parent.submit_to_wikispecies!(client) if parent.present?
@@ -161,18 +162,20 @@ module Name::Wiki
           "Creating taxonavigation template " \
           "per SeqCode Registry #{register&.acc_url}"
       )
-      return :template_created if wikispecies_page_exists?
-    else
-      return :page_exists if wikispecies_page_exists?
+      action = :template_created
     end
 
-    client.create_page(
-      title: wikispecies_url_name,
-      content: wikispecies_page_wikitext,
-      summary: "Creating page per SeqCode Registry #{register&.acc_url}"
-    )
+    unless wikispecies_page_exists?
+      client.create_page(
+        title: wikispecies_url_name,
+        content: wikispecies_page_wikitext,
+        summary: "Creating page per SeqCode Registry #{register&.acc_url}"
+      )
+      action = :created
+    end
 
-    :created
+    check_wikispecies unless action == :page_exists
+    action
   rescue WikispeciesClientService::Error => e
     Rails.logger.error(
       "Wikispecies submission failed for #{name}: #{e.message}"

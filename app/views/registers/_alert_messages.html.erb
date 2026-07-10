@@ -65,6 +65,7 @@
       <hr/>
       <% if current_user.wikispecies_credential %>
         <%= link_to(create_wikispecies_pages_register_path(@register)) do %>
+          <%= fa_icon('wikipedia-w', type: 'fab') %>
           Create <%= pluralize(
             @register.names_pending_wikispecies_submission.count,
             'Wikispecies page'

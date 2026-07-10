@@ -11,6 +11,7 @@ class RegistersController < ApplicationController
       observe unobserve merge merge_commit sample_map
       reviewer_token reviewer_token_create reviewer_token_delete
       post_validation_note post_validation_note_commit
+      create_wikispecies_pages
     ]
   )
   before_action(:set_name, only: %i[new create])
@@ -37,7 +38,7 @@ class RegistersController < ApplicationController
     :authenticate_can_view!,
     only: %i[
       show table list certificate_image new_correspondence sample_map tree
-      reviewer_token
+      reviewer_token create_wikispecies_pages
     ]
   )
   before_action(:ensure_valid!, only: %i[list certificate_image])
@@ -636,6 +637,31 @@ class RegistersController < ApplicationController
       [@register.acc_url, @register],
       'genomics'
     ]
+  end
+
+  # POST /registers/r:abcd/create_wikispecies_pages
+  def create_wikispecies_pages
+    unless current_user.wikispecies_credential
+      return redirect_back(
+        fallback_location: @register,
+        alert: 'Connect your Wikimedia account first'
+      )
+    end
+
+    unless @register.names_pending_wikispecies_submission.any?
+      return redirect_back(
+        fallback_location: @register,
+        notice: 'Nothing to submit: all names are already in Wikispecies'
+      )
+    end
+
+    SubmitNamesToWikispeciesJob.perform_later(@register, current_user)
+
+    redirect_back(
+      fallback_location: @register,
+      notice: 'Submitting names to Wikispecies. ' \
+              'This may take a few minutes, refresh to see progress'
+    )
   end
 
   private
