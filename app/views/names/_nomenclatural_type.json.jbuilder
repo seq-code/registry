@@ -1,4 +1,4 @@
-json.class Services::Name::TypeResolver.resolve(object)
+json.class TypeResolverService.resolve(object)
 json.id(object.try(:id))
 json.url(object ? polymorphic_url(object, format: :json) : nil)
 json.uri object.try(:uri)
