@@ -7,11 +7,14 @@ module Name::Wiki
 
     y = "[[#{y}]]" if opts[:link]
     y = "''Candidatus'' #{y}" if !opts[:no_candidatus] && candidatus?
-    return "\"#{y}\"" unless validated?
 
-    y = "''#{y}''"
-    if rank == 'species' && parent&.nomenclatural_type_id&.==(id)
-      y += " (T#{'s' unless icnp? || icn?})"
+    if validated?
+      y = "''#{y}''"
+      if rank == 'species' && parent&.nomenclatural_type_id&.==(id)
+        y += " (T#{'s' unless icnp? || icn?})"
+      end
+    else
+      y = "\"#{y}\""
     end
     opts[:eol] ? "#{y} <br/>" : y
   end
