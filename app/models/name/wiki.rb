@@ -131,14 +131,18 @@ module Name::Wiki
   # Rendered from the exact same partials used on the manual "Wiki code" page,
   # so submission always matches what a curator would see and copy by hand.
   def wikispecies_page_wikitext
-    ApplicationController.renderer.render(
-      partial: 'names/wiki/wikispecies_page', assigns: { name: self }
+    CGI.unescapeHTML(
+      ApplicationController.renderer.render(
+        partial: 'names/wiki/wikispecies_page', assigns: { name: self }
+      )
     )
   end
 
   def wikispecies_template_wikitext
-    ApplicationController.renderer.render(
-      partial: 'names/wiki/wikispecies_template', assigns: { name: self }
+    CGI.unescapeHTML(
+      ApplicationController.renderer.render(
+        partial: 'names/wiki/wikispecies_template', assigns: { name: self }
+      )
     )
   end
 
