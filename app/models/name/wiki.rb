@@ -160,8 +160,11 @@ module Name::Wiki
     # return :not_validated unless validated?
     action = :page_exists
 
+    if parent.present? && parent.submit_to_wikispecies!(client) != :page_exists
+      action = :parent_created
+    end
+
     if wikispecies_needs_template? && !wikispecies_template_exists?
-      parent.submit_to_wikispecies!(client) if parent.present?
       client.create_page(
         title: "Template:#{wikispecies_url_name}",
         content: wikispecies_template_wikitext,
