@@ -1,7 +1,7 @@
 class WikispeciesClientService
   class Error < StandardError; end
 
-  TOKEN_URL = 'https://species.wikimedia.org/w/rest.php/oauth2/access_token'
+  TOKEN_URL = 'https://meta.wikimedia.org/w/rest.php/oauth2/access_token'
   API_URL   = 'https://species.wikimedia.org/w/api.php'
 
   def initialize(credential)

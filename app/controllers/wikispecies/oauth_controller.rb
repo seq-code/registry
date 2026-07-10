@@ -1,8 +1,8 @@
 class Wikispecies::OauthController < ApplicationController
   before_action :authenticate_user!
 
-  AUTHORIZE_URL = 'https://species.wikimedia.org/w/rest.php/oauth2/authorize'
-  TOKEN_URL     = 'https://species.wikimedia.org/w/rest.php/oauth2/access_token'
+  AUTHORIZE_URL = 'https://meta.wikimedia.org/w/rest.php/oauth2/authorize'
+  TOKEN_URL     = 'https://meta.wikimedia.org/w/rest.php/oauth2/access_token'
 
   def authorize
     state = SecureRandom.hex(16)
