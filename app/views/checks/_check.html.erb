@@ -9,13 +9,13 @@
   <%= fa_icon('exclamation-triangle', class: icon_class) %>
   <%= warn.title %>
   <% if warn.area.present? && !no_area %>
-    | <%=
+    <%=
       fa_icon(case warn.area.to_sym
         when :nomenclature; 'language'
         when :genomics; 'dna'
         when :registry; 'list-alt'
         else; 'smog'
-      end)
+      end, class: 'float-right text-muted')
     %>
   <% end %>
 </dt>
