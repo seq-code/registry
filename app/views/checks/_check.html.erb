@@ -2,11 +2,22 @@
   <%
     no_message ||= false
     no_action  ||= false
+    no_area    ||= false
     blocking = warn.fail == :error
     icon_class = blocking ? 'text-danger' : 'text-warning'
   %>
   <%= fa_icon('exclamation-triangle', class: icon_class) %>
   <%= warn.title %>
+  <% if warn.area.present? && !no_area %>
+    | <%=
+      fa_icon(case warn.area.to_sym
+        when :nomenclature; 'language'
+        when :genomics; 'dna'
+        when :registry; 'list-alt'
+        else; 'smog'
+      end)
+    %>
+  <% end %>
 </dt>
 <dd class="pt-2 qc-body">
   <% unless no_message %>
