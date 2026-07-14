@@ -143,8 +143,8 @@
               <div><%= i.send(@display[k][0]) %></div>
             <% end %>
           <% end %>
-          <%= link_to(@display[k][1], class: 'btn btn-primary mt-4') do %>
-            All <%= title %>
+          <%= link_to(@display[k][1]) do %>
+            <div><b>All <%= title %>&hellip;</b></div>
           <% end %>
         </div>
       </div>
