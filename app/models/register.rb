@@ -436,6 +436,10 @@ class Register < ApplicationRecord
     names.any? { |n| n.wikispecies_issues.any? }
   end
 
+  def wikispecies_submitted_recently?
+    wikispecies_at.present? && wikispecies_at > 1.hour.ago
+  end
+
   def names_pending_wikispecies_submission
     return [] unless validated?
 

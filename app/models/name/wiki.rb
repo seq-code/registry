@@ -72,6 +72,14 @@ module Name::Wiki
     at_or_above_rank? :genus
   end
 
+  def wikispecies_checked_recently?
+    wikispecies_checked_at.present? && wikispecies_checked_at > 6.months.ago
+  end
+
+  def wikispecies_submitted_recently?
+    wikispecies_submitted_at.present? && wikispecies_submitted_at > 1.hour.ago
+  end
+
   def check_wikispecies
     issues = []
     doc = external_request(wikispecies_url)
@@ -114,12 +122,7 @@ module Name::Wiki
   end
 
   def wikispecies_issues(force: false)
-    if force ||
-          !wikispecies_checked_at.present? ||
-          wikispecies_checked_at < 1.month.ago
-      check_wikispecies
-    end
-
+    check_wikispecies if force || !wikispecies_checked_recently?
     (wikispecies_issues_text || '').split('; ')
   end
 
@@ -156,6 +159,8 @@ module Name::Wiki
   # overwrites an existing page (create-only semantics enforced both here
   # and, redundantly, in the client itself).
   def submit_to_wikispecies!(client)
+    update_column(wikispecies_at, DateTime.now)
+
     # Non-validated names are sometimes needed. e.g., as ancestors
     # return :not_validated unless validated?
     action = :page_exists

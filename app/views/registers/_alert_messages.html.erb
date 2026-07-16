@@ -63,7 +63,13 @@
     including <%= link_to(wiki_name_url(n)) { %><%= n.name_html %><% } %>
     <% if @register.names_pending_wikispecies_submission.any? %>
       <hr/>
-      <% if current_user.wikispecies_credential %>
+      <% if @register.wikispecies_submitted_recently? %>
+        <%= fa_icon('wikipedia-w', type: 'fab') %>
+        Creating wikispecies pages, <%= pluralize(
+          @register.names_pending_wikispecies_submission.count,
+          'name'
+        ) %> left
+      <% elsif current_user.wikispecies_credential %>
         <%= link_to(create_wikispecies_pages_register_path(@register)) do %>
           <%= fa_icon('wikipedia-w', type: 'fab') %>
           Create <%= pluralize(

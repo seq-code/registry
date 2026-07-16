@@ -643,6 +643,13 @@ class RegistersController < ApplicationController
 
   # POST /registers/r:abcd/create_wikispecies_pages
   def create_wikispecies_pages
+    if @register.wikispecies_submitted_recently?
+      return redirect_back(
+        fallback_location: @register,
+        alert: 'Register already submitted in the last hour'
+      )
+    end
+
     unless current_user.wikispecies_credential
       return redirect_back(
         fallback_location: @register,
@@ -657,7 +664,7 @@ class RegistersController < ApplicationController
       )
     end
 
-    SubmitNamesToWikispeciesJob.perform_later(@register, current_user)
+    SubmitRegisterToWikispeciesJob.perform_later(@register, current_user)
 
     redirect_back(
       fallback_location: @register,
