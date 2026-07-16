@@ -892,8 +892,8 @@ module Name::QualityChecks
         failure: ->(_w, _n, g) { g.largest_contig_any <= 100_000 }
       }.merge(@@link_to_edit_genome),
       missing_source_data: {
-        message: 'The raw data should be available in INSDC databases ' \
-                 '(e.g., Sequence Read Archive)',
+        message: 'The raw sequencing data should be available in INSDC ' \
+                 'databases (e.g., Sequence Read Archive)',
         area:    :genomics,
         # Only a warning for publications before 1st January 2023
         rules:   ->(_w, n) { n.proposed_before_2023? ? [] : %w[appendix-i] },
