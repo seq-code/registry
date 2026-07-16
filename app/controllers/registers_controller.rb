@@ -50,7 +50,9 @@ class RegistersController < ApplicationController
       coauthors coauthors_commit
     ]
   )
-  before_action(:authenticate_user!, only: %i[observe unobserve])
+  before_action(
+    :authenticate_user!, only: %i[observe unobserve create_wikispecies_pages]
+  )
   before_action(:check_pending_genomes!, only: %i[notify notify_commit])
 
   # GET /registers or /registers.json
