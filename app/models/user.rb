@@ -50,7 +50,7 @@ class User < ApplicationRecord
   has_many(:observe_registers, dependent: :destroy)
   has_many(:observing_registers, through: :observe_registers, source: :register)
   has_many(
-    :updated_genomes, class_name: 'Genome', inverse_of: :validated_by,
+    :updated_genomes, class_name: 'Genome', inverse_of: :updated_by,
     foreign_key: 'updated_by_id', dependent: :nullify
   )
   has_many(:notifications, -> { order(created_at: :desc) }, dependent: :destroy)
