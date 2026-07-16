@@ -56,7 +56,7 @@
 <% if user_signed_in? &&
       @register.validated? &&
       @register.wikispecies_issues? %>
-  <% n = @register.names.find { |n| n.wikispecies_issues.any? } %>
+  <% n = @register.names_by_tree.find { |n| n.wikispecies_issues.any? } %>
   <div class="alert alert-warning">
     <h4>Issues detected in Wikispecies entries</h4>
     This list includes name(s) that are not properly registered in Wikispecies,
