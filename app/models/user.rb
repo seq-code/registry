@@ -23,12 +23,12 @@ class User < ApplicationRecord
   )
   has_many(
     :nomenclature_reviewed_for_names, class_name: 'Name',
-    inverse_of: :nomenclature_reviewed_by,
+    inverse_of: :nomenclature_review_by,
     foreign_key: 'nomenclature_review_by_id', dependent: :nullify
   )
   has_many(
     :genomics_reviewed_for_names, class_name: 'Name',
-    inverse_of: :genomics_reviewed_by,
+    inverse_of: :genomics_review_by,
     foreign_key: 'genomics_review_by_id', dependent: :nullify
   )
   has_many(
