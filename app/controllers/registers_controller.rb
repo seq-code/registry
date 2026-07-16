@@ -664,6 +664,7 @@ class RegistersController < ApplicationController
       )
     end
 
+    @register.update_column(:wikispecies_at, DateTime.now)
     SubmitRegisterToWikispeciesJob.perform_later(@register, current_user)
 
     redirect_back(

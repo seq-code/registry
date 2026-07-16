@@ -159,7 +159,7 @@ module Name::Wiki
   # overwrites an existing page (create-only semantics enforced both here
   # and, redundantly, in the client itself).
   def submit_to_wikispecies!(client)
-    update_column(wikispecies_at, DateTime.now)
+    update_column(:wikispecies_at, DateTime.now)
 
     # Non-validated names are sometimes needed. e.g., as ancestors
     # return :not_validated unless validated?
