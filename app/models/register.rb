@@ -436,8 +436,14 @@ class Register < ApplicationRecord
     names.any? { |n| n.wikispecies_issues.any? }
   end
 
+  ##
+  # Give submissions at least 5 second per name in integer increments of one
+  # hour. Note that each name sleeps for 1 second, but any given name could
+  # include submission of the entire lineage
   def wikispecies_submitted_recently?
-    wikispecies_at.present? && wikispecies_at > 1.hour.ago
+    return false unless wikispecies_at.present?
+    h = (names.count / 720.0).ceil
+    wikispecies_at > h.hour.ago
   end
 
   def names_pending_wikispecies_submission

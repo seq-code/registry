@@ -64,11 +64,12 @@
     <% if @register.names_pending_wikispecies_submission.any? %>
       <hr/>
       <% if @register.wikispecies_submitted_recently? %>
+        <% nn = @register.names_pending_wikispecies_submission.count %>
         <%= fa_icon('wikipedia-w', type: 'fab') %>
-        Creating wikispecies pages, <%= pluralize(
-          @register.names_pending_wikispecies_submission.count,
-          'name'
-        ) %> left
+        Creating wikispecies pages
+        (<%= pluralize(nn, 'name') %> left,
+        <%= ((1.0 - nn.to_f / @register.names.count) * 100.0).round %>%
+        registered)
       <% elsif current_user.wikispecies_credential %>
         <%= link_to(create_wikispecies_pages_register_path(@register)) do %>
           <%= fa_icon('wikipedia-w', type: 'fab') %>
