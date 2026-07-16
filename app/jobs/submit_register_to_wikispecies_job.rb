@@ -5,7 +5,8 @@ class SubmitRegisterToWikispeciesJob < ApplicationJob
     client = WikispeciesClientService.new(user.wikispecies_credential)
 
     register.update_column(:wikispecies_at, DateTime.now)
-    register.names_by_rank.each do |name|
+    register.update_name_order
+    register.names_by_tree.each do |name|
       next if name.wikispecies_page_exists?
 
       name.submit_to_wikispecies!(client)

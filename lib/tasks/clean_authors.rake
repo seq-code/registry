@@ -26,6 +26,7 @@ namespace :authors do
       else
         puts '~ Standardizing %s' % [author.full_name]
         author.update(par)
+        puts '  -> %s' % author.full_name
         ks += 1
       end
     end

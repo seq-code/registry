@@ -123,6 +123,10 @@ class Register < ApplicationRecord
 
   alias :sorted_names :names_by_rank
 
+  def names_by_tree
+    names.order(:name_order, created_at: :desc)
+  end
+
   def names_to_review
     @names_to_review ||= names.where(status: 10)
   end
