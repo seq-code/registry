@@ -1,4 +1,6 @@
 
+all_points = !params['single_point']
+
 # GeoJSON list of coordinates
 json.type 'FeatureCollection'
 json.features(
@@ -7,35 +9,41 @@ json.features(
     @registers ||= [@register]
     @registers.map do |register|
       register.type_genomes.map do |genome|
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'MultiPoint',
-            coordinates: genome.sample_set.map(&:lon_lat).compact.uniq
-          },
-          properties: {
-            name: genome.typified_names.first.try(:name),
-            name_uri: genome.typified_names.first.try(:uri),
-            genome: genome.text,
-            genome_uri: genome.uri
+        if genome.sample_set.locations_complete.any?
+          coords = genome.sample_set.map(&:lon_lat).compact.uniq
+          {
+            type: 'Feature',
+            geometry: {
+              type: all_points ? 'MultiPoint' : 'Point',
+              coordinates: all_points ? coords : coords.first
+            },
+            properties: {
+              name: genome.typified_names.first.try(:name),
+              name_uri: genome.typified_names.first.try(:uri),
+              genome: genome.text,
+              genome_uri: genome.uri
+            }
           }
-        } if genome.sample_set.locations_complete.any?
+        end
       end.compact
     end.reduce([], :+)
   when 'register', 'registers'
     @registers ||= [@register]
     @registers.map do |register|
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'MultiPoint',
-          coordinates: register.sample_set.map(&:lon_lat).compact.uniq
-        },
-        properties: {
-          register: register.acc_url,
-          title: register.propose_title
+      if register.sample_set.locations_complete.any?
+        coords = register.sample_set.map(&:lon_lat).compact.uniq
+        {
+          type: 'Feature',
+          geometry: {
+            type: all_points ? 'MultiPoint' : 'Point',
+            coordinates: all_points ? coords : coords.first
+          },
+          properties: {
+            register: register.acc_url,
+            title: register.propose_title
+          }
         }
-      } if register.sample_set.locations_complete.any?
+      end
     end.compact
   when 'sample', 'samples'
     @sample_set.map do |sample|
