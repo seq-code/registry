@@ -108,15 +108,23 @@ class RegistersController < ApplicationController
   end
 
   # GET /registers/map
+  # GET /registers/map.json
   def map
     @crumbs     = [['Lists', registers_url], 'Map']
     @registers  = Register.where(validated: true)
     @sample_set = CollectionSampleSet.new(@registers)
-    render(
-      'genomes/sample_map',
-      layout: !params[:content].present?,
-      cached: [params[:content], params[:label]]
-    )
+    respond_to do |format|
+      base_par = { cached: [params[:content], params[:label]] }
+      format.html do
+        render(
+          'genomes/sample_map',
+          base_par.merge(layout: !params[:content].present?)
+        )
+      end
+      format.json do
+        render('genomes/sample_map', base_par)
+      end
+    end
   end
 
   # GET /registers/r:abcd
