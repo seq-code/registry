@@ -81,7 +81,12 @@ class GenomesController < ApplicationController
   def sample_map
     @crumbs = [['Genomes', genomes_url], [@genome.title(''), @genome], 'Map']
     @sample_set = @genome.sample_set
-    render(layout: !params[:content].present?)
+    respond_to do |format|
+      format.html do
+        render(layout: !params[:content].present?)
+      end
+      format.json
+    end
   end
 
   private
