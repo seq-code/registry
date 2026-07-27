@@ -5,13 +5,13 @@ function move_network(id, direction) {
   const k = 15, z = 0.1;
   var box = svg.attr("viewBox").split(",");
   [0, 1, 2, 3].forEach(i => box[i] = parseInt(box[i]));
-  if (direction == "up") {
+  if (direction == "down") {
     box[1] = box[1] + k; box[3] = box[3] + k;
-  } else if (direction == "down") {
+  } else if (direction == "up") {
     box[1] = box[1] - k; box[3] = box[3] - k;
-  } else if (direction == "left") {
-    box[0] = box[0] + k; box[2] = box[2] + k;
   } else if (direction == "right") {
+    box[0] = box[0] + k; box[2] = box[2] + k;
+  } else if (direction == "left") {
     box[0] = box[0] - k; box[2] = box[2] - k;
   } else if (direction == "in") {
     var x = box[2] - box[0], y = box[3] - box[1];
@@ -166,7 +166,7 @@ function taxonomic_network(id) {
     // Append nodes
     function showDetail(d, i) {
       $(this).find(".foreground-2").attr("opacity", 0.5);
-      $(this).appendTo($(this).parent()); // <- Bring to the front
+      d3.select(this).raise(); // <- Bring to the front
     }
     function hideDetail(d, i) {
       $(this).find(".foreground-2").attr("opacity", 0.0);
