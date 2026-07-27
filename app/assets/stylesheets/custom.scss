@@ -11,6 +11,9 @@
   cursor: pointer;
 }
 
+.copyable:hover {
+  background: theme-color-level(secondary, -11) !important;
+}
 .copyable:has(> .copyer:hover) {
   background: theme-color-level(secondary, -10) !important;
   border-radius: 0.2rem;
