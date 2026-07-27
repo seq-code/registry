@@ -11,6 +11,11 @@
   cursor: pointer;
 }
 
+.copyable:has(> .copyer:hover) {
+  background: theme-color-level(secondary, -10) !important;
+  border-radius: 0.2rem;
+}
+
 h1, h2, .h1, .h2 {
   .badge-count {
     font-size: 1.2rem;
