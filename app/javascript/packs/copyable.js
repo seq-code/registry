@@ -8,6 +8,7 @@ $(document).on("turbolinks:load", function() {
     );
     var btn = $(
       '<a class="badge badge-pill badge-primary copyer float-right pl-2"' +
+        ' title="click to copy"' +
         ' type="button"><i class="fas fa-copy mr-1"> </i></a>'
     );
     if (elem.hasClass("copyable-block")) {
