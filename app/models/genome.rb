@@ -13,7 +13,7 @@ class Genome < ApplicationRecord
 
   before_validation(:standardize_source)
   after_save(:monitor_source_changes)
-  after_save(:link_sequencing_experiments!)
+  after_save(:link_sequencing_experiments!, if: :saved_change_to_source_json?)
 
   validates(:database, presence: true)
   validates(:accession, presence: true)
@@ -383,25 +383,29 @@ class Genome < ApplicationRecord
 
   def link_sequencing_experiments!
     self.class.transaction do
-      # Unlink experiments that shouldn't be here
+      linked_ids = sequencing_experiments.pluck(:id)
+
+      # Unlink experiments that shouldn't be here. Uses biosample_accessions_all
+      # (not biosample_accessions) so this agrees with the linking check below
+      # on what counts as a match, including secondary/alternate accessions.
       sequencing_experiments.each do |experiment|
-        unless biosample_accessions.include?(experiment.biosample_accession) ||
-               biosample_accessions.include?(experiment.biosample_accession_2)
+        unless biosample_accessions_all.include?(experiment.biosample_accession) ||
+               biosample_accessions_all.include?(experiment.biosample_accession_2)
           GenomeSequencingExperiment
             .where(genome: self, sequencing_experiment: experiment)
             .map(&:destroy!)
+          linked_ids.delete(experiment.id)
         end
       end
 
-      # Link experiments that should be here
+      # Link experiments that should be here. Matched in a single query so
+      # an experiment matching both biosample_accession and
+      # biosample_accession_2 is only linked (and excluded from) once.
       self.sequencing_experiments +=
         SequencingExperiment
           .where(biosample_accession: biosample_accessions_all)
-          .where.not(id: sequencing_experiments.pluck(:id))
-      self.sequencing_experiments +=
-        SequencingExperiment
-          .where(biosample_accession_2: biosample_accessions_all)
-          .where.not(id: sequencing_experiments.pluck(:id))
+          .or(SequencingExperiment.where(biosample_accession_2: biosample_accessions_all))
+          .where.not(id: linked_ids)
     end
   end
 

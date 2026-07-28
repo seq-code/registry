@@ -10,8 +10,10 @@ module Genome::ExternalResources
   # Source hash using the stored +source_json+ entry
   def source_hash
     return unless source_json
+    return @source_hash if @source_hash_source == source_json
 
-    @source_hash ||= JSON.parse(source_json, symbolize_names: true)
+    @source_hash_source = source_json
+    @source_hash = JSON.parse(source_json, symbolize_names: true)
   end
 
   ##
