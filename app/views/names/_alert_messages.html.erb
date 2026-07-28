@@ -55,7 +55,7 @@
     This name contravenes at least one rule from the SeqCode, and it's at risk
     of being rejected:
     <ul>
-      <% @name.qc_errors.select(&:is_error?).each do |qc| %>
+      <% @name.qc_warnings.select(&:is_error?).each do |qc| %>
         <li><%= qc.title %></li>
       <% end %>
     </ul>
