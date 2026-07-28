@@ -49,3 +49,16 @@
     <% end %>
   </div>
 <% end %>
+
+<% if @name.validated? && @name.seqcode? && @name.qc_errors? %>
+  <div class="alert alert-danger">
+    This name contravenes at least one rule from the SeqCode, and it's at risk
+    of being rejected:
+    <ul>
+      <% @name.qc_errors.select(&:is_error?).each do |qc| %>
+        <li><%= qc.title %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
