@@ -462,6 +462,10 @@ class Register < ApplicationRecord
     names.any? { |n| n.type_genome.try(:pending?) }
   end
 
+  def qc_errors?
+    names.any?(&:qc_errors?)
+  end
+
   def abstract_similar_to_publication?
     abstract_similarity_to_publication &&
       abstract_similarity_to_publication > 90.0

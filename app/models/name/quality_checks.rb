@@ -1263,6 +1263,10 @@ module Name::QualityChecks
     @qc_warnings
   end
 
+  def qc_errors?
+    qc_warnings.errors?
+  end
+
   def identical_base_name
     if candidatus?
       @identical_base_name ||= Name.where(name: base_name, redirect: nil).first
