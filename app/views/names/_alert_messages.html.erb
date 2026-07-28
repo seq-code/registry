@@ -56,7 +56,7 @@
     of being rejected:
     <ul>
       <% @name.qc_warnings.select(&:is_error?).each do |qc| %>
-        <li><%= qc.title %></li>
+        <li><b><%= qc.title %></b>: <%= qc.message %></li>
       <% end %>
     </ul>
   </div>
