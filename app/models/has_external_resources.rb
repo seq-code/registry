@@ -8,14 +8,23 @@ module HasExternalResources
 
   ##
   # Queue name for +NameExternalResourcesJob+, possibly forcing queue even if
-  # it was recently submitted (+force+)
-  def queue_for_external_resources(force = false)
+  # it was recently submitted (+force+). If +sync+ is +true+, the job is
+  # executed immediately (in-process) instead of enqueued for later, since
+  # this application has no persistent job backend: an enqueued job only
+  # runs if this same process happens to still be alive when it's picked up,
+  # and is otherwise silently lost (e.g. across a deploy).
+  # TODO: This should be revisited when Rails is upgraded to 7.1, which will
+  # support ActiveJob with a persistent backend.
+  def queue_for_external_resources(force = false, sync: false)
     return if Rails.configuration.bypass_external_apis
     return if !force && queued_for_external_resources
 
-    ephemeral_report << 'Queued for external resource call'
-    external_resources_job.perform_later(self)
-    update_column(:queued_external, DateTime.now)
+    ephemeral_report << (
+      sync ? 'Requesting external resources' : 'Queued for external resource call'
+    )
+    queued = update_column(:queued_external, DateTime.now)
+    sync ? external_resources_job.perform_now(self) : external_resources_job.perform_later(self)
+    queued
   end
 
   ##

@@ -12,7 +12,12 @@ class Genome < ApplicationRecord
   )
 
   before_validation(:standardize_source)
-  after_save(:monitor_source_changes)
+  # after_commit (not after_save): this runs the external metadata refresh
+  # synchronously (see monitor_source_changes), so it must not happen inside
+  # this save's own transaction — otherwise a failure there would roll back
+  # an unrelated edit, and the row's locks would be held for as long as the
+  # external API calls take.
+  after_commit(:monitor_source_changes, on: %i[create update])
   after_save(:link_sequencing_experiments!, if: :saved_change_to_source_json?)
 
   validates(:database, presence: true)
@@ -427,6 +432,7 @@ class Genome < ApplicationRecord
   end
 
   def monitor_source_changes
-    queue_for_external_resources if queue_for_source_update
+    queue_for_external_resources(sync: true) if queue_for_source_update
+    # TODO: remove sync: true above once Rails is upgraded
   end
 end
