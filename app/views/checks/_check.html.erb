@@ -11,7 +11,7 @@
   <% if warn.area.present? && !no_area %>
     <%=
       fa_icon(case warn.area.to_sym
-        when :nomenclature; 'language'
+        when :nomenclature; 'pen-fancy'
         when :genomics; 'dna'
         when :register; 'list-alt'
         else; 'smog'
