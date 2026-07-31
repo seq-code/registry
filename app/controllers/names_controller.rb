@@ -59,6 +59,7 @@ class NamesController < ApplicationController
           .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
           .limit(20)
     @names = @names.where(rank: rank) if rank
+    @names = @names.where(redirect: nil)
   end
 
   # GET /names
