@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: one
+  name: escherichia_coli
   user: curator
   kind: MyText
   pass: false
 
 two:
-  name: two
+  name: bacillus
   user: curator
   kind: MyText
   pass: false

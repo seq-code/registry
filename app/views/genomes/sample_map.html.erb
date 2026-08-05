@@ -9,22 +9,19 @@
   <% if params[:content].present? %>
     <div id="map" style="width: 400px; height: 300px;" class="mx-auto"></div>
   <% else %>
-    <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"
-      ></script>
-    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css"
-      rel="stylesheet" />
     <div id="map" style="width: 800px; height: 600px;" class="mx-auto"></div>
   <% end %>
 
-  <script>
+  <script type="module">
+    import * as maplibregl
+      from "https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.mjs";
     function load_map(lat1, lon1, lat2, lon2) {
       return(
         new maplibregl.Map({
           container: 'map',
           style:
             'https://api.maptiler.com/maps/hybrid/style.json?' +
-              'key=<%= Rails.application.credentials.dig(:maptiler, :key) ||
-                         "get_your_own_OpIi9ZULNHzrESv6T2vL" %>',
+              'key=<%= maptiler_key %>',
           bounds: [lon1, lat1, lon2, lat2]
         })
       );

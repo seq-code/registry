@@ -29,3 +29,18 @@ two:
   number_of_trnas: 1
   updated_by: two
   auto_check: false
+
+with_locations:
+  database: SRA
+  accession: SAMEA00000001
+  gc_content: 1.5
+  completeness: 1.5
+  contamination: 1.5
+  seq_depth: 1.5
+  most_complete_16s: 1.5
+  number_of_16s: 1
+  most_complete_23s: 1.5
+  number_of_23s: 1
+  number_of_trnas: 1
+  auto_check: false
+  source_json: '{"retrieved_at":"2026-01-01T00:00:00Z","samples":{"SAMEA00000001":{"title":"Test sample A","attributes":{"lat_lon":"40.4165 N 3.7026 W"}},"SAMEA00000002":{"title":"Test sample B","attributes":{"lat_lon":"51.5072 N 0.1276 W"}}}}'

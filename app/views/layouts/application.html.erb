@@ -36,10 +36,11 @@
     <% end %>
 
     <!-- MapLibre -->
-    <script
-      defer
-      src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"
-    ></script>
+    <script type="module">
+      import * as maplibregl
+        from "https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.mjs";
+      window.maplibregl = maplibregl;
+    </script>
     <link rel="stylesheet" defer
           href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" />
 

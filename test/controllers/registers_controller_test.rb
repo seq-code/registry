@@ -35,4 +35,21 @@ class RegistersControllerTest < ActionDispatch::IntegrationTest
       assert_not_includes options, @notified_register.accession
     end
   end
+
+  test 'sample_map renders a map for the register type genomes' do
+    get sample_map_register_path(@submitted_register)
+
+    assert_response :success
+    assert_select 'div#map[style*="800px"]'
+    assert_select 'script[type=module]', text: /maplibre-gl\.mjs/
+  end
+
+  test 'sample_map as content skips the layout but still loads maplibre-gl' do
+    get sample_map_register_path(@submitted_register, content: true)
+
+    assert_response :success
+    assert_no_match(/<!DOCTYPE html>/i, response.body)
+    assert_select 'div#map[style*="400px"]'
+    assert_select 'script[type=module]', text: /maplibre-gl\.mjs/
+  end
 end

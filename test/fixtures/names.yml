@@ -32,3 +32,10 @@ bacillus_subtilis:
   name: Bacillus subtilis
   rank: species
   status: 20 # ICNP
+
+type_genome_with_locations:
+  name: Testimonas mappensis
+  rank: species
+  status: 15 # SeqCode
+  register: submitted
+  nomenclatural_type: with_locations (Genome)

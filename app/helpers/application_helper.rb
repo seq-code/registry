@@ -1,4 +1,10 @@
 module ApplicationHelper
+  def maptiler_key
+    key_name = Rails.env.production? ? :key : :development_key
+    Rails.application.credentials.dig(:maptiler, key_name) ||
+      'get_your_own_OpIi9ZULNHzrESv6T2vL'
+  end
+
   def show_tax_string(tax, opts = {})
     require 'miga'
 
