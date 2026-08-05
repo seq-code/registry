@@ -1,3 +1,4 @@
+tcetmumbai.in
 fho.edu.br
 noah.edu.gr
 uan.edu.co
@@ -3569,6 +3570,7 @@ augustana.de
 bethel.de
 bits-iserlohn.de
 cbs.de
+charite.de
 code.berlin
 dhv-speyer.de
 diploma.de
@@ -4185,6 +4187,7 @@ op.iitg.ac.in
 rnd.iitg.ac.in
 iith.ac.in
 iitk.ac.in
+iitbhu.ac.in
 iitkgp.ernet.in
 iitkgp.ac.in
 iitm.ac.in
@@ -10573,6 +10576,8 @@ iau.edu.bd
 cmu.edu.bd
 neu.ac.bd
 istp.fr
+stmikadhiguna.ac.id
+uindatokarama.ac.id
 mpi-bremen.de
 mpg.de
 uni-due.de
