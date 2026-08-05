@@ -70,8 +70,14 @@ class Genome < ApplicationRecord
 
     def source_databases
       {
-        sra: { name: 'INSDC Sequence Read Archive (SRA)', display: 'SRA' },
-        biosample: { name: 'INSDC BioSample', display: 'BioSample' }
+        sra: {
+          name: 'INSDC Sequence Read Archive (SRA)',
+          display: 'SRA Experiment'
+        },
+        biosample: {
+          name: 'INSDC BioSample',
+          display: 'BioSample'
+        }
       }
     end
 
