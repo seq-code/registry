@@ -54,15 +54,17 @@
           <hr/>
         <% end %>
 
-        <%= link_to(
-              return_register_url(@register),
-              class: 'btn btn-primary btn-sm'
-            ) do %>
-          <%= fa_icon('undo-alt') %> Return all names to submitter
+        <% unless @register.draft? %>
+          <%= link_to(
+                return_register_url(@register),
+                class: 'btn btn-primary btn-sm'
+              ) do %>
+            <%= fa_icon('undo-alt') %> Return all names to submitter
+          <% end %>
+          &raquo; Return all names in this list to the status of draft and
+          notify submitter
+          <hr/>
         <% end %>
-        &raquo; Return all names in this list to the status of draft and
-        notify submitter
-        <hr/>
 
         <%= link_to(
               transfer_user_register_url(@register),
