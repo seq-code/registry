@@ -8,6 +8,7 @@
     <div class="col-lg-9">
       <% case which %>
       <% when 'main' %>
+        <%= render(partial: 'community_member_alert') %>
         <%= render(partial: 'about') %>
         <hr/>
         <%= render(partial: 'actions') %>

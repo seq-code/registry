@@ -67,8 +67,11 @@ class PageController < ApplicationController
 
   # GET /page/join
   def join
-    # Generated September 15 2022 (Google form)
-    redirect_to 'https://forms.gle/ZJQVu3XqZwBp4jb4A'
+    if user_signed_in?
+      redirect_to(dashboard_path(tab: :community_member))
+    else
+      redirect_to(new_user_session_path)
+    end
   end
 
   # GET /page/linkout.xml
