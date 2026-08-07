@@ -1,6 +1,13 @@
 require 'test_helper'
 
 class GenomeTest < ActiveSupport::TestCase
+  test 'type_of_type identifies the record as a Genome, not its source database' do
+    genome = genomes(:one)
+    genome.database = 'assembly'
+
+    assert_equal('Genome', genome.type_of_type)
+  end
+
   test 'does not relink sequencing experiments when unrelated attributes change' do
     genome = genomes(:one)
     called = false

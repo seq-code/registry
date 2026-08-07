@@ -269,7 +269,7 @@ class Genome < ApplicationRecord
   end
 
   def type_of_type
-    db_name
+    'Genome'
   end
 
   def text

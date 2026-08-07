@@ -28,4 +28,17 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, names(:draft_by_contributor).name
   end
+
+  test 'type_genomes JSON reports the nomenclatural type class as Genome' do
+    get name_type_genomes_url(format: :json)
+
+    assert_response :success
+    json = JSON.parse(response.body)
+    entry = json['values'].find do |v|
+      v['id'] == names(:type_genome_with_locations).id
+    end
+
+    assert(entry, 'expected the type genome fixture in the response')
+    assert_equal('Genome', entry['nomenclatural_type']['class'])
+  end
 end
