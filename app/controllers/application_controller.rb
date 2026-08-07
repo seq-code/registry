@@ -155,6 +155,10 @@ class ApplicationController < ActionController::Base
       authenticate_role! :editor?
     end
 
+    def authenticate_officer!
+      authenticate_role! :officer?
+    end
+
     def authenticate_admin_or_curator!
       authenticate_admin! || authenticate_curator!
     end

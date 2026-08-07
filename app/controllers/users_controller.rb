@@ -6,14 +6,17 @@ class UsersController < ApplicationController
   )
   before_action(
     :authenticate_admin!,
-    only: %i[
-      index contributor_grant contributor_deny curator_grant curator_deny
-    ]
+    only: %i[index contributor_grant contributor_deny curator_grant curator_deny]
+  )
+  before_action(
+    :authenticate_officer!,
+    only: %i[community_member_grant community_member_deny]
   )
   before_action(
     :set_user,
     only: %i[
       show update contributor_grant contributor_deny curator_grant curator_deny
+      community_member_grant community_member_deny
     ]
   )
 
@@ -64,6 +67,12 @@ class UsersController < ApplicationController
       @unpublished_registers =
         Register.where(validated: true, published: [false, nil])
       @pending[:editor] = @unpublished_registers.count
+    end
+
+    if current_user.officer?
+      @community_member_applications = User.community_member_applications
+      @active_community_members = User.community_members_active
+      @pending[:officer] = @community_member_applications.count
     end
   end
 
@@ -123,6 +132,56 @@ class UsersController < ApplicationController
 
   def curator_deny
     status_application_action(curator_statement: nil)
+  end
+
+  def community_member_update
+    par = params.require(:user).permit(
+      :given, :family, :affiliation, :affiliation_2, :department,
+      :department_2, :position, :highest_degree, :achievements,
+      :membership_societies, :committee_interest
+    )
+    if par[:position] == 'Other'
+      par[:position] =
+        params.dig(:user, :position_other).presence || par[:position]
+    end
+    if par[:highest_degree] == 'Other'
+      par[:highest_degree] =
+        params.dig(:user, :highest_degree_other).presence ||
+        par[:highest_degree]
+    end
+    if current_user.update(par)
+      flash[:notice] = 'Profile updated successfully'
+    else
+      flash[:alert] = 'An error occurred while updating your data'
+    end
+    redirect_to(dashboard_path(tab: :community_member))
+  end
+
+  def community_member_apply
+    if current_user.can_apply_for_community_membership? &&
+       current_user.community_member_profile_complete? &&
+       current_user.update(community_member_applied_at: Time.current)
+      flash[:notice] =
+        'Application received, we will evaluate it as soon as possible'
+      # TODO Notify all officers
+    else
+      flash[:alert] = 'Application failed'
+    end
+    redirect_to(dashboard_path(tab: :community_member))
+  end
+
+  def community_member_grant
+    status_application_action(
+      community_member: true,
+      community_member_applied_at: nil,
+      community_member_started_on:
+        @user.community_member_started_on || Date.current,
+      community_member_expires_on: User.community_membership_cohort_end
+    )
+  end
+
+  def community_member_deny
+    status_application_action(community_member_applied_at: nil)
   end
 
   private

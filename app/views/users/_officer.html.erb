@@ -1,0 +1,50 @@
+<% if current_officer? %>
+  <h2>Community member applications</h2>
+  <% if @community_member_applications.empty? %>
+    None pending
+  <% else %>
+    <ul class="nav flex-column">
+      <% @community_member_applications.each do |u| %>
+        <li class="nav-item">
+          <b><%= link_to u.username, u %></b>
+          (<%= u.community_member_started_on? ? 'renewal' : 'new application' %>)
+          <br/>
+          <%= render(partial: 'affiliation', locals: { user: u, department: true }) %>
+          <br/>
+          Position: <%= u.position %>
+          &bull; Highest degree: <%= u.highest_degree %>
+          &bull; Society membership: <%= u.membership_societies %>
+          &bull; Committee interest: <%= u.committee_interest? ? 'Yes' : 'No' %>
+          <br/>
+          Achievements: <%= u.achievements %>
+          <br/>
+          <%= link_to community_member_grant_path(u), method: :post,
+                class: 'btn text-info btn-sm',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon 'check-circle' %> Grant
+          <% end %>
+          <%= link_to community_member_deny_path(u), method: :post,
+                class: 'btn text-danger btn-sm',
+                data: { confirm: 'Are you sure?' } do %>
+            <%= fa_icon 'ban' %> Deny
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <hr/>
+  <h2>Actions</h2>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <%
+        active_emails = @active_community_members.pluck(:email).join(',')
+      %>
+      <%= link_to("mailto:seqcode@bio.aau.dk?bcc=#{active_emails}") do %>
+        <%= fa_icon('envelope') %>
+        Email all active community members
+        (<%= @active_community_members.count %>)
+      <% end %>
+    </li>
+  </ul>
+<% end %>

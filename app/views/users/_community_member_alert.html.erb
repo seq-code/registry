@@ -1,0 +1,29 @@
+<% unless current_user.community_member_applied_at? %>
+  <% if !current_user.community_member_active? %>
+    <div class="alert alert-info">
+      <%= fa_icon('users') %>
+      <% if current_user.community_member_started_on? %>
+        Your SeqCode Community membership has expired.
+      <% else %>
+        You are not yet a SeqCode Community member.
+      <% end %>
+      <%= link_to(
+            dashboard_path(tab: :community_member)
+          ) do %>
+        <%= current_user.community_member_started_on? ? 'Renew' : 'Apply for' %>
+        your community membership
+      <% end %>
+      to help govern the SeqCode Community.
+    </div>
+  <% elsif current_user.can_apply_for_community_membership? %>
+    <div class="alert alert-warning">
+      <%= fa_icon('exclamation-triangle') %>
+      Your SeqCode Community membership expires on
+      <%= current_user.community_member_expires_on.strftime('%B %-d, %Y') %>.
+      <%= link_to(
+            'Renew your membership', dashboard_path(tab: :community_member)
+          ) %>
+      to continue participating.
+    </div>
+  <% end %>
+<% end %>

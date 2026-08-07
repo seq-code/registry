@@ -43,13 +43,20 @@ class AdminMailer < ApplicationMailer
         %w[curator endorse]
       elsif params[:params][:contributor]
         %w[contributor endorse]
+      elsif params[:params][:community_member]
+        %w[community_member endorse]
       elsif params[:params].has_key? :curator_statement
         %w[curator deny]
       elsif params[:params].has_key? :contributor_statement
         %w[contributor deny]
+      elsif params[:params].has_key? :community_member_applied_at
+        %w[community_member deny]
       else
         %w[unknown unknown]
       end
+    @role_label =
+      { 'community_member' => 'SeqCode Community member' }
+        .fetch(@action[0], @action[0])
 
     mail(
       subject: 'New user status in SeqCode Registry',

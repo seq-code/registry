@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   get  'sysusers(.:format)' => 'users#index', as: :users
   get  'sysusers/:username(.:format)' => 'users#show', as: :user
   post 'sysusers/:username(.:format)' => 'users#update'
-  get  'dashboard' => 'users#dashboard', as: :dashboard
+  get  'dashboard(/:tab)' => 'users#dashboard', as: :dashboard
   get  'contributors' => 'users#contributor_request', as: :contributor_request
   post 'contributors' => 'users#contributor_apply', as: :contributor_apply
   post 'contributors/grant/:username' => 'users#contributor_grant', as: :contributor_grant
@@ -32,6 +32,10 @@ Rails.application.routes.draw do
   post 'curators' => 'users#curator_apply', as: :curator_apply
   post 'curators/grant/:username' => 'users#curator_grant', as: :curator_grant
   post 'curators/deny/:username' => 'users#curator_deny', as: :curator_deny
+  post 'community_members' => 'users#community_member_update', as: :community_member_update
+  post 'community_members/apply' => 'users#community_member_apply', as: :community_member_apply
+  post 'community_members/grant/:username' => 'users#community_member_grant', as: :community_member_grant
+  post 'community_members/deny/:username' => 'users#community_member_deny', as: :community_member_deny
   devise_for(:users, controllers: { registrations: 'users/registrations' })
 
   namespace :wikispecies do

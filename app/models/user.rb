@@ -80,6 +80,48 @@ class User < ApplicationRecord
     where('curator_statement is not null').where(curator: false)
   end
 
+  def self.community_member_applications
+    where.not(community_member_applied_at: nil)
+  end
+
+  def self.community_members_active
+    where(community_member: true)
+      .where('community_member_expires_on >= ?', Date.current)
+  end
+
+  FIRST_COMMUNITY_MEMBERSHIP_COHORT_END = Date.new(2026, 12, 31)
+
+  ##
+  # End date of the SeqCode Community membership cohort a new grant made on
+  # +date+ should belong to, computed forward from
+  # +FIRST_COMMUNITY_MEMBERSHIP_COHORT_END+ in 4-year blocks. If +date+ falls
+  # within the last six months of a cohort (i.e., the reapply window), the
+  # next cohort is returned instead, so applying or renewing near the end of
+  # a cohort grants the full next term rather than a few leftover months
+  def self.community_membership_cohort_end(date = Date.current)
+    cohort_end = FIRST_COMMUNITY_MEMBERSHIP_COHORT_END
+    cohort_end += 4.years while cohort_end < date
+    cohort_end += 4.years if cohort_end - 6.months <= date
+    cohort_end
+  end
+
+  COMMUNITY_MEMBER_POSITION_OPTIONS = [
+    'Graduate Student',
+    'Postdoctoral fellow',
+    'Research Assistant, Research Faculty, Project Leader, or equivalent',
+    'Assistant Professor or equivalent',
+    'Associate Professor or equivalent',
+    'Full Professor or equivalent',
+    'Emeritus Professor'
+  ].freeze
+
+  COMMUNITY_MEMBER_DEGREE_OPTIONS = [
+    'Bachelor in Science or equivalent',
+    'Master in Science or equivalent',
+    'Doctor in Philosophy or equivalent',
+    'Medical Doctor or equivalent'
+  ].freeze
+
   def self.find_by_email_or_username(query)
     where('LOWER(email) = ?', query.downcase).or(where(username: query)).first
   end
@@ -90,6 +132,7 @@ class User < ApplicationRecord
     o << 'Curator' if curator?
     o << 'Admin' if admin?
     o << 'Editor' if editor?
+    o << 'Officer' if officer?
     o
   end
 
@@ -147,5 +190,31 @@ class User < ApplicationRecord
 
   def curated_names
     @curated_names ||= (checked_names + reviewed_names).uniq
+  end
+
+  ##
+  # Is the user currently a SeqCode Community member, i.e., granted and not
+  # past the end of the cohort they were granted through?
+  def community_member_active?
+    community_member? && community_member_expires_on.present? &&
+      community_member_expires_on >= Date.current
+  end
+
+  ##
+  # Can the user (re)apply for SeqCode Community membership right now? Always
+  # true before a first application; renewals are only open in the six
+  # months before (or after) the current membership expires
+  def can_apply_for_community_membership?
+    return true if community_member_expires_on.blank?
+
+    Date.current >= community_member_expires_on - 6.months
+  end
+
+  ##
+  # Is the community member profile filled in with everything required to
+  # apply for or renew SeqCode Community membership?
+  def community_member_profile_complete?
+    given? && family? && affiliation? && department? && position? &&
+      highest_degree? && achievements? && membership_societies?
   end
 end

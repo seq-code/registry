@@ -1,8 +1,12 @@
 <% case @action[1].to_s %>
 <% when 'endorse' %>
   <p>
-    Your application as a <%= @action[0] %> of the SeqCode Registry has
-    been endorsed.
+    <% if @action[0] == 'community_member' %>
+      Your application as a <%= @role_label %> has been endorsed.
+    <% else %>
+      Your application as a <%= @action[0] %> of the SeqCode Registry has
+      been endorsed.
+    <% end %>
   </p>
   <br/>
 
@@ -20,12 +24,23 @@
       SeqCode Registry. If the Registry already includes any names you want
       to submit and these names have status of <i>Automated Discovery</i>,
       you can now claim these names too.
+    <% when 'community_member' %>
+      You are now registered as a SeqCode Community member through
+      <%= @user.community_member_expires_on.strftime('%B %-d, %Y') %>. This
+      allows you to actively participate in the governance of the SeqCode
+      Community, including through proposing and voting for SeqCode
+      Committee members, participating in open discussions, and casting
+      ballots on SeqCode amendments.
     <% end %>
   </p>
 <% when 'deny' %>
   <p>
-    Your application as a <%= @action[0] %> of the SeqCode Registry has
-    been denied.
+    <% if @action[0] == 'community_member' %>
+      Your application as a <%= @role_label %> has been denied.
+    <% else %>
+      Your application as a <%= @action[0] %> of the SeqCode Registry has
+      been denied.
+    <% end %>
   </p>
   <br/>
 
@@ -37,9 +52,15 @@
       Registry, but you can still submit your own names as a contributor.
     <% when 'contributor' %>
       You are not authorized to submit any new names using this account.
+    <% when 'community_member' %>
+      You are welcome to update your profile and apply again at any time.
     <% end %>
     <br/>
-    We appreciate your interest in serving as a <%= @action[0] %>.
+    <% if @action[0] == 'community_member' %>
+      We appreciate your interest in the SeqCode Community.
+    <% else %>
+      We appreciate your interest in serving as a <%= @action[0] %>.
+    <% end %>
     If you would like to appeal this decision, please
     <%= link_to('contact us', page_connect_url) %>.
   </p>

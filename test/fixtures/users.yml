@@ -13,4 +13,18 @@ curator:
   contributor: true
   curator: true
   confirmed_at: <%= Time.current %>
+
+admin:
+  username: admin
+  email: admin@example.com
+  contributor: true
+  curator: true
+  admin: true
+  confirmed_at: <%= Time.current %>
+
+officer:
+  username: officer
+  email: officer@example.com
+  officer: true
+  confirmed_at: <%= Time.current %>
 # column: value

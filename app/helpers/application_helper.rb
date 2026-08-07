@@ -120,7 +120,7 @@ module ApplicationHelper
   end
 
   def current_community_member?
-    current_user.try :community_member?
+    current_user.try :community_member_active?
   end
 
   def current_contributor?
@@ -137,6 +137,10 @@ module ApplicationHelper
 
   def current_editor?
     current_user.try :editor?
+  end
+
+  def current_officer?
+    current_user.try :officer?
   end
 
   def current_user?(user)

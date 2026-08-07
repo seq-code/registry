@@ -31,17 +31,6 @@
     </li>
   <% end %>
 
-  <% unless current_community_member? %>
-    <li class="nav-item">
-      <%= link_to(
-            'https://forms.gle/FWMb3JnUpVDt7TXXA',
-            class: 'nav-link', target: '_blank'
-          ) do %>
-        <%= fa_icon('users') %> Become a SeqCode Community member
-      <% end %>
-    </li>
-  <% end %>
-
   <li class="nav-item">
     <% if current_user.wikispecies_credential %>
       <%= link_to(

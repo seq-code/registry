@@ -1,38 +1,155 @@
-<% if current_community_member? %>
-  <h1>Community member</h1>
-  <p class="lead">
-    You are registered as a SeqCode Community member. This allows you to
-    actively participate in the governance of the SeqCode Community, including
-    through proposing and voting for SeqCode Committee members, participating in
-    open discussions, and casting ballots on SeqCode ammendments.
-  </p>
+<h1>SeqCode Community member</h1>
+<p class="lead">
+  SeqCode Community membership allows you to actively participate in the
+  governance of the SeqCode Community, including through proposing and
+  voting for SeqCode Committee members, participating in open discussions,
+  and casting ballots on SeqCode amendments.
+</p>
+<br/>
+
+<p>
+  <% if current_user.community_member_active? %>
+    You are registered as a SeqCode Community member since
+    <%= current_user.community_member_started_on.strftime('%B %Y') %>.
+    Your current membership runs through
+    <%= current_user.community_member_expires_on.strftime('%B %-d, %Y') %>.
+  <% elsif current_user.community_member_applied_at? %>
+    Your application is pending review by our administrators.
+  <% elsif current_user.community_member? %>
+    Your SeqCode Community membership expired on
+    <%= current_user.community_member_expires_on.strftime('%B %-d, %Y') %>.
+    Renew below to continue participating.
+  <% else %>
+    You are not currently a SeqCode Community member.
+  <% end %>
+</p>
+
+<% if current_user.can_apply_for_community_membership? %>
+  <% profile_complete = current_user.community_member_profile_complete? %>
+  <%= link_to(
+        community_member_apply_path, method: :post,
+        class: "btn btn-primary #{'disabled' unless profile_complete}",
+        data: profile_complete ? { confirm: 'Are you sure?' } : {}
+      ) do %>
+    <%= fa_icon('users') %>
+    <%= current_user.community_member_started_on? ? 'Renew' : 'Apply for' %>
+    community membership
+  <% end %>
+  <% unless profile_complete %>
+    <p class="text-muted">
+      Please complete your profile below before applying for community
+      membership.
+    </p>
+  <% end %>
   <br/>
-
-  <dl class="main-section name-details">
-    <h2>
-      <%= fa_icon('user-tie', class: 'float-right') %>
-      Member profile
-    </h2>
-
-    <%
-      {
-        'Given name' => :given,
-        'Family name' => :family,
-        'Email address' => :email,
-        'Affiliation' => render(
-          partial: 'affiliation',
-          locals: { user: current_user, department: true }
-        ),
-        'Position' => :position,
-        'Highest academic degree' => :highest_degree,
-        'Brief description of achievements' => :achievements,
-        'Membership in a microbiological society' => :membership_societies,
-        'Interest in serving in the SeqCode Committee' =>
-          current_user.committee_interest? ? 'Yes' : 'No'
-      }.each do |k, v|
-    %>
-      <dt><%= k %></dt>
-      <dd><%= v.is_a?(Symbol) ? current_user.send(v) : v %></dd>
-    <% end %>
-  </dl>
 <% end %>
+
+<p>
+  Email address: <b><%= current_user.email %></b>
+  (<%= link_to('change it here', edit_user_registration_path) %>)
+</p>
+
+<%
+  position_options = User::COMMUNITY_MEMBER_POSITION_OPTIONS
+  degree_options = User::COMMUNITY_MEMBER_DEGREE_OPTIONS
+  position_is_other =
+    current_user.position.present? &&
+    !position_options.include?(current_user.position)
+  degree_is_other =
+    current_user.highest_degree.present? &&
+    !degree_options.include?(current_user.highest_degree)
+%>
+
+<%= simple_form_for(
+      current_user, url: community_member_update_path, html: { method: :post }
+    ) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input(:given, label: 'Given name', required: true) %>
+    <%= f.input(:family, label: 'Family name', required: true) %>
+    <%= f.input(
+          :affiliation, label: 'Affiliation (Institute)', required: true
+        ) %>
+    <%= f.input(:department, required: true) %>
+    <%= f.input(:affiliation_2, label: 'Secondary affiliation') %>
+    <%= f.input(:department_2, label: 'Secondary department') %>
+
+    <%= f.input(
+          :position, required: true, include_blank: 'Select one...',
+          collection: position_options + ['Other'],
+          selected: position_is_other ? 'Other' : current_user.position
+        ) %>
+    <div
+      class="form-group <%= 'd-none' unless position_is_other %>"
+      id="user_position_other_group"
+    >
+      <%= label_tag('user_position_other', 'If "Other", please specify') %>
+      <%= text_field_tag(
+            'user[position_other]',
+            position_is_other ? current_user.position : nil,
+            class: 'form-control', id: 'user_position_other'
+          ) %>
+    </div>
+
+    <%= f.input(
+          :highest_degree, label: 'Highest academic degree', required: true,
+          include_blank: 'Select one...',
+          collection: degree_options + ['Other'],
+          selected: degree_is_other ? 'Other' : current_user.highest_degree
+        ) %>
+    <div
+      class="form-group <%= 'd-none' unless degree_is_other %>"
+      id="user_highest_degree_other_group"
+    >
+      <%= label_tag(
+            'user_highest_degree_other', 'If "Other", please specify'
+          ) %>
+      <%= text_field_tag(
+            'user[highest_degree_other]',
+            degree_is_other ? current_user.highest_degree : nil,
+            class: 'form-control', id: 'user_highest_degree_other'
+          ) %>
+    </div>
+
+    <%= f.input(
+          :achievements, required: true,
+          label: 'Brief description of achievements or relevant ' \
+                 'publications in the field of microbiology and microbial ' \
+                 'systematics'
+        ) %>
+    <%= f.input(
+          :membership_societies, required: true,
+          label: 'Membership in a national or international ' \
+                 'microbiological society',
+          hint: 'Please explicitly mention the International Society for ' \
+                'Microbial Ecology (ISME) if you are a member'
+        ) %>
+    <%= f.input(
+          :committee_interest,
+          label: 'Would you be interested in serving in a SeqCode ' \
+                 'Committee administrative post?'
+        ) %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button(:submit, 'Save profile') %>
+  </div>
+<% end %>
+
+<script>
+  [
+    ['user_position', 'user_position_other_group'],
+    ['user_highest_degree', 'user_highest_degree_other_group']
+  ].forEach(function (pair) {
+    var select = document.getElementById(pair[0]);
+    var group = document.getElementById(pair[1]);
+    if (!select || !group) return;
+
+    var toggle = function () {
+      group.classList.toggle('d-none', select.value !== 'Other');
+    };
+    select.addEventListener('change', toggle);
+    toggle();
+  });
+</script>
