@@ -70,6 +70,7 @@ class PageController < ApplicationController
     if user_signed_in?
       redirect_to(dashboard_path(tab: :community_member))
     else
+      store_location_for(:user, dashboard_path(tab: :community_member))
       redirect_to(new_user_session_path)
     end
   end
