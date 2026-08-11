@@ -11,7 +11,7 @@
     <% @tutorial.ephemeral_names.each_with_index do |name, idx| %>
       <div class="card">
         <% id = "batch-names-#{idx}" %>
-        <% if name.nil? %>
+        <% if name.nil? || name&.name.nil? %>
           <h2 class="card-header" id="<%= id %>-h">
             <button class="btn btn-link btn-block text-left text-danger"
                     type="button"
