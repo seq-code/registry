@@ -154,7 +154,7 @@ class Name < ApplicationRecord
     # ============ --- CLASS > QUERYING --- ============
 
     def find_variants(name)
-      return unless name.present?
+      return [] unless name.present?
 
       name = name.strip.downcase.gsub(/^ca(\.|ndidatus) /, '')
       vars = [name, "candidatus #{name}"]
