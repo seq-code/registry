@@ -40,25 +40,43 @@ class Publication < ApplicationRecord
       p = Publication.find_by(doi: doi)
       return p if p && !force_update
 
+      by_doi_crossref(doi) || by_doi_datacite(doi)
+    end
+
+    def by_doi_crossref(doi)
       works = Serrano.works(ids: doi)
       work = works[0].fetch('message', {})
       by_serrano_work(work) if work['DOI']
     rescue Serrano::NotFound
-      by_doi_datacite(doi)
+      nil
     end
 
     def by_doi_datacite(doi)
       url = 'https://api.datacite.org/dois/%s' % doi
       res = Net::HTTP.get_response(URI(url))
-      p = nil
       if res.is_a?(Net::HTTPSuccess) && res.body.present?
         p = by_datacite_work(JSON.parse(res.body))
+        return p if p
       end
-      return p if p
 
       Publication.new.tap do |i|
-        i.errors.add(:doi, 'not in CrossRef or DataCite')
+        ra = doi_registration_agency(doi)
+        message = ra.present? ?
+          "registered with #{ra}, which is not yet supported" :
+          'not in CrossRef or DataCite'
+        i.errors.add(:doi, message)
       end
+    end
+
+    def doi_registration_agency(doi)
+      url = 'https://doi.org/ra/%s' % doi
+      res = Net::HTTP.get_response(URI(url))
+      return unless res.is_a?(Net::HTTPSuccess) && res.body.present?
+
+      json = JSON.parse(res.body)
+      json.is_a?(Array) ? json.dig(0, 'RA') : nil
+    rescue JSON::ParserError
+      nil
     end
 
     def by_uniform_hash_work(params, subjects, authors)
