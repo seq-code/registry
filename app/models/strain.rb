@@ -4,6 +4,8 @@ class Strain < ApplicationRecord
     class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
   )
   has_many(:genomes, dependent: :nullify)
+  has_many(:name_paratypes, as: :nomenclatural_type, dependent: :destroy)
+  has_many(:paratypified_names, through: :name_paratypes, source: :name)
 
   validates(:numbers_string, presence: true)
 

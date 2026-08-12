@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: escherichia_coli
+  nomenclatural_type: one (Strain)
+  publication: one
+
+two:
+  name: bacillus_subtilis
+  nomenclatural_type: two (Strain)
+  publication: two

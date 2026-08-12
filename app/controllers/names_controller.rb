@@ -20,6 +20,7 @@ class NamesController < ApplicationController
       return validate endorse claim unclaim demote temporary_editable
       transfer_user transfer_user_commit
       new_correspondence observe unobserve quality_checks
+      add_paratype_strain add_paratype_strain_commit
     ]
   )
   before_action(
@@ -44,6 +45,7 @@ class NamesController < ApplicationController
     only: %i[
       unranked unknown_proposal submitted endorsed draft
       return validate endorse edit_redirect
+      add_paratype_strain add_paratype_strain_commit
     ]
   )
   before_action(:authenticate_user!, only: %i[observe unobserve observing])
@@ -551,6 +553,34 @@ class NamesController < ApplicationController
       'Quality Checks'
     ]
     render('quality_checks', layout: !params[:content].present?)
+  end
+
+  # GET /names/1/add_paratype_strain?strain=2
+  def add_paratype_strain
+    @crumbs = [
+      ['Names', names_path],
+      [@name.abbr_name, @name],
+      'Add paratype strain'
+    ]
+    @strain ||= params[:strain].present? ? Strain.find(params[:strain]) : nil
+    @name_paratype ||= NameParatype.new(name: @name, nomenclatural_type: @strain)
+    redirect_to(@name) unless @strain.present?
+  end
+
+  # POST /names/1/add_paratype_strain
+  def add_paratype_strain_commit
+    par = params.require(:name_paratype).permit(:nomenclatural_type_id, :publication)
+    @strain = Strain.find_by(id: par[:nomenclatural_type_id])
+    @name_paratype = NameParatype.new(
+      name: @name, nomenclatural_type: @strain,
+      publication: Publication.by_autocomplete(par[:publication])
+    )
+
+    if @name_paratype.save
+      redirect_to(@name, notice: 'Paratype was successfully registered')
+    else
+      render(:add_paratype_strain)
+    end
   end
 
   private

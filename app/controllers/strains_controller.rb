@@ -19,6 +19,7 @@ class StrainsController < ApplicationController
   def show
     @name ||= @strain.typified_names.first
     @name ||= @strain.referenced_names.first
+    @name ||= @strain.paratypified_names.first
     @crumbs = [['Strains', strains_url], @strain.title]
   end
 

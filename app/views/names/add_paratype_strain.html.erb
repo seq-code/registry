@@ -1,0 +1,48 @@
+<h1>Add paratype strain to <%= @name.name_html %></h1>
+<hr/>
+
+<%= simple_form_for(
+      @name_paratype, url: add_paratype_strain_name_url(@name),
+      method: :post
+    ) do |f| %>
+  <%= f.input(:nomenclatural_type_id, as: :hidden) %>
+
+  <p>
+    Indicate the publication where the following strain was first reported or
+    associated with the name <%= display_obj(@name) %>:<br/>
+    <%= strain_html(@strain) %>
+  </p>
+  <%=
+    f.input(
+      :publication,
+      hint: 'Use DOI to search or register publication (preferred), ' \
+            'or search by title',
+      input_html: {
+        value: @name_paratype.publication.try(:doi_title, false),
+        data: {
+          behavior: 'autocomplete', autocomplete: 'publications'
+        }
+      }
+    )
+  %>
+  <% if @name.proposed_in %>
+    <p>
+      Or select the effective publication:<br/>
+      <%= link_to(@name.proposed_in.short_citation, @name.proposed_in) %>:
+      <%= @name.proposed_in.doi %>
+      <%= content_tag(
+            'span', role: 'button', cursor: 'pointer',
+            class: 'badge badge-pill badge-primary',
+            onclick: "$('#name_paratype_publication')" \
+                       ".val('#{@name.proposed_in.doi}'); false"
+          ) do %>
+        <%= fa_icon('check-circle') %> Select
+      <% end %>
+    </p>
+  <% end %>
+  <br/>
+
+  <%= f.button(:submit, 'Submit') %>
+  <%= link_to('Cancel', @tutorial || @name, class: 'btn btn-secondary') %>
+  <br/><br/>
+<% end %>

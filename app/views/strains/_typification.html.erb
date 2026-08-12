@@ -1,0 +1,29 @@
+<% if @strain.typified_names.any? || @strain.paratypified_names.any? %>
+  <dl name="as-type" class="main-section name-details">
+    <h2><%= fa_icon('id-card', class: 'float-right') %> Typification</h2>
+    <% if @strain.typified_names.any? %>
+      <dt>
+        <%= fa_icon('id-card') %> Nomenclatural type of:
+      </dt>
+      <dd>
+        <ul>
+          <% @strain.typified_names.each do |name| %>
+            <li><%= display_link(name) %></li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+    <% if @strain.paratypified_names.any? %>
+      <dt>
+        <%= fa_icon('id-card-alt') %> Paratype of:
+      </dt>
+      <dd>
+        <ul>
+          <% @strain.paratypified_names.each do |name| %>
+            <li><%= display_link(name) %></li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+  </dl>
+<% end %>

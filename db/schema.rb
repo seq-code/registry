@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_08_06_140000) do
+ActiveRecord::Schema.define(version: 2026_08_08_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -168,6 +168,18 @@ ActiveRecord::Schema.define(version: 2026_08_06_140000) do
     t.boolean "automatic", default: false
     t.index ["name_id"], name: "index_name_correspondences_on_name_id"
     t.index ["user_id"], name: "index_name_correspondences_on_user_id"
+  end
+
+  create_table "name_paratypes", force: :cascade do |t|
+    t.bigint "name_id", null: false
+    t.string "nomenclatural_type_type", null: false
+    t.bigint "nomenclatural_type_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "publication_id", null: false
+    t.index ["name_id"], name: "index_name_paratypes_on_name_id"
+    t.index ["nomenclatural_type_type", "nomenclatural_type_id"], name: "index_name_paratypes_on_nomenclatural_type"
+    t.index ["publication_id"], name: "index_name_paratypes_on_publication_id"
   end
 
   create_table "names", force: :cascade do |t|
@@ -582,6 +594,8 @@ ActiveRecord::Schema.define(version: 2026_08_06_140000) do
   add_foreign_key "genomes", "strains"
   add_foreign_key "name_correspondences", "names"
   add_foreign_key "name_correspondences", "users"
+  add_foreign_key "name_paratypes", "names"
+  add_foreign_key "name_paratypes", "publications"
   add_foreign_key "names", "genomes"
   add_foreign_key "names", "registers"
   add_foreign_key "names", "tutorials"

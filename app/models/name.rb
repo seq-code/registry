@@ -40,6 +40,14 @@ class Name < ApplicationRecord
     dependent: :nullify # Inverse of basonym
   )
   has_many(:curations)
+  has_many(:name_paratypes, dependent: :destroy)
+  has_many(
+    :paratype_publications, through: :name_paratypes, source: :publication
+  )
+  has_many(
+    :paratype_strains, through: :name_paratypes, source: :nomenclatural_type,
+    source_type: 'Strain'
+  )
 
   belongs_to(:nomenclatural_type, polymorphic: true, optional: true)
   belongs_to(
@@ -518,6 +526,18 @@ class Name < ApplicationRecord
     if authority || proposed_in
       y += " #{sanitize(authority || proposed_in.short_citation)}"
     end
+    if paratype_publications.any?
+      y += ' (Pt.'
+      if paratype_publications.count == 1 &&
+          proposed_in &&
+          paratype_publications.first == proposed_in
+        y += ' <i>idem</i>'.html_safe
+      else
+        y += paratype_publications
+               .map { |i| " #{sanitize(i.short_citation)}" }.join('; ')
+      end
+      y += ')'
+    end
     if priority_date && priority_date.year != proposed_in&.journal_date&.year
       y += " (priority #{priority_date.year})"
     end
@@ -637,7 +657,7 @@ class Name < ApplicationRecord
   # of genus or species
   #
   # Find names similar to the current one (using the canonical spelling
-  # from +base_name+) with Levenshtein ≤ 3, considering a search space
+  # from +base_name+) with Levenshtein ≤ 2, considering a search space
   # defined by the taxonomic rank and +among+:
   # - valid: All validly published names of genera or species of the same genus
   # - public: All publicly visible names of genera or species of the same genus

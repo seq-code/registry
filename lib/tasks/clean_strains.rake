@@ -7,6 +7,7 @@ namespace :strains do
           .where.missing(:typified_names)
           .each do |strain|
       next if strain.genomes.any? { |g| g.typified_names.present? }
+      next if strain.paratypified_names.any?
 
       puts '~ Removing %s - %s - Updated %s' % [
         strain.title(''), strain.numbers_string, strain.updated_at

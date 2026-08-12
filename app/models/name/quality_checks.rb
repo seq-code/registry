@@ -52,7 +52,8 @@ module Name::QualityChecks
       inconsistent_syllabification: {
         message: 'The syllabification does not correspond to the proposed ' \
                  'spelling',
-        area:    :nomenclature
+        area:    :nomenclature,
+        failure: ->(_w, n) { !n.consistent_syllabication? }
       }.merge(@@link_to_edit_etymology),
       too_many_amino_acids: {
         message: 'The genome is reported to encode tRNAs for too many ' \
@@ -148,7 +149,9 @@ module Name::QualityChecks
       inconsistent_language: {
         message: 'A name must be treated as Latin (L. or N.L.)',
         area:    :nomenclature,
-        rules:   %w[8]
+        rules:   %w[8],
+        scope:   ->(_w, n) { n.etymology? },
+        failure: ->(_w, n) { !n.latin? }
       }.merge(@@link_to_edit_etymology),
       inconsistent_format: {
         message: 'Names should only include Latin characters. ' \
@@ -178,18 +181,24 @@ module Name::QualityChecks
       binary_name_above_species: {
         message: 'Names above the rank of species must be single words',
         area:    :nomenclature,
-        rules:   %w[8 10]
+        rules:   %w[8 10],
+        scope:   ->(_w, n) { n.rank? && n.at_or_above_rank?(:genus) },
+        failure: ->(_w, n) { n.base_name =~ / / }
       }.merge(@@link_to_edit_spelling),
       inconsistent_species_name: {
         message: 'The first word of species names must correspond to the ' \
                  'parent genus',
         area:    :nomenclature,
-        rules:   %w[8 11]
+        rules:   %w[8 11],
+        scope:   ->(_w, n) { n.rank? && n.rank == 'species' },
+        failure: ->(_w, n) { !n.consistent_species_name? }
       }.merge(@@link_to_edit_parent),
       unary_species_name: {
         message: 'Species must be binary names',
         area:    :nomenclature,
-        rules:   %w[8 11]
+        rules:   %w[8 11],
+        scope:   ->(_w, n) { n.rank? && n.rank == 'species' },
+        failure: ->(_w, n) { n.base_name !~ / / }
       }.merge(@@link_to_edit_spelling),
       # - Rule 9a automatically enforced by the Registry
       # - Rule 9b
@@ -225,14 +234,6 @@ module Name::QualityChecks
       }.merge(@@link_to_edit_spelling),
       # - Recommendation 9.1 covered in § Rule 9b
       # - Recommendation 9.2:
-      #   TODO [issue #205]: Discuss the default implementation, since it
-      #   involves Levenshtein ≥ 2 instead of 3, as stipulated in the SeqCode,
-      #   because the latter returns too many clearly distinct options. For
-      #   example, Burarchaeum would be "too similar" to: Halarchaeum,
-      #   Hadarchaeum, Salarchaeum, and Gugararchaeum, all of which are clearly
-      #   different
-      #   UPDATE: An amendment has been proposed covering this change, awaiting
-      #   community discussion
       similar_names_validly_published: {
         message: ->(_w, n) {
           sim = n.similar_names(:valid).limit(5)
@@ -257,7 +258,7 @@ module Name::QualityChecks
         area:    :nomenclature,
         recommendations: %w[9.2]
       }.merge(@@link_to_edit_spelling),
-      #   Names should differ by at least three characters from existing names
+      #   Names should differ by at least two characters from existing names
       #   of genera or species within the same genus.
       # - Recommendation 9.3 [Checklist-N]
       latin_should_be_preferred: {
@@ -305,7 +306,9 @@ module Name::QualityChecks
       reserved_suffix: {
         message: 'Avoid reserved suffixes for genus names',
         area:    :nomenclature,
-        recommendations: %w[10.1]
+        recommendations: %w[10.1],
+        scope:   ->(_w, n) { n.rank? && n.rank == 'genus' },
+        failure: ->(_w, n) { n.class.rank_regexps.any? { |_, i| n.name =~ i } }
       }.merge(@@link_to_edit_spelling),
       # - Rule 11 covered in § Rule 8
       # - Rule 12
@@ -361,7 +364,9 @@ module Name::QualityChecks
         message: 'Subspecies names should include the species name, ' \
                  'the abbreviation "subsp.", and the subspecies epithet',
         area:    :nomenclature,
-        rules:   %w[13a]
+        rules:   %w[13a],
+        scope:   ->(_w, n) { n.rank? && n.rank == 'subspecies' },
+        failure: ->(_w, n) { n.base_name !~ /\A[A-Z][a-z]* [a-z]+ subsp\. [a-z]+\z/ }
       }.merge(@@link_to_edit_spelling),
       # - Rule 13b covered in § Rule 8 and § Rule 12
       # - Rule 13c
@@ -492,29 +497,27 @@ module Name::QualityChecks
       }.merge(@@link_to_edit_type),
       # - Rule 18c requires the implementation of neotype designations
       #   [TODO: issue #12] no checks are to be implemented
-      # - Rule 19 is implied by the SeqCode Registry structure
-      # - Recommendation 19:
+      # - Rule 18d doesn't need any implementation
+      # - Rule 19a and Rule 19b:
       missing_reference_strain: {
         message: 'A reference strain should be established when the type ' \
                  'genome is reported as derived from an isolate',
         area:    :nomenclature,
-        recommendations: %w[19],
+        rules: %w[19a 19b],
+        can_endorse: true, # The language is 'it *may* be designated'
         scope:   ->(_w, _n, g) { g&.isolate? },
         failure: ->(_w, _n, g) { !g.strain.present? }
       }.merge(@@link_to_edit_type),
       unavailable_reference_strain: {
-        # TODO: Update if the paratype amendment is implemented to 1 collection
-        message: 'If isolated, reference strains should be submitted to two ' \
-                 'culture collections',
+        message: 'If isolated, reference strains should be submitted to a ' \
+                 'public culture collection',
         area:    :nomenclature,
-        recommendations: %w[19],
+        rules: %w[19a 19b],
+        can_endorse: true, # The language is 'it *may* be designated'
         scope:   ->(_w, _n, g) { g&.strain&.present? },
-        failure: ->(_w, _n, g) { g.strain.collections.count < 2 }
+        failure: ->(_w, _n, g) { g.strain.collections.count < 1 }
       }.merge(@@link_to_edit_type),
-      #   When a strain belonging to a taxon named under the SeqCode is
-      #   isolated, a reference strain should be designated and submitted to two
-      #   culture collections in different countries. Reference strains have no
-      #   standing in nomenclature.
+      # - Rule 19c doesn't need any implementation
       # - Rule 20
       non_valid_name_as_type: {
         message: 'Only a validly published name can be used as nomenclatural ' \
@@ -532,14 +535,16 @@ module Name::QualityChecks
         message: 'The type of a genus must be the original type species',
         checklist: :nomenclature,
         area:    :nomenclature,
-        rules:   %w[21a]
+        rules:   %w[21a],
+        scope:   ->(_w, n) { n.rank? && n.rank == 'genus' && n.type? }
       }.merge(@@link_to_edit_type),
       # - Rule 21b [Checklist-N]
       different_type_after_genus_substitution: {
         message: 'The type of a substituted genus name must remain unchanged',
         checklist: :nomenclature,
         area:    :nomenclature,
-        rules:   %w[21b 22]
+        rules:   %w[21b 22],
+        scope:   ->(_w, n) { n.rank? && n.rank == 'genus' }
       }.merge(@@link_to_edit_type),
       # - Rule 22 [Checklist-N]
       #   TODO: An automated test could be included, but it would rely on the
@@ -714,7 +719,9 @@ module Name::QualityChecks
       #   but it would not require additional checks
 
       # Section 6. Citation of Authors and Names
-      # - Recommendation 28 is followed by SeqCode Registry structure
+      # - Recommendation 28a is followed by SeqCode Registry structure
+      # - Recommendation 28b is followed by SeqCode Registry structure
+      # - Recommendation 28c is followed by SeqCode Registry structure
       # - Rule 29 [TODO: issue #30]
       # - Recommendation 30 [Checklist-N]
       missing_publication_of_emendation: {
@@ -1107,13 +1114,17 @@ module Name::QualityChecks
       large_contig_count low_n50 short_largest_contig
       missing_source_data inconsistent_type_rank missing_parent
       inconsistent_type_species inconsistent_parent_rank
+      inconsistent_syllabification inconsistent_language
+      binary_name_above_species inconsistent_species_name
+      malformed_subspecies_name reserved_suffix
     ].each { |i| @qc_warnings.evaluate(i) }
 
     # check (separate for now until thoroughly tested)
     %i[
       missing_publication_of_emendation unavailable_english_description
       ambiguous_type_genome missing_metadata_in_databases
-      inconsistent_16s_assignment
+      inconsistent_16s_assignment unary_species_name
+      later_species_as_genus_type different_type_after_genus_substitution
     ].each { |i| @qc_warnings.evaluate(i) }
 
     if type_is_genome?
@@ -1135,34 +1146,6 @@ module Name::QualityChecks
       end
     end # type_is_genome?
 
-    if rank?
-      if rank == 'species' && base_name !~ / /
-        @qc_warnings.add(:unary_species_name)
-      end
-
-      if rank == 'subspecies' &&
-         base_name !~ /\A[A-Z][a-z]* [a-z]+ subsp\. [a-z]+\z/
-        @qc_warnings.add(:malformed_subspecies_name)
-      end
-
-      if !%w[species subspecies].include?(rank) && base_name =~ / /
-        @qc_warnings.add(:binary_name_above_species)
-      end
-
-      if rank == 'genus'
-        if self.class.rank_regexps.any? { |_, i| name =~ i }
-          @qc_warnings.add(:reserved_suffix)
-        end
-        @qc_warnings.add(:later_species_as_genus_type) if type? # check
-        @qc_warnings.add(:different_type_after_genus_substitution) # check
-      end
-    end
-
-    @qc_warnings.add(:inconsistent_language) if etymology? && !latin?
-    unless consistent_syllabication?
-      @qc_warnings.add(:inconsistent_syllabification)
-    end
-
     unless consistent_with_type_genus?
       @qc_warnings.add(:inconsistent_with_type_genus)
     end
@@ -1183,10 +1166,6 @@ module Name::QualityChecks
     end
 
     if rank? && %w[species subspecies].include?(rank)
-      unless consistent_species_name?
-        @qc_warnings.add(:inconsistent_species_name)
-      end
-
       unless consistent_subspecies_name?
         @qc_warnings.add(:inconsistent_subspecies_name)
       end

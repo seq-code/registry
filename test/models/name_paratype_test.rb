@@ -1,0 +1,52 @@
+require 'test_helper'
+
+class NameParatypeTest < ActiveSupport::TestCase
+  test 'name.paratype_strains returns the strains linked as paratypes' do
+    name = names(:escherichia_coli)
+
+    assert_includes(name.paratype_strains, strains(:one))
+  end
+
+  test 'requires a publication' do
+    name_paratype = NameParatype.new(
+      name: names(:bacillus_subtilis), nomenclatural_type: strains(:two),
+      publication: nil
+    )
+
+    assert_not(name_paratype.valid?)
+    assert_includes(name_paratype.errors.attribute_names, :publication)
+  end
+
+  test 'does not allow the same paratype to be linked twice to the same name' do
+    name_paratype = NameParatype.new(
+      name: names(:escherichia_coli), nomenclatural_type: strains(:one),
+      publication: publications(:one)
+    )
+
+    assert_not(name_paratype.valid?)
+    assert_includes(
+      name_paratype.errors.attribute_names, :nomenclatural_type_id
+    )
+  end
+
+  test 'allows the same strain as a paratype of a different name' do
+    name_paratype = NameParatype.new(
+      name: names(:bacillus_subtilis), nomenclatural_type: strains(:one),
+      publication: publications(:one)
+    )
+
+    assert(name_paratype.valid?)
+  end
+
+  test 'only allows strains as paratypes' do
+    name_paratype = NameParatype.new(
+      name: names(:bacillus_subtilis), nomenclatural_type: genomes(:one),
+      publication: publications(:one)
+    )
+
+    assert_not(name_paratype.valid?)
+    assert_includes(
+      name_paratype.errors.attribute_names, :nomenclatural_type_type
+    )
+  end
+end

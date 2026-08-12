@@ -81,8 +81,7 @@ class PlacementsController < ApplicationController
     end
 
     if ok && par[:publication].present?
-      doi = par[:publication].sub(/: .*/, '')
-      @placement.publication = Publication.by_doi(doi)
+      @placement.publication = Publication.by_autocomplete(par[:publication])
       unless @placement.publication.persisted?
         flash[:alert] = 'Publication could not be registered'
         @placement.publication.doi = par[:publication]

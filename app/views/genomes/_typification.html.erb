@@ -1,0 +1,15 @@
+<% if @genome.typified_names.any? %>
+  <dl name="as-type" class="main-section name-details">
+    <h2><%= fa_icon('id-card', class: 'float-right') %> Typification</h2>
+    <dt>
+      <%= fa_icon('id-card') %> Nomenclatural type of:
+    </dt>
+    <dd>
+      <ul>
+        <% @genome.typified_names.each do |name| %>
+          <li><%= display_link(name) %></li>
+        <% end %>
+      </ul>
+    </dd>
+  </dl>
+<% end %>

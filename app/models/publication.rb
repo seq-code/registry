@@ -33,6 +33,11 @@ class Publication < ApplicationRecord
 
   class << self
 
+    def by_autocomplete(query)
+      doi = query&.sub(/: .*/, '')
+      doi.present? ? by_doi(doi) : nil
+    end
+
     def by_doi(doi, force_update = false)
       unless doi.present?
         return Publication.new.tap { |i| i.errors.add(:doi, 'cannot be empty') }

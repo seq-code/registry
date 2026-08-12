@@ -41,4 +41,25 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert(entry, 'expected the type genome fixture in the response')
     assert_equal('Genome', entry['nomenclatural_type']['class'])
   end
+
+  test 'add_paratype_strain_commit ignores a tampered name_id' do
+    sign_in(users(:curator))
+    target_name = names(:unregistered)
+    other_name = names(:draft_by_contributor)
+
+    assert_difference('NameParatype.count', 1) do
+      post(
+        add_paratype_strain_name_path(target_name),
+        params: {
+          name_paratype: {
+            name_id: other_name.id, nomenclatural_type_id: strains(:one).id,
+            publication: publications(:one).doi
+          }
+        }
+      )
+    end
+
+    name_paratype = NameParatype.last
+    assert_equal(target_name, name_paratype.name)
+  end
 end

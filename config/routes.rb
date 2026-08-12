@@ -94,10 +94,12 @@ Rails.application.routes.draw do
       get  :edit_rank
       get  :edit_links
       get  :edit_redirect
+      get  :add_paratype_strain
       post :return
       post :validate
       post :endorse
       post :temporary_editable
+      post :add_paratype_strain, action: :add_paratype_strain_commit
       # --> Edit user relationship to name
       get  :observe
       get  :unobserve
