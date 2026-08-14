@@ -9,7 +9,7 @@ module Name::QualityChecks
     @@attributes = %i[
       scope failure
       message link_text link_to rules recommendations rule_notes
-      can_endorse link_public checklist area
+      can_endorse link_public checklist area force_not_error
     ]
 
     # Preformed links to common targets
@@ -505,6 +505,7 @@ module Name::QualityChecks
         area:    :nomenclature,
         rules: %w[19a 19b],
         can_endorse: true, # The language is 'it *may* be designated'
+        force_not_error: true,
         scope:   ->(_w, _n, g) { g&.isolate? },
         failure: ->(_w, _n, g) { !g.strain.present? }
       }.merge(@@link_to_edit_type),
@@ -514,6 +515,7 @@ module Name::QualityChecks
         area:    :nomenclature,
         rules: %w[19a 19b],
         can_endorse: true, # The language is 'it *may* be designated'
+        force_not_error: true,
         scope:   ->(_w, _n, g) { g&.strain&.present? },
         failure: ->(_w, _n, g) { g.strain.collections.count < 1 }
       }.merge(@@link_to_edit_type),
@@ -953,6 +955,7 @@ module Name::QualityChecks
 
     def is_error?
       return true if can_endorse == false
+      return false if force_not_error == true
       rules.present? && (!can_endorse || name.notified?)
     end
 
