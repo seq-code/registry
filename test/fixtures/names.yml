@@ -17,6 +17,7 @@ escherichia_coli:
   name: Escherichia coli
   rank: species
   status: 15 # SeqCode
+  parent: escherichia
 
 escherichia_colie:
   name: Escherichia colie

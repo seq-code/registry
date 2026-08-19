@@ -9,3 +9,8 @@ two:
   name: two
   parent: two
   preferred: false
+
+escherichia_coli:
+  name: escherichia_coli
+  parent: escherichia
+  preferred: true
