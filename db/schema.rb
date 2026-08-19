@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_08_08_100000) do
+ActiveRecord::Schema.define(version: 2026_08_19_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -234,7 +234,6 @@ ActiveRecord::Schema.define(version: 2026_08_08_100000) do
     t.datetime "irmng_at"
     t.text "col_json"
     t.datetime "col_at"
-    t.string "incertae_sedis"
     t.bigint "tutorial_id"
     t.bigint "genome_id"
     t.text "gbif_json"

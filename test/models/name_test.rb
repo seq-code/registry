@@ -19,4 +19,12 @@ class NameTest < ActiveSupport::TestCase
     assert_includes name.errors[:register], 'must be a draft'
     assert_nil name.reload.register
   end
+
+  test 'incertae sedis HTML comes from the preferred placement' do
+    name = names(:incertae_sedis)
+
+    assert_equal(
+      '<i>Incertae sedis</i> (Bacteria)', name.incertae_sedis_html
+    )
+  end
 end

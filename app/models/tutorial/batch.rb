@@ -348,6 +348,7 @@ module Tutorial::Batch
       default_pars = { status: 0, created_by: user }
       param_names.each do |par|
         new_par = {}
+        placement_par = nil
 
         # Parents
         if par['parent']
@@ -356,12 +357,13 @@ module Tutorial::Batch
             parent = Name.new(default_pars.merge(name: par['parent'].name))
             parent.save!
           end
-          new_par[:parent] = parent
-          new_par[:incertae_sedis] = nil
+          placement_par = { parent: parent, incertae_sedis: nil }
         elsif par['incertae_sedis']
-          new_par[:parent] = nil
-          new_par[:incertae_sedis] = par['incertae_sedis']
-          new_par[:incertae_sedis_text] = par['description']
+          placement_par = {
+            parent: nil,
+            incertae_sedis: par['incertae_sedis'],
+            incertae_sedis_text: par['description']
+          }
         end
 
         # Nomenclatural types
@@ -384,7 +386,14 @@ module Tutorial::Batch
 
         name = Name.find_by_variants(par['name'])
         name.update!(new_par)
-        name.update_column(:incertae_sedis, nil) if par['incertae_sedis']
+        if placement_par
+          placement = name.placements.find_or_initialize_by(
+            parent: placement_par[:parent],
+            incertae_sedis: placement_par[:incertae_sedis]
+          )
+          name.placements.where.not(id: placement.id).update_all(preferred: false)
+          placement.update!(placement_par.merge(preferred: true))
+        end
       end
 
       # If all is good, go to next step

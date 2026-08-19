@@ -14,3 +14,8 @@ escherichia_coli:
   name: escherichia_coli
   parent: escherichia
   preferred: true
+
+incertae_sedis:
+  name: incertae_sedis
+  preferred: true
+  incertae_sedis: Incertae sedis (Bacteria)
