@@ -9,6 +9,7 @@ class Placement < ApplicationRecord
 
   has_rich_text(:incertae_sedis_text)
   validates(:incertae_sedis_text, presence: true, if: :incertae_sedis?)
+  validates(:incertae_sedis, presence: true, allow_nil: true)
   validates(
     :incertae_sedis, absence: {
       if: :parent,

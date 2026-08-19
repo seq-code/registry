@@ -122,6 +122,7 @@ class Name < ApplicationRecord
       message: 'can only contain letters, dashes, dots, and apostrophe'
     }
   )
+  validates(:incertae_sedis, presence: true, allow_nil: true)
   validates(
     :incertae_sedis, absence: {
       if: :parent,
