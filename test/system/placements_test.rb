@@ -83,4 +83,26 @@ class PlacementsTest < ApplicationSystemTestCase
     assert_not_predicate(alternative_placements.first, :preferred?)
   end
 
+  test 'adding a second placement as preferred' do
+    name = names(:escherichia_coli)
+    preferred_parent = Name.create!(
+      name: 'Shigella', rank: 'genus', status: 15
+    )
+
+    visit name_path(name)
+    click_link 'Report alternative placement'
+    fill_in 'Genus', with: preferred_parent.name
+    check 'Preferred placement'
+    click_button 'Submit'
+
+    assert_text 'Placement successfully updated'
+    assert_current_path name_path(name)
+
+    name.reload
+    alternative_placements = name.alt_placements
+
+    assert_equal(preferred_parent, name.placement.parent)
+    assert_equal([@parent], alternative_placements.map(&:parent))
+    assert_not_predicate(alternative_placements.first, :preferred?)
+  end
 end
