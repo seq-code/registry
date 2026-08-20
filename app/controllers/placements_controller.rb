@@ -52,7 +52,7 @@ class PlacementsController < ApplicationController
       :incertae_sedis, :incertae_sedis_text,
       :parent, :preferred, :publication
     )
-    @placement.incertae_sedis = par[:incertae_sedis]
+    @placement.incertae_sedis = par[:incertae_sedis].presence
     @placement.incertae_sedis_text = par[:incertae_sedis_text]
     if @name.placement
       @placement.preferred = par[:preferred] if current_user.curator?
