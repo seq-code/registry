@@ -24,7 +24,10 @@ class Name < ApplicationRecord
   alias :correspondences :name_correspondences
   has_many(:checks, dependent: :destroy)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
-  has_many(:placements, -> { includes(:parent) }, dependent: :destroy)
+  has_many(
+    :placements, -> { includes(:parent) },
+    dependent: :destroy, inverse_of: :name
+  )
   has_many(
     :child_placements, -> { includes(:name) },
     class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy
@@ -1478,9 +1481,16 @@ class Name < ApplicationRecord
   end
 
   def ensure_consistent_placement
-    if parent_id.present? || incertae_sedis.present?
+    placement_incertae_sedis =
+      if saved_change_to_incertae_sedis?
+        self[:incertae_sedis]
+      else
+        incertae_sedis
+      end
+
+    if parent_id.present? || placement_incertae_sedis.present?
       pp = placements.where(
-        parent_id: parent_id, incertae_sedis: incertae_sedis
+        parent_id: parent_id, incertae_sedis: placement_incertae_sedis
       ).first
       if pp.present?
         if pp.preferred?
@@ -1491,8 +1501,11 @@ class Name < ApplicationRecord
       else
         placements.update(preferred: false) &&
           Placement.new(
-            name_id: id, parent_id: parent_id, incertae_sedis: incertae_sedis,
-            incertae_sedis_text: incertae_sedis_text, preferred: true
+            name_id: id,
+            parent_id: parent_id,
+            incertae_sedis: placement_incertae_sedis,
+            incertae_sedis_text: incertae_sedis_text,
+            preferred: true
           ).save
       end
     else
