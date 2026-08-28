@@ -15,7 +15,7 @@ class TutorialTest < ActiveSupport::TestCase
     assert_nil name[:incertae_sedis]
     assert_same name, placement.name
     assert_equal 'Nanobdellaceae', placement.parent.name
-    assert_nil placement.incertae_sedis
+    assert_not_predicate placement, :incertae_sedis?
     assert_empty placement.incertae_sedis_text.to_plain_text
   end
 
@@ -35,8 +35,8 @@ class TutorialTest < ActiveSupport::TestCase
     )
     assert_nil name.parent
     assert_nil name[:incertae_sedis]
-    assert_nil placement.parent
-    assert_equal 'incertae sedis (Bacteria)', placement.incertae_sedis
+    assert_equal names(:bacteria).name, placement.parent.name
+    assert_predicate placement, :incertae_sedis?
     assert_equal(
       tutorial.value(:names).first['description'],
       placement.incertae_sedis_text.to_plain_text
@@ -56,7 +56,7 @@ class TutorialTest < ActiveSupport::TestCase
     assert_predicate placement, :preferred?
     assert_equal parent, placement.parent
     assert_equal parent, name.parent
-    assert_nil placement.incertae_sedis
+    assert_not_predicate placement, :incertae_sedis?
   end
 
   test 'batch updates a claimable name with a preferred placement' do
@@ -110,9 +110,9 @@ class TutorialTest < ActiveSupport::TestCase
 
     assert_not_nil placement
     assert_predicate placement, :preferred?
-    assert_nil placement.parent
+    assert_equal names(:bacteria), placement.parent
     assert_nil name.parent
-    assert_equal 'incertae sedis (Bacteria)', placement.incertae_sedis
+    assert_predicate placement, :incertae_sedis?
     assert_equal explanation, placement.incertae_sedis_text.to_plain_text
     assert_nil name[:incertae_sedis]
   end

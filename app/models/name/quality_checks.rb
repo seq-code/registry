@@ -130,11 +130,11 @@ module Name::QualityChecks
                  'the name',
         area:    :nomenclature,
         scope:   ->(_w, n) {
-          n.incertae_sedis? && n.rank? && n.parent&.rank?
+          n.incertae_sedis? && n.rank? && n.placement.parent&.rank?
         },
         failure: ->(_w, n) {
           name_index = n.class.ranks.index(n.rank)
-          parent_index = n.class.ranks.index(n.parent.rank)
+          parent_index = n.class.ranks.index(n.placement.parent.rank)
           name_index - parent_index < 2
         }
       }.merge(@@link_to_edit_parent),
@@ -156,7 +156,10 @@ module Name::QualityChecks
         link_to: ->(_w, n) { [:edit_parent, n] },
         recommendations: %w[7],
         scope:   ->(_w, n) { n.rank? && !n.top_rank? },
-        failure: ->(_w, n) { !n.incertae_sedis? && !n.parent.present? }
+        failure: ->(_w, n) {
+          parent = n.incertae_sedis? ? n.placement.parent : n.parent
+          !parent.present?
+        }
       },
 
       # Section 3. Naming of Taxa

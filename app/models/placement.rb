@@ -5,7 +5,7 @@ class Placement < ApplicationRecord
   )
   belongs_to(:publication, optional: true)
   validates(:name, presence: true)
-  validates(:parent, presence: true, unless: :incertae_sedis?)
+  validates(:parent, presence: true)
 
   has_rich_text(:incertae_sedis_text)
   validates(:incertae_sedis_text, presence: true, if: :incertae_sedis?)
@@ -33,6 +33,6 @@ class Placement < ApplicationRecord
   private
 
   def harmonize_name_parent
-    name.update(parent: parent) if preferred
+    name.update(parent: incertae_sedis? ? nil : parent) if preferred
   end
 end

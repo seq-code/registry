@@ -19,13 +19,26 @@ class PlacementTest < ActiveSupport::TestCase
     assert_predicate placement, :valid?
   end
 
-  test 'incertae sedis placement can have no parent' do
+  test 'preferred incertae sedis parent is not synced to the name' do
+    name = names(:escherichia)
+    placement = Placement.create!(
+      name: name, parent: names(:bacteria), incertae_sedis: true,
+      incertae_sedis_text: 'Its placement within Bacteria is unresolved.',
+      preferred: true
+    )
+
+    assert_equal names(:bacteria), placement.parent
+    assert_nil name.reload.parent
+  end
+
+  test 'incertae sedis placement must have a parent' do
     placement = Placement.new(
       name: names(:escherichia), incertae_sedis: true,
       incertae_sedis_text: 'Its placement is unresolved.'
     )
 
-    assert_predicate placement, :valid?
+    assert_not_predicate placement, :valid?
+    assert_includes placement.errors[:parent], "can't be blank"
   end
 
   test 'incertae sedis HTML includes its parent' do
@@ -38,11 +51,4 @@ class PlacementTest < ActiveSupport::TestCase
     )
   end
 
-  test 'incertae sedis HTML without a parent omits the qualifier' do
-    placement = Placement.new(
-      name: names(:escherichia), incertae_sedis: true
-    )
-
-    assert_equal '<i>incertae sedis</i>', placement.incertae_sedis_html
-  end
 end

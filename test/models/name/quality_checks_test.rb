@@ -112,13 +112,6 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
     assert_predicate(qc, :failure)
   end
 
-  test 'incertae sedis parent rank is out of scope without a parent' do
-    name = names(:incertae_sedis_without_parent)
-    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
-
-    assert_not_predicate(qc, :scope)
-  end
-
   test 'missing_parent flags a non-top-rank name without a placement' do
     name = names(:bacillus_subtilis)
     qc = warning(name, :missing_parent)
@@ -127,11 +120,11 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
     assert_predicate(qc, :failure)
   end
 
-  test 'missing_parent accepts an incertae sedis placement' do
+  test 'missing_parent accepts an incertae sedis placement with a parent' do
     name = names(:luteria_ianthellae)
     Placement.create!(
-      name: name, preferred: true,
-      incertae_sedis: 'incertae sedis (Bacteria)',
+      name: name, parent: names(:bacteria), preferred: true,
+      incertae_sedis: true,
       incertae_sedis_text: 'Its precise placement within Bacteria is unknown.'
     )
     qc = warning(name, :missing_parent)

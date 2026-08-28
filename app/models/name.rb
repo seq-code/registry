@@ -128,7 +128,7 @@ class Name < ApplicationRecord
       message: 'can only contain letters, dashes, dots, and apostrophe'
     }
   )
-  validates(:incertae_sedis, presence: true, allow_nil: true)
+  validates(:incertae_sedis, inclusion: { in: [true, false] }, allow_nil: true)
   validates(
     :incertae_sedis, absence: {
       if: :parent,
@@ -1466,11 +1466,9 @@ class Name < ApplicationRecord
   end
 
   def ensure_consistent_placement
-    placement_incertae_sedis = incertae_sedis
-
-    if parent_id.present? || placement_incertae_sedis.present?
+    if parent_id.present?
       pp = placements.where(
-        parent_id: parent_id, incertae_sedis: placement_incertae_sedis
+        parent_id: parent_id, incertae_sedis: false
       ).first
       if pp.present?
         if pp.preferred?
@@ -1483,10 +1481,12 @@ class Name < ApplicationRecord
           Placement.new(
             name_id: id,
             parent_id: parent_id,
-            incertae_sedis: placement_incertae_sedis,
+            incertae_sedis: false,
             preferred: true
           ).save
       end
+    elsif placements.where(preferred: true, incertae_sedis: true).exists?
+      true
     else
       # Conservatively preserve as alternative placement
       placements.update(preferred: false)

@@ -38,8 +38,3 @@ incertae_sedis_with_same_rank_parent:
   parent: escherichia_coli
   preferred: true
   incertae_sedis: true
-
-incertae_sedis_without_parent:
-  name: incertae_sedis_without_parent
-  preferred: true
-  incertae_sedis: true
