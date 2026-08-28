@@ -81,6 +81,44 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
     assert_not_predicate(qc, :scope)
   end
 
+  test 'inconsistent_parent_rank is out of scope for incertae sedis' do
+    name = names(:incertae_sedis_with_distant_parent)
+    qc = warning(name, :inconsistent_parent_rank)
+
+    assert_not_predicate(qc, :scope)
+  end
+
+  test 'incertae sedis parent rank accepts a parent two or more ranks above' do
+    name = names(:incertae_sedis_with_distant_parent)
+    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_not_predicate(qc, :failure)
+  end
+
+  test 'incertae sedis parent rank flags a parent one rank above' do
+    name = names(:incertae_sedis_with_immediate_parent)
+    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_predicate(qc, :failure)
+  end
+
+  test 'incertae sedis parent rank flags a parent at the same rank' do
+    name = names(:incertae_sedis_with_same_rank_parent)
+    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_predicate(qc, :failure)
+  end
+
+  test 'incertae sedis parent rank is out of scope without a parent' do
+    name = names(:incertae_sedis_without_parent)
+    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+
+    assert_not_predicate(qc, :scope)
+  end
+
   test 'missing_parent flags a non-top-rank name without a placement' do
     name = names(:bacillus_subtilis)
     qc = warning(name, :missing_parent)

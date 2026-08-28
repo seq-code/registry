@@ -133,7 +133,7 @@ class TutorialTest < ActiveSupport::TestCase
     end
 
     name = Name.find(name.id)
-    assert_equal 'incertae sedis (Bacteria)', name.placement.incertae_sedis
+    assert_predicate name.placement, :incertae_sedis?
     assert_not_predicate old_placement.reload, :preferred?
     assert_includes name.alt_placements, old_placement
     assert_nil name[:incertae_sedis]

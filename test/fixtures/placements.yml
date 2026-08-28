@@ -17,5 +17,29 @@ escherichia_coli:
 
 incertae_sedis:
   name: incertae_sedis
+  parent: bacteria
   preferred: true
-  incertae_sedis: Incertae sedis (Bacteria)
+  incertae_sedis: true
+
+incertae_sedis_with_distant_parent:
+  name: incertae_sedis_with_distant_parent
+  parent: bacteria
+  preferred: true
+  incertae_sedis: true
+
+incertae_sedis_with_immediate_parent:
+  name: incertae_sedis_with_immediate_parent
+  parent: escherichia
+  preferred: true
+  incertae_sedis: true
+
+incertae_sedis_with_same_rank_parent:
+  name: incertae_sedis_with_same_rank_parent
+  parent: escherichia_coli
+  preferred: true
+  incertae_sedis: true
+
+incertae_sedis_without_parent:
+  name: incertae_sedis_without_parent
+  preferred: true
+  incertae_sedis: true

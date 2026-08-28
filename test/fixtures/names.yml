@@ -24,6 +24,34 @@ escherichia_colie:
   rank: species
   status: 5 # draft
 
+bacteria:
+  name: Bacteria
+  rank: domain
+  status: 15 # SeqCode
+
+incertae_sedis_with_distant_parent:
+  name: Luteria
+  rank: genus
+  status: 15 # SeqCode
+  parent: bacteria
+
+incertae_sedis_with_immediate_parent:
+  name: Escherichia fergusonii
+  rank: species
+  status: 15 # SeqCode
+  parent: escherichia
+
+incertae_sedis_with_same_rank_parent:
+  name: Escherichia albertii
+  rank: species
+  status: 15 # SeqCode
+  parent: escherichia_coli
+
+incertae_sedis_without_parent:
+  name: Nanoclepta
+  rank: genus
+  status: 15 # SeqCode
+
 bacillus:
   name: Bacillus
   rank: genus
