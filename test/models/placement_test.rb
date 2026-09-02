@@ -19,6 +19,18 @@ class PlacementTest < ActiveSupport::TestCase
     assert_predicate placement, :valid?
   end
 
+  test 'incertae sedis parent rank is at least two ranks above the name' do
+    placement = Placement.new(name: names(:escherichia_coli))
+
+    assert_equal 'family', placement.incertae_sedis_parent_rank
+  end
+
+  test 'incertae sedis parent rank is nil without two higher ranks' do
+    placement = Placement.new(name: names(:bacteria))
+
+    assert_nil placement.incertae_sedis_parent_rank
+  end
+
   test 'preferred incertae sedis parent is not synced to the name' do
     name = names(:escherichia)
     placement = Placement.create!(

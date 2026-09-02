@@ -14,7 +14,7 @@ class PlacementsControllerTest < ActionDispatch::IntegrationTest
       post placements_url, params: {
         placement: {
           name_id: @name.id,
-          parent: names(:bacteria).name,
+          incertae_sedis_parent: names(:bacteria).name,
           incertae_sedis: '1',
           incertae_sedis_text: 'No reliable higher placement is known.'
         }

@@ -23,6 +23,11 @@ class Placement < ApplicationRecord
     "<i>incertae sedis</i>#{qualifier}".html_safe
   end
 
+  def incertae_sedis_parent_rank
+    rank_index = name&.rank_index
+    Name.ranks[rank_index - 2] if rank_index && rank_index >= 2
+  end
+
   def downwards?
     return false unless parent.present? # e.g., incertae sedis
 

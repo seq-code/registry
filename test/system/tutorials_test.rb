@@ -44,17 +44,18 @@ class TutorialsTest < ApplicationSystemTestCase
     visit tutorial_url(@tutorial)
 
     upload_batch_spreadsheet('SCR_UploadBatch-Luteria-Incertae_sedis.xlsx')
-    incertae_sedis = 'incertae sedis (Bacteria)'
-    assert_batch_review(name: 'Luteria', parent: incertae_sedis)
+    assert_batch_review(name: 'Luteria', parent: 'Bacteria')
 
     create_batch_entries
 
     genus = Name.find_by!(name: 'Luteria')
+    placement = genus.placement
     @tutorial.reload
 
     assert_equal 'genus', genus.rank
     assert_nil genus.parent
-    assert_equal incertae_sedis, genus.incertae_sedis
+    assert_equal names(:bacteria), placement.parent
+    assert_predicate placement, :incertae_sedis?
     assert_equal type_species, genus.nomenclatural_type
     assert_equal @tutorial, genus.tutorial
     assert_equal ['Luteria'], @tutorial.names.pluck(:name)
