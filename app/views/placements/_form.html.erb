@@ -14,29 +14,95 @@
 <%= simple_form_for(
       @placement,
       url: @placement.persisted? ? @placement : placements_url,
-      html: { method: @placement.persisted? ? :patch : :post }
+      html: {
+        method: @placement.persisted? ? :patch : :post,
+        class: 'placement-form'
+      }
     ) do |f| %>
 
   <%= f.input(:name_id, as: :hidden) %>
 
-  <h3>Parent taxon</h3>
-  <p class="lead">
-    Indicate the name of the parent taxon in the rank of
-    <%= @name.expected_parent_rank %>
-  </p>
-  <%=
-    f.input(
-      :parent, autofocus: true,
-      label: @name.expected_parent_rank.try(:capitalize),
-      input_html: {
-        value: @placement.parent.try(:name),
-        data: {
-          behavior: 'autocomplete', autocomplete: 'names',
-          rank: @name.expected_parent_rank
+  <h3>Placement type</h3>
+  <p class="text-muted">Choose how precisely this taxon can be placed.</p>
+  <div class="row mb-4">
+    <div class="col-md-6 mb-2 mb-md-0">
+      <label class="border rounded p-3 d-flex w-100 h-100">
+        <%= f.radio_button(
+              :incertae_sedis, false, checked: !@placement.incertae_sedis?,
+              class: 'mr-3 mt-1'
+            ) %>
+        <span>
+          <strong class="d-block">Fixed placement</strong>
+          <small class="text-muted">
+            I know the immediate parent <%= @name.expected_parent_rank %>.
+          </small>
+        </span>
+      </label>
+    </div>
+    <div class="col-md-6">
+      <label class="border rounded p-3 d-flex w-100 h-100">
+        <%= f.radio_button(
+              :incertae_sedis, true, checked: @placement.incertae_sedis?,
+              class: 'mr-3 mt-1'
+            ) %>
+        <span>
+          <strong class="d-block"><i>Incertae sedis</i></strong>
+          <small class="text-muted">
+            I know a broader group, but not the immediate parent.
+          </small>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <fieldset class="form-group border rounded p-3">
+  <legend class="w-auto px-2 h5">Placement details</legend>
+  <div id="placement-fields">
+  <div id="standard-placement">
+    <%=
+      f.input(
+        :parent, autofocus: !@placement.incertae_sedis?,
+        label: "Parent #{@name.expected_parent_rank}",
+        input_html: {
+          id: 'standard-placement-parent',
+          value: @placement.parent.try(:name),
+          data: {
+            behavior: 'autocomplete', autocomplete: 'names',
+            rank: @name.expected_parent_rank
+          }
         }
-      }
-    )
-  %>
+      )
+    %>
+  </div>
+
+  <div id="incertae-sedis">
+    <%=
+      f.input(
+        :parent, autofocus: @placement.incertae_sedis?,
+        label: 'Uncertain within',
+        hint: "Select a taxon at least two ranks above #{@name.rank}.",
+        input_html: {
+          id: 'incertae-sedis-parent',
+          name: 'placement[incertae_sedis_parent]',
+          value: @placement.parent.try(:name),
+          data: {
+            behavior: 'autocomplete', autocomplete: 'names',
+            minimum_rank: @placement.incertae_sedis_parent_rank
+          }
+        }
+      )
+    %>
+    <%=
+      f.input(
+        :incertae_sedis_text,
+        label: 'Description of the classification problems',
+        as: :rich_text_area
+      )
+    %>
+  </div>
+  </div>
+  </fieldset>
+
   <%=
     f.input(
       :publication,
@@ -54,32 +120,6 @@
   <% if current_curator? %>
     <%= f.input(:preferred, label: 'Preferred placement') %>
   <% end %>
-  <br/>
-
-  <div class="border-left pl-3">
-  <h3>Or declare <i>incertae sedis</i></h3>
-  <p class="lead">
-    Alternatively, you can indicate that the classification of this taxon is
-    uncertain and why
-  </p>
-  <%=
-    f.input(
-      :incertae_sedis,
-      collection: [
-        'Incertae sedis',
-        'Incertae sedis (Bacteria)',
-        'Incertae sedis (Archaea)'
-      ]
-    )
-  %>
-  <%=
-    f.input(
-      :incertae_sedis_text,
-      label: 'Description of the classification problems',
-      as: :rich_text_area
-    )
-  %>
-  </div>
   <br/>
 
   <%= f.button(:submit, 'Submit') %>

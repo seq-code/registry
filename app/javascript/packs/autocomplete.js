@@ -1,6 +1,7 @@
 
 $(document).on("turbolinks:load", function() {
   var eac_options = {
+    adjustWidth: false,
     url: function(phrase) {
       var data = $($(event)[0]["srcElement"]).data();
       var what = data["autocomplete"];

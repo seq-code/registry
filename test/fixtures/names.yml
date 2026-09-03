@@ -24,6 +24,26 @@ escherichia_colie:
   rank: species
   status: 5 # draft
 
+bacteria:
+  name: Bacteria
+  rank: domain
+  status: 15 # SeqCode
+
+incertae_sedis_with_distant_parent:
+  name: Testimonas
+  rank: genus
+  status: 15 # SeqCode
+
+incertae_sedis_with_immediate_parent:
+  name: Escherichia fergusonii
+  rank: species
+  status: 15 # SeqCode
+
+incertae_sedis_with_same_rank_parent:
+  name: Escherichia albertii
+  rank: species
+  status: 15 # SeqCode
+
 bacillus:
   name: Bacillus
   rank: genus

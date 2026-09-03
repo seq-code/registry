@@ -24,7 +24,7 @@ class NameTest < ActiveSupport::TestCase
     name = names(:incertae_sedis)
 
     assert_equal(
-      '<i>Incertae sedis</i> (Bacteria)', name.incertae_sedis_html
+      '<i>incertae sedis</i> (Bacteria)', name.incertae_sedis_html
     )
   end
 end

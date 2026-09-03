@@ -5,6 +5,10 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
     Name::QualityChecks::QcWarningSet.new(name).evaluate(check)
   end
 
+  def warning(name, check)
+    Name::QualityChecks::QcWarning.new(check, name: name)
+  end
+
   test 'malformed_subspecies_name does not raise and flags a malformed name' do
     name = Name.new(
       name: 'Testimonas exampleensis testus', rank: 'subspecies'
@@ -40,6 +44,93 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
     name.define_singleton_method(:etymology?) { false }
 
     assert_not(evaluate(name, :inconsistent_language))
+  end
+
+  test 'inconsistent_parent_rank does not flag a parent one rank above' do
+    name = names(:escherichia_coli)
+    qc = warning(name, :inconsistent_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_not_predicate(qc, :failure)
+  end
+
+  test 'inconsistent_parent_rank flags a parent more than one rank above' do
+    name = names(:escherichia_coli).dup
+    name.parent = names(:nanobdellaceae)
+    qc = warning(name, :inconsistent_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_predicate(qc, :failure)
+  end
+
+  test 'inconsistent_parent_rank flags a parent at the same rank' do
+    name = names(:escherichia_coli).dup
+    name.parent = names(:bacillus_subtilis)
+    qc = warning(name, :inconsistent_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_predicate(qc, :failure)
+  end
+
+  test 'inconsistent_parent_rank is out of scope without a parent rank' do
+    name = names(:escherichia_coli).dup
+    name.parent = names(:escherichia).dup
+    name.parent.rank = nil
+    qc = warning(name, :inconsistent_parent_rank)
+
+    assert_not_predicate(qc, :scope)
+  end
+
+  test 'inconsistent_parent_rank is out of scope for incertae sedis' do
+    name = names(:incertae_sedis_with_distant_parent)
+    qc = warning(name, :inconsistent_parent_rank)
+
+    assert_not_predicate(qc, :scope)
+  end
+
+  test 'incertae sedis parent rank accepts a parent two or more ranks above' do
+    name = names(:incertae_sedis_with_distant_parent)
+    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_not_predicate(qc, :failure)
+  end
+
+  test 'incertae sedis parent rank flags a parent one rank above' do
+    name = names(:incertae_sedis_with_immediate_parent)
+    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_predicate(qc, :failure)
+  end
+
+  test 'incertae sedis parent rank flags a parent at the same rank' do
+    name = names(:incertae_sedis_with_same_rank_parent)
+    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+
+    assert_predicate(qc, :scope)
+    assert_predicate(qc, :failure)
+  end
+
+  test 'missing_parent flags a non-top-rank name without a placement' do
+    name = names(:bacillus_subtilis)
+    qc = warning(name, :missing_parent)
+
+    assert_predicate(qc, :scope)
+    assert_predicate(qc, :failure)
+  end
+
+  test 'missing_parent accepts an incertae sedis placement with a parent' do
+    name = names(:luteria_ianthellae)
+    Placement.create!(
+      name: name, parent: names(:bacteria), preferred: true,
+      incertae_sedis: true,
+      incertae_sedis_text: 'Its precise placement within Bacteria is unknown.'
+    )
+    qc = warning(name, :missing_parent)
+
+    assert_predicate(qc, :scope)
+    assert_not_predicate(qc, :failure)
   end
 
   test 'binary_name_above_species flags a multi-word genus name' do

@@ -60,6 +60,26 @@ input[type=checkbox] {
   accent-color: theme-color-level(primary, 0);
 }
 
+.easy-autocomplete {
+  width: 100%;
+}
+
+.placement-form {
+  #incertae-sedis {
+    display: none;
+  }
+
+  &:has([name="placement[incertae_sedis]"][value="true"]:checked) {
+    #standard-placement {
+      display: none;
+    }
+
+    #incertae-sedis {
+      display: block;
+    }
+  }
+}
+
 #dashboard-actions, .btn {
   .fa, .fas, .far, .fal, .fad, .fab {
     min-width: 1.5em;
@@ -378,4 +398,3 @@ nav.navbar {
   [data-rank=g] { color: hsl(280deg, 80%, 30%); }
   [data-rank=s] { color: hsl(320deg, 80%, 30%); }
 }
-

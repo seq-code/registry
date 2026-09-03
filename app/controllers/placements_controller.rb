@@ -46,10 +46,11 @@ class PlacementsController < ApplicationController
   def create_or_update(back_action)
     par = params.require(:placement).permit(
       :incertae_sedis, :incertae_sedis_text,
-      :parent, :preferred, :publication
+      :parent, :incertae_sedis_parent, :preferred, :publication
     )
     @placement.incertae_sedis = par[:incertae_sedis].presence
     @placement.incertae_sedis_text = par[:incertae_sedis_text]
+    par[:parent] = par[:incertae_sedis_parent] if @placement.incertae_sedis?
     if @name.placement
       @placement.preferred = par[:preferred] if current_user.curator?
     else
@@ -103,7 +104,8 @@ class PlacementsController < ApplicationController
             old_placement.update!(preferred: false)
           end
           @name.update!(
-            parent: @placement.parent, assigned_in: @placement.publication,
+            parent: @placement.incertae_sedis? ? nil : @placement.parent,
+            assigned_in: @placement.publication,
           )
         end
       rescue
@@ -125,7 +127,8 @@ class PlacementsController < ApplicationController
       @name.placement.try(:update!, preferred: false)
       @placement.update!(preferred: true)
       @name.update!(
-        parent: @placement.parent, assigned_in: @placement.publication
+        parent: @placement.incertae_sedis? ? nil : @placement.parent,
+        assigned_in: @placement.publication
       )
       ok = true
     end
