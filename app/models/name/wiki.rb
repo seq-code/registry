@@ -11,7 +11,7 @@ module Name::Wiki
     if validated?
       y = "''#{y}''"
       if rank == 'species' && parent&.nomenclatural_type_id&.==(id)
-        y += " (T#{'s' unless icnp? || icn?})"
+        y += " (T#{'s' if seqcode_track?})"
       end
     else
       y = "\"#{y}\""

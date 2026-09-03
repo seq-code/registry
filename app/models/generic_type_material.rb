@@ -1,8 +1,5 @@
 class GenericTypeMaterial < ApplicationRecord
-  has_many(
-    :typified_names, class_name: 'Name',
-    as: :nomenclatural_type, dependent: :nullify
-  )
+  include TypeMaterial
 
   validates(:text, presence: true)
 

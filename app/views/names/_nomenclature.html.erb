@@ -106,8 +106,10 @@
       <ul>
         <% @name.name_paratypes.each do |np| %>
           <li>
-            <%= display_link(np.nomenclatural_type) %>
-            (<%= display_link(np.publication) %>)
+            <%= link_to(
+                  np.nomenclatural_type.title(sup: false),
+                  np.nomenclatural_type) %>
+            (Pt. <%= display_link(np.publication, :short_citation) %>)
           </li>
         <% end %>
       </ul>

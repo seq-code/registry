@@ -250,14 +250,15 @@ class Publication < ApplicationRecord
     when :html
       <<~HTML.html_safe
         #{authors_et_al(format)} (#{journal_date.year}). #{title_html}. 
-        <i>#{journal_html}</i>. <a href="#{link}" target="_blank">DOI:#{doi}</a>
+        <i>#{journal_html}</i>.
+        <a href="#{link}" target="_blank">DOI: #{doi}</a>
       HTML
     when :wikispecies
       "#{authors_array(format).join(', ')}. #{journal_date.year}: " \
         "#{title.gsub(/[\n\r\s]+/, ' ')}. #{journal_raw}. {{Doi|#{doi}}}"
     else
       "#{authors_et_al(format)} (#{journal_date.year}). " \
-        "#{title}. #{journal_raw}. DOI:#{doi}"
+        "#{title}. #{journal_raw}. DOI: #{doi}"
     end
   end
 

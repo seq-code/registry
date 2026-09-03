@@ -124,9 +124,7 @@
             <div class="card-body">
               <p>
                 <b>Link</b>
-                <%= link_to(genome.link, target: '_blank') do %>
-                  <%= genome.text %> <%= fa_icon('external-link-alt') %>
-                <% end %>
+                <%= genome_accession_links(genome) %>
               </p>
               <% if genome.source? %>
                 <p>

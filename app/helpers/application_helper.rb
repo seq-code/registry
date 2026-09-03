@@ -376,7 +376,10 @@ module ApplicationHelper
           display_obj(obj.redirect, display_method)
         end
     else
-      link_to(display_text || display_obj(obj, display_method), obj)
+      link_to(
+        display_text || display_obj(obj, display_method),
+        polymorphic_url(obj)
+      )
     end
   end
 end

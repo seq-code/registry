@@ -6,10 +6,6 @@ class Genome < ApplicationRecord
   belongs_to(:strain, optional: true)
   has_many(:genome_sequencing_experiments, dependent: :destroy)
   has_many(:sequencing_experiments, through: :genome_sequencing_experiments)
-  has_many(
-    :typified_names, -> { where(redirect_id: nil) },
-    class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
-  )
 
   before_validation(:standardize_source)
   # after_commit (not after_save): this runs the external metadata refresh
@@ -37,6 +33,7 @@ class Genome < ApplicationRecord
   include HasExternalResources
   include Genome::ExternalResources
   include Genome::SampleSet
+  include TypeMaterial
 
   attr_accessor :queue_for_source_update
 
@@ -248,20 +245,34 @@ class Genome < ApplicationRecord
     end
   end
 
-  def link(acc = nil)
-    acc ||= accession
+  # RefSeq accessions (e.g., GCF_*, NZ_*, WP_*) are NCBI's own curated
+  # copies and are never mirrored to ENA/EMBL. Plain INSDC accessions
+  # (e.g., GCA_* assemblies, or nuccore accessions with no such prefix)
+  # are shared identically across GenBank, ENA, and DDBJ.
+  REFSEQ_ACCESSION = /\A(GCF|[A-Z]{1,2})_/.freeze
+
+  def link_urls(acc = nil)
+    acc ||= accession.split(/ *, */).first
     case database
     when 'assembly'
-      'https://www.ncbi.nlm.nih.gov/datasets/genome/%s' % acc
+      insdc_and_refseq_links(
+        'https://www.ncbi.nlm.nih.gov/datasets/genome/%s' % acc, acc
+      )
     when 'nuccore'
-      'https://www.ncbi.nlm.nih.gov/%s/%s' % [database, acc]
+      insdc_and_refseq_links(
+        'https://www.ncbi.nlm.nih.gov/%s/%s' % [database, acc], acc
+      )
     when 'pending'
-      'https://seqco.de/g:%s:%s' % [database, acc]
+      { Other: 'https://seqco.de/g:%s:%s' % [database, acc] }
+    else
+      # Unrecognized database (e.g., legacy or externally-imported data):
+      # fall back to the genome's own SeqCode page rather than nothing.
+      { SeqCode: seqcode_url }
     end
   end
 
   def links
-    @links ||= Hash[accession.split(/ *, */).map { |i| [i, link(i)] }]
+    @links ||= Hash[accession.split(/ *, */).map { |i| [i, link_urls(i)] }]
   end
 
   def db_name
@@ -280,9 +291,13 @@ class Genome < ApplicationRecord
     text
   end
 
-  def title(prefix = nil)
+  def title(prefix = nil, html: true, sup: true)
     prefix ||= 'Genome '
-    '%ssc|%07i' % [prefix, id]
+    y = '%ssc|%07i' % [prefix, id]
+    if sup && (label = title_superscript)
+      y += html ? " <sup>#{label}</sup>".html_safe : " (#{label})"
+    end
+    return html ? y.html_safe : y
   end
 
   def seqcode_url(protocol = true)
@@ -425,6 +440,12 @@ class Genome < ApplicationRecord
   end
 
   private
+
+  def insdc_and_refseq_links(ncbi_url, acc)
+    return { NCBI: ncbi_url } if acc =~ REFSEQ_ACCESSION
+
+    { NCBI: ncbi_url, EMBL: 'https://www.ebi.ac.uk/ena/browser/view/%s' % acc }
+  end
 
   def standardize_source
     if source_accession
