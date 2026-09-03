@@ -404,6 +404,16 @@ class Name < ApplicationRecord
     !icnp? && !icn?
   end
 
+  # The "T"/"Ts" type-species/type-strain marker, as HTML <sup> markup.
+  def type_sup_html
+    "<sup>T#{'s' if seqcode_track?}</sup>".html_safe
+  end
+
+  # Same marker as plain parenthetical text (no HTML), e.g. for wiki export.
+  def type_sup_text
+    "(T#{'s' if seqcode_track?})"
+  end
+
   def temporary_editable?
     return false unless temporary_editable_at?
     DateTime.now < temporary_editable_at
@@ -455,7 +465,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if is_type_species?
-          " <sup>T#{'s' if seqcode_track?}</sup>".html_safe
+          ' '.html_safe + type_sup_html
         else
           ''
         end
@@ -473,7 +483,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "#{name}" +
         if is_type_species?
-          " (T#{'s' if seqcode_track?})"
+          " #{type_sup_text}"
         else
           ''
         end
@@ -494,7 +504,7 @@ class Name < ApplicationRecord
       elsif (assume_valid || validated?) || inferred_rank == 'domain'
         y = "<i>#{name}</i>"
         y = "<b>#{y}</b>" if check_correctness && correct?
-        y + (is_type_species? ? "<sup>T#{'s' if seqcode_track?}</sup>" : '')
+        y + (is_type_species? ? type_sup_html : '')
       else
         "&#8220;#{name}&#8221;"
       end

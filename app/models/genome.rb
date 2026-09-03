@@ -252,7 +252,7 @@ class Genome < ApplicationRecord
   REFSEQ_ACCESSION = /\A(GCF|[A-Z]{1,2})_/.freeze
 
   def link_urls(acc = nil)
-    acc ||= accession.split(/ *, */).first
+    acc ||= accession_list.first
     case database
     when 'assembly'
       insdc_and_refseq_links(
@@ -272,7 +272,7 @@ class Genome < ApplicationRecord
   end
 
   def links
-    @links ||= Hash[accession.split(/ *, */).map { |i| [i, link_urls(i)] }]
+    @links ||= Hash[accession_list.map { |i| [i, link_urls(i)] }]
   end
 
   def db_name
@@ -440,6 +440,10 @@ class Genome < ApplicationRecord
   end
 
   private
+
+  def accession_list
+    @accession_list ||= accession.split(/ *, */)
+  end
 
   def insdc_and_refseq_links(ncbi_url, acc)
     return { NCBI: ncbi_url } if acc =~ REFSEQ_ACCESSION
