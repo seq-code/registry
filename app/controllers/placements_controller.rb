@@ -15,16 +15,12 @@ class PlacementsController < ApplicationController
       Placement.new(
         name: @name, preferred: true, parent: @name.parent,
         publication: @name.assigned_in,
-        incertae_sedis: @name.incertae_sedis,
-        incertae_sedis_text: @name.incertae_sedis_text
       ).save!
     end
 
     unless @name.placement
       @placement.parent = @name.parent
       @placement.publication = @name.assigned_in
-      @placement.incertae_sedis = @name.incertae_sedis
-      @placement.incertae_sedis_text = @name.incertae_sedis_text
       @placement.preferred = true
     end
   end
@@ -108,7 +104,6 @@ class PlacementsController < ApplicationController
           end
           @name.update!(
             parent: @placement.parent, assigned_in: @placement.publication,
-            incertae_sedis: nil, incertae_sedis_text: nil
           )
         end
       rescue
@@ -130,8 +125,7 @@ class PlacementsController < ApplicationController
       @name.placement.try(:update!, preferred: false)
       @placement.update!(preferred: true)
       @name.update!(
-        parent: @placement.parent, assigned_in: @placement.publication,
-        incertae_sedis: nil, incertae_sedis_text: nil
+        parent: @placement.parent, assigned_in: @placement.publication
       )
       ok = true
     end

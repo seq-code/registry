@@ -28,6 +28,10 @@ class Name < ApplicationRecord
     :placements, -> { includes(:parent) },
     dependent: :destroy, inverse_of: :name
   )
+  delegate(
+    :incertae_sedis, :incertae_sedis?, :incertae_sedis_html,
+    :incertae_sedis_text, to: :placement, allow_nil: true
+  )
   has_many(
     :child_placements, -> { includes(:name) },
     class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy
@@ -115,7 +119,6 @@ class Name < ApplicationRecord
   has_rich_text(:description)
   has_rich_text(:notes)
   has_rich_text(:etymology_text)
-  has_rich_text(:incertae_sedis_text) # deprecated, but values still in DB
 
   validates(:name, presence: true, uniqueness: true)
   validates(
@@ -1001,12 +1004,6 @@ class Name < ApplicationRecord
     place if place != self
   end
 
-  def incertae_sedis_html
-    return '' unless incertae_sedis?
-
-    incertae_sedis.gsub(/(incertae sedis)/i, '<i>\\1</i>').html_safe
-  end
-
   def inferred_rank
     @inferred_rank ||=
       if rank?
@@ -1173,18 +1170,6 @@ class Name < ApplicationRecord
       base = "#{propose_lineage_name(:genus)}"
       genus_root(base) + Name.rank_suffixes[rank.to_sym]
     end
-  end
-
-  def incertae_sedis_explain
-    (placement || self).incertae_sedis_text
-  end
-
-  def incertae_sedis
-    placement ? placement.incertae_sedis : self[:incertae_sedis]
-  end
-
-  def incertae_sedis?
-    incertae_sedis.present?
   end
 
   def taxonomic_data?
@@ -1481,12 +1466,7 @@ class Name < ApplicationRecord
   end
 
   def ensure_consistent_placement
-    placement_incertae_sedis =
-      if saved_change_to_incertae_sedis?
-        self[:incertae_sedis]
-      else
-        incertae_sedis
-      end
+    placement_incertae_sedis = incertae_sedis
 
     if parent_id.present? || placement_incertae_sedis.present?
       pp = placements.where(
@@ -1504,7 +1484,6 @@ class Name < ApplicationRecord
             name_id: id,
             parent_id: parent_id,
             incertae_sedis: placement_incertae_sedis,
-            incertae_sedis_text: incertae_sedis_text,
             preferred: true
           ).save
       end

@@ -64,6 +64,26 @@ bacillales:
   rank: order
   status: 15 # SeqCode
 
+nanobdellaceae:
+  name: Nanobdellaceae
+  rank: family
+  status: 15 # SeqCode
+
+nanoclepta_minutus:
+  name: Nanoclepta minutus
+  rank: species
+  status: 15 # SeqCode
+
+luteria_ianthellae:
+  name: Luteria ianthellae
+  rank: species
+  status: 15 # SeqCode
+
+incertae_sedis:
+  name: Escherichia marmotae
+  rank: species
+  status: 15 # SeqCode
+
 type_genome_with_locations:
   name: Testimonas mappensis
   rank: species

@@ -31,7 +31,7 @@
         <% if @name.incertae_sedis? %>
           <div class="border-left px-3">
             <b><%= @name.incertae_sedis_html %>:</b>
-            <%= @name.incertae_sedis_explain %>
+            <%= @name.incertae_sedis_text %>
           </div>
         <% elsif @name.parent %>
           <%= display_link(@name.parent, :name_html_correctness) %>
