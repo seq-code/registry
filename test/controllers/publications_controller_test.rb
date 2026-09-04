@@ -19,6 +19,32 @@ class PublicationsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  test 'manual-entry section is collapsed by default' do
+    sign_in(users(:curator))
+
+    get(new_publication_url)
+
+    assert_response :success
+    assert_select('#manual-entry-section.d-none')
+  end
+
+  test 'manual-entry section re-expands after a failed manual submission' do
+    sign_in(users(:curator))
+
+    post(
+      publications_url,
+      params: {
+        publication: {
+          doi: '', title: '', journal: 'Journal of Examples',
+          journal_date: Date.new(1978, 6, 1), pub_type: 'journal-article'
+        }
+      }
+    )
+
+    assert_response :success
+    assert_select('#manual-entry-section:not(.d-none)')
+  end
+
   test 'curator can register a publication without a doi' do
     sign_in(users(:curator))
 
@@ -84,6 +110,41 @@ class PublicationsControllerTest < ActionDispatch::IntegrationTest
     assert_select('input[name="authors_family[]"][value="Doe"]')
     assert_select('input[name="authors_given[]"][value="A."]')
     assert_select('input[name="authors_family[]"][value="Smith"]')
+  end
+
+  test 'curator can link an existing doi-less publication to a name' do
+    sign_in(users(:curator))
+    name = names(:bacillus_subtilis)
+    publication = publications(:no_doi)
+
+    assert_no_difference('Publication.count') do
+      post(
+        publications_url,
+        params: {
+          publication: { doi: publication.doi_title(false) },
+          link_name: { id: name.id, as: 'cite' }
+        }
+      )
+    end
+
+    assert_includes(name.reload.publications, publication)
+    assert_redirected_to(name)
+  end
+
+  test 'non-curator can also link an existing doi-less publication to a name' do
+    sign_in(users(:contributor))
+    name = names(:bacillus_subtilis)
+    publication = publications(:no_doi)
+
+    post(
+      publications_url,
+      params: {
+        publication: { doi: publication.doi_title(false) },
+        link_name: { id: name.id, as: 'cite' }
+      }
+    )
+
+    assert_includes(name.reload.publications, publication)
   end
 
   test 'non-curator cannot register a publication without a doi' do

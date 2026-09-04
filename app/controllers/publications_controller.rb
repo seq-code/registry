@@ -58,7 +58,14 @@ class PublicationsController < ApplicationController
         params[:authors_given].to_a.zip(params[:authors_family].to_a)
       )
     else
-      @publication = Publication.by_doi(params['publication']['doi'])
+      doi = params['publication']['doi']
+      # by_autocomplete resolves either a raw DOI (falling through to
+      # by_doi, so "type a fresh DOI to register it" keeps working
+      # unchanged) or a doi_title-style "key: title" string from selecting
+      # an existing publication in the autocomplete dropdown — including a
+      # DOI-less one via its "id:<id>" key. Only falls back to by_doi
+      # directly for blank input, matching its pre-existing error message.
+      @publication = Publication.by_autocomplete(doi) || Publication.by_doi(doi)
       return render('new') if @publication.new_record?
     end
 
