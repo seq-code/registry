@@ -77,7 +77,19 @@ module Tutorial::Batch
   def ephemeral_names
     @ephemeral_names ||=
       param_names.map do |i|
-        Name.new(i)
+        name_attributes = i.except('parent', 'incertae_sedis')
+        placement_attributes = {
+          parent: i['parent'],
+          incertae_sedis: i['incertae_sedis'],
+          preferred: true
+        }
+        if i['incertae_sedis'].present?
+          placement_attributes[:incertae_sedis_text] = i['description']
+        end
+
+        Name.new(name_attributes).tap do |name|
+          name.placements.build(placement_attributes)
+        end
       rescue => e
         $stderr.puts e
         nil
@@ -113,14 +125,19 @@ module Tutorial::Batch
     @check_ephemeral_names ||= :pending
     return ephemeral_names if @check_ephemeral_names == :done
 
-    name_names = ephemeral_names.map(&:name)
     ephemeral_names.each do |name|
+      placement = name.placements.first
+
       # Is the information complete?
       Tutorial::Batch.name_keys_base.each do |i|
+        next if i == :parent
+
         unless name.send(i).present?
           name.errors.add(i, :missing, message: 'is missing')
         end
       end
+
+      placement.validate # Populate placement.errors for the review step
 
       # Is the etymology present?
       unless name.etymology?
@@ -139,8 +156,8 @@ module Tutorial::Batch
       end
 
       # Is the parent already registered?
-      if name.parent && !name_exists?(name.parent.name)
-        name.errors.add(
+      if placement.parent && !name_exists?(placement.parent.name)
+        placement.errors.add(
           :parent, :does_not_exist,
           message: 'does not exist and is not proposed in this list'
         )
@@ -305,7 +322,8 @@ module Tutorial::Batch
         # Remove foreign keys in first pass
         par = par_ori.dup
         %w[
-          parent nomenclatural_type_entry nomenclatural_type_type
+          parent incertae_sedis
+          nomenclatural_type_entry nomenclatural_type_type
           nomenclatural_type_id nomenclatural_type
         ].each { |i| par.delete(i) }
 
@@ -333,12 +351,17 @@ module Tutorial::Batch
 
         # Parents
         if par['parent']
-          new_par[:parent] = Name.find_by_variants(par['parent'].name)
-          unless new_par[:parent]
-            name = Name.new(default_pars.merge(name: par['parent'].name))
-            name.save!
-            new_par[:parent_id] = name.id
+          parent = Name.find_by_variants(par['parent'].name)
+          unless parent
+            parent = Name.new(default_pars.merge(name: par['parent'].name))
+            parent.save!
           end
+          new_par[:parent] = parent
+          new_par[:incertae_sedis] = nil
+        elsif par['incertae_sedis']
+          new_par[:parent] = nil
+          new_par[:incertae_sedis] = par['incertae_sedis']
+          new_par[:incertae_sedis_text] = par['description']
         end
 
         # Nomenclatural types
@@ -359,7 +382,9 @@ module Tutorial::Batch
           end
         end
 
-        Name.find_by_variants(par['name']).update!(new_par)
+        name = Name.find_by_variants(par['name'])
+        name.update!(new_par)
+        name.update_column(:incertae_sedis, nil) if par['incertae_sedis']
       end
 
       # If all is good, go to next step

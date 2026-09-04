@@ -9,6 +9,7 @@
   <div class="accordion" id="batch-names-accordion">
     <% @tutorial.check_ephemeral_names(current_user) %>
     <% @tutorial.ephemeral_names.each_with_index do |name, idx| %>
+      <% placement = name&.placements&.first %>
       <div class="card">
         <% id = "batch-names-#{idx}" %>
         <% if name.nil? || name&.name.nil? %>
@@ -32,13 +33,14 @@
             <button class="btn btn-link btn-block text-left" type="button"
                     data-toggle="collapse" data-target="#<%= id %>"
                     aria-expanded="false" aria-controls="<%= id %>">
-              <% if name.errors.any? %>
+              <% if name.errors.any? || placement.errors.any? %>
                 <%= fa_icon('exclamation-circle', class: 'text-danger') %>
               <% end %>
               <%= name.name_html %>
               <span class="text-muted">
                 - <%= name.rank %> of
-                  <%= name.parent.try(:name_html) || 'unknown' %>
+                  <%= placement.parent.try(:name_html) ||
+                      placement.incertae_sedis_html.presence || 'unknown' %>
               </span>
             </button>
           </h2>
@@ -66,11 +68,12 @@
               <% end %>
               <%= modal_button(id, as_anchor: true) do %>Record details<% end %>
 
-              <% if name.errors.any? %>
+              <% if name.errors.any? || placement.errors.any? %>
                 <div class="alert alert-danger">
                   <h4>Issues detected in preliminary check:</h4>
                   <ul>
-                    <% name.errors.full_messages.each do |error| %>
+                    <% (name.errors.full_messages +
+                        placement.errors.full_messages).each do |error| %>
                       <li><%= error %></li>
                     <% end %>
                   </ul>
@@ -164,4 +167,3 @@
   Please note that any errors saved will have to be individually resolved.
   This process may take up to a couple of minutes, please be patient.
 </p>
-
