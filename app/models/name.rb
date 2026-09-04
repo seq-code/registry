@@ -42,7 +42,7 @@ class Name < ApplicationRecord
     :combinational_derivatives, class_name: 'Name', foreign_key: 'basonym_id',
     dependent: :nullify # Inverse of basonym
   )
-  has_many(:curations)
+  has_many(:curations, dependent: :destroy)
   has_many(:name_paratypes, dependent: :destroy)
   has_many(
     :paratype_publications, through: :name_paratypes, source: :publication
