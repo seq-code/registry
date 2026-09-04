@@ -54,6 +54,9 @@ class PublicationsController < ApplicationController
     if params['publication']['doi'].blank? && current_user.try(:curator?)
       @publication = Publication.new(publication_manual_params)
       return render('new') unless @publication.save
+      @publication.add_authors(
+        params[:authors_given].to_a.zip(params[:authors_family].to_a)
+      )
     else
       @publication = Publication.by_doi(params['publication']['doi'])
       return render('new') if @publication.new_record?

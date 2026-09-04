@@ -219,6 +219,39 @@ class Publication < ApplicationRecord
       where.not(journal: ['', nil]).select(:journal).reorder(:journal).distinct
     end
 
+    # Curated subset of the Crossref/DataCite `type` vocabulary offered in
+    # the manual-entry dropdown. Values match what by_serrano_work/
+    # by_datacite_work already store, so existing display code (e.g.
+    # #citation, #journal_html) keeps working unchanged either way.
+    def pub_types
+      {
+        'journal-article'     => 'Journal article',
+        'book'                => 'Book',
+        'book-chapter'        => 'Book chapter',
+        'proceedings-article' => 'Conference proceedings',
+        'report'              => 'Report',
+        'other'               => 'Other'
+      }
+    end
+
+  end
+
+  ##
+  # Attach authors given as an array of [given, family] pairs, in
+  # authorship order. Mirrors the author-creation loop in
+  # +by_uniform_hash_work+, so the same dedup/standardization rules
+  # (Author.find_or_create) apply regardless of whether the author list
+  # came from Crossref/DataCite or was hand-entered.
+  def add_authors(pairs)
+    pairs.each_with_index do |(given, family), i|
+      next if family.blank?
+      author = Author.find_or_create(given, family)
+      next if authors.include?(author)
+      PublicationAuthor.new(
+        publication_id: id, author_id: author.id,
+        sequence: i.zero? ? 'first' : 'additional'
+      ).save
+    end
   end
 
   def authors_et_al(format = :text)

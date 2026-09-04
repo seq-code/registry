@@ -80,4 +80,34 @@ class PublicationTest < ActiveSupport::TestCase
     assert_includes p.long_citation(:html), "DOI: #{p.doi}"
     assert_includes p.long_citation(:wikispecies), "{{Doi|#{p.doi}}}"
   end
+
+  test 'add_authors creates authors in order with a first/additional sequence' do
+    p = publications(:no_doi)
+    p.add_authors([['J.', 'Doe'], ['A.', 'Smith']])
+
+    assert_equal ['Doe', 'Smith'], p.reload.authors.pluck(:family)
+    sequences = p.publication_authors.order(:id).pluck(:sequence)
+    assert_equal %w[first additional], sequences
+  end
+
+  test 'add_authors skips rows with a blank family name' do
+    p = publications(:no_doi)
+    assert_no_difference('Author.count') do
+      p.add_authors([['', ''], [nil, '']])
+    end
+    assert_empty p.reload.authors
+  end
+
+  test 'add_authors does not duplicate an already-linked author' do
+    p = publications(:no_doi)
+    p.add_authors([['J.', 'Doe']])
+    assert_no_difference('PublicationAuthor.count') do
+      p.add_authors([['J.', 'Doe']])
+    end
+  end
+
+  test 'pub_types is used for the manual-entry dropdown' do
+    assert_includes Publication.pub_types.keys, 'journal-article'
+    assert_equal 'Journal article', Publication.pub_types['journal-article']
+  end
 end

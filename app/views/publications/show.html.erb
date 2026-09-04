@@ -33,6 +33,12 @@
       <% end %>
     </dd>
   <% end %>
+  <% if @publication.url.present? %>
+    <dt><%= fa_icon('link') %> URL</dt>
+    <dd>
+      <%= link_to(@publication.url, @publication.url, target: '_blank') %>
+    </dd>
+  <% end %>
 </dl>
 <%= render(partial: 'curator') %>
 <br/>
