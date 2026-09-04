@@ -4,11 +4,13 @@ $(document).on("turbolinks:load", function() {
     url: function(phrase) {
       var data = $($(event)[0]["srcElement"]).data();
       var what = data["autocomplete"];
-      var path = ROOT_PATH + what + "/autocomplete.json?q=" + phrase;
-      for(let i of ["rank"]) {
-        if(data[i]) { path = path + "&" + i + "=" + data[i] ; }
+      var url = new URL(what + "/autocomplete.json", ROOT_PATH);
+      url.searchParams.set("q", phrase);
+      if(data["rank"]) { url.searchParams.set("rank", data["rank"]); }
+      if(data["minimumRank"]) {
+        url.searchParams.set("minimum_rank", data["minimumRank"]);
       }
-      return path;
+      return url.toString();
     },
     getValue: "value",
     template: {
@@ -20,4 +22,3 @@ $(document).on("turbolinks:load", function() {
   input.easyAutocomplete(eac_options);
   console.log('Autocomplete initialized');
 });
-

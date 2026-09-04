@@ -1,0 +1,52 @@
+<% content_for(:title, 'Autocomplete development') %>
+
+<p><%= link_to '← Development tools', dev_path %></p>
+
+<h1>Name autocomplete</h1>
+
+<p class="text-muted">
+  Use the prefilled fields to compare rank filters. You can also try searches
+  such as <code>Bacteria</code>, <code>Pseudomonadota</code>, or
+  <code>Escherichia</code>.
+</p>
+
+<div class="row">
+  <div class="col-lg-6">
+    <div class="form-group">
+      <label for="autocomplete-any-rank">Any rank</label>
+      <input id="autocomplete-any-rank" class="form-control" type="text"
+             value="Escher" data-behavior="autocomplete"
+             data-autocomplete="names">
+      <small class="form-text text-muted">
+        Includes names at every rank, including phylum.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="autocomplete-phylum">Phylum only</label>
+      <input id="autocomplete-phylum" class="form-control" type="text"
+             value="Pseu" data-behavior="autocomplete"
+             data-autocomplete="names" data-rank="phylum">
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="form-group">
+      <label for="autocomplete-class-or-above">Class or above</label>
+      <input id="autocomplete-class-or-above" class="form-control" type="text"
+             value="Bac" data-behavior="autocomplete"
+             data-autocomplete="names" data-minimum-rank="class">
+      <small class="form-text text-muted">Domain, phylum, or class.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="autocomplete-genus-or-above">Genus or above</label>
+      <input id="autocomplete-genus-or-above" class="form-control" type="text"
+             value="Escher" data-behavior="autocomplete"
+             data-autocomplete="names" data-minimum-rank="genus">
+      <small class="form-text text-muted">
+        Domain through genus; excludes species and subspecies.
+      </small>
+    </div>
+  </div>
+</div>
