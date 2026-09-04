@@ -8,6 +8,7 @@ one:
   doi: MyString
   url: MyString
   crossref_json: MyString
+  pub_type: journal-article
 
 two:
   title: MyString
@@ -17,3 +18,13 @@ two:
   doi: MyOtherString
   url: MyString
   crossref_json: MyString
+  pub_type: journal-article
+
+no_doi:
+  title: A Classic Pre-Digital Paper
+  journal: MyString
+  journal_loc: MyString
+  journal_date: 2019-04-11
+  doi:
+  url:
+  pub_type: journal-article

@@ -51,41 +51,54 @@ class PublicationsController < ApplicationController
 
   # POST /publications
   def create
-    @publication = Publication.by_doi(params['publication']['doi'])
-    if @publication.new_record?
-      render('new')
+    if params['publication']['doi'].blank? && current_user.try(:curator?)
+      @publication = Publication.new(publication_manual_params)
+      return render('new') unless @publication.save
+      @publication.add_authors(
+        params[:authors_given].to_a.zip(params[:authors_family].to_a)
+      )
     else
-      if params[:link_name] && params[:link_name][:id]
-        @name = Name.find(params[:link_name][:id])
-        par = { publication: @publication, name: @name }
-        pn = PublicationName.find_or_create_by(par)
+      doi = params['publication']['doi']
+      # by_autocomplete resolves either a raw DOI (falling through to
+      # by_doi, so "type a fresh DOI to register it" keeps working
+      # unchanged) or a doi_title-style "key: title" string from selecting
+      # an existing publication in the autocomplete dropdown — including a
+      # DOI-less one via its "id:<id>" key. Only falls back to by_doi
+      # directly for blank input, matching its pre-existing error message.
+      @publication = Publication.by_autocomplete(doi) || Publication.by_doi(doi)
+      return render('new') if @publication.new_record?
+    end
 
-        case params[:link_name][:as]
-        when 'propose'
-          @name.update(proposed_in: @publication)
-          flash[:notice] = 'Effective publication registered'
-        when 'not_valid_proposal'
-          pn.update(not_valid_proposal: true)
-          flash[:notice] =
-            'Original (not valid) publication registered'
-        when 'corrig'
-          redirect_to(
-            corrigendum_in_name_url(@name, publication_id: @publication.id)
-          )
-          return
-        when 'assign'
-          @name.update(assigned_in: @publication)
-          flash[:notice] = 'Taxonomic assignment publication registered'
-        when 'emend'
-          pn.update(emends: true)
-          flash[:notice] = 'Emending publication registered'
-        else
-          flash[:notice] = 'Publication registered'
-        end
-        redirect_to(@name)
+    if params[:link_name] && params[:link_name][:id]
+      @name = Name.find(params[:link_name][:id])
+      par = { publication: @publication, name: @name }
+      pn = PublicationName.find_or_create_by(par)
+
+      case params[:link_name][:as]
+      when 'propose'
+        @name.update(proposed_in: @publication)
+        flash[:notice] = 'Effective publication registered'
+      when 'not_valid_proposal'
+        pn.update(not_valid_proposal: true)
+        flash[:notice] =
+          'Original (not valid) publication registered'
+      when 'corrig'
+        redirect_to(
+          corrigendum_in_name_url(@name, publication_id: @publication.id)
+        )
+        return
+      when 'assign'
+        @name.update(assigned_in: @publication)
+        flash[:notice] = 'Taxonomic assignment publication registered'
+      when 'emend'
+        pn.update(emends: true)
+        flash[:notice] = 'Emending publication registered'
       else
-        redirect_to(@publication)
+        flash[:notice] = 'Publication registered'
       end
+      redirect_to(@name)
+    else
+      redirect_to(@publication)
     end
   end
 
@@ -126,6 +139,15 @@ class PublicationsController < ApplicationController
     def set_publication
       @publication = params[:id] ? Publication.find(params[:id]) :
         params[:doi] ? Publication.find_by(doi: params[:doi]) : nil
+    end
+
+    # Fields a curator may hand-enter to register a publication without a
+    # DOI (e.g. an older paper never issued one). Deliberately excludes
+    # crossref_json/datacite_json, which only ever hold verbatim external-API
+    # payloads and have no place in a manually-entered record.
+    def publication_manual_params
+      params.require(:publication)
+        .permit(*%i[title journal journal_loc journal_date doi url pub_type abstract])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

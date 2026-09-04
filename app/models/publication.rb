@@ -3,6 +3,16 @@ require 'serrano'
 class Publication < ApplicationRecord
   default_scope { order(journal_date: :desc) }
 
+  # An empty string isn't the same as NULL for the DB's unique index on doi
+  # (two blank-string dois would collide; two NULLs don't), so normalize
+  # blank input before it ever reaches a validation or a save.
+  before_validation { self.doi = nil if doi.blank? }
+
+  validates(:title, presence: true)
+  validates(:journal_date, presence: true)
+  validates(:pub_type, presence: true)
+  validates(:doi, uniqueness: true, allow_nil: true)
+
   has_many(
     :publication_authors, -> { order('publication_authors.id ASC') },
     dependent: :destroy
@@ -34,8 +44,17 @@ class Publication < ApplicationRecord
   class << self
 
     def by_autocomplete(query)
-      doi = query&.sub(/: .*/, '')
-      doi.present? ? by_doi(doi) : nil
+      key = query&.sub(/: .*/, '')
+      return nil unless key.present?
+
+      key.start_with?('id:') ?
+        by_id(key.delete_prefix('id:')) :
+        by_doi(key)
+    end
+
+    def by_id(id)
+      Publication.find_by(id: id) ||
+        Publication.new.tap { |i| i.errors.add(:doi, 'publication not found') }
     end
 
     def by_doi(doi, force_update = false)
@@ -200,6 +219,39 @@ class Publication < ApplicationRecord
       where.not(journal: ['', nil]).select(:journal).reorder(:journal).distinct
     end
 
+    # Curated subset of the Crossref/DataCite `type` vocabulary offered in
+    # the manual-entry dropdown. Values match what by_serrano_work/
+    # by_datacite_work already store, so existing display code (e.g.
+    # #citation, #journal_html) keeps working unchanged either way.
+    def pub_types
+      {
+        'journal-article'     => 'Journal article',
+        'book'                => 'Book',
+        'book-chapter'        => 'Book chapter',
+        'proceedings-article' => 'Conference proceedings',
+        'report'              => 'Report',
+        'other'               => 'Other'
+      }
+    end
+
+  end
+
+  ##
+  # Attach authors given as an array of [given, family] pairs, in
+  # authorship order. Mirrors the author-creation loop in
+  # +by_uniform_hash_work+, so the same dedup/standardization rules
+  # (Author.find_or_create) apply regardless of whether the author list
+  # came from Crossref/DataCite or was hand-entered.
+  def add_authors(pairs)
+    pairs.each_with_index do |(given, family), i|
+      next if family.blank?
+      author = Author.find_or_create(given, family)
+      next if authors.include?(author)
+      PublicationAuthor.new(
+        publication_id: id, author_id: author.id,
+        sequence: i.zero? ? 'first' : 'additional'
+      ).save
+    end
   end
 
   def authors_et_al(format = :text)
@@ -248,17 +300,20 @@ class Publication < ApplicationRecord
   def long_citation(format = :text)
     case format.to_sym
     when :html
+      doi_html = doi.present? ?
+        %(<a href="#{link}" target="_blank">DOI: #{doi}</a>) : ''
       <<~HTML.html_safe
-        #{authors_et_al(format)} (#{journal_date.year}). #{title_html}. 
+        #{authors_et_al(format)} (#{journal_date.year}). #{title_html}.
         <i>#{journal_html}</i>.
-        <a href="#{link}" target="_blank">DOI: #{doi}</a>
+        #{doi_html}
       HTML
     when :wikispecies
       "#{authors_array(format).join(', ')}. #{journal_date.year}: " \
-        "#{title.gsub(/[\n\r\s]+/, ' ')}. #{journal_raw}. {{Doi|#{doi}}}"
+        "#{title.gsub(/[\n\r\s]+/, ' ')}. #{journal_raw}" \
+        "#{doi.present? ? ". {{Doi|#{doi}}}" : '.'}"
     else
       "#{authors_et_al(format)} (#{journal_date.year}). " \
-        "#{title}. #{journal_raw}. DOI: #{doi}"
+        "#{title}. #{journal_raw}#{doi.present? ? ". DOI: #{doi}" : '.'}"
     end
   end
 
@@ -283,11 +338,12 @@ class Publication < ApplicationRecord
   end
 
   def link
-    "https://doi.org/#{doi}"
+    "https://doi.org/#{doi}" if doi.present?
   end
 
   def doi_title(html = true)
-    html ? "#{doi}: #{title_html}" : "#{doi}: #{title}"
+    key = doi.presence || "id:#{id}"
+    html ? "#{key}: #{title_html}" : "#{key}: #{title}"
   end
 
   def include_term?(term)
