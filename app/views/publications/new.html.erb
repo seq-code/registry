@@ -37,8 +37,10 @@
                   id: 'toggle-manual-entry',
                   class: 'btn btn-outline-secondary btn-sm') %>
     </p>
-    <div id="manual-entry-section"
-         class="<%= 'd-none' unless manual_entry_active %>">
+    <fieldset id="manual-entry-section"
+              class="form-group border rounded p-3
+                     <%= 'd-none' unless manual_entry_active %>">
+      <legend class="w-auto px-2 h5">Publication details</legend>
       <p class="text-muted">
         Leave DOI blank above and fill in the publication's details manually:
       </p>
@@ -93,7 +95,7 @@
           <%= fa_icon('plus') %> Add author
         </button>
       </div>
-    </div>
+    </fieldset>
 
     <script>
       $(function() {
