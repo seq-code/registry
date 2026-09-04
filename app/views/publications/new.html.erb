@@ -1,14 +1,35 @@
 <br/>
 <h1>New Publication</h1>
 <p class="lead">
-  Only publications with assigned Digital Object Identifier
-  (<%= link_to('DOI', 'https://doi.org/', target: '_blank') %>)
-  can be registered
+  <% if current_curator? %>
+    Publications are normally registered by their Digital Object Identifier
+    (<%= link_to('DOI', 'https://doi.org/', target: '_blank') %>). As a
+    curator, you may leave the DOI blank and enter the publication's
+    details manually instead (e.g. for older papers that never received one).
+  <% else %>
+    Only publications with assigned Digital Object Identifier
+    (<%= link_to('DOI', 'https://doi.org/', target: '_blank') %>)
+    can be registered
+  <% end %>
 </p>
 
 <%= simple_form_for(@publication, hrml: { method: :post }) do |f| %>
   <%= f.input(:doi,
-              required: true, autofocus: true, label: 'DOI of publication') %>
+              required: !current_curator?, autofocus: true,
+              label: 'DOI of publication') %>
+  <% if current_curator? %>
+    <p class="text-muted">
+      Leave DOI blank to enter the publication's details manually:
+    </p>
+    <%= f.input(:title, required: true) %>
+    <%= f.input(:journal) %>
+    <%= f.input(:journal_loc, label: 'Journal location (volume/issue)') %>
+    <%= f.input(:journal_date, required: true) %>
+    <%= f.input(:pub_type, required: true, label: 'Publication type',
+                hint: 'e.g. journal-article, book, posted-content') %>
+    <%= f.input(:url) %>
+    <%= f.input(:abstract, as: :text) %>
+  <% end %>
   <% if @name %>
     <%= hidden_field(:link_name, :id, value: @name.id) %>
     <p>

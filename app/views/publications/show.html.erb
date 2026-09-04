@@ -24,13 +24,15 @@
   </dd>
   <dt><%= fa_icon('calendar-day') %> Publication date</dt>
   <dd><%= @publication.journal_date %></dd>
-  <dt><%= fa_icon('directions') %> DOI</dt>
-  <dd>
-    <%= link_to(@publication.url, target: '_blank') do %>
-      <%= @publication.doi %>&nbsp;
-      <%= fa_icon('external-link-alt') %>
-    <% end %>
-  </dd>
+  <% if @publication.doi.present? %>
+    <dt><%= fa_icon('directions') %> DOI</dt>
+    <dd>
+      <%= link_to(@publication.url, target: '_blank') do %>
+        <%= @publication.doi %>&nbsp;
+        <%= fa_icon('external-link-alt') %>
+      <% end %>
+    </dd>
+  <% end %>
 </dl>
 <%= render(partial: 'curator') %>
 <br/>

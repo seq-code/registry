@@ -25,10 +25,13 @@
     <dd>
       <%= link_to(@publication) do %>
         <%= fa_icon('arrow-circle-right') %> <%= @publication.citation %>
-      <% end %> /
-      <%= link_to(@publication.link, target: '_blank') do %>
-        DOI: <%= @publication.doi %>
-        <%= fa_icon('external-link-alt') %>
+      <% end %>
+      <% if @publication.doi.present? %>
+        /
+        <%= link_to(@publication.link, target: '_blank') do %>
+          DOI: <%= @publication.doi %>
+          <%= fa_icon('external-link-alt') %>
+        <% end %>
       <% end %>
     </dd>
 
