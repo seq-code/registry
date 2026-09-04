@@ -38,6 +38,30 @@ class NameParatypeTest < ActiveSupport::TestCase
     assert(name_paratype.valid?)
   end
 
+  test 'links the paratype publication to the name if not already linked' do
+    name = names(:bacillus_subtilis)
+    publication = publications(:one)
+    assert_not_includes(name.publications, publication)
+
+    NameParatype.create!(
+      name: name, nomenclatural_type: strains(:one), publication: publication
+    )
+
+    assert_includes(name.reload.publications, publication)
+  end
+
+  test 'does not duplicate an already-existing publication link' do
+    name = names(:bacillus_subtilis)
+    publication = publications(:one)
+    PublicationName.create!(publication: publication, name: name)
+
+    assert_no_difference('PublicationName.count') do
+      NameParatype.create!(
+        name: name, nomenclatural_type: strains(:one), publication: publication
+      )
+    end
+  end
+
   test 'only allows strains as paratypes' do
     name_paratype = NameParatype.new(
       name: names(:bacillus_subtilis), nomenclatural_type: genomes(:one),
