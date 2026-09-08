@@ -82,7 +82,7 @@ module Tutorial::Batch
         name_attributes = i.except('parent', 'incertae_sedis')
         placement_attributes = {
           parent: i['parent'],
-          incertae_sedis: i['incertae_sedis'],
+          incertae_sedis: i['incertae_sedis'] || false,
           preferred: true
         }
         if i['incertae_sedis'].present?

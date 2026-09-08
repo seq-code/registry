@@ -44,7 +44,7 @@ class TutorialsTest < ApplicationSystemTestCase
     visit tutorial_url(@tutorial)
 
     upload_batch_spreadsheet('SCR_UploadBatch-Luteria-Incertae_sedis.xlsx')
-    assert_batch_review(name: 'Luteria', parent: 'Bacteria')
+    assert_batch_review(name: 'Luteria', parent: 'incertae sedis (Bacteria)')
 
     create_batch_entries
 

@@ -16,6 +16,9 @@ class TutorialTest < ActiveSupport::TestCase
     assert_same name, placement.name
     assert_equal 'Nanobdellaceae', placement.parent.name
     assert_not_predicate placement, :incertae_sedis?
+    assert_equal false, placement.incertae_sedis
+    placement.validate
+    assert_empty placement.errors[:incertae_sedis]
     assert_empty placement.incertae_sedis_text.to_plain_text
   end
 
