@@ -992,9 +992,7 @@ class Name < ApplicationRecord
   def lineage_parent
     return parent if parent
 
-    if incertae_sedis? && incertae_sedis =~ /Incertae sedis \((.+)\)/
-      self.class.find_by_variants($1)
-    end
+    placement.parent if incertae_sedis?
   end
 
   def type_name_alt_placement
