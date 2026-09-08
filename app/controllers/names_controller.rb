@@ -52,19 +52,16 @@ class NamesController < ApplicationController
   before_action(:authenticate_can_edit_validated!, only: %i[update edit_links])
 
   # GET /names/autocomplete.json?q=Maco
-  # GET /names/autocomplete.json?q=Allo&rank=genus
-  # GET /names/autocomplete.json?q=Pseu&minimum_rank=class
+  # GET /names/autocomplete.json?q=Allo&ranks=genus
+  # GET /names/autocomplete.json?q=Pseu&ranks=domain,phylum,class
   def autocomplete
     name = params[:q].downcase
-    rank = params[:rank]&.downcase
-    minimum_rank = params[:minimum_rank]&.downcase
     @names =
       Name.where('LOWER(name) LIKE ?', "#{name}%")
           .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
           .limit(20)
-    @names = @names.where(rank: rank) if rank
-    if minimum_rank && (rank_index = Name.ranks.index(minimum_rank))
-      @names = @names.where(rank: Name.ranks.take(rank_index + 1))
+    if params.key?(:ranks)
+      @names = @names.where(rank: params[:ranks].downcase.split(','))
     end
     @names = @names.where(redirect: nil)
   end

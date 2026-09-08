@@ -23,9 +23,15 @@ class Placement < ApplicationRecord
     "<i>incertae sedis</i>#{qualifier}".html_safe
   end
 
-  def incertae_sedis_parent_rank
+  def allowed_parent_ranks(incertae_sedis: incertae_sedis?)
     rank_index = name&.rank_index
-    Name.ranks[rank_index - 2] if rank_index && rank_index >= 2
+    return [] unless rank_index && rank_index.positive?
+
+    if incertae_sedis
+      Name.ranks.take(rank_index - 1)
+    else
+      [Name.ranks[rank_index - 1]]
+    end
   end
 
   def downwards?

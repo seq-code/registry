@@ -68,7 +68,7 @@
           value: @placement.parent.try(:name),
           data: {
             behavior: 'autocomplete', autocomplete: 'names',
-            rank: @name.expected_parent_rank
+            ranks: @placement.allowed_parent_ranks(incertae_sedis: false)
           }
         }
       )
@@ -87,7 +87,7 @@
           value: @placement.parent.try(:name),
           data: {
             behavior: 'autocomplete', autocomplete: 'names',
-            minimum_rank: @placement.incertae_sedis_parent_rank
+            ranks: @placement.allowed_parent_ranks(incertae_sedis: true)
           }
         }
       )
