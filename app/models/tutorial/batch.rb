@@ -358,10 +358,13 @@ module Tutorial::Batch
             parent = Name.new(default_pars.merge(name: par['parent'].name))
             parent.save!
           end
-          save_batch_placement(
-            Name.find_by_variants(par['name']),
-            parent: parent, incertae_sedis: par['incertae_sedis'] || false,
-            incertae_sedis_text: par['description']
+          name = Name.find_by_variants(par['name'])
+          placement = name.placements.find_or_initialize_by(parent: parent)
+          name.placements.where(preferred: true).where.not(id: placement.id)
+              .find_each { |current| current.update!(preferred: false) }
+          placement.update!(
+            incertae_sedis: par['incertae_sedis'] || false,
+            incertae_sedis_text: par['description'], preferred: true
           )
         end
 
@@ -399,17 +402,6 @@ module Tutorial::Batch
   def batch_step_02(params, user)
     update!(ongoing: false)
     @next_action = [:new_register, tutorial: self]
-  end
-
-  private
-
-  def save_batch_placement(name, attributes)
-    placement = name.placements.find_or_initialize_by(
-      attributes.slice(:parent)
-    )
-    name.placements.where(preferred: true).where.not(id: placement.id)
-        .find_each { |current| current.update!(preferred: false) }
-    placement.update!(attributes.merge(preferred: true))
   end
 
 end
