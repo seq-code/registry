@@ -63,9 +63,8 @@ class NamesController < ApplicationController
           .or(Name.where('LOWER(name) LIKE ?', "% #{name}%"))
           .limit(20)
     @names = @names.where(rank: rank) if rank
-    if minimum_rank && (rank_index = Name.ranks.index(minimum_rank))
-      @names = @names.where(rank: Name.ranks.take(rank_index + 1))
-    end
+    minimum_ranks = Name.ranks_at_or_above(minimum_rank)
+    @names = @names.where(rank: minimum_ranks) if minimum_ranks
     @names = @names.where(redirect: nil)
   end
 
