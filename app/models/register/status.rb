@@ -124,9 +124,10 @@ module Register::Status
   #
   # user: The user notifying the Registry (the current user)
   # params: The notification parameters
-  # doi: DOI of the effective publication
+  # doi: DOI of the effective publication, or a doi_title-style "key: title"
+  #      round-trip string identifying a DOI-less publication
   def notify(user, params, doi)
-    publication = Publication.by_doi(doi)
+    publication = Publication.by_autocomplete(doi) || Publication.by_doi(doi)
     params[:publication] = publication
 
     if publication.new_record?

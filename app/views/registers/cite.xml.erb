@@ -83,6 +83,7 @@
   <relatedIdentifiers>
     <%# ========= Citations ========= %>
     <% @register.citations.each do |publication| %>
+    <% next unless publication.doi.present? %>
     <relatedIdentifier relatedIdentifierType="DOI" relationType="Cites" resourceTypeGeneral="JournalArticle"><%= publication.doi %></relatedIdentifier>
     <% end %>
   </relatedIdentifiers>
