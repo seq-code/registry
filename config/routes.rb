@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
 
+  if Rails.env.development?
+    get 'dev', to: 'dev#index'
+    get 'dev/autocomplete', to: 'dev#autocomplete'
+  end
+
   resources :tags
   # General configuration
   root(to: 'application#main')

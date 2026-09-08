@@ -221,6 +221,11 @@ class Name < ApplicationRecord
       %w[domain phylum class order family genus species subspecies]
     end
 
+    def ranks_at_or_above(rank)
+      rank_index = ranks.index(rank.to_s.downcase)
+      ranks.take(rank_index + 1) if rank_index
+    end
+
     def rank_suffixes
       {
         kingdom: 'ati', phylum: 'ota', class: 'ia', order: 'ales',

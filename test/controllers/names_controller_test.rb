@@ -42,6 +42,27 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal('Genome', entry['nomenclatural_type']['class'])
   end
 
+  test 'autocomplete filters names to an exact rank' do
+    get autocomplete_names_url(
+      format: :json, q: 'Bacill', rank: 'phylum'
+    )
+
+    assert_response :success
+    assert_equal ['Bacillota'], autocomplete_values
+    entry = JSON.parse(response.body).first
+    assert_equal 'phylum', entry['rank']
+    assert_includes entry['display'], '>phylum</small>'
+  end
+
+  test 'autocomplete filters names to a minimum rank level' do
+    get autocomplete_names_url(
+      format: :json, q: 'Bacill', minimum_rank: 'class'
+    )
+
+    assert_response :success
+    assert_equal %w[Bacilli Bacillota], autocomplete_values.sort
+  end
+
   test 'add_paratype_strain_commit ignores a tampered name_id' do
     sign_in(users(:curator))
     target_name = names(:unregistered)
@@ -62,4 +83,10 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     name_paratype = NameParatype.last
     assert_equal(target_name, name_paratype.name)
   end
+
+  private
+
+    def autocomplete_values
+      JSON.parse(response.body).pluck('value')
+    end
 end

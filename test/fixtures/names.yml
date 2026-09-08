@@ -49,6 +49,21 @@ luteria_ianthellae:
   rank: species
   status: 15 # SeqCode
 
+bacillota:
+  name: Bacillota
+  rank: phylum
+  status: 15 # SeqCode
+
+bacilli:
+  name: Bacilli
+  rank: class
+  status: 15 # SeqCode
+
+bacillales:
+  name: Bacillales
+  rank: order
+  status: 15 # SeqCode
+
 type_genome_with_locations:
   name: Testimonas mappensis
   rank: species
