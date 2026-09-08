@@ -357,7 +357,10 @@ module Tutorial::Batch
             parent = Name.new(default_pars.merge(name: par['parent'].name))
             parent.save!
           end
-          placement_par = { parent: parent, incertae_sedis: nil }
+          placement_par = {
+            parent: parent,
+            incertae_sedis: nil
+          }
         elsif par['incertae_sedis']
           placement_par = {
             parent: nil,

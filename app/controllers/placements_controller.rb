@@ -125,7 +125,8 @@ class PlacementsController < ApplicationController
       @name.placement.try(:update!, preferred: false)
       @placement.update!(preferred: true)
       @name.update!(
-        parent: @placement.parent, assigned_in: @placement.publication
+        parent: @placement.parent,
+        assigned_in: @placement.publication
       )
       ok = true
     end
