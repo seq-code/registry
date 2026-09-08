@@ -128,13 +128,6 @@ class Name < ApplicationRecord
       message: 'can only contain letters, dashes, dots, and apostrophe'
     }
   )
-  validates(:incertae_sedis, presence: true, allow_nil: true)
-  validates(
-    :incertae_sedis, absence: {
-      if: :parent,
-      message: 'cannot be declared if the parent taxon is set'
-    }
-  )
   validates(
     :nomenclatural_type_type,
     presence: {
