@@ -15,7 +15,7 @@ if name.is_a? Name
 else
   json.id(name.qualified_id)
   json.is_name(false)
-  json.name(name.title)
+  json.name(name.title(nil, html: false))
   json.styling(name.title)
   json.url(polymorphic_url(name))
   json.rank('subspecies')
