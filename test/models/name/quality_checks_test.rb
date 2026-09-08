@@ -55,8 +55,8 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
   end
 
   test 'inconsistent_parent_rank flags a parent more than one rank above' do
-    name = names(:escherichia_coli).dup
-    name.parent = names(:nanobdellaceae)
+    name = names(:escherichia_coli)
+    name.placement.parent = Name.new(name: 'Enterobacteriaceae', rank: 'family')
     qc = warning(name, :inconsistent_parent_rank)
 
     assert_predicate(qc, :scope)
@@ -64,8 +64,8 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
   end
 
   test 'inconsistent_parent_rank flags a parent at the same rank' do
-    name = names(:escherichia_coli).dup
-    name.parent = names(:bacillus_subtilis)
+    name = names(:escherichia_coli)
+    name.placement.parent = names(:bacillus_subtilis)
     qc = warning(name, :inconsistent_parent_rank)
 
     assert_predicate(qc, :scope)
@@ -73,24 +73,29 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
   end
 
   test 'inconsistent_parent_rank is out of scope without a parent rank' do
-    name = names(:escherichia_coli).dup
-    name.parent = names(:escherichia).dup
-    name.parent.rank = nil
+    name = names(:escherichia_coli)
+    name.placement.parent.rank = nil
     qc = warning(name, :inconsistent_parent_rank)
 
     assert_not_predicate(qc, :scope)
   end
 
-  test 'inconsistent_parent_rank is out of scope for incertae sedis' do
-    name = names(:incertae_sedis_with_distant_parent)
-    qc = warning(name, :inconsistent_parent_rank)
+  test 'inconsistent_parent_rank is out of scope without a placement' do
+    name = Name.new(name: 'Escherichia coli', rank: 'species')
 
-    assert_not_predicate(qc, :scope)
+    assert_not_predicate(warning(name, :inconsistent_parent_rank), :scope)
+  end
+
+  test 'inconsistent_parent_rank is out of scope without a name rank' do
+    name = names(:escherichia_coli)
+    name.rank = nil
+
+    assert_not_predicate(warning(name, :inconsistent_parent_rank), :scope)
   end
 
   test 'incertae sedis parent rank accepts a parent two or more ranks above' do
     name = names(:incertae_sedis_with_distant_parent)
-    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+    qc = warning(name, :inconsistent_parent_rank)
 
     assert_predicate(qc, :scope)
     assert_not_predicate(qc, :failure)
@@ -98,15 +103,17 @@ class Name::QualityChecksTest < ActiveSupport::TestCase
 
   test 'incertae sedis parent rank flags a parent one rank above' do
     name = names(:incertae_sedis_with_immediate_parent)
-    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+    assert_nil name.parent
+    qc = warning(name, :inconsistent_parent_rank)
 
     assert_predicate(qc, :scope)
     assert_predicate(qc, :failure)
+    assert_includes(qc.message, 'parent rank (genus)')
   end
 
   test 'incertae sedis parent rank flags a parent at the same rank' do
     name = names(:incertae_sedis_with_same_rank_parent)
-    qc = warning(name, :inconsistent_incertae_sedis_parent_rank)
+    qc = warning(name, :inconsistent_parent_rank)
 
     assert_predicate(qc, :scope)
     assert_predicate(qc, :failure)

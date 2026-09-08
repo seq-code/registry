@@ -112,30 +112,17 @@ module Name::QualityChecks
       inconsistent_parent_rank: {
         message: ->(_w, n) {
           <<~MSG
-            The parent rank (#{n.parent.inferred_rank}) is inconsistent 
+            The parent rank (#{n.placement.parent.inferred_rank}) is inconsistent 
             with the rank of this name (#{n.inferred_rank})
           MSG
         },
         area:    :nomenclature,
         rules:   %w[7a 7b],
         scope:   ->(_w, n) {
-          !n.incertae_sedis? && n.rank? && n.parent&.rank?
+          n.rank? && n.placement&.parent&.rank?
         },
         failure: ->(_w, n) {
-          n.class.ranks.index(n.rank) != n.class.ranks.index(n.parent.rank) + 1
-        }
-      }.merge(@@link_to_edit_parent),
-      inconsistent_incertae_sedis_parent_rank: {
-        message: 'An incertae sedis parent must be at least two ranks above ' \
-                 'the name',
-        area:    :nomenclature,
-        scope:   ->(_w, n) {
-          n.incertae_sedis? && n.rank? && n.placement.parent&.rank?
-        },
-        failure: ->(_w, n) {
-          name_index = n.class.ranks.index(n.rank)
-          parent_index = n.class.ranks.index(n.placement.parent.rank)
-          name_index - parent_index < 2
+          !n.placement.allowed_parent_ranks.include?(n.placement.parent.rank)
         }
       }.merge(@@link_to_edit_parent),
       # - Rules 7c and 7d are implied by the structure of the SeqCode Registry
@@ -1135,7 +1122,6 @@ module Name::QualityChecks
       large_contig_count low_n50 short_largest_contig
       missing_source_data inconsistent_type_rank missing_parent
       inconsistent_type_species inconsistent_parent_rank
-      inconsistent_incertae_sedis_parent_rank
       inconsistent_syllabification inconsistent_language
       binary_name_above_species inconsistent_species_name
       malformed_subspecies_name reserved_suffix
