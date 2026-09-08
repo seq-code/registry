@@ -57,6 +57,24 @@ class Publication < ApplicationRecord
         Publication.new.tap { |i| i.errors.add(:doi, 'publication not found') }
     end
 
+    # Creates a Publication without going through DOI lookup (e.g. a
+    # curator-entered legacy paper that never received one), with its
+    # authors, atomically: if either the publication itself is invalid or
+    # an author fails to save, nothing is persisted — avoids ever leaving
+    # behind an author-less publication because add_authors partially
+    # failed after the publication itself saved fine.
+    def create_without_doi(params, authors: [])
+      p = new(params)
+      transaction do
+        if p.save
+          p.add_authors(authors)
+        else
+          raise ActiveRecord::Rollback
+        end
+      end
+      p
+    end
+
     def by_doi(doi, force_update = false)
       unless doi.present?
         return Publication.new.tap { |i| i.errors.add(:doi, 'cannot be empty') }
@@ -247,10 +265,10 @@ class Publication < ApplicationRecord
       next if family.blank?
       author = Author.find_or_create(given, family)
       next if authors.include?(author)
-      PublicationAuthor.new(
+      PublicationAuthor.create!(
         publication_id: id, author_id: author.id,
         sequence: i.zero? ? 'first' : 'additional'
-      ).save
+      )
     end
   end
 

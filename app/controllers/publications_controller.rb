@@ -52,11 +52,11 @@ class PublicationsController < ApplicationController
   # POST /publications
   def create
     if params['publication']['doi'].blank? && current_user.try(:curator?)
-      @publication = Publication.new(publication_manual_params)
-      return render('new') unless @publication.save
-      @publication.add_authors(
-        params[:authors_given].to_a.zip(params[:authors_family].to_a)
+      @publication = Publication.create_without_doi(
+        publication_manual_params,
+        authors: params[:authors_given].to_a.zip(params[:authors_family].to_a)
       )
+      return render('new') unless @publication.persisted?
     else
       doi = params['publication']['doi']
       # by_autocomplete resolves either a raw DOI (falling through to

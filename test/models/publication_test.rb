@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'minitest/mock'
 
 class PublicationTest < ActiveSupport::TestCase
   test 'requires a title' do
@@ -109,5 +110,47 @@ class PublicationTest < ActiveSupport::TestCase
   test 'pub_types is used for the manual-entry dropdown' do
     assert_includes Publication.pub_types.keys, 'journal-article'
     assert_equal 'Journal article', Publication.pub_types['journal-article']
+  end
+
+  test 'create_without_doi persists the publication and its authors together' do
+    p = Publication.create_without_doi(
+      {
+        title: 'A Manually Entered Paper', journal_date: Date.new(1978, 6, 1),
+        pub_type: 'journal-article'
+      },
+      authors: [['J.', 'Doe'], ['A.', 'Smith']]
+    )
+
+    assert p.persisted?
+    assert_equal ['Doe', 'Smith'], p.authors.pluck(:family)
+  end
+
+  test 'create_without_doi returns an unsaved record with errors when invalid' do
+    assert_no_difference('Publication.count') do
+      p = Publication.create_without_doi(
+        { title: '', journal_date: Date.new(1978, 6, 1),
+          pub_type: 'journal-article' },
+        authors: [['J.', 'Doe']]
+      )
+
+      assert_not p.persisted?
+      assert_includes p.errors[:title], "can't be blank"
+    end
+  end
+
+  test 'create_without_doi rolls back the publication if author creation fails' do
+    Author.stub(
+      :find_or_create, ->(*) { raise ActiveRecord::RecordInvalid, Author.new }
+    ) do
+      assert_no_difference('Publication.count') do
+        assert_raises(ActiveRecord::RecordInvalid) do
+          Publication.create_without_doi(
+            { title: 'A Doomed Paper', journal_date: Date.new(1978, 6, 1),
+              pub_type: 'journal-article' },
+            authors: [['J.', 'Doe']]
+          )
+        end
+      end
+    end
   end
 end
