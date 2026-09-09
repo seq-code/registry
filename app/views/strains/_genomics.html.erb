@@ -7,9 +7,9 @@
     </dt>
     <dd>
       <ul>
-        <% @strain.genomes.each do |genome| %>
+        <% @strain.genomes.includes(:typified_names).each do |genome| %>
           <li>
-            <%= display_link(genome) %>
+            <%= display_link(genome, :title) %>
             <% if @strain.can_edit?(current_user) %>
               <%= link_to(
                     unlink_genome_strain_url(@strain, genome: genome),

@@ -39,14 +39,10 @@ class Name < ApplicationRecord
   has_many(:observe_names, dependent: :destroy)
   has_many(:observers, through: :observe_names, source: :user)
   has_many(
-    :typified_names, -> { where(redirect_id: nil) },
-    class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
-  )
-  has_many(
     :combinational_derivatives, class_name: 'Name', foreign_key: 'basonym_id',
     dependent: :nullify # Inverse of basonym
   )
-  has_many(:curations)
+  has_many(:curations, dependent: :destroy)
   has_many(:name_paratypes, dependent: :destroy)
   has_many(
     :paratype_publications, through: :name_paratypes, source: :publication
@@ -128,13 +124,6 @@ class Name < ApplicationRecord
       message: 'can only contain letters, dashes, dots, and apostrophe'
     }
   )
-  validates(:incertae_sedis, inclusion: { in: [true, false] }, allow_nil: true)
-  validates(
-    :incertae_sedis, absence: {
-      if: :parent,
-      message: 'cannot be declared if the parent taxon is set'
-    }
-  )
   validates(
     :nomenclatural_type_type,
     presence: {
@@ -157,6 +146,7 @@ class Name < ApplicationRecord
   include Name::Network
   include Name::Wiki
   include Name::FuzzySearch
+  include TypeMaterial
 
   attr_accessor :only_display
   attr_accessor :nomenclatural_type_entry
@@ -225,6 +215,11 @@ class Name < ApplicationRecord
 
     def ranks
       %w[domain phylum class order family genus species subspecies]
+    end
+
+    def ranks_at_or_above(rank)
+      rank_index = ranks.index(rank.to_s.downcase)
+      ranks.take(rank_index + 1) if rank_index
     end
 
     def rank_suffixes
@@ -404,6 +399,25 @@ class Name < ApplicationRecord
     end
   end
 
+  ##
+  # True if this name is (or, lacking a validating code yet, is presumed to
+  # become) governed by the SeqCode: either already valid under +:seqcode+,
+  # or not yet valid under any code at all. False only once a name has been
+  # validated under one of the other supported codes (+:icnp+ or +:icn+).
+  def seqcode_track?
+    !icnp? && !icn?
+  end
+
+  # The "T"/"Ts" type-species/type-strain marker, as HTML <sup> markup.
+  def type_sup_html
+    "<sup>T#{'s' if seqcode_track?}</sup>".html_safe
+  end
+
+  # Same marker as plain parenthetical text (no HTML), e.g. for wiki export.
+  def type_sup_text
+    "(T#{'s' if seqcode_track?})"
+  end
+
   def temporary_editable?
     return false unless temporary_editable_at?
     DateTime.now < temporary_editable_at
@@ -455,7 +469,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "<i>#{name}</i>".html_safe +
         if is_type_species?
-          " <sup>T#{'s' unless icnp? || icn?}</sup>".html_safe
+          ' '.html_safe + type_sup_html
         else
           ''
         end
@@ -473,7 +487,7 @@ class Name < ApplicationRecord
     elsif (assume_valid || validated?) || inferred_rank == 'domain'
       "#{name}" +
         if is_type_species?
-          " (T#{'s' unless icnp? || icn?})"
+          " #{type_sup_text}"
         else
           ''
         end
@@ -494,7 +508,7 @@ class Name < ApplicationRecord
       elsif (assume_valid || validated?) || inferred_rank == 'domain'
         y = "<i>#{name}</i>"
         y = "<b>#{y}</b>" if check_correctness && correct?
-        y + (is_type_species? ? "<sup>T#{'s' unless icnp? || icn?}</sup>" : '')
+        y + (is_type_species? ? type_sup_html : '')
       else
         "&#8220;#{name}&#8221;"
       end
@@ -524,34 +538,46 @@ class Name < ApplicationRecord
     )
     y = "&#8220;#{y}&#8221;" if candidatus?
     y += ' <i>corrig.</i>'.html_safe if corrigendum_from?
+
+    # Optional parenthetical clauses (ex-authority / paratype / priority)
+    # are collected here so consecutive ones merge into a single
+    # "(...; ...)" instead of stacking as separate "(...) (...)" groups.
+    bracket = []
     if not_validly_proposed_in.any?
-      y += ' (ex'
-      y += not_validly_proposed_in
-             .map { |i| " #{sanitize(i.short_citation)}" }.join('; ')
-      y += ')'
+      bracket << 'ex' + not_validly_proposed_in
+        .map { |i| " #{sanitize(i.short_citation)}" }.join('; ')
     end
+
     if authority || proposed_in
+      y += " (#{bracket.join('; ')})".html_safe if bracket.any?
+      bracket = []
       y += " #{sanitize(authority || proposed_in.short_citation)}"
     end
+
     if paratype_publications.any?
-      y += ' (Pt.'
+      pt = 'Pt.'
       if paratype_publications.count == 1 &&
           proposed_in &&
           paratype_publications.first == proposed_in
-        y += ' <i>idem</i>'.html_safe
+        pt += ' <i>idem</i>'
       else
-        y += paratype_publications
-               .map { |i| " #{sanitize(i.short_citation)}" }.join('; ')
+        pt += paratype_publications
+                .map { |i| " #{sanitize(i.short_citation)}" }.join('; ')
       end
-      y += ')'
+      bracket << pt
     end
+
     if priority_date && priority_date.year != proposed_in&.journal_date&.year
-      y += " (priority #{priority_date.year})"
+      bracket << "priority #{priority_date.year}"
     end
+
+    y += " (#{bracket.join('; ')})".html_safe if bracket.any?
+
     if emended_in.any?
       cit = emended_in.map(&:short_citation).join('; ')
       y += " <i>emend.</i> #{cit}".html_safe
     end
+
     y.html_safe
   end
 
@@ -1049,13 +1075,6 @@ class Name < ApplicationRecord
     type? && nomenclatural_type_type == 'Strain'
   end
 
-  def type_link
-    @type_link ||=
-      if type_is_genome?
-        type_genome.link
-      end
-  end
-
   def type_name
     nomenclatural_type if type_is_name?
   end
@@ -1087,11 +1106,12 @@ class Name < ApplicationRecord
   def expected_type_type
     return 'Name' unless sp_or_subsp?
 
-    if icnp? || icn?
-      # Treat with care, as both could also support 'GenericTypeMaterial'
-      'Strain'
-    else
+    if seqcode_track?
       'Genome'
+    else
+      # Treat with care, as both ICNP and ICN could also support
+      # 'GenericTypeMaterial'
+      'Strain'
     end
   end
 

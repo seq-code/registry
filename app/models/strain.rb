@@ -1,8 +1,4 @@
 class Strain < ApplicationRecord
-  has_many(
-    :typified_names, -> { where(redirect_id: nil) },
-    class_name: 'Name', as: :nomenclatural_type, dependent: :nullify
-  )
   has_many(:genomes, dependent: :nullify)
   has_many(:name_paratypes, as: :nomenclatural_type, dependent: :destroy)
   has_many(:paratypified_names, through: :name_paratypes, source: :name)
@@ -13,6 +9,7 @@ class Strain < ApplicationRecord
 
   include HasExternalResources
   include Strain::ExternalResources
+  include TypeMaterial
 
   class << self
     def all_public
@@ -44,9 +41,13 @@ class Strain < ApplicationRecord
     ['strain', numbers_string]
   end
 
-  def title(prefix = nil)
+  def title(prefix = nil, html: true, sup: true)
     prefix ||= 'Strain '
-    '%ssc|%07i' % [prefix, id]
+    y = '%ssc|%07i' % [prefix, id]
+    if sup && (label = title_superscript)
+      y += html ? " <sup>#{label}</sup>".html_safe : " (#{label})"
+    end
+    return html ? y.html_safe : y
   end
 
   def seqcode_url(protocol = true)
@@ -70,6 +71,10 @@ class Strain < ApplicationRecord
     return true if user.curator?
     return true unless typified_names.present?
     typified_names.all? { |name| name.can_edit?(user) }
+  end
+
+  def is_a_paratype?
+    paratypified_names.any?
   end
 
   private

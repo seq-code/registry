@@ -26,15 +26,11 @@
           <% else %>
             <%= name.type_name.name_html %>
           <% end %>
-        <% elsif name.type_is_strain? %>
-          <%= name.type_text %>
+        <% elsif name.type_is_strain? || name.type_is_genome? %>
+          <%= display_link(name.nomenclatural_type, :title) %>
         <% elsif name.type? %>
-          <% if name.type_link %>
-            <%= link_to(name.type_text, name.type_link) %>
-          <% else %>
-            <%= name.type_text %>
-          <% end %>
-          <sup>Ts</sup>
+          <%= name.type_text %>
+          <sup>T<%= 's' if name.seqcode_track? %></sup>
         <% else %>
           <u>Unknown</u>
         <% end %>

@@ -1,14 +1,124 @@
 <br/>
 <h1>New Publication</h1>
 <p class="lead">
-  Only publications with assigned Digital Object Identifier
-  (<%= link_to('DOI', 'https://doi.org/', target: '_blank') %>)
-  can be registered
+  <% if current_curator? %>
+    Publications are normally registered by their Digital Object Identifier
+    (<%= link_to('DOI', 'https://doi.org/', target: '_blank') %>). As a
+    curator, you may leave the DOI blank and enter the publication's
+    details manually instead (e.g. for older papers that never received one).
+  <% else %>
+    Only publications with assigned Digital Object Identifier
+    (<%= link_to('DOI', 'https://doi.org/', target: '_blank') %>)
+    can be registered
+  <% end %>
 </p>
 
 <%= simple_form_for(@publication, hrml: { method: :post }) do |f| %>
   <%= f.input(:doi,
-              required: true, autofocus: true, label: 'DOI of publication') %>
+              required: !current_curator?, autofocus: true,
+              label: 'DOI of publication',
+              hint: 'Enter a DOI to search or register a publication, ' \
+                    'or search by title to find an existing one',
+              input_html: {
+                data: { behavior: 'autocomplete', autocomplete: 'publications' }
+              }) %>
+  <% if current_curator? %>
+    <%
+      # Mirrors PublicationsController#create's own branch condition, so a
+      # re-render after a failed manual submission (even one that failed
+      # specifically because title/journal_date/etc. were left blank) still
+      # expands the section instead of hiding the curator's own entry
+      # behind a collapsed toggle.
+      manual_entry_active =
+        params[:publication].present? && params[:publication][:doi].blank?
+    %>
+    <p>
+      <%= link_to('Register a publication without a DOI', '#',
+                  id: 'toggle-manual-entry',
+                  class: 'btn btn-outline-secondary btn-sm') %>
+    </p>
+    <fieldset id="manual-entry-section"
+              class="form-group border rounded p-3
+                     <%= 'd-none' unless manual_entry_active %>">
+      <legend class="w-auto px-2 h5">Publication details</legend>
+      <p class="text-muted">
+        Leave DOI blank above and fill in the publication's details manually:
+      </p>
+      <%= f.input(:title, required: true) %>
+      <%= f.input(:journal,
+                  hint: 'Use the full journal name, not an abbreviation') %>
+      <%= f.input(:journal_loc, label: 'Journal location (volume/issue)') %>
+      <%= f.input(:journal_date, required: true,
+                  start_year: 1900, end_year: Date.current.year + 1,
+                  hint: 'If the exact date is unknown, use January 1st') %>
+      <%= f.input(:pub_type,
+                  collection: Publication.pub_types.to_a.map(&:reverse),
+                  include_blank: 'Select a publication type',
+                  required: true, label: 'Publication type') %>
+      <%= f.input(:url) %>
+      <%= f.input(:abstract, as: :text) %>
+
+      <%
+        # Repopulate from the previous submission if this is a re-render
+        # after a validation error, so authors survive it the same way
+        # every other field already does via @publication's own attributes.
+        author_pairs =
+          (params[:authors_given] || []).zip(params[:authors_family] || [])
+        author_pairs = [[nil, nil]] if author_pairs.empty?
+      %>
+      <div class="form-group">
+        <label>Authors (given name, family name)</label>
+        <div id="authors-container">
+          <% author_pairs.each do |given, family| %>
+            <div class="form-row author-row mb-1">
+              <div class="col">
+                <%= text_field_tag(
+                      'authors_given[]', given, class: 'form-control',
+                      placeholder: 'Given name (e.g. initials)'
+                    ) %>
+              </div>
+              <div class="col">
+                <%= text_field_tag(
+                      'authors_family[]', family, class: 'form-control',
+                      placeholder: 'Family name'
+                    ) %>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="btn btn-outline-danger btn-sm remove-author">
+                  <%= fa_icon('times') %>
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <button type="button" id="add-author" class="btn btn-outline-secondary btn-sm mt-1">
+          <%= fa_icon('plus') %> Add author
+        </button>
+      </div>
+    </fieldset>
+
+    <script>
+      $(function() {
+        $('#toggle-manual-entry').on('click', function(e) {
+          e.preventDefault();
+          $('#manual-entry-section').toggleClass('d-none');
+        });
+        $('#add-author').on('click', function() {
+          var row = $('#authors-container .author-row:first').clone();
+          row.find('input').val('');
+          $('#authors-container').append(row);
+        });
+        $('#authors-container').on('click', '.remove-author', function() {
+          var rows = $('#authors-container .author-row');
+          if (rows.length > 1) {
+            $(this).closest('.author-row').remove();
+          } else {
+            $(this).closest('.author-row').find('input').val('');
+          }
+        });
+      });
+    </script>
+  <% end %>
   <% if @name %>
     <%= hidden_field(:link_name, :id, value: @name.id) %>
     <p>

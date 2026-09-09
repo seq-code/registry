@@ -11,7 +11,9 @@ class StrainsController < ApplicationController
 
   # GET /strains
   def index
-    @strains = Strain.all.paginate(page: params[:page], per_page: 30)
+    @strains = Strain.all
+      .includes(:typified_names, :paratypified_names)
+      .paginate(page: params[:page], per_page: 30)
     @crumbs  = ['Strains']
   end
 

@@ -37,7 +37,10 @@
   <h2>Effective Publication</h2>
   <%= f.input(
         :doi, as: :fake, label: 'DOI', required: true,
-        input_html: { value: @register.publication.try(:doi) },
+        input_html: {
+          value: @register.publication.try(:doi) ||
+                 @register.publication.try(:doi_title, false)
+        },
         hint: 'Digital Object Identifier (DOI) of the effective publication'
       ) %>
   <% unless @publications.empty? %>
@@ -45,11 +48,11 @@
       <% @publications.each do |publication| %>
         <li>
           <%= link_to(publication.short_citation, publication) %>:
-          <%= publication.doi %>
+          <%= publication.doi || 'no DOI' %>
           <%= content_tag(
                 'span', role: 'button', cursor: 'pointer',
                 class: 'badge badge-pill badge-primary',
-                onclick: "$('#doi').val('#{publication.doi}'); false"
+                onclick: "$('#doi').val('#{publication.doi || publication.doi_title(false)}'); false"
               ) do %>
             <%= fa_icon('check-circle') %> Select
           <% end %>

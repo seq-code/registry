@@ -28,7 +28,10 @@
 
   <div class="field">
     <%= form.label :journal_date %>
-    <%= form.date_select :journal_date, id: :publication_journal_date %>
+    <%= form.date_select(
+          :journal_date, { start_year: 1900, end_year: Date.current.year + 1 },
+          id: :publication_journal_date
+        ) %>
   </div>
 
   <div class="field">
@@ -43,7 +46,20 @@
 
   <div class="field">
     <%= form.label :pub_type %>
-    <%= form.text_field :pub_type, id: :publication_pub_type %>
+    <%
+      pub_type_options = Publication.pub_types.to_a.map(&:reverse)
+      if publication.pub_type.present? &&
+          !Publication.pub_types.key?(publication.pub_type)
+        # Preserve an existing value outside the curated list (e.g. a
+        # Crossref/DataCite type like "dataset" or "posted-content") as
+        # its own option, instead of silently losing it on the next save.
+        pub_type_options << [publication.pub_type, publication.pub_type]
+      end
+    %>
+    <%= form.select(
+          :pub_type, pub_type_options, { include_blank: true },
+          id: :publication_pub_type
+        ) %>
   </div>
 
   <div class="field">

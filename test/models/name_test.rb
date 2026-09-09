@@ -25,6 +25,14 @@ class NameTest < ActiveSupport::TestCase
     assert_equal [name], name.lineage(with_self: true)
   end
 
+  test 'ranks at or above returns ranks from domain through the given rank' do
+    assert_equal %w[domain phylum class], Name.ranks_at_or_above('class')
+  end
+
+  test 'ranks at or above returns nil for an unknown rank' do
+    assert_nil Name.ranks_at_or_above('strain')
+  end
+
   test 'add_to_register adds name to a draft register' do
     name = names(:unregistered)
     register = registers(:draft)
