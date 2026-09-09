@@ -5,16 +5,12 @@ class Placement < ApplicationRecord
   )
   belongs_to(:publication, optional: true)
   validates(:name, presence: true)
-  validates(:parent, presence: true, unless: :incertae_sedis?)
+  validates(:parent, presence: true)
 
   has_rich_text(:incertae_sedis_text)
   validates(:incertae_sedis_text, presence: true, if: :incertae_sedis?)
-  validates(:incertae_sedis, presence: true, allow_nil: true)
   validates(
-    :incertae_sedis, absence: {
-      if: :parent,
-      message: 'cannot be declared if the parent taxon is set'
-    }
+    :incertae_sedis, inclusion: { in: [true, false] }
   )
   validates(:preferred, uniqueness: { scope: :name_id, if: :preferred? })
 
@@ -23,7 +19,20 @@ class Placement < ApplicationRecord
   def incertae_sedis_html
     return '' unless incertae_sedis?
 
-    incertae_sedis.gsub(/(incertae sedis)/i, '<i>\\1</i>').html_safe
+    ActionController::Base.helpers.safe_join(
+      ['<i>incertae sedis</i>'.html_safe, (" (#{parent.name})" if parent)].compact
+    )
+  end
+
+  def allowed_parent_ranks(incertae_sedis: incertae_sedis?)
+    rank_index = name&.rank_index
+    return [] unless rank_index && rank_index.positive?
+
+    if incertae_sedis
+      Name.ranks.take(rank_index - 1)
+    else
+      [Name.ranks[rank_index - 1]]
+    end
   end
 
   def downwards?
@@ -36,6 +45,6 @@ class Placement < ApplicationRecord
   private
 
   def harmonize_name_parent
-    name.update(parent: parent) if preferred
+    name.update(parent: incertae_sedis? ? nil : parent) if preferred
   end
 end

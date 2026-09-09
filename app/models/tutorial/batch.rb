@@ -54,9 +54,11 @@ module Tutorial::Batch
 
           # Deal with foreign keys
           if j['parent'] &&
-               j['parent'] =~ /^incertae sedis( \((Archaea|Bacteria)\))?/
-            j['incertae_sedis'] = j['parent']
-            j['parent'] = nil
+               match = j['parent'].match(
+                 /^incertae sedis( \((Archaea|Bacteria)\))?/
+               )
+            j['incertae_sedis'] = true
+            j['parent'] = match[2]
           end
           j['parent'] &&= Name.new(name: j['parent'])
           if j['nomenclatural_type_type'].to_s.downcase == 'name' &&
@@ -80,7 +82,7 @@ module Tutorial::Batch
         name_attributes = i.except('parent', 'incertae_sedis')
         placement_attributes = {
           parent: i['parent'],
-          incertae_sedis: i['incertae_sedis'],
+          incertae_sedis: i['incertae_sedis'] || false,
           preferred: true
         }
         if i['incertae_sedis'].present?
@@ -348,7 +350,6 @@ module Tutorial::Batch
       default_pars = { status: 0, created_by: user }
       param_names.each do |par|
         new_par = {}
-        placement_par = nil
 
         # Parents
         if par['parent']
@@ -357,16 +358,14 @@ module Tutorial::Batch
             parent = Name.new(default_pars.merge(name: par['parent'].name))
             parent.save!
           end
-          placement_par = {
-            parent: parent,
-            incertae_sedis: nil
-          }
-        elsif par['incertae_sedis']
-          placement_par = {
-            parent: nil,
-            incertae_sedis: par['incertae_sedis'],
-            incertae_sedis_text: par['description']
-          }
+          name = Name.find_by_variants(par['name'])
+          placement = name.placements.find_or_initialize_by(parent: parent)
+          name.placements.where(preferred: true).where.not(id: placement.id)
+              .find_each { |current| current.update!(preferred: false) }
+          placement.update!(
+            incertae_sedis: par['incertae_sedis'] || false,
+            incertae_sedis_text: par['description'], preferred: true
+          )
         end
 
         # Nomenclatural types
@@ -387,16 +386,7 @@ module Tutorial::Batch
           end
         end
 
-        name = Name.find_by_variants(par['name'])
-        name.update!(new_par)
-        if placement_par
-          placement = name.placements.find_or_initialize_by(
-            parent: placement_par[:parent],
-            incertae_sedis: placement_par[:incertae_sedis]
-          )
-          name.placements.where.not(id: placement.id).update_all(preferred: false)
-          placement.update!(placement_par.merge(preferred: true))
-        end
+        Name.find_by_variants(par['name']).update!(new_par)
       end
 
       # If all is good, go to next step

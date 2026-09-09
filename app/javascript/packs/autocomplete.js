@@ -1,14 +1,14 @@
 
 $(document).on("turbolinks:load", function() {
   var eac_options = {
+    adjustWidth: false,
     url: function(phrase) {
       var data = $($(event)[0]["srcElement"]).data();
       var what = data["autocomplete"];
       var url = new URL(what + "/autocomplete.json", ROOT_PATH);
       url.searchParams.set("q", phrase);
-      if(data["rank"]) { url.searchParams.set("rank", data["rank"]); }
-      if(data["minimumRank"]) {
-        url.searchParams.set("minimum_rank", data["minimumRank"]);
+      if(data["ranks"] !== undefined) {
+        url.searchParams.set("ranks", data["ranks"].join(","));
       }
       return url.toString();
     },
