@@ -36,6 +36,21 @@ class Name::VersionedTest < ActiveSupport::TestCase
     end
   end
 
+  test 'changing an etymology description snapshots valued etymology attributes' do
+    @name.assign_attributes(
+      etymology_xx_lang: 'N.L.', etymology_xx_description: 'of the colon'
+    )
+    @name.save!
+
+    @name.update!(etymology_xx_description: 'from the colon')
+
+    changeset = @name.versions.last.changeset
+    assert_equal %w[etymology_xx_description etymology_xx_lang name], changeset.keys.sort
+    assert_equal ['of the colon', 'from the colon'], changeset['etymology_xx_description']
+    assert_equal ['N.L.', 'N.L.'], changeset['etymology_xx_lang']
+    assert_equal ['E. coli', 'E. coli'], changeset['name']
+  end
+
   test 'saving an unchanged name does not add a version' do
     @name.save!
 
