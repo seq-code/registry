@@ -147,6 +147,7 @@ class Name < ApplicationRecord
   include Name::Wiki
   include Name::FuzzySearch
   include TypeMaterial
+  include Versioned
 
   attr_accessor :only_display
   attr_accessor :nomenclatural_type_entry
