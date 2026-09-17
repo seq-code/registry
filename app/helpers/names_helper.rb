@@ -1,4 +1,30 @@
+require 'diff/lcs'
+
 module NamesHelper
+  def history_before_after_diff(before, after, attribute:)
+    if attribute == 'etymology'
+      before = Name.new(before).full_etymology
+      after = Name.new(after).full_etymology
+    end
+
+    changes = Diff::LCS.sdiff(before.to_s.scan(/\X/), after.to_s.scan(/\X/))
+
+    before_parts = changes.filter_map do |change|
+      case change.action
+      when '=' then change.old_element
+      when '-', '!' then content_tag(:del, change.old_element, class: 'text-danger')
+      end
+    end
+    after_parts = changes.filter_map do |change|
+      case change.action
+      when '=' then change.new_element
+      when '+', '!' then content_tag(:ins, change.new_element, class: 'text-success')
+      end
+    end
+
+    [safe_join(before_parts).presence || '—', safe_join(after_parts).presence || '—']
+  end
+
   def link_to_name_type(name)
     if name.type_is_name?
       if name.type_name
@@ -64,4 +90,7 @@ module NamesHelper
 
     out.inject(:+)
   end
+
+  private
+
 end

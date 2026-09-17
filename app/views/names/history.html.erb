@@ -1,0 +1,34 @@
+<% provide(:title, "History of #{@name.abbr_name_raw}") %>
+
+<h1>History of <%= @name.name_html %></h1>
+<p><%= link_to('Back to name', @name) %></p>
+
+<% if @versions.empty? %>
+  <p class="text-muted">No history has been recorded for this name.</p>
+<% else %>
+  <div class="name-history-list">
+    <% @versions.each do |version| %>
+      <div class="name-history-version" data-version-id="<%= version.id %>">
+        <time class="name-history-date" datetime="<%= version.created_at.iso8601 %>">
+          <%= version.created_at.strftime('%F %H:%M %Z') %>
+        </time>
+
+        <div class="name-history-event">
+          <% @history.changes_for(version).each do |attribute, (before, after)| %>
+            <% before_diff, after_diff = history_before_after_diff(before, after, attribute: attribute) %>
+            <div class="name-history-change">
+              <strong><%= Name.human_attribute_name(attribute) %>:</strong>
+              <span class="name-history-values">
+                <span class="name-history-before" data-label="Before"><span class="sr-only">Before: </span><%= before_diff %></span>
+                <span class="name-history-arrow" aria-hidden="true">→</span>
+                <span class="name-history-after" data-label="After"><span class="sr-only">After: </span><%= after_diff %></span>
+              </span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= will_paginate(@versions) %>

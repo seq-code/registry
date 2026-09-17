@@ -114,6 +114,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    diff-lcs (2.0.0)
     dkim (1.1.0)
     erb (6.0.4)
     erubi (1.13.1)
@@ -487,6 +488,7 @@ DEPENDENCIES
   d3-rails
   dartsass-sprockets
   devise
+  diff-lcs (~> 2.0)
   dkim (~> 1.1)
   font_awesome5_rails (~> 1.5)
   httparty (~> 0.23)
