@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   # Static pages
   namespace :page do
     %i[
-      api about committee connect help initiative issues join
+      api about committee connect dashboard_map help initiative issues join
       news prize publications seqcode linkout status
       sandbox stats videos
     ].each { |i| get(i) }

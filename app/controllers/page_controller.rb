@@ -20,6 +20,12 @@ class PageController < ApplicationController
                 'zt-19rqshbvn-9Rti7Tn2_CskNCkW1WIaOw'
   end
 
+  # GET /page/dashboard_map
+  def dashboard_map
+    redirect_to 'https://aaudk-eu.maps.arcgis.com/apps/dashboards/' \
+                'd77b04984ac842a683c1bd97cf41ef88'
+  end
+
   # GET /page/publications
   def publications
   end
