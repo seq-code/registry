@@ -39,8 +39,8 @@
               <%= name.name_html %>
               <span class="text-muted">
                 - <%= name.rank %> of
-                  <%= placement.parent.try(:name_html) ||
-                      placement.incertae_sedis_html.presence || 'unknown' %>
+                  <%= placement.incertae_sedis_html.presence ||
+                      placement.parent.try(:name_html) || 'unknown' %>
               </span>
             </button>
           </h2>

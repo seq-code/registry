@@ -1018,9 +1018,7 @@ class Name < ApplicationRecord
   def lineage_parent
     return parent if parent
 
-    if incertae_sedis? && incertae_sedis =~ /Incertae sedis \((.+)\)/
-      self.class.find_by_variants($1)
-    end
+    placement.parent if incertae_sedis?
   end
 
   def type_name_alt_placement
@@ -1486,11 +1484,9 @@ class Name < ApplicationRecord
   end
 
   def ensure_consistent_placement
-    placement_incertae_sedis = incertae_sedis
-
-    if parent_id.present? || placement_incertae_sedis.present?
+    if parent_id.present?
       pp = placements.where(
-        parent_id: parent_id, incertae_sedis: placement_incertae_sedis
+        parent_id: parent_id, incertae_sedis: false
       ).first
       if pp.present?
         if pp.preferred?
@@ -1503,10 +1499,12 @@ class Name < ApplicationRecord
           Placement.new(
             name_id: id,
             parent_id: parent_id,
-            incertae_sedis: placement_incertae_sedis,
+            incertae_sedis: false,
             preferred: true
           ).save
       end
+    elsif placements.where(preferred: true, incertae_sedis: true).exists?
+      true
     else
       # Conservatively preserve as alternative placement
       placements.update(preferred: false)

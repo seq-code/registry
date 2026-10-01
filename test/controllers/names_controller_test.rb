@@ -44,7 +44,7 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
 
   test 'autocomplete filters names to an exact rank' do
     get autocomplete_names_url(
-      format: :json, q: 'Bacill', rank: 'phylum'
+      format: :json, q: 'Bacill', ranks: 'phylum'
     )
 
     assert_response :success
@@ -54,13 +54,28 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert_includes entry['display'], '>phylum</small>'
   end
 
-  test 'autocomplete filters names to a minimum rank level' do
+  test 'autocomplete filters names to allowed ranks' do
     get autocomplete_names_url(
-      format: :json, q: 'Bacill', minimum_rank: 'class'
+      format: :json, q: 'Bacill', ranks: 'domain,phylum,class'
     )
 
     assert_response :success
     assert_equal %w[Bacilli Bacillota], autocomplete_values.sort
+  end
+
+  test 'autocomplete returns no names for an empty ranks list' do
+    get autocomplete_names_url(format: :json, q: 'Escherichia', ranks: '')
+
+    assert_response :success
+    assert_empty autocomplete_values
+  end
+
+  test 'autocomplete without ranks includes all matching ranks' do
+    get autocomplete_names_url(format: :json, q: 'Escherichia')
+
+    assert_response :success
+    assert_includes autocomplete_values, names(:escherichia).name
+    assert_includes autocomplete_values, names(:escherichia_coli).name
   end
 
   test 'add_paratype_strain_commit ignores a tampered name_id' do

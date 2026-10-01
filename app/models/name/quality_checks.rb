@@ -112,15 +112,17 @@ module Name::QualityChecks
       inconsistent_parent_rank: {
         message: ->(_w, n) {
           <<~MSG
-            The parent rank (#{n.parent.inferred_rank}) is inconsistent 
+            The parent rank (#{n.placement.parent.inferred_rank}) is inconsistent 
             with the rank of this name (#{n.inferred_rank})
           MSG
         },
         area:    :nomenclature,
         rules:   %w[7a 7b],
-        scope:   ->(_w, n) { n.rank? && n.parent&.rank? },
+        scope:   ->(_w, n) {
+          n.rank? && n.placement&.parent&.rank?
+        },
         failure: ->(_w, n) {
-          n.class.ranks.index(n.rank) != n.class.ranks.index(n.parent.rank) + 1
+          !n.placement.allowed_parent_ranks.include?(n.placement.parent.rank)
         }
       }.merge(@@link_to_edit_parent),
       # - Rules 7c and 7d are implied by the structure of the SeqCode Registry
@@ -141,7 +143,10 @@ module Name::QualityChecks
         link_to: ->(_w, n) { [:edit_parent, n] },
         recommendations: %w[7],
         scope:   ->(_w, n) { n.rank? && !n.top_rank? },
-        failure: ->(_w, n) { !n.incertae_sedis? && !n.parent.present? }
+        failure: ->(_w, n) {
+          parent = n.incertae_sedis? ? n.placement.parent : n.parent
+          !parent.present?
+        }
       },
 
       # Section 3. Naming of Taxa
