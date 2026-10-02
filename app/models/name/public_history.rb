@@ -10,21 +10,39 @@ class Name::PublicHistory
     @name = name
   end
 
-  # Filter before paginating so each page contains public updates only.
+  # Load both histories and filter displayable changes in Ruby before pagination.
   def versions(page:)
-    @name.versions
-         .where(operation: 'update')
-         .where(
-           'EXISTS (SELECT 1 FROM jsonb_object_keys(versions.changeset) AS key WHERE key IN (?))',
-           KEYS
-         )
-         .order(created_at: :desc, id: :desc)
-         .paginate(page: page, per_page: 25)
+    name_versions.or(publication_versions)
+                 .order(created_at: :desc, id: :desc)
+                 .select { |version| changes_for(version).any? }
+                 .paginate(page: page, per_page: 25)
+  end
+
+  def changes_for(version)
+    case version.record_type
+    when 'Name'
+      name_changes_for(version)
+    when 'PublicationName'
+      publication_changes_for(version)
+    else
+      raise ArgumentError, "Unsupported public history record type: #{version.record_type}"
+    end
+  end
+
+  def publication_id_for(version)
+    @publication_ids ||= @name.publication_names.pluck(:id, :publication_id).to_h
+    @publication_ids.fetch(version.record_id)
+  end
+
+  private
+
+  def name_versions
+    @name.versions.where(operation: 'update')
   end
 
   # Ordinary fields keep their [before, after] pairs. Etymology fields become
   # one pair of attribute snapshots for the view to render together.
-  def changes_for(version)
+  def name_changes_for(version)
     changes = version.changeset.slice(*KEYS)
     etymology = changes.extract!(*Name::ETYMOLOGY_COLUMNS)
     if etymology.any?
@@ -35,7 +53,24 @@ class Name::PublicHistory
     changes
   end
 
-  private
+  def publication_versions
+    Version.where(
+      record_type: 'PublicationName', record_id: @name.publication_names.select(:id)
+    )
+  end
+
+  def publication_changes_for(version)
+    return { 'linked' => [false, true] } if version.operation == 'create'
+    return {} unless version.operation == 'update'
+
+    changes = version.changeset.dup
+    if unlinked_at = changes.delete('unlinked_at')
+      # A nil unlinked_at means the publication is linked.
+      linked = unlinked_at.map(&:nil?)
+      changes = { 'linked' => linked }.merge(changes) unless linked.first == linked.last
+    end
+    changes
+  end
 
   # Include the name because full_etymology derives the :xx particle from its
   # last word. Older versions without a name pair use the current name.

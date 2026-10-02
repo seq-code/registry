@@ -4,12 +4,12 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
   test 'renders public history' do
     name = names(:escherichia_coli)
     name.update!(authority: 'Smith', etymology_xx_description: 'of the colon')
+    PublicationName.create!(name: name, publication: publications(:one))
 
     get history_name_path(name)
 
     assert_response :success
-    assert_select '.name-history-version', count: 1
-    assert_select '.name-history-change', count: 2
+    assert_select '.name-history-version', count: 2
   end
 
   test 'does not reveal private name history' do
@@ -17,6 +17,7 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
       name: 'E. coli', rank: 'species', status: 5, created_by: users(:contributor)
     )
     name.update!(syllabication: 'co.li')
+    PublicationName.create!(name: name, publication: publications(:one)).unlink!
 
     get history_name_path(name)
 

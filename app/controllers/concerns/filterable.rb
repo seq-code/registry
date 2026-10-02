@@ -31,7 +31,7 @@ module Filterable
     # Handle special sorting cases (e.g., 'citations' for Name model)
     case sort_by.to_s.downcase
     when 'citations'
-      query.left_joins(:publication_names).group(:id).order("COUNT(publication_names.id) #{sort_direction.upcase}")
+      query.left_joins(:publication_names).group(:id).order("COUNT(CASE WHEN publication_names.unlinked_at IS NULL THEN publication_names.id END) #{sort_direction.upcase}")
     when 'date'
       # Use validated_at if available, otherwise fall back to created_at
       if query.model.column_names.include?('validated_at')

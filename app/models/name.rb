@@ -1,7 +1,9 @@
 class Name < ApplicationRecord
   has_many(:pseudonyms, dependent: :destroy)
+  # A deleted name no longer needs its publication links, including unlinked ones.
   has_many(:publication_names, dependent: :destroy)
-  has_many(:publications, through: :publication_names)
+  has_many(:publications, -> { merge(PublicationName.linked) },
+           through: :publication_names)
   has_many(
     :name_correspondences, -> { order(:created_at) }, dependent: :destroy
   )
@@ -663,7 +665,7 @@ class Name < ApplicationRecord
   end
 
   def publication_names_ordered
-    publication_names.left_joins(:publication).order(journal_date: :desc)
+    publication_names.linked.left_joins(:publication).order(journal_date: :desc)
   end
 
   def citations
@@ -827,7 +829,7 @@ class Name < ApplicationRecord
   end
 
   def emended_in
-    publication_names.where(emends: true).map(&:publication)
+    publication_names.linked.where(emends: true).map(&:publication)
   end
 
   def emended_in?(publication)
@@ -835,7 +837,7 @@ class Name < ApplicationRecord
   end
 
   def not_validly_proposed_in
-    publication_names.where(not_valid_proposal: true).map(&:publication)
+    publication_names.linked.where(not_valid_proposal: true).map(&:publication)
   end
 
   def not_validly_proposed_in?(publication)

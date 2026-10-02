@@ -1,15 +1,13 @@
 module NamesHelper
-  def history_values(changes, attribute:)
+  def history_values(changes, attribute:, record_type: 'Name')
     values =
-      case attribute
-      when 'etymology'
-        history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
-      when 'proposed_in_id'
-        changes.map { |id| history_publication_reference(id) }
-      when 'status'
-        changes.map { |code| Name.status_hash.dig(code, :name) || code }
+      case record_type
+      when 'PublicationName'
+        history_publication_name_values(changes)
+      when 'Name'
+        history_name_values(changes, attribute)
       else
-        changes.any? { |value| value.is_a?(String) } ? history_diff_parts(*changes) : changes
+        raise ArgumentError, "Unsupported public history record type: #{record_type}"
       end
 
     values.map { |value| safe_join(Array(value)).presence || '—' }
@@ -109,4 +107,30 @@ module NamesHelper
 
   private
 
+  def history_name_values(changes, attribute)
+    case attribute
+    when 'etymology'
+      history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
+    when 'proposed_in_id'
+      changes.map { |id| history_publication_reference(id) }
+    when 'status'
+      changes.map { |code| Name.status_hash.dig(code, :name) || code }
+    else
+      history_text_values(changes)
+    end
+  end
+
+  def history_publication_name_values(changes)
+    history_text_values(changes).map do |value|
+      case value
+      when true then 'Yes'
+      when false then 'No'
+      else value
+      end
+    end
+  end
+
+  def history_text_values(changes)
+    changes.any? { |value| value.is_a?(String) } ? history_diff_parts(*changes) : changes
+  end
 end
