@@ -45,8 +45,8 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
     assert_select '.name-history-after a[href=?]', publication_path(first), text: first.short_citation
     assert_select '.name-history-before a[href=?]', publication_path(second), text: second.short_citation
     assert_select '.name-history-after a[href=?]', publication_path(second), text: second.short_citation
-    assert_select '.name-history-before', text: 'Before: —', count: 1
-    assert_select '.name-history-after', text: 'After: —', count: 1
+    assert_select '.name-history-before', text: '—', count: 1
+    assert_select '.name-history-after', text: '—', count: 1
   end
 
   test 'renders a retained publication id when the publication no longer exists' do
@@ -58,6 +58,6 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
     get history_name_path(name)
 
     assert_response :success
-    assert_select '.name-history-after', text: "After: Publication ##{publication.id} (deleted)"
+    assert_select '.name-history-after', text: "Publication ##{publication.id} (deleted)"
   end
 end

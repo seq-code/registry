@@ -16,64 +16,36 @@
   }
 }
 
-.name-history-version {
-  display: grid;
-  grid-template-columns: 11rem minmax(0, 1fr);
-  gap: 1rem;
-  padding: 0.65rem 0.75rem;
+.name-history-table {
+  table-layout: fixed;
+  min-width: 42rem;
+
+  thead th:first-child {
+    width: 12rem;
+  }
+
+  thead th:nth-child(2) {
+    width: 10rem;
+  }
 
   .name-history-date {
     color: #6c757d;
     font-size: 0.875rem;
+    font-weight: normal;
     white-space: nowrap;
   }
-}
 
-.name-history-change {
-  display: grid;
-  grid-template-columns: 10rem minmax(0, 1fr);
-  gap: 0.5rem;
-  padding: 0.3rem 0.5rem;
-
-  &:nth-child(even) {
+  .name-history-version:nth-of-type(even) {
     background-color: #f7f8fa;
   }
-}
 
-.name-history-values {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 2rem minmax(0, 1fr);
-  align-items: center;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.name-history-before,
-.name-history-after {
-  white-space: pre-wrap;
-}
-
-.name-history-arrow {
-  color: #6c757d;
-  text-align: center;
-}
-
-@media (max-width: 767px) {
-  .name-history-version {
-    display: block;
-
-    .name-history-date {
-      display: block;
-      margin-bottom: 0.2rem;
-    }
+  .name-history-version + .name-history-version {
+    border-top: 0.75rem solid var(--white);
   }
 
-  .name-history-change {
-    display: block;
-
-    > strong {
-      display: block;
-      margin-bottom: 0.15rem;
-    }
+  .name-history-before,
+  .name-history-after {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 }
