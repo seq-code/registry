@@ -1,28 +1,40 @@
-require 'diff/lcs'
-
 module NamesHelper
-  def history_before_after_diff(before, after, attribute:)
+  def history_before_value(changes, attribute:)
+    before = changes.first
     if attribute == 'etymology'
-      before = Name.new(before).full_etymology
-      after = Name.new(after).full_etymology
+      before = history_etymology_parts(*changes).first
     end
 
-    changes = Diff::LCS.sdiff(before.to_s.scan(/\X/), after.to_s.scan(/\X/))
+    safe_join(Array(before)).presence || '—'
+  end
 
-    before_parts = changes.filter_map do |change|
-      case change.action
-      when '=' then change.old_element
-      when '-', '!' then content_tag(:del, change.old_element, class: 'text-danger')
-      end
-    end
-    after_parts = changes.filter_map do |change|
-      case change.action
-      when '=' then change.new_element
-      when '+', '!' then content_tag(:ins, change.new_element, class: 'text-success')
-      end
+  def history_after_value(changes, attribute:)
+    after = changes.last
+    if attribute == 'etymology'
+      after = history_etymology_parts(*changes).last
     end
 
-    [safe_join(before_parts).presence || '—', safe_join(after_parts).presence || '—']
+    safe_join(Array(after)).presence || '—'
+  end
+
+  def history_etymology_parts(before, after)
+    before = Name.new(before).full_etymology
+    after = Name.new(after).full_etymology
+
+    chunks = TextDiff.chunks(before, after)
+
+    before_parts = chunks.filter_map do |unchanged, text, _|
+      next if text.empty?
+
+      unchanged ? text : content_tag(:del, text, class: 'text-danger')
+    end
+    after_parts = chunks.filter_map do |unchanged, _, text|
+      next if text.empty?
+
+      unchanged ? text : content_tag(:ins, text, class: 'text-success')
+    end
+
+    [before_parts, after_parts]
   end
 
   def link_to_name_type(name)
