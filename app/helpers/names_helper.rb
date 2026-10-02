@@ -3,11 +3,11 @@ module NamesHelper
     values =
       case attribute
       when 'etymology'
-        history_etymology_parts(*changes)
+        history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
       when 'proposed_in_id'
         changes.map { |id| history_publication_reference(id) }
       else
-        changes
+        changes.any? { |value| value.is_a?(String) } ? history_diff_parts(*changes) : changes
       end
 
     values.map { |value| safe_join(Array(value)).presence || '—' }
@@ -22,10 +22,7 @@ module NamesHelper
     end
   end
 
-  def history_etymology_parts(before, after)
-    before = Name.new(before).full_etymology
-    after = Name.new(after).full_etymology
-
+  def history_diff_parts(before, after)
     chunks = TextDiff.chunks(before, after)
 
     before_parts = chunks.filter_map do |unchanged, text, _|
