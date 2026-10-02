@@ -6,6 +6,8 @@ module NamesHelper
         history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
       when 'proposed_in_id'
         changes.map { |id| history_publication_reference(id) }
+      when 'status'
+        changes.map { |code| Name.status_hash.dig(code, :name) || code }
       else
         changes.any? { |value| value.is_a?(String) } ? history_diff_parts(*changes) : changes
       end
