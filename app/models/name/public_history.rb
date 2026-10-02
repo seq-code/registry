@@ -3,7 +3,7 @@ class Name::PublicHistory
   KEYS = %w[
     name rank syllabication status priority_date authority
     nomenclatural_status taxonomic_status proposal_kind corrigendum_from
-    type_material type_accession
+    type_material type_accession proposed_in_id
   ].concat(Name::ETYMOLOGY_COLUMNS).freeze
 
   def initialize(name)
