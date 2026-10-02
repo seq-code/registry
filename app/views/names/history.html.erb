@@ -14,8 +14,17 @@
         </time>
 
         <div class="name-history-event">
-          <%= render "names/history/#{version.record_type.underscore}",
-                     version: version, history: @history %>
+          <% @history.changes_for(version).each do |attribute, (before, after)| %>
+            <% before_diff, after_diff = history_before_after_diff(before, after, attribute: attribute) %>
+            <div class="name-history-change">
+              <strong><%= Name.human_attribute_name(attribute) %>:</strong>
+              <span class="name-history-values">
+                <span class="name-history-before" data-label="Before"><span class="sr-only">Before: </span><%= before_diff %></span>
+                <span class="name-history-arrow" aria-hidden="true">→</span>
+                <span class="name-history-after" data-label="After"><span class="sr-only">After: </span><%= after_diff %></span>
+              </span>
+            </div>
+          <% end %>
         </div>
       </div>
     <% end %>
