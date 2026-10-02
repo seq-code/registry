@@ -1,6 +1,8 @@
 class Name < ApplicationRecord
   has_many(:pseudonyms, dependent: :destroy)
-  has_many(:publication_names, dependent: :destroy)
+  has_many(:publication_names)
+  # Include soft deleted links when permanently deleting their name.
+  before_destroy { publication_names.with_deleted.each(&:destroy!) }
   has_many(:publications, through: :publication_names)
   has_many(
     :name_correspondences, -> { order(:created_at) }, dependent: :destroy

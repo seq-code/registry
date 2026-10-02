@@ -18,7 +18,9 @@ class Publication < ApplicationRecord
     dependent: :destroy
   )
   has_many(:publication_subjects, dependent: :destroy)
-  has_many(:publication_names, dependent: :destroy)
+  has_many(:publication_names)
+  # Include soft deleted links when permanently deleting their publication.
+  before_destroy { publication_names.with_deleted.each(&:destroy!) }
   has_many(:authors, through: :publication_authors)
   has_many(:subjects, through: :publication_subjects)
   has_many(:names, through: :publication_names)

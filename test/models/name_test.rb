@@ -35,4 +35,17 @@ class NameTest < ActiveSupport::TestCase
       '<i>Incertae sedis</i> (Bacteria)', name.incertae_sedis_html
     )
   end
+
+  test 'permanently deleting a name removes both active and soft deleted publication links' do
+    name = names(:escherichia_coli)
+    publication = publications(:no_doi)
+    soft_deleted_link = PublicationName.create!(name: name, publication: publication)
+    soft_deleted_link.soft_delete!
+    active_link = PublicationName.create!(name: name, publication: publication)
+
+    name.destroy!
+
+    assert_not PublicationName.with_deleted.exists?(soft_deleted_link.id)
+    assert_not PublicationName.with_deleted.exists?(active_link.id)
+  end
 end
