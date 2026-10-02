@@ -1,20 +1,25 @@
 module NamesHelper
-  def history_before_value(changes, attribute:)
-    before = changes.first
-    if attribute == 'etymology'
-      before = history_etymology_parts(*changes).first
-    end
+  def history_values(changes, attribute:)
+    values =
+      case attribute
+      when 'etymology'
+        history_etymology_parts(*changes)
+      when 'proposed_in_id'
+        changes.map { |id| history_publication_reference(id) }
+      else
+        changes
+      end
 
-    safe_join(Array(before)).presence || '—'
+    values.map { |value| safe_join(Array(value)).presence || '—' }
   end
 
-  def history_after_value(changes, attribute:)
-    after = changes.last
-    if attribute == 'etymology'
-      after = history_etymology_parts(*changes).last
+  def history_publication_reference(publication_id)
+    publication = Publication.find_by(id: publication_id) if publication_id
+    if publication
+      link_to(publication.short_citation, publication)
+    elsif publication_id
+      "Publication ##{publication_id} (deleted)"
     end
-
-    safe_join(Array(after)).presence || '—'
   end
 
   def history_etymology_parts(before, after)

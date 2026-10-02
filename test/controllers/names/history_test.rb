@@ -28,4 +28,36 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
     assert_select 'h3', text: 'Insufficient permits'
     assert_select '.name-history-version', count: 0
   end
+
+  test 'renders proposed publication changes as citations with links' do
+    name = names(:escherichia_coli)
+    first = publications(:one)
+    second = publications(:two)
+    name.update!(proposed_in: first)
+    name.update!(proposed_in: second)
+    name.update!(proposed_in: nil)
+
+    get history_name_path(name)
+
+    assert_response :success
+    assert_select '.name-history-version', count: 3
+    assert_select '.name-history-before a[href=?]', publication_path(first), text: first.short_citation
+    assert_select '.name-history-after a[href=?]', publication_path(first), text: first.short_citation
+    assert_select '.name-history-before a[href=?]', publication_path(second), text: second.short_citation
+    assert_select '.name-history-after a[href=?]', publication_path(second), text: second.short_citation
+    assert_select '.name-history-before', text: 'Before: —', count: 1
+    assert_select '.name-history-after', text: 'After: —', count: 1
+  end
+
+  test 'renders a retained publication id when the publication no longer exists' do
+    name = names(:escherichia_coli)
+    publication = publications(:no_doi)
+    name.update!(proposed_in: publication)
+    publication.destroy!
+
+    get history_name_path(name)
+
+    assert_response :success
+    assert_select '.name-history-after', text: "After: Publication ##{publication.id} (deleted)"
+  end
 end
