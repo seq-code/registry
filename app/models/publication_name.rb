@@ -1,5 +1,6 @@
 class PublicationName < ApplicationRecord
   include SoftDeletable
+  include Versioned
 
   belongs_to(:publication)
   belongs_to(:name)
