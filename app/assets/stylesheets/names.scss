@@ -35,11 +35,11 @@
     white-space: nowrap;
   }
 
-  .name-history-version:nth-of-type(even) {
+  .name-history-event:nth-of-type(even) {
     background-color: #f7f8fa;
   }
 
-  .name-history-version + .name-history-version {
+  .name-history-event + .name-history-event {
     border-top: 0.75rem solid var(--white);
   }
 

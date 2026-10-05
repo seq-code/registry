@@ -3,7 +3,7 @@
 <h1>History of <%= @name.name_html %></h1>
 <p><%= link_to('Back to name', @name) %></p>
 
-<% if @versions.empty? %>
+<% if @events.empty? %>
   <p class="text-muted">No history has been recorded for this name.</p>
 <% else %>
   <div class="table-responsive">
@@ -16,16 +16,16 @@
           <th scope="col">After</th>
         </tr>
       </thead>
-      <% @versions.each do |version| %>
-        <% changes = @history.changes_for(version) %>
-        <tbody class="name-history-version" data-version-id="<%= version.id %>">
+      <% @events.each do |event| %>
+        <% changes = @history.changes_for(event) %>
+        <tbody class="name-history-event" data-event-id="<%= event.id %>">
           <% changes.each_with_index do |(attribute, values), index| %>
             <% before, after = history_values(values, attribute: attribute) %>
             <tr class="name-history-change">
               <% if index.zero? %>
                 <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size %>">
-                  <time datetime="<%= version.created_at.iso8601 %>">
-                    <%= version.created_at.strftime('%F %H:%M %Z') %>
+                  <time datetime="<%= event.created_at.iso8601 %>">
+                    <%= event.created_at.strftime('%F %H:%M %Z') %>
                   </time>
                 </th>
               <% end %>
@@ -40,4 +40,4 @@
   </div>
 <% end %>
 
-<%= will_paginate(@versions) %>
+<%= will_paginate(@events) %>

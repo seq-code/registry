@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_17_100000) do
+ActiveRecord::Schema.define(version: 2026_10_05_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -168,6 +168,14 @@ ActiveRecord::Schema.define(version: 2026_09_17_100000) do
     t.boolean "automatic", default: false
     t.index ["name_id"], name: "index_name_correspondences_on_name_id"
     t.index ["user_id"], name: "index_name_correspondences_on_user_id"
+  end
+
+  create_table "name_history_events", force: :cascade do |t|
+    t.bigint "name_id", null: false
+    t.string "kind", null: false
+    t.jsonb "data", null: false
+    t.datetime "created_at", null: false
+    t.index ["name_id", "created_at", "id"], name: "index_name_history_events_on_name_id_and_created_at_and_id"
   end
 
   create_table "name_paratypes", force: :cascade do |t|

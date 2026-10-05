@@ -4,7 +4,7 @@ module NamesHelper
       case attribute
       when 'etymology'
         history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
-      when 'proposed_in_id'
+      when 'proposed_in_id', 'pub_linked', 'pub_unlinked'
         changes.map { |id| history_publication_reference(id) }
       when 'status'
         changes.map { |code| Name.status_hash.dig(code, :name) || code }

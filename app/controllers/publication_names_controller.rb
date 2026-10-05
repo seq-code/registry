@@ -11,15 +11,15 @@ class PublicationNamesController < ApplicationController
     publication = @publication_name.publication
     PublicationName.transaction do
       if name.proposed_in? publication
-        name.update(proposed_in: nil)
+        name.update!(proposed_in: nil)
       end
       if name.corrigendum_in? publication
-        name.update(corrigendum_in: nil, corrigendum_from: nil)
+        name.update!(corrigendum_in: nil, corrigendum_from: nil)
       end
       if name.assigned_in? publication
-        name.update(assigned_in: nil)
+        name.update!(assigned_in: nil)
       end
-      @publication_name.destroy
+      @publication_name.destroy!
     end
 
     redirect_to(

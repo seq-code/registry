@@ -218,7 +218,7 @@ class NamesController < ApplicationController
   # GET /names/1/history
   def history
     @history = Name::PublicHistory.new(@name)
-    @versions = @history.versions(page: params[:page])
+    @events = @history.events(page: params[:page])
     @crumbs = [['Names', names_path], [@name.abbr_name, @name], 'History']
   end
 

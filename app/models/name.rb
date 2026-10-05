@@ -148,6 +148,7 @@ class Name < ApplicationRecord
   include Name::FuzzySearch
   include TypeMaterial
   include Versioned
+  include Name::History
 
   ETYMOLOGY_COLUMNS = column_names.grep(/\Aetymology_/).freeze
   versioned_together(:name, *ETYMOLOGY_COLUMNS)
