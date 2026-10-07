@@ -86,6 +86,7 @@ Rails.application.routes.draw do
     end
     member do
       # --> Display name
+      get  :history
       get  :network
       get  :linkout
       get  :wiki

@@ -1,4 +1,46 @@
 module NamesHelper
+  def history_values(changes, attribute:)
+    values =
+      case attribute
+      when 'etymology'
+        history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
+      when 'proposed_in_id'
+        changes.map { |id| history_publication_reference(id) }
+      when 'status'
+        changes.map { |code| Name.status_hash.dig(code, :name) || code }
+      else
+        changes.any? { |value| value.is_a?(String) } ? history_diff_parts(*changes) : changes
+      end
+
+    values.map { |value| safe_join(Array(value)).presence || '—' }
+  end
+
+  def history_publication_reference(publication_id)
+    publication = Publication.find_by(id: publication_id) if publication_id
+    if publication
+      link_to(publication.short_citation, publication)
+    elsif publication_id
+      "Publication ##{publication_id} (deleted)"
+    end
+  end
+
+  def history_diff_parts(before, after)
+    chunks = TextDiff.chunks(before, after)
+
+    before_parts = chunks.filter_map do |unchanged, text, _|
+      next if text.empty?
+
+      unchanged ? text : content_tag(:del, text, class: 'text-danger')
+    end
+    after_parts = chunks.filter_map do |unchanged, _, text|
+      next if text.empty?
+
+      unchanged ? text : content_tag(:ins, text, class: 'text-success')
+    end
+
+    [before_parts, after_parts]
+  end
+
   def link_to_name_type(name)
     if name.type_is_name?
       if name.type_name
@@ -64,4 +106,7 @@ module NamesHelper
 
     out.inject(:+)
   end
+
+  private
+
 end

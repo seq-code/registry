@@ -16,3 +16,36 @@
   }
 }
 
+.name-history-table {
+  table-layout: fixed;
+  min-width: 42rem;
+
+  thead th:first-child {
+    width: 12rem;
+  }
+
+  thead th:nth-child(2) {
+    width: 10rem;
+  }
+
+  .name-history-date {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: normal;
+    white-space: nowrap;
+  }
+
+  .name-history-version:nth-of-type(even) {
+    background-color: #f7f8fa;
+  }
+
+  .name-history-version + .name-history-version {
+    border-top: 0.75rem solid var(--white);
+  }
+
+  .name-history-before,
+  .name-history-after {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

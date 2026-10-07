@@ -12,7 +12,7 @@ class NamesController < ApplicationController
   before_action(
     :set_name,
     only: %i[
-      edit update destroy network wiki
+      edit update destroy network wiki history
       proposed_in not_validly_proposed_in emended_in assigned_in
       corrigendum_in corrigendum_orphan corrigendum
       edit_description edit_rank edit_notes edit_etymology edit_links edit_type
@@ -213,6 +213,13 @@ class NamesController < ApplicationController
         )
       end
     end
+  end
+
+  # GET /names/1/history
+  def history
+    @history = Name::PublicHistory.new(@name)
+    @versions = @history.versions(page: params[:page])
+    @crumbs = [['Names', names_path], [@name.abbr_name, @name], 'History']
   end
 
   # GET /names/linkout.xml

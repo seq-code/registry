@@ -147,6 +147,10 @@ class Name < ApplicationRecord
   include Name::Wiki
   include Name::FuzzySearch
   include TypeMaterial
+  include Versioned
+
+  ETYMOLOGY_COLUMNS = column_names.grep(/\Aetymology_/).freeze
+  versioned_together(:name, *ETYMOLOGY_COLUMNS)
 
   attr_accessor :only_display
   attr_accessor :nomenclatural_type_entry
