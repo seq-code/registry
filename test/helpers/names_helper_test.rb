@@ -31,4 +31,11 @@ class NamesHelperTest < ActionView::TestCase
     assert_equal ['—', citation],
                  history_values([nil, publication.id], attribute: 'proposed_in_id')
   end
+  test 'renders a retained publication id when the publication no longer exists' do
+    publication = publications(:no_doi)
+    publication.destroy!
+
+    assert_equal ['—', "Publication ##{publication.id} (deleted)"],
+                 history_values([nil, publication.id], attribute: 'proposed_in_id')
+  end
 end
