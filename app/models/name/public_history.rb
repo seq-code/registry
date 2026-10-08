@@ -64,12 +64,14 @@ class Name::PublicHistory
     return {} unless version.operation == 'update'
 
     changes = version.changeset.dup
-    if unlinked_at = changes.delete('unlinked_at')
-      # A nil unlinked_at means the publication is linked.
-      linked = unlinked_at.map(&:nil?)
-      changes = { 'linked' => linked }.merge(changes) unless linked.first == linked.last
-    end
-    changes
+    unlinked_at = changes.delete('unlinked_at')
+    return changes unless unlinked_at
+
+    # A nil unlinked_at means the publication is linked.
+    linked = unlinked_at.map(&:nil?)
+    return changes if linked.first == linked.last
+
+    { 'linked' => linked }.merge(changes)
   end
 
   # Include the name because full_etymology derives the :xx particle from its
