@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_09_17_100000) do
+ActiveRecord::Schema.define(version: 2026_10_02_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -367,8 +367,9 @@ ActiveRecord::Schema.define(version: 2026_09_17_100000) do
     t.datetime "updated_at", null: false
     t.boolean "emends", default: false
     t.boolean "not_valid_proposal", default: false
+    t.datetime "unlinked_at"
     t.index ["name_id"], name: "index_publication_names_on_name_id"
-    t.index ["publication_id", "name_id"], name: "index_publication_names_on_publication_id_and_name_id", unique: true
+    t.index ["publication_id", "name_id"], name: "index_publication_names_on_publication_id_and_name_id", unique: true, where: "(unlinked_at IS NULL)"
     t.index ["publication_id"], name: "index_publication_names_on_publication_id"
   end
 

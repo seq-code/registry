@@ -43,6 +43,10 @@
     border-top: 0.75rem solid var(--white);
   }
 
+  .name-history-record ~ .name-history-change th {
+    padding-left: 1.5rem;
+  }
+
   .name-history-before,
   .name-history-after {
     white-space: pre-wrap;
