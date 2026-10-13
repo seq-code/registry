@@ -365,11 +365,11 @@ module ApplicationHelper
     end
   end
 
-  def display_link(obj, display_method = nil, display_text: nil)
+  def display_link(obj, display_method = nil, display_text: nil, title: nil)
     if obj.is_a?(Name) && obj.redirect.present?
       link_to(
         display_text || display_obj(obj, display_method),
-        name_url(obj, no_redirect: true)
+        name_url(obj, no_redirect: true), title: title
       ) + ' ' +
         link_to(obj.redirect, class: 'badge badge-pill badge-danger') do
           fa_icon(:directions, title: 'Redirects to') + ' ' +
@@ -378,7 +378,7 @@ module ApplicationHelper
     else
       link_to(
         display_text || display_obj(obj, display_method),
-        polymorphic_url(obj)
+        polymorphic_url(obj), title: title
       )
     end
   end
