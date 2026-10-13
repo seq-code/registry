@@ -217,12 +217,12 @@ Rails.application.routes.draw do
   # Journal names routinely contain periods (e.g. "Cryptogamie. Algologie"),
   # which Rails' default segment matcher excludes to leave room for format
   # detection (":journal.json"), so it silently truncates them instead.
-  # Constrain :journal to swallow everything but a real trailing ".json"/
-  # ".html", so a literal period in the name is matched as part of :journal
-  # while an actual format suffix is still recognized.
+  # Journal names can also contain slashes. Constrain :journal to swallow
+  # everything but a real trailing ".json"/".html", so literal punctuation
+  # is matched as part of :journal while a format suffix is still recognized.
   resources(
     :journals, only: %i[index show], param: :journal,
-    constraints: { journal: /[^\/]+?/, format: /json|html/ }
+    constraints: { journal: /.+?/, format: /json|html/ }
   )
 
   # Publications
