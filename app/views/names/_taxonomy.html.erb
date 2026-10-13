@@ -19,7 +19,7 @@
       </dd>
     <% end %>
 
-    <% if @name.parent %>
+    <% if @name.placement %>
       <dt><%= fa_icon('layer-group') %> Classification</dt>
       <dd><%= name_lineage(@name) %></dd>
     <% end %>
@@ -30,7 +30,8 @@
       <dd>
         <% if @name.incertae_sedis? %>
           <div class="border-left px-3">
-            <b><%= @name.incertae_sedis_html %>:</b>
+            <b><%= link_to(
+                     @name.incertae_sedis_html, @name.placement.parent) %>:</b>
             <%= @name.incertae_sedis_text %>
           </div>
         <% elsif @name.parent %>
