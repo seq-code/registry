@@ -19,9 +19,10 @@ class Placement < ApplicationRecord
   def incertae_sedis_html
     return '' unless incertae_sedis?
 
-    ActionController::Base.helpers.safe_join(
-      ['<i>incertae sedis</i>'.html_safe, (" (#{parent.name})" if parent)].compact
-    )
+    ActionController::Base.helpers.safe_join([
+      '<i>incertae sedis</i>'.html_safe,
+      (" (#{parent.name})" if parent)
+    ].compact)
   end
 
   def allowed_parent_ranks(incertae_sedis: incertae_sedis?)
