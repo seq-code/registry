@@ -26,7 +26,7 @@
       <label for="autocomplete-phylum">Phylum only</label>
       <input id="autocomplete-phylum" class="form-control" type="text"
              value="Pseu" data-behavior="autocomplete"
-             data-autocomplete="names" data-rank="phylum">
+             data-autocomplete="names" data-ranks='["phylum"]'>
     </div>
   </div>
 
@@ -35,7 +35,8 @@
       <label for="autocomplete-class-or-above">Class or above</label>
       <input id="autocomplete-class-or-above" class="form-control" type="text"
              value="Bac" data-behavior="autocomplete"
-             data-autocomplete="names" data-minimum-rank="class">
+             data-autocomplete="names"
+             data-ranks='<%= Name.ranks_at_or_above('class').to_json %>'>
       <small class="form-text text-muted">Domain, phylum, or class.</small>
     </div>
 
@@ -43,7 +44,8 @@
       <label for="autocomplete-genus-or-above">Genus or above</label>
       <input id="autocomplete-genus-or-above" class="form-control" type="text"
              value="Escher" data-behavior="autocomplete"
-             data-autocomplete="names" data-minimum-rank="genus">
+             data-autocomplete="names"
+             data-ranks='<%= Name.ranks_at_or_above('genus').to_json %>'>
       <small class="form-text text-muted">
         Domain through genus; excludes species and subspecies.
       </small>

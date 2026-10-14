@@ -29,4 +29,3 @@ import "packs/network";
 import "packs/styling";
 import "packs/copyable";
 import "channels/index.js";
-

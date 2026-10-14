@@ -16,14 +16,15 @@ class PlacementsTest < ApplicationSystemTestCase
 
   test 'creating the first placement for a name' do
     name = Name.create!(
-      name: 'Escherichia fergusonii', rank: 'species', status: 5,
+      name: 'Escherichia vulneris', rank: 'species', status: 5,
       created_by: @user
     )
 
     assert_nil(name.placement)
 
     visit new_placement_path(name)
-    fill_in 'Genus', with: @parent.name
+    choose 'Fixed placement'
+    fill_in 'Parent genus', with: @parent.name
     click_button 'Submit'
 
     assert_text 'Placement successfully updated'
@@ -37,13 +38,14 @@ class PlacementsTest < ApplicationSystemTestCase
 
   test 'declaring incertae sedis in Bacteria' do
     name = Name.create!(
-      name: 'Escherichia fergusonii', rank: 'species', status: 5,
+      name: 'Escherichia ruysiae', rank: 'species', status: 5,
       created_by: @user
     )
     explanation = 'Its placement within Bacteria is unresolved.'
 
     visit new_placement_path(name)
-    select 'Incertae sedis (Bacteria)', from: 'Incertae sedis'
+    choose 'Incertae sedis'
+    fill_in 'Uncertain within', with: names(:bacteria).name
     fill_in_rich_text_area(
       'Description of the classification problems', with: explanation
     )
@@ -55,9 +57,10 @@ class PlacementsTest < ApplicationSystemTestCase
     name.reload
     placement = name.placement
 
-    assert_equal('Incertae sedis (Bacteria)', placement.incertae_sedis)
+    assert_predicate placement, :incertae_sedis?
+    assert_equal names(:bacteria), placement.parent
     assert_equal(explanation, placement.incertae_sedis_text.to_plain_text)
-    assert_nil(placement.parent)
+    assert_nil name.parent
     assert_predicate(placement, :preferred?)
   end
 
@@ -69,7 +72,8 @@ class PlacementsTest < ApplicationSystemTestCase
 
     visit name_path(name)
     click_link 'Report alternative placement'
-    fill_in 'Genus', with: alternative_parent.name
+    choose 'Fixed placement'
+    fill_in 'Parent genus', with: alternative_parent.name
     click_button 'Submit'
 
     assert_text 'Placement successfully updated'
