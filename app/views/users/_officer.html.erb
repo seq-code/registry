@@ -6,18 +6,26 @@
     <ul class="nav flex-column">
       <% @community_member_applications.each do |u| %>
         <li class="nav-item">
-          <b><%= link_to u.username, u %></b>
-          (<%= u.community_member_started_on? ? 'renewal' : 'new application' %>)
+          <b><%= link_to(u.username, u) %></b>
+          (<%= u.community_member_started_on? ?
+                 'renewal' : 'new application' %>)
+          &bull; <%= u.full_name %><br/>
+
+          <%= render(
+                partial: 'affiliation',
+                locals: { user: u, department: true }
+              ) %>
           <br/>
-          <%= render(partial: 'affiliation', locals: { user: u, department: true }) %>
+
+          <b>Position:</b> <%= u.position %>
+          &bull; <b>Highest degree:</b> <%= u.highest_degree %>
+          &bull; <b>Society membership:</b> <%= u.membership_societies %>
+          &bull; <b>Committee interest:</b> <%= u.committee_interest? ? 'Yes' : 'No' %>
           <br/>
-          Position: <%= u.position %>
-          &bull; Highest degree: <%= u.highest_degree %>
-          &bull; Society membership: <%= u.membership_societies %>
-          &bull; Committee interest: <%= u.committee_interest? ? 'Yes' : 'No' %>
+
+          <b>Achievements:</b> <%= u.achievements %>
           <br/>
-          Achievements: <%= u.achievements %>
-          <br/>
+
           <%= link_to community_member_grant_path(u), method: :post,
                 class: 'btn text-info btn-sm',
                 data: { confirm: 'Are you sure?' } do %>
