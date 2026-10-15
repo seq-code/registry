@@ -250,7 +250,7 @@ GEM
     prettyprint (0.2.1)
     prism (1.9.0)
     public_suffix (7.0.5)
-    puma (5.6.9)
+    puma (7.2.1)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.24)
@@ -497,7 +497,7 @@ DEPENDENCIES
   mutex_m
   pdf-reader
   pg
-  puma (~> 5.6)
+  puma (~> 7.2)
   rack-attack
   rack-cors
   rails (~> 6.1)
