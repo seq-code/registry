@@ -38,13 +38,26 @@ class NameTagsControllerTest < ActionDispatch::IntegrationTest
     assert_equal('llm', name_tag.proposed_by)
   end
 
+  test 'curator can tag a validly published name' do
+    sign_in(users(:curator))
+    name = names(:escherichia)
+
+    assert_predicate(name, :validated?)
+    assert_difference('NameTag.count', 1) do
+      post name_tags_url, params: {
+        name_tag: { name_id: name.id, tag_id: tags(:masculine).id }
+      }
+    end
+    assert_predicate(NameTag.last, :accepted?)
+  end
+
   test 'non-curators can only propose tags under their own username' do
     sign_in(users(:contributor))
 
     assert_difference('NameTag.count', 1) do
       post name_tags_url, params: {
         name_tag: {
-          name_id: @name.id, tag_id: tags(:eponym).id,
+          name_id: names(:draft_by_contributor).id, tag_id: tags(:eponym).id,
           status_int: 1, proposed_by: 'curator'
         }
       }
@@ -53,6 +66,18 @@ class NameTagsControllerTest < ActionDispatch::IntegrationTest
     name_tag = NameTag.last
     assert_predicate(name_tag, :proposed?)
     assert_equal('contributor', name_tag.proposed_by)
+  end
+
+  test 'non-curators cannot tag names they cannot edit' do
+    sign_in(users(:contributor))
+
+    assert_predicate(@name, :public?)
+    assert_no_difference('NameTag.count') do
+      post name_tags_url, params: {
+        name_tag: { name_id: @name.id, tag_id: tags(:eponym).id }
+      }
+    end
+    assert_equal('Action not allowed', flash[:alert])
   end
 
   test 'non-curators cannot tag names they cannot view' do

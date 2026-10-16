@@ -2,7 +2,7 @@
 <% accepted = name_tags.select(&:accepted?) %>
 <% proposed = name_tags.select(&:proposed?) %>
 <% rejected = name_tags.select(&:rejected?) %>
-<% can_tag = current_curator? && !name.only_display %>
+<% can_tag = current_curator? && name.can_edit_validated?(current_user) %>
 <% if accepted.any? || can_tag %>
   <dt><%= fa_icon('tags') %> Tags</dt>
   <dd>

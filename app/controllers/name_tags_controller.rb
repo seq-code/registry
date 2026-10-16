@@ -8,7 +8,7 @@ class NameTagsController < ApplicationController
     @name_tag = NameTag.new(name_tag_params)
     name = @name_tag.name
 
-    if name.nil? || !name.can_view?(current_user)
+    if name.nil? || !name.can_edit_validated?(current_user)
       flash[:alert] = 'Action not allowed'
       redirect_back(fallback_location: root_path) and return
     end
