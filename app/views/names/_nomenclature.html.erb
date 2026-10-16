@@ -54,6 +54,8 @@
     <% end %>
   </dd>
 
+  <%= render 'name_tags/tag_panel', name: @name %>
+
   <% if @name.notes? || @name.can_edit_validated?(current_user) %>
     <dt><%= fa_icon('sticky-note') %> Notes</dt>
     <dd>

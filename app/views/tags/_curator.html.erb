@@ -1,0 +1,11 @@
+<% if current_curator? %>
+  <dl name="curator" class="main-section name-details actions-section">
+    <h2>Curator Actions</h2>
+    <dd class="pt-2">
+      <%= link_to(edit_tag_url(@tag), class: 'btn btn-primary btn-sm') do %>
+        <%= fa_icon('edit') %> Edit tag
+      <% end %>
+      &raquo; Update the name, slug, color, umbrella tag, or description
+    </dd>
+  </dl>
+<% end %>
