@@ -1,4 +1,3 @@
-
 <%= simple_form_for(@tag) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification(message: f.object.errors[:base].to_sentence) if
@@ -6,13 +5,45 @@
 
   <div class="form-inputs">
     <%= f.input(:name) %>
+    <%= f.input(
+          :slug,
+          hint: 'Short stable identifier used programmatically: lowercase ' \
+                'letters, digits, and hyphens only (suggested from the name)'
+        ) %>
     <b>Color</b><br/>
     <%= f.color_field(:color) %>
     <br/>
     <br/>
+    <%= f.input(
+          :parent_id,
+          label: 'Umbrella tag',
+          collection: Tag.top_level.where.not(id: @tag.id).order(:name),
+          include_blank: '(none: top-level or standalone tag)',
+          hint: 'Only top-level tags can be used as umbrellas'
+        ) %>
+    <%= f.input(:description, as: :rich_text_area) %>
   </div>
 
   <div class="form-actions">
     <%= f.button(:submit) %>
+    <%= link_to(
+          'Cancel', @tag.persisted? ? tag_path(@tag) : tags_path,
+          class: 'btn btn-secondary'
+        ) %>
   </div>
 <% end %>
+
+<script>
+  (function() {
+    var slug = $('#tag_slug');
+    var touched = slug.val() !== '';
+    slug.on('input', function() { touched = true; });
+    $('#tag_name').on('input', function() {
+      if (touched) return;
+      slug.val(
+        $(this).val().toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+      );
+    });
+  })();
+</script>

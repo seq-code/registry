@@ -1,0 +1,24 @@
+<tr>
+  <td class="<%= 'pl-5' if local_assigns[:indent] %>">
+    <%= tag_badge(tag) %>
+  </td>
+  <td><%= tag.description %></td>
+  <td><%= @name_counts[tag.id] || 0 %></td>
+  <% if current_curator? %>
+    <td>
+      <%= link_to(
+            edit_tag_path(tag),
+            class: 'badge badge-pill badge-primary', title: 'edit tag'
+          ) do %>
+        <%= fa_icon('edit') %> Edit
+      <% end %>
+      <%= link_to(
+            tag, method: :delete,
+            class: 'badge badge-pill badge-danger', title: 'delete tag',
+            data: { confirm: "Delete the tag #{tag.name}?" }
+          ) do %>
+        <%= fa_icon('trash') %> Delete
+      <% end %>
+    </td>
+  <% end %>
+</tr>
