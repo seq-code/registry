@@ -80,4 +80,11 @@ class PlacementTest < ActiveSupport::TestCase
     )
   end
 
+  test 'unlinking the preferred placement allows a new preferred placement' do
+    name = names(:escherichia_coli)
+    placements(:escherichia_coli).unlink!
+
+    assert_nil name.placement
+    assert Placement.create!(name: name, parent: names(:escherichia), preferred: true)
+  end
 end

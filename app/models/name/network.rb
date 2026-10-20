@@ -81,7 +81,7 @@ module Name::Network
 
     @network_up_nodes = Set.new
     @network_up_edges = Set.new
-    placements.includes(:parent, :name).each do |placement|
+    placements.linked.includes(:parent, :name).each do |placement|
       next if !placement.parent.present? || placement.downwards?
 
       @network_up_nodes << placement.parent
@@ -133,7 +133,7 @@ module Name::Network
 
     @network_down_nodes = Set.new
     @network_down_edges = Set.new
-    child_placements.includes(:parent, :name).each do |placement|
+    child_placements.linked.includes(:parent, :name).each do |placement|
       next if placement.downwards?
 
       @network_down_nodes << placement.name

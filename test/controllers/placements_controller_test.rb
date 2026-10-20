@@ -51,4 +51,18 @@ class PlacementsControllerTest < ActionDispatch::IntegrationTest
     assert_not_predicate placement, :incertae_sedis?
     assert_equal names(:escherichia), @name.parent
   end
+
+  test 'unlinks an alternative placement instead of deleting it' do
+    name = names(:escherichia_coli)
+    placement = Placement.create!(
+      name: name, parent: names(:bacteria), incertae_sedis: true,
+      incertae_sedis_text: 'Family placement unresolved'
+    )
+
+    delete placement_path(placement)
+
+    assert_redirected_to name_path(name)
+    assert placement.reload.unlinked?
+    assert_not_includes name.reload.alt_placements, placement
+  end
 end

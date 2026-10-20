@@ -26,6 +26,7 @@ class Name < ApplicationRecord
   alias :correspondences :name_correspondences
   has_many(:checks, dependent: :destroy)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
+  # A deleted name no longer needs its placements, including unlinked ones.
   has_many(
     :placements, -> { includes(:parent) },
     dependent: :destroy, inverse_of: :name
@@ -1202,11 +1203,11 @@ class Name < ApplicationRecord
   end
 
   def alt_placements
-    @alt_placements ||= placements.where(preferred: false)
+    @alt_placements ||= placements.linked.where(preferred: false)
   end
 
   def alt_child_placements
-    @alt_child_placements ||= child_placements.where(preferred: false)
+    @alt_child_placements ||= child_placements.linked.where(preferred: false)
   end
 
   def alt_children
@@ -1214,7 +1215,7 @@ class Name < ApplicationRecord
   end
 
   def placement
-    @placement ||= placements.where(preferred: true).first
+    @placement ||= placements.linked.where(preferred: true).first
   end
 
   def consistent_placement?
@@ -1491,17 +1492,17 @@ class Name < ApplicationRecord
 
   def ensure_consistent_placement
     if parent_id.present?
-      pp = placements.where(
+      pp = placements.linked.where(
         parent_id: parent_id, incertae_sedis: false
       ).first
       if pp.present?
         if pp.preferred?
           true
         else
-          placements.update(preferred: false) && pp.update(preferred: true)
+          placements.linked.update(preferred: false) && pp.update(preferred: true)
         end
       else
-        placements.update(preferred: false) &&
+        placements.linked.update(preferred: false) &&
           Placement.new(
             name_id: id,
             parent_id: parent_id,
@@ -1509,11 +1510,11 @@ class Name < ApplicationRecord
             preferred: true
           ).save
       end
-    elsif placements.where(preferred: true, incertae_sedis: true).exists?
+    elsif placements.linked.where(preferred: true, incertae_sedis: true).exists?
       true
     else
       # Conservatively preserve as alternative placement
-      placements.update(preferred: false)
+      placements.linked.update(preferred: false)
     end
   end
 
