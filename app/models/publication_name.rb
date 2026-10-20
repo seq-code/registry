@@ -1,5 +1,5 @@
 class PublicationName < ApplicationRecord
-  include Unlinkable
+  include Unlinking
   include Versioned
 
   belongs_to(:publication)

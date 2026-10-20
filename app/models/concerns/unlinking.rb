@@ -1,4 +1,4 @@
-module Unlinkable
+module Unlinking
   extend ActiveSupport::Concern
 
   included do
