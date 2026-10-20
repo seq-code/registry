@@ -25,6 +25,10 @@
   }
 
   thead th:nth-child(2) {
+    width: 9rem;
+  }
+
+  thead th:nth-child(3) {
     width: 10rem;
   }
 
@@ -33,6 +37,17 @@
     font-size: 0.875rem;
     font-weight: normal;
     white-space: nowrap;
+  }
+
+  .name-history-author {
+    font-size: 0.875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .fa, .fas, .far {
+      opacity: 0.6;
+    }
   }
 
   .name-history-version:nth-of-type(even) {

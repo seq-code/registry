@@ -11,6 +11,7 @@
       <thead>
         <tr>
           <th scope="col">Date</th>
+          <th scope="col">By</th>
           <th scope="col">Attribute</th>
           <th scope="col">Before</th>
           <th scope="col">After</th>
@@ -28,6 +29,9 @@
                   <%= version.created_at.strftime('%F %H:%M %Z') %>
                 </time>
               </th>
+              <td class="name-history-author" rowspan="<%= changes.size + 1 %>">
+                <%= render('names/histories/author', version: version) %>
+              </td>
               <th colspan="3">
                 <%= history_record_heading(version) %>
               </th>
@@ -42,6 +46,9 @@
                     <%= version.created_at.strftime('%F %H:%M %Z') %>
                   </time>
                 </th>
+                <td class="name-history-author" rowspan="<%= changes.size %>">
+                  <%= render('names/histories/author', version: version) %>
+                </td>
               <% end %>
               <th scope="row"><%= record_type.constantize.human_attribute_name(attribute) %></th>
               <td class="name-history-before"><%= before %></td>

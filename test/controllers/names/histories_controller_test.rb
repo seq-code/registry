@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
   test 'renders public history' do
     name = names(:escherichia_coli)
     name.update!(authority: 'Smith', etymology_xx_description: 'of the colon')
@@ -10,6 +12,18 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select '.name-history-version', count: 2
+  end
+
+  test 'shows the user who made a change' do
+    name = names(:escherichia_coli)
+    curator = users(:curator)
+    sign_in(curator)
+    patch name_path(name), params: { name: { gtdb_accession: 's__Escherichia coli' } }
+    name.update!(syllabication: 'co.li')
+
+    get name_history_path(name)
+
+    assert_select '.name-history-author', text: curator.username, count: 1
   end
 
   test 'renders description edits as changes of the name' do

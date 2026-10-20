@@ -23,7 +23,7 @@ class Name::PublicHistory
   # Each version's record is loaded up front to label link changes.
   def versions(page:)
     name_versions.or(publication_versions).or(placement_versions).or(rich_text_versions)
-                 .includes(:record)
+                 .includes(:record, :user)
                  .order(created_at: :desc, id: :desc)
                  .select { |version| changes_for(version).any? }
                  .paginate(page: page, per_page: 25)

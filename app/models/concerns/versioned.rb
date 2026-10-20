@@ -33,19 +33,19 @@ module Versioned
   end
 
   def record_create_version
-    versions.create!(operation: 'create', changeset: versioned_attributes.transform_values { |value| [nil, value] })
+    versions.create!(operation: 'create', user: Current.user, changeset: versioned_attributes.transform_values { |value| [nil, value] })
   end
 
   def record_update_version
     changeset = versioned_changes
-    versions.create!(operation: 'update', changeset: changeset) if changeset.any?
+    versions.create!(operation: 'update', user: Current.user, changeset: changeset) if changeset.any?
   end
 
   def record_delete_version
     # The owner is already destroyed, so create directly rather than through
     # its association. Retain the final attributes and history.
     Version.create!(
-      record: self, operation: 'delete',
+      record: self, operation: 'delete', user: Current.user,
       changeset: versioned_attributes.transform_values { |value| [value, nil] }
     )
   end
