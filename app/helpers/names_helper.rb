@@ -13,12 +13,17 @@ module NamesHelper
     values.map { |value| safe_join(Array(value)).presence || '—' }
   end
 
-  def history_publication_reference(publication_id)
-    publication = Publication.find_by(id: publication_id) if publication_id
-    if publication
-      link_to(publication.short_citation, publication)
-    elsif publication_id
-      "Publication ##{publication_id} (deleted)"
+  def history_record_reference(record_class, id)
+    return unless id
+
+    record = record_class.find_by(id: id)
+    if record.nil?
+      "#{record_class.name} ##{id} (deleted)"
+    elsif record.is_a?(GenericTypeMaterial)
+      # Generic type material has no dedicated page to link to.
+      record.display
+    else
+      link_to(record.display, record)
     end
   end
 
@@ -116,15 +121,48 @@ module NamesHelper
   private
 
   def history_name_values(changes, attribute)
+    # Grouped values and status codes need domain-specific rendering before
+    # ordinary foreign keys can be resolved through their associations.
     case attribute
     when 'etymology'
       history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
-    when 'proposed_in_id'
-      changes.map { |id| history_publication_reference(id) }
+    when 'genome_id'
+      # This legacy column has a custom reader, but no belongs_to association.
+      changes.map { |id| history_record_reference(Genome, id) }
+    when 'nomenclatural_type'
+      changes.map { |type, id| history_type_reference(type, id) }
+    when 'corrigendum_kind'
+      changes.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
     when 'status'
       changes.map { |code| Name.status_hash.dig(code, :name) || code }
     else
-      history_text_values(changes)
+      # Match the actual foreign key, which need not follow the association's
+      # name. Polymorphic references are grouped with their types above.
+      association = Name.reflect_on_all_associations(:belongs_to).find do |reflection|
+        !reflection.polymorphic? && reflection.foreign_key == attribute
+      end
+      if association
+        changes.map { |id| history_record_reference(association.klass, id) }
+      else
+        history_text_values(changes)
+      end
+    end
+  end
+
+  def history_type_reference(type, id)
+    # Polymorphic reflection cannot supply one class. Resolve only the supported
+    # type-material classes rather than constantizing a recorded type string.
+    record_class = {
+      'Name' => Name, 'Genome' => Genome, 'Strain' => Strain,
+      'GenericTypeMaterial' => GenericTypeMaterial
+    }[type]
+    if record_class
+      history_record_reference(record_class, id)
+    elsif id
+      # Older versions may have recorded an ID without its unchanged type.
+      "#{type || 'Unknown type'} ##{id}"
+    else
+      type
     end
   end
 

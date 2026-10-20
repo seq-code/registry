@@ -26,10 +26,62 @@ class NamesHelperTest < ActionView::TestCase
   test 'renders publication changes as citations' do
     publication = publications(:one)
     citation = link_to(publication.short_citation, publication)
-    assert_equal [citation, '—'],
-                 history_values([publication.id, nil], attribute: 'proposed_in_id')
-    assert_equal ['—', citation],
-                 history_values([nil, publication.id], attribute: 'proposed_in_id')
+    %w[proposed_in_id corrigendum_in_id assigned_in_id].each do |attribute|
+      assert_equal [citation, '—'],
+                   history_values([publication.id, nil], attribute: attribute)
+      assert_equal ['—', citation],
+                   history_values([nil, publication.id], attribute: attribute)
+    end
+  end
+
+  test 'renders name relationships as links and retains deleted references' do
+    name = names(:escherichia)
+    %w[parent_id correct_name_id basonym_id redirect_id].each do |attribute|
+      assert_equal ['—', link_to(name.display, name)],
+                   history_values([nil, name.id], attribute: attribute)
+    end
+
+    name.destroy!
+
+    assert_equal ["Name ##{name.id} (deleted)", '—'],
+                 history_values([name.id, nil], attribute: 'parent_id')
+  end
+
+  test 'renders polymorphic references using the type on each side' do
+    strain = strains(:one)
+    genome = genomes(:one)
+    assert_equal [link_to(strain.display, strain), link_to(genome.display, genome)],
+                 history_values(
+                   [['Strain', strain.id], ['Genome', genome.id]],
+                   attribute: 'nomenclatural_type'
+                 )
+    assert_equal [link_to(genome.display, genome), '—'],
+                 history_values([['Genome', genome.id], [nil, nil]],
+                                attribute: 'nomenclatural_type')
+    assert_equal ['—', link_to(genome.display, genome)],
+                 history_values([nil, genome.id], attribute: 'genome_id')
+  end
+
+  test 'renders generic type material without requiring a dedicated page' do
+    material = GenericTypeMaterial.create!(text: 'Preserved E. coli specimen')
+
+    assert_equal ['—', material.display],
+                 history_values([[nil, nil], ['GenericTypeMaterial', material.id]],
+                                attribute: 'nomenclatural_type')
+  end
+
+  test 'preserves polymorphic references with deleted or unrecorded types' do
+    strain = strains(:one)
+    strain.destroy!
+
+    assert_equal ["Strain ##{strain.id} (deleted)", "Unknown type ##{strain.id}"],
+                 history_values([['Strain', strain.id], [nil, strain.id]],
+                                attribute: 'nomenclatural_type')
+  end
+
+  test 'renders corrigendum sources with their display labels' do
+    assert_equal ['Publication', 'SeqCode Registry'],
+                 history_values(%w[publication seqcode], attribute: 'corrigendum_kind')
   end
 
   test 'diffs text additions and removals in either record context' do

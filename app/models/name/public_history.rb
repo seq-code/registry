@@ -2,8 +2,12 @@ class Name::PublicHistory
   # Only these recorded attributes appear in the public history.
   KEYS = %w[
     name rank syllabication status priority_date authority
-    nomenclatural_status taxonomic_status proposal_kind corrigendum_from
-    type_material type_accession proposed_in_id
+    nomenclatural_status taxonomic_status proposal_kind corrigendum_from corrigendum_kind
+    type_material type_accession nomenclatural_type_type nomenclatural_type_id
+    proposed_in_id corrigendum_in_id assigned_in_id
+    parent_id correct_name_id basonym_id redirect_id genome_id genome_strain
+    ncbi_taxonomy lpsn_url gtdb_accession algaebase_species algaebase_taxonomy
+    wikidata_item wikispecies_entry
   ].concat(Name::ETYMOLOGY_COLUMNS).freeze
 
   def initialize(name)
@@ -40,13 +44,19 @@ class Name::PublicHistory
     @name.versions.where(operation: 'update')
   end
 
-  # Ordinary fields keep their [before, after] pairs. Etymology fields become
-  # one pair of attribute snapshots for the view to render together.
+  # Group etymology and polymorphic type attributes before removing unchanged
+  # companions, so each side retains the context needed to render it.
   def name_changes_for(version)
     changes = version.changeset.slice(*KEYS)
     etymology = changes.extract!(*Name::ETYMOLOGY_COLUMNS)
     if etymology.any?
       changes['etymology'] = etymology_snapshots(etymology, changes['name'])
+    end
+    type_changes = changes.extract!('nomenclatural_type_type', 'nomenclatural_type_id')
+    if type_changes.any?
+      types = type_changes.fetch('nomenclatural_type_type', [nil, nil])
+      ids = type_changes.fetch('nomenclatural_type_id', [nil, nil])
+      changes['nomenclatural_type'] = types.zip(ids)
     end
     # versioned_together records unchanged companion values too.
     changes.reject! { |_, values| values.first == values.last }

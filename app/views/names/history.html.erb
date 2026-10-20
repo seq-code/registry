@@ -28,7 +28,7 @@
                 </time>
               </th>
               <th colspan="3">
-                Publication: <%= history_publication_reference(@history.publication_id_for(version)) %>
+                Publication: <%= history_record_reference(Publication, @history.publication_id_for(version)) %>
               </th>
             </tr>
           <% end %>

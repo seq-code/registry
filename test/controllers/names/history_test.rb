@@ -24,4 +24,22 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
     assert_select 'h3', text: 'Insufficient permits'
     assert_select '.name-history-version', count: 0
   end
+
+  test 'renders changes to types classification and publication roles' do
+    name = names(:escherichia_coli)
+    name.update!(nomenclatural_type: strains(:one))
+    name.update!(
+      parent: nil, nomenclatural_type: strains(:two),
+      corrigendum_in: publications(:one)
+    )
+
+    get history_name_path(name)
+
+    assert_response :success
+    assert_select '.name-history-version', count: 2
+    assert_select '.name-history-change a[href=?]', strain_path(strains(:one)), count: 2
+    assert_select '.name-history-change a[href=?]', strain_path(strains(:two)), count: 1
+    assert_select '.name-history-change a[href=?]', name_path(names(:escherichia)), count: 1
+    assert_select '.name-history-change a[href=?]', publication_path(publications(:one)), count: 1
+  end
 end

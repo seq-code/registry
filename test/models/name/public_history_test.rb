@@ -11,7 +11,8 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
       'name' => ['E. coli', 'E. coli'],
       'authority' => [nil, 'Smith'],
       'proposed_in_id' => [nil, publications(:one).id],
-      'gtdb_accession' => [nil, 'GB_GCA_000005845.2'],
+      'gtdb_accession' => [nil, 's__Escherichia coli'],
+      'protect_from_lpsn' => [nil, 'name'],
       'etymology_xx_lang' => ['N.L.', 'N.L.'],
       'etymology_xx_description' => ['of the colon', 'from the colon']
     })
@@ -19,6 +20,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     assert_equal({
       'authority' => [nil, 'Smith'],
       'proposed_in_id' => [nil, publications(:one).id],
+      'gtdb_accession' => [nil, 's__Escherichia coli'],
       'etymology' => [
         { 'name' => 'E. coli', 'etymology_xx_lang' => 'N.L.',
           'etymology_xx_description' => 'of the colon' },
@@ -57,7 +59,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     link.unlink!
     unlinked_version = link.versions.last
     24.times { |index| @name.update!(authority: "Smith #{index}") }
-    @name.update!(gtdb_accession: 'GB_GCA_000005845.2')
+    @name.update!(protect_from_lpsn: 'name')
     link.update!(emends: true)
 
     first_page = @history.versions(page: 1)
@@ -67,6 +69,65 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     assert_equal({ 'emends' => [false, true] },
                  @history.changes_for(first_page.first))
     assert_equal [unlinked_version, linked_version], second_page
+  end
+
+  test 'includes changes to scientific relationships and publication roles' do
+    @name.update!(
+      parent: nil, correct_name: names(:escherichia_colie),
+      basonym: names(:escherichia_colie), redirect: names(:escherichia_colie),
+      corrigendum_in: publications(:one), assigned_in: publications(:one),
+      corrigendum_kind: 'publication', genome_id: genomes(:one).id,
+      genome_strain: 'ATCC 11775'
+    )
+
+    changes = @history.changes_for(@name.versions.last)
+
+    assert_equal [names(:escherichia).id, nil], changes['parent_id']
+    %w[correct_name_id basonym_id redirect_id].each do |attribute|
+      assert_equal [nil, names(:escherichia_colie).id], changes[attribute]
+    end
+    %w[corrigendum_in_id assigned_in_id].each do |attribute|
+      assert_equal [nil, publications(:one).id], changes[attribute]
+    end
+    assert_equal [nil, 'publication'], changes['corrigendum_kind']
+    assert_equal [nil, genomes(:one).id], changes['genome_id']
+    assert_equal [nil, 'ATCC 11775'], changes['genome_strain']
+  end
+
+  test 'includes external identifiers but excludes cached data and workflow controls' do
+    identifiers = {
+      ncbi_taxonomy: 562, lpsn_url: 'https://lpsn.dsmz.de/species/escherichia-coli',
+      gtdb_accession: 's__Escherichia coli', wikidata_item: 'Q25419',
+      wikispecies_entry: 'Escherichia coli'
+    }
+    @name.update!(identifiers.merge(
+      gbif_json: '{}', queued_external: Time.current,
+      temporary_editable_at: Time.current, protect_from_lpsn: 'name'
+    ))
+
+    assert_equal identifiers.stringify_keys.keys.sort,
+                 @history.changes_for(@name.versions.last).keys.sort
+  end
+
+  test 'groups polymorphic relationship changes with their unchanged companions' do
+    @name.update!(nomenclatural_type: strains(:one))
+    @name.update!(nomenclatural_type: strains(:two))
+
+    assert_equal({ 'nomenclatural_type' => [
+      ['Strain', strains(:one).id], ['Strain', strains(:two).id]
+    ] }, @history.changes_for(@name.versions.last))
+
+    @name.update!(nomenclatural_type_type: 'Genome')
+
+    assert_equal({ 'nomenclatural_type' => [
+      ['Strain', strains(:two).id], ['Genome', strains(:two).id]
+    ] }, @history.changes_for(@name.versions.last))
+
+    @name.update!(nomenclatural_type: nil)
+
+    assert_equal({ 'nomenclatural_type' => [
+      ['Genome', strains(:two).id], [nil, nil]
+    ] }, @history.changes_for(@name.versions.last))
   end
 
   test 'identifies the publication for each relationship history including unlinks' do
