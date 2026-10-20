@@ -1,15 +1,12 @@
 module Names::HistoriesHelper
+  # Render a recorded [before, after] pair as two display values.
   def history_values(changes, attribute:, record_type: 'Name')
-    values =
-      case record_type
-      when 'PublicationName'
-        history_publication_name_values(changes)
-      when 'Name'
-        history_name_values(changes, attribute)
-      else
-        raise ArgumentError, "Unsupported public history record type: #{record_type}"
-      end
-
+    # Some name attributes need domain-specific formatting; everything else,
+    # on any record type, is rendered generically from its model.
+    values = history_name_values(changes, attribute) if record_type == 'Name'
+    values ||= history_attribute_values(record_type.constantize, changes, attribute)
+    
+    # Diffs return arrays of parts; empty values show as a dash.
     values.map { |value| safe_join(Array(value)).presence || '—' }
   end
 
@@ -24,6 +21,35 @@ module Names::HistoriesHelper
       record.display
     else
       link_to(record.display, record)
+    end
+  end
+
+  # Label a link's changes with what it links to.
+  def history_record_heading(version)
+    return history_link_reference(version.record) if version.record
+
+    # The link itself was deleted, e.g. along with its publication.
+    "#{version.record_type.constantize.model_name.human} (deleted)"
+  end
+
+  # Identify a publication link by its publication, and a placement by its
+  # parent, marking incertae sedis placements:
+  #   publication link
+  #     => Publication: <a href="/publications/1">Smith 2026</a>
+  #   placement under Escherichia
+  #     => Placement: <a href="/names/1">Escherichia</a>
+  #   incertae sedis placement under Bacteria
+  #     => Placement: <i>incertae sedis</i> (<a href="/names/2">Bacteria</a>)
+  #   placement under a deleted parent
+  #     => Placement: Name #3 (deleted)
+  def history_link_reference(record)
+    case record
+    when PublicationName
+      safe_join(['Publication: ', link_to(record.display, record.publication)])
+    when Placement
+      parent = history_record_reference(Name, record.parent_id)
+      parent = safe_join([content_tag(:i, 'incertae sedis'), ' (', parent, ')']) if record.incertae_sedis?
+      safe_join(['Placement: ', parent])
     end
   end
 
@@ -46,9 +72,8 @@ module Names::HistoriesHelper
 
   private
 
+  # Name attributes that need domain-specific rendering, or nil for the rest.
   def history_name_values(changes, attribute)
-    # Grouped values and status codes need domain-specific rendering before
-    # ordinary foreign keys can be resolved through their associations.
     case attribute
     when 'etymology'
       history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
@@ -59,24 +84,25 @@ module Names::HistoriesHelper
       changes.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
     when 'status'
       changes.map { |code| Name.status_hash.dig(code, :name) || code }
-    else
-      history_association_values(changes, attribute)
     end
   end
 
-  # Match ordinary associations by their actual foreign key, which need not
-  # follow the association's name. Polymorphic references arrive grouped under
-  # the association's name as [type, id] pairs.
-  def history_association_values(changes, attribute)
-    association = Name.reflect_on_all_associations(:belongs_to).find do |reflection|
+  # Link foreign keys to their records, diff text, and show booleans as Yes/No.
+  # Ordinary associations are matched by their actual foreign key, which need
+  # not follow the association's name. Polymorphic references arrive grouped
+  # under the association's name as [type, id] pairs.
+  def history_attribute_values(model, changes, attribute)
+    association = model.reflect_on_all_associations(:belongs_to).find do |reflection|
       attribute == (reflection.polymorphic? ? reflection.name.to_s : reflection.foreign_key)
     end
-    if association.nil?
-      history_text_values(changes)
-    elsif association.polymorphic?
+    if association&.polymorphic?
       changes.map { |type, id| history_polymorphic_reference(type, id) }
-    else
+    elsif association
       changes.map { |id| history_record_reference(association.klass, id) }
+    elsif changes.any? { |value| value.is_a?(String) }
+      history_diff_parts(*changes)
+    else
+      changes.map { |value| { true => 'Yes', false => 'No' }.fetch(value, value) }
     end
   end
 
@@ -91,19 +117,5 @@ module Names::HistoriesHelper
     else
       type
     end
-  end
-
-  def history_publication_name_values(changes)
-    history_text_values(changes).map do |value|
-      case value
-      when true then 'Yes'
-      when false then 'No'
-      else value
-      end
-    end
-  end
-
-  def history_text_values(changes)
-    changes.any? { |value| value.is_a?(String) } ? history_diff_parts(*changes) : changes
   end
 end

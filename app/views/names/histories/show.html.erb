@@ -18,9 +18,9 @@
       </thead>
       <% @versions.each do |version| %>
         <% changes = @history.changes_for(version) %>
-        <% publication_change = version.record_type == 'PublicationName' %>
+        <% record_change = version.record_type != 'Name' %>
         <tbody class="name-history-version" data-version-id="<%= version.id %>">
-          <% if publication_change %>
+          <% if record_change %>
             <tr class="name-history-record">
               <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size + 1 %>">
                 <time datetime="<%= version.created_at.iso8601 %>">
@@ -28,21 +28,21 @@
                 </time>
               </th>
               <th colspan="3">
-                Publication: <%= history_record_reference(Publication, @history.publication_id_for(version)) %>
+                <%= history_record_heading(version) %>
               </th>
             </tr>
           <% end %>
           <% changes.each_with_index do |(attribute, values), index| %>
             <% before, after = history_values(values, attribute: attribute, record_type: version.record_type) %>
             <tr class="name-history-change">
-              <% if index.zero? && !publication_change %>
+              <% if index.zero? && !record_change %>
                 <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size %>">
                   <time datetime="<%= version.created_at.iso8601 %>">
                     <%= version.created_at.strftime('%F %H:%M %Z') %>
                   </time>
                 </th>
               <% end %>
-              <th scope="row"><%= (publication_change ? PublicationName : Name).human_attribute_name(attribute) %></th>
+              <th scope="row"><%= version.record_type.constantize.human_attribute_name(attribute) %></th>
               <td class="name-history-before"><%= before %></td>
               <td class="name-history-after"><%= after %></td>
             </tr>

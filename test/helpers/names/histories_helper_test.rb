@@ -126,11 +126,47 @@ class Names::HistoriesHelperTest < ActionView::TestCase
                  history_values([nil, publication.id], attribute: 'proposed_in_id')
   end
 
-  test 'preserves nonboolean publication relationship values' do
-    ids = [publications(:one).id, publications(:no_doi).id]
+  test 'renders placement parents publications and preference' do
+    parent = names(:escherichia)
+    publication = publications(:one)
 
-    assert_equal ids.map(&:to_s), history_values(
-      ids, attribute: 'publication_id', record_type: 'PublicationName'
+    assert_equal ['—', link_to(parent.display, parent)], history_values(
+      [nil, parent.id], attribute: 'parent_id', record_type: 'Placement'
     )
+    assert_equal ['—', link_to(publication.display, publication)], history_values(
+      [nil, publication.id], attribute: 'publication_id', record_type: 'Placement'
+    )
+    %w[linked preferred].each do |attribute|
+      assert_equal ['No', 'Yes'], history_values(
+        [false, true], attribute: attribute, record_type: 'Placement'
+      )
+    end
+  end
+
+  test 'identifies links by their publication or placement parent' do
+    publication = publications(:one)
+    parent = names(:bacteria)
+    parent_link = link_to(parent.display, parent)
+
+    assert_equal "Publication: #{link_to(publication.display, publication)}",
+                 history_link_reference(PublicationName.new(publication: publication))
+    assert_equal "Placement: #{parent_link}",
+                 history_link_reference(Placement.new(parent: parent))
+    assert_equal "Placement: <i>incertae sedis</i> (#{parent_link})",
+                 history_link_reference(Placement.new(parent: parent, incertae_sedis: true))
+  end
+
+  test 'labels link changes with the record they were made to' do
+    link = PublicationName.create!(name: names(:escherichia_coli), publication: publications(:one))
+
+    assert_equal history_link_reference(link), history_record_heading(link.versions.last)
+  end
+
+  test 'labels link changes whose record was deleted' do
+    link = PublicationName.create!(name: names(:escherichia_coli), publication: publications(:one))
+    version = link.versions.last
+    link.destroy!
+
+    assert_equal 'Publication name (deleted)', history_record_heading(version.reload)
   end
 end

@@ -130,17 +130,6 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     ] }, @history.changes_for(@name.versions.last))
   end
 
-  test 'identifies the publication for each relationship history including unlinks' do
-    first_link = PublicationName.create!(name: @name, publication: publications(:one))
-    second_link = PublicationName.create!(name: @name, publication: publications(:no_doi))
-    first_link.unlink!
-
-    first_link.versions.each do |version|
-      assert_equal publications(:one).id, @history.publication_id_for(version)
-    end
-    assert_equal publications(:no_doi).id, @history.publication_id_for(second_link.versions.last)
-  end
-
   test 'shows publication role additions and removals alongside unlink changes' do
     link = PublicationName.create!(name: @name, publication: publications(:one))
     link.update!(emends: true, not_valid_proposal: true)
@@ -176,5 +165,46 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     })
 
     assert_equal({ 'emends' => [false, true] }, @history.changes_for(version))
+  end
+
+  test 'tracks placements through their addition changes and unlinking' do
+    placement = Placement.create!(
+      name: @name, parent: names(:bacteria), incertae_sedis: true,
+      incertae_sedis_text: 'Family placement unresolved'
+    )
+    placement.update!(publication: publications(:one))
+    placement.unlink!
+
+    versions = @history.versions(page: 1)
+
+    assert_equal [
+      { 'linked' => [true, false] },
+      { 'publication_id' => [nil, publications(:one).id] },
+      { 'linked' => [false, true],
+        'parent_id' => [nil, names(:bacteria).id],
+        'incertae_sedis' => [nil, true] }
+    ], versions.map { |version| @history.changes_for(version) }
+  end
+
+  test 'includes changes to placements recorded before their creation was tracked' do
+    placements(:escherichia_coli).update!(publication: publications(:one))
+
+    assert_equal [{ 'publication_id' => [nil, publications(:one).id] }],
+                 @history.versions(page: 1).map { |version| @history.changes_for(version) }
+  end
+
+  test 'excludes placements of other names' do
+    Placement.create!(name: names(:escherichia_colie), parent: names(:escherichia))
+
+    assert_empty @history.versions(page: 1)
+  end
+
+  test 'shows publication roles a link was created with' do
+    link = PublicationName.create!(
+      name: @name, publication: publications(:one), emends: true
+    )
+
+    assert_equal({ 'linked' => [false, true], 'emends' => [nil, true] },
+                 @history.changes_for(link.versions.last))
   end
 end

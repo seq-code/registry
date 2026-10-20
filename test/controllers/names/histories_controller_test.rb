@@ -36,10 +36,24 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
     get name_history_path(name)
 
     assert_response :success
-    assert_select '.name-history-version', count: 2
+    # Clearing the parent also stops preferring its placement.
+    assert_select '.name-history-version', count: 3
     assert_select '.name-history-change a[href=?]', strain_path(strains(:one)), count: 2
     assert_select '.name-history-change a[href=?]', strain_path(strains(:two)), count: 1
     assert_select '.name-history-change a[href=?]', name_path(names(:escherichia)), count: 1
     assert_select '.name-history-change a[href=?]', publication_path(publications(:one)), count: 1
+  end
+
+  test 'renders unlinked placements' do
+    name = names(:escherichia_coli)
+    Placement.create!(
+      name: name, parent: names(:bacteria), incertae_sedis: true,
+      incertae_sedis_text: 'Family placement unresolved'
+    ).unlink!
+
+    get name_history_path(name)
+
+    assert_response :success
+    assert_select '.name-history-record', text: /Placement:\s+incertae sedis \(Bacteria\)/, count: 2
   end
 end

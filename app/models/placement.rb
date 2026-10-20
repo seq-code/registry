@@ -1,5 +1,6 @@
 class Placement < ApplicationRecord
   include Unlinking
+  include Versioned
 
   belongs_to(:name)
   belongs_to(

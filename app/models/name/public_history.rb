@@ -9,16 +9,19 @@ class Name::PublicHistory
     ncbi_taxonomy lpsn_url gtdb_accession algaebase_species algaebase_taxonomy
     wikidata_item wikispecies_entry
   ].concat(Name::ETYMOLOGY_COLUMNS).freeze
-  # unlinked_at is shown as whether the publication is linked.
+  # unlinked_at is shown as whether the publication or placement is linked.
   PUBLICATION_NAME_KEYS = %w[unlinked_at emends not_valid_proposal].freeze
+  PLACEMENT_KEYS = %w[unlinked_at parent_id incertae_sedis publication_id preferred].freeze
 
   def initialize(name)
     @name = name
   end
 
-  # Load both histories and filter displayable changes in Ruby before pagination.
+  # Load all histories and filter displayable changes in Ruby before pagination.
+  # Each version's record is loaded up front to label link changes.
   def versions(page:)
-    name_versions.or(publication_versions)
+    name_versions.or(publication_versions).or(placement_versions)
+                 .includes(:record)
                  .order(created_at: :desc, id: :desc)
                  .select { |version| changes_for(version).any? }
                  .paginate(page: page, per_page: 25)
@@ -30,14 +33,11 @@ class Name::PublicHistory
       name_changes_for(version)
     when 'PublicationName'
       publication_changes_for(version)
+    when 'Placement'
+      placement_changes_for(version)
     else
       raise ArgumentError, "Unsupported public history record type: #{version.record_type}"
     end
-  end
-
-  def publication_id_for(version)
-    @publication_ids ||= @name.publication_names.pluck(:id, :publication_id).to_h
-    @publication_ids.fetch(version.record_id)
   end
 
   private
@@ -74,15 +74,49 @@ class Name::PublicHistory
   end
 
   def publication_changes_for(version)
-    return { 'linked' => [false, true] } if version.operation == 'create'
-    return {} unless version.operation == 'update'
+    link_record_changes(version, PUBLICATION_NAME_KEYS)
+  end
 
-    changes = version.changeset.slice(*PUBLICATION_NAME_KEYS)
+  def placement_versions
+    Version.where(record_type: 'Placement', record_id: @name.placements.select(:id))
+  end
+
+  def placement_changes_for(version)
+    link_record_changes(version, PLACEMENT_KEYS)
+  end
+
+  # Linking a record is a create and unlinking is an update of unlinked_at, so
+  # both are shown as a change of 'linked'. A creation also lists each
+  # attribute it was added with that has a value:
+  #   { 'linked' => [false, true], 'parent_id' => [nil, 2], 'incertae_sedis' => [nil, true] }
+  # Updates show only the changed attributes:
+  #   { 'linked' => [true, false], 'emends' => [true, false] }
+  def link_record_changes(version, keys)
+    changes = version.changeset.slice(*keys)
+
+    case version.operation
+    when 'create'
+      # unlinked_at is shown as 'linked'; skip attributes the link was created
+      # without, such as the default false roles.
+      added = changes.except('unlinked_at').reject { |_, (_, after)| after.blank? }
+      { 'linked' => [false, true] }.merge(added)
+    when 'update'
+      link_changes(changes)
+    else
+      {}
+    end
+  end
+
+  # Replace an unlinked_at change with a 'linked' change listed first:
+  #   { 'unlinked_at' => [nil, '2026-10-01T12:00:00Z'], 'emends' => [true, false] }
+  #     => { 'linked' => [true, false], 'emends' => [true, false] }
+  def link_changes(changes)
     unlinked_at = changes.delete('unlinked_at')
     return changes unless unlinked_at
 
-    # A nil unlinked_at means the publication is linked.
+    # A nil unlinked_at means the record is linked.
     linked = unlinked_at.map(&:nil?)
+    # Changing the timestamp of an already unlinked record is not a link change.
     return changes if linked.first == linked.last
 
     { 'linked' => linked }.merge(changes)
