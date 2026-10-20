@@ -14,6 +14,7 @@ gem 'bootstrap', '~> 4.6.2'
 gem 'coffee-rails', '~> 5.0'
 gem 'csv'
 gem 'd3-rails'
+gem 'diff-lcs', '~> 2.0'
 gem 'dartsass-sprockets' # Sass engine (required by bootstrap
 gem 'devise'
 gem 'dkim', '~> 1.1'

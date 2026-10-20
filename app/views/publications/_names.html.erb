@@ -1,4 +1,4 @@
-<% publication.publication_names.each do |publication_name| %>
+<% publication.publication_names.linked.each do |publication_name| %>
   <% name = publication_name.name %>
   <%= link_to(
         name.abbr_name, name, class: 'badge badge-pill badge-primary') %>

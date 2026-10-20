@@ -19,7 +19,7 @@ class PublicationNamesController < ApplicationController
       if name.assigned_in? publication
         name.update(assigned_in: nil)
       end
-      @publication_name.destroy
+      @publication_name.unlink!
     end
 
     redirect_to(
@@ -60,7 +60,7 @@ class PublicationNamesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_publication_name
-      @publication_name = PublicationName.find(params[:id])
+      @publication_name = PublicationName.linked.find(params[:id])
     end
 
     def set_publication

@@ -21,7 +21,8 @@ class Publication < ApplicationRecord
   has_many(:publication_names, dependent: :destroy)
   has_many(:authors, through: :publication_authors)
   has_many(:subjects, through: :publication_subjects)
-  has_many(:names, through: :publication_names)
+  has_many(:names, -> { merge(PublicationName.linked) },
+           through: :publication_names)
   has_many(:registers)
   has_many(
     :proposed_names, class_name: 'Name',
@@ -301,6 +302,10 @@ class Publication < ApplicationRecord
 
   def short_citation(format = :text)
     "#{authors_et_al(format)}, #{journal_date.year}"
+  end
+
+  def display(_html = true)
+    short_citation
   end
 
   def citation
