@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class NamesHelperTest < ActionView::TestCase
+class Names::HistoriesHelperTest < ActionView::TestCase
   test 'groups nearby etymology edits into one span' do
     changes = [
       { name: 'E. coli', etymology_xx_description: 'of the colon' },

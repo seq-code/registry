@@ -86,7 +86,6 @@ Rails.application.routes.draw do
     end
     member do
       # --> Display name
-      get  :history
       get  :network
       get  :linkout
       get  :wiki
@@ -126,6 +125,7 @@ Rails.application.routes.draw do
            path: '/not_validly_proposed_in/:publication_id'
     end
     resources :pseudonyms
+    resource(:history, only: :show, module: :names)
   end
 
   # Taxonomic placements

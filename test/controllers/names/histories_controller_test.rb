@@ -1,12 +1,12 @@
 require 'test_helper'
 
-class NamesHistoryTest < ActionDispatch::IntegrationTest
+class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
   test 'renders public history' do
     name = names(:escherichia_coli)
     name.update!(authority: 'Smith', etymology_xx_description: 'of the colon')
     PublicationName.create!(name: name, publication: publications(:one))
 
-    get history_name_path(name)
+    get name_history_path(name)
 
     assert_response :success
     assert_select '.name-history-version', count: 2
@@ -19,7 +19,7 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
     name.update!(syllabication: 'co.li')
     PublicationName.create!(name: name, publication: publications(:one)).unlink!
 
-    get history_name_path(name)
+    get name_history_path(name)
 
     assert_select 'h3', text: 'Insufficient permits'
     assert_select '.name-history-version', count: 0
@@ -33,7 +33,7 @@ class NamesHistoryTest < ActionDispatch::IntegrationTest
       corrigendum_in: publications(:one)
     )
 
-    get history_name_path(name)
+    get name_history_path(name)
 
     assert_response :success
     assert_select '.name-history-version', count: 2
