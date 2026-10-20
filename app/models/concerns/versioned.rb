@@ -46,8 +46,13 @@ module Versioned
   def versioned_changes
     changeset = saved_changes.except('created_at', 'updated_at')
 
+    # A polymorphic ID is only meaningful together with its record type.
+    polymorphic_sets = self.class.reflect_on_all_associations(:belongs_to)
+                           .select(&:polymorphic?)
+                           .map { |association| [association.foreign_key, association.foreign_type] }
+
     changed_columns = changeset.keys
-    self.class.versioned_attribute_sets.each do |columns|
+    (self.class.versioned_attribute_sets + polymorphic_sets).each do |columns|
       changeset.merge!(versioned_together_changes(columns, changed_columns))
     end
     changeset

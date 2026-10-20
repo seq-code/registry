@@ -60,6 +60,47 @@ class Name::VersionedTest < ActiveSupport::TestCase
     end
   end
 
+  test 'changing a polymorphic relationship id records its unchanged record type' do
+    @name.nomenclatural_type = strains(:one)
+    @name.save!
+
+    @name.update!(nomenclatural_type: strains(:two))
+
+    assert_equal({
+      'nomenclatural_type_id' => [strains(:one).id, strains(:two).id],
+      'nomenclatural_type_type' => ['Strain', 'Strain']
+    }, @name.versions.last.changeset)
+  end
+
+  test 'changing a polymorphic relationship type records its unchanged id' do
+    @name.nomenclatural_type = genomes(:one)
+    @name.save!
+
+    @name.update!(nomenclatural_type_type: 'Strain')
+
+    assert_equal({
+      'nomenclatural_type_id' => [genomes(:one).id, genomes(:one).id],
+      'nomenclatural_type_type' => ['Genome', 'Strain']
+    }, @name.versions.last.changeset)
+  end
+
+  test 'adding and removing a polymorphic relationship records both attributes' do
+    @name.save!
+    @name.update!(nomenclatural_type: strains(:one))
+
+    assert_equal({
+      'nomenclatural_type_id' => [nil, strains(:one).id],
+      'nomenclatural_type_type' => [nil, 'Strain']
+    }, @name.versions.last.changeset)
+
+    @name.update!(nomenclatural_type: nil)
+
+    assert_equal({
+      'nomenclatural_type_id' => [strains(:one).id, nil],
+      'nomenclatural_type_type' => ['Strain', nil]
+    }, @name.versions.last.changeset)
+  end
+
   test 'deleting a name changes all final attributes to nothing' do
     @name.save!
     @name.update!(syllabication: 'co.li')
