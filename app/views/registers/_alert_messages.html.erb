@@ -8,6 +8,15 @@
   </div>
 <% end %>
 
+<% if @register.draft? %>
+  <div class="alert alert-warning">
+    <h4>List not submitted</h4>
+    This list is still in draft status and it's not currently being evaluated
+    by the curation team. Please make sure you submit or notify this register
+    list to continue the validation process.
+  </div>
+<% end %>
+
 <% if @register.proposing_publications.present? && @register.submitted? &&
       !@register.notified? && !@register.validated? %>
   <div class="alert alert-warning">

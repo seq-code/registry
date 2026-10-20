@@ -331,9 +331,10 @@ ActiveRecord::Schema.define(version: 2026_10_02_100000) do
     t.boolean "preferred", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "incertae_sedis"
+    t.string "incertae_sedis_legacy"
     t.boolean "gtdb_taxonomy"
     t.boolean "ncbi_taxonomy"
+    t.boolean "incertae_sedis", default: false, null: false
     t.index ["name_id"], name: "index_placements_on_name_id"
     t.index ["publication_id"], name: "index_placements_on_publication_id"
   end

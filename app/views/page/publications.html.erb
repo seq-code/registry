@@ -7,10 +7,10 @@
   <!-- Brian's paper -->
   <div class="card my-3">
     <div class="card-header">
-      <h2>
+      <h3>
         SeqCode: a nomenclatural code for prokaryotes described from sequence
         data
-      </h2>
+      </h3>
     </div>
     <div class="card-body">
       <%= link_to('https://doi.org/10.1038/s41564-022-01214-9',
@@ -31,10 +31,10 @@
   <!-- Barny's paper -->
   <div class="card my-3">
     <div class="card-header">
-      <h2>
+      <h3>
         Development of the SeqCode: A proposed nomenclatural code for
         uncultivated prokaryotes with DNA sequences as type
-      </h2>
+      </h3>
     </div>
     <div class="card-body">
       <%= link_to('https://doi.org/10.1016/j.syapm.2022.126305',
@@ -55,11 +55,11 @@
   <!-- Candidatus genus priority paper -->
   <div class="card my-3">
     <div class="card-header">
-      <h2>
+      <h3>
         Request for public discussion and ballot to amend SeqCode rules on
         priority of Candidatus names and correction of typographic and
         orthographic errors
-      </h2>
+      </h3>
     </div>
     <div class="card-body">
       <%= link_to('https://doi.org/10.1038/s43705-023-00303-y',
@@ -74,17 +74,120 @@
     </div>
   </div>
 
+  <!-- Why and how paper -->
+  <div class="card my-3">
+    <div class="card-header">
+      <h3>
+        Why and how to use the SeqCode
+      </h3>
+    </div>
+    <div class="card-body">
+      <%= link_to('https://doi.org/10.1002/mlf2.12092',
+            class: 'btn btn-light text-left w-100', target: '_blank') do %>
+        William B. Whitman, Maria Chuvochina, Brian P. Hedlund, Konstantinos T.
+        Konstantinidis, Marike Palmer, Luis M. Rodriguez-R, Iain Sutcliffe,
+        and Fengping Wang.
+        <b>
+          <i>mLife</i> (2024).
+          https://doi.org/10.1002/mlf2.12092
+        </b>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Governance paper -->
+  <div class="card my-3">
+    <div class="card-header">
+      <h3>
+        Quis custodiet ipsos custodes? A call for community participation in the
+        governance of the SeqCode
+      </h3>
+    </div>
+    <div class="card-body">
+      <%= link_to('https://doi.org/10.1016/j.syapm.2024.126498',
+            class: 'btn btn-light text-left w-100', target: '_blank') do %>
+        Iain Sutcliffe, Luis M. Rodriguez-R, Stephanus N. Venter, and
+        William B. Whitman.
+        <b>
+          <i>Systematic and Applied Microbiology</i> (2024).
+          https://doi.org/10.1016/j.syapm.2024.126498
+        </b>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Taxonomic committees paper -->
+  <div class="card my-3">
+    <div class="card-header">
+      <h3>
+        Options and considerations for validation of prokaryotic names under the
+        SeqCode
+      </h3>
+    </div>
+    <div class="card-body">
+      <%= link_to('https://doi.org/10.1016/j.syapm.2024.126554',
+            class: 'btn btn-light text-left w-100', target: '_blank') do %>
+        Stephanus N. Venter, Luis M. Rodriguez-R, Maria Chuvochina,
+        Marike Palmer, Philip Hugenholtz, and Emma T. Steenkamp.
+        <b>
+          <i>Systematic and Applied Microbiology</i> (2024).
+          https://doi.org/10.1016/j.syapm.2024.126554
+        </b>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Practical guide -->
+  <div class="card my-3">
+    <div class="card-header">
+      <h3>
+        A practical guide on environmental genomics for prokaryotic systematics
+      </h3>
+    </div>
+    <div class="card-body">
+      <%= link_to('https://doi.org/10.1016/j.syapm.2025.126643',
+            class: 'btn btn-light text-left w-100', target: '_blank') do %>
+        Nathan Ernster and Luis M. Rodriguez-R.
+        <b>
+          <i>Systematic and Applied Microbiology</i> (2025).
+          https://doi.org/10.1016/j.syapm.2025.126643
+        </b>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Paratype paper -->
+  <div class="card my-3">
+    <div class="card-header">
+      <h3>
+        Request for public discussion and ballot to add rules on paratypes to
+        the SeqCode and amend recommendations on name formation
+      </h3>
+    </div>
+    <div class="card-body">
+      <%= link_to('https://doi.org/10.1093/ismeco/ycaf238',
+            class: 'btn btn-light text-left w-100', target: '_blank') do %>
+        William B. Whitman, Iain Sutcliffe, Konstantinos T. Konstantinidis, and
+        Luis M. Rodriguez-R.
+        <b>
+          <i>Systematic and Applied Microbiology</i> (2026).
+          https://doi.org/10.1093/ismeco/ycaf238
+        </b>
+      <% end %>
+    </div>
+  </div>
+
   <br/>
-  <h1>Other Materials</h1>
+  <h2>Other Materials</h2>
   <hr/>
 
   <!-- The SeqCode -->
   <div class="card my-3">
     <div class="card-header">
-      <h2>
+      <h3>
         The International Code of Nomenclature of Prokaryotes Described from
         Sequence Data
-      </h2>
+      </h3>
     </div>
     <div class="card-body">
       <%= link_to(page_seqcode_url, class: 'btn btn-light text-left') do %>
@@ -103,13 +206,13 @@
   <!-- Zenodo Community Space -->
   <div class="card my-3">
     <div class="card-header">
-      <h2>
+      <h3>
         Minutes of the meetings of the SeqCode Committee administrative
         components
-      </h2>
+      </h3>
     </div>
     <div class="card-body">
-      <%= link_to('https://zenodo.org/communities/',
+      <%= link_to('https://zenodo.org/communities/seqcode',
             class: 'btn btn-light text-left w-100', target: '_blank') do %>
         SeqCode Matters - Zenodo Community Space
       <% end %>
@@ -118,7 +221,7 @@
 
   <div class="card">
     <div class="card-header">
-      <h2>Would you like to contribute?</h2>
+      <h3>Would you like to contribute?</h3>
     </div>
     <div class="card-body text-center">
       <%= link_to(page_connect_url, target: '_blank',

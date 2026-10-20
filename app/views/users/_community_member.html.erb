@@ -10,14 +10,14 @@
 <p>
   <% if current_user.community_member_active? %>
     You are registered as a SeqCode Community member since
-    <%= current_user.community_member_started_on.strftime('%B %Y') %>.
+    <%= current_user.community_member_started_on&.strftime('%B %Y') %>.
     Your current membership runs through
-    <%= current_user.community_member_expires_on.strftime('%B %-d, %Y') %>.
+    <%= current_user.community_member_expires_on&.strftime('%B %-d, %Y') %>.
   <% elsif current_user.community_member_applied_at? %>
     Your application is pending review by our administrators.
   <% elsif current_user.community_member? %>
     Your SeqCode Community membership expired on
-    <%= current_user.community_member_expires_on.strftime('%B %-d, %Y') %>.
+    <%= current_user.community_member_expires_on&.strftime('%B %-d, %Y') %>.
     Renew below to continue participating.
   <% else %>
     You are not currently a SeqCode Community member.

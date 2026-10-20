@@ -72,21 +72,27 @@ module NamesHelper
   end
 
   def name_lineage(name, links: true, last: true, register: nil, visited: [])
+    return content_tag(:span, '') if name.nil?
+
     assume_valid = register&.names&.include?(name)
     out = []
     visited << name
 
-    # Recursively get the parent(s)
-    if name.incertae_sedis?
-      out << content_tag(:span, name.incertae_sedis_html)
-      out << content_tag(:span, ' &raquo; '.html_safe)
-    elsif name.parent
-      if visited.include? name.parent
-        out << content_tag(:span, 'Recursion found: ' , class: 'text-danger')
-      else
-        out << name_lineage(
-          name.parent,
-          links: links, last: false, register: register, visited: visited
+    if visited.include? name.placement&.parent
+      # Break circular recursions
+      out << content_tag(:span, 'Recursion found: ', class: 'text-danger')
+    else
+      # Recursively get the parent(s)
+      out << name_lineage(
+        name.placement&.parent,
+        links: links, last: false, register: register, visited: visited
+      )
+
+      # Indicate if a placement is uncertain
+      if name.incertae_sedis?
+        out << content_tag(
+          :em, 'incertae sedis', class: 'text-secondary',
+          title: name.incertae_sedis_text.to_plain_text
         )
         out << content_tag(:span, ' &raquo; '.html_safe)
       end
@@ -96,11 +102,13 @@ module NamesHelper
     if links && !last
       out << display_link(
         name, :name_html,
-        display_text: name.name_html(assume_valid: assume_valid)
+        display_text: name.name_html(assume_valid: assume_valid),
+        title: name.rank
       )
     else
       out << name.name_html(assume_valid: assume_valid)
     end
+    out << content_tag(:span, ' &raquo; '.html_safe) unless last
 
     out.inject(:+)
   end

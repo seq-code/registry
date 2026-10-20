@@ -1,6 +1,15 @@
 require 'test_helper'
 
 class JournalsControllerTest < ActionDispatch::IntegrationTest
+  test 'journal names with slashes generate links and resolve to the full name' do
+    journal = "Annales de l'Institut Pasteur / Microbiologie"
+
+    path = journal_path(journal)
+    get(path)
+    assert_response :success
+    assert_equal journal, @request.params[:journal]
+  end
+
   test 'show resolves a journal name with an embedded period, untruncated' do
     get('/journals/' + ERB::Util.url_encode('Cryptogamie. Algologie'))
     assert_response :success

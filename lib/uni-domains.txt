@@ -1,3 +1,6 @@
+vanarts.com
+vfs.edu
+campusvfx.com
 tcetmumbai.in
 fho.edu.br
 noah.edu.gr
@@ -169,6 +172,7 @@ cpp.edu
 baker.edu
 tcnj.edu
 acu.edu
+atsu.edu
 adelphi.edu
 agnesscott.edu
 atc.edu
@@ -1692,6 +1696,7 @@ qu.edu.az
 sdu.edu.az
 tourism.edu.az
 wu.edu.az
+qu.edu.az
 cob.edu.bs
 agu.edu.bh
 ahliauniversity.org
@@ -3455,7 +3460,7 @@ ujf-grenoble.fr
 uhb.fr
 uhp-nancy.fr
 unicaen.fr
-unice.fr
+univ-cotedazur.fr
 unilim.fr
 univ-angers.fr
 univ-artois.fr
@@ -8560,7 +8565,7 @@ npu.edu.ua
 ntu.kar.net
 ogasa.odessa.ua
 onu.edu.ua
-opu.odessa.ua
+op.edu.ua
 osaft.odessa.ua
 osmu.odessa.ua
 pntu.edu.ua
@@ -8912,6 +8917,7 @@ hvtc.edu.vn
 hwru.edu.vn
 ktkt-haiduong.edu.vn
 neu.edu.vn
+huit.edu.vn
 ou.edu.vn
 ptit.edu.vn
 rmit.edu.vn
@@ -10578,6 +10584,12 @@ neu.ac.bd
 istp.fr
 stmikadhiguna.ac.id
 uindatokarama.ac.id
+unisapalu.ac.id
+unismuhpalu.ac.id
+unsimar.ac.id
+ntc.edu.vn
+ltu.se
+tust.edu.cn
 mpi-bremen.de
 mpg.de
 uni-due.de
@@ -10636,3 +10648,4 @@ genoscope.cns.fr
 cnrs.fr
 uniabuja.edu.ng
 charlotte.edu
+nrc-cnrc.gc.ca
