@@ -52,11 +52,13 @@ class Name::PublicHistory
     if etymology.any?
       changes['etymology'] = etymology_snapshots(etymology, changes['name'])
     end
-    type_changes = changes.extract!('nomenclatural_type_type', 'nomenclatural_type_id')
-    if type_changes.any?
-      types = type_changes.fetch('nomenclatural_type_type', [nil, nil])
-      ids = type_changes.fetch('nomenclatural_type_id', [nil, nil])
-      changes['nomenclatural_type'] = types.zip(ids)
+    Name.reflect_on_all_associations(:belongs_to).select(&:polymorphic?).each do |reflection|
+      reference = changes.extract!(reflection.foreign_type, reflection.foreign_key)
+      next if reference.empty?
+
+      types = reference.fetch(reflection.foreign_type, [nil, nil])
+      ids = reference.fetch(reflection.foreign_key, [nil, nil])
+      changes[reflection.name.to_s] = types.zip(ids)
     end
     # versioned_together records unchanged companion values too.
     changes.reject! { |_, values| values.first == values.last }

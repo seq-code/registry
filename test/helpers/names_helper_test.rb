@@ -79,6 +79,12 @@ class NamesHelperTest < ActionView::TestCase
                                 attribute: 'nomenclatural_type')
   end
 
+  test 'does not resolve polymorphic types that are not models' do
+    assert_equal ['Kernel #1', 'Strain::Missing #2'],
+                 history_values([['Kernel', 1], ['Strain::Missing', 2]],
+                                attribute: 'nomenclatural_type')
+  end
+
   test 'renders corrigendum sources with their display labels' do
     assert_equal ['Publication', 'SeqCode Registry'],
                  history_values(%w[publication seqcode], attribute: 'corrigendum_kind')
