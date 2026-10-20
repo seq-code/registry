@@ -20,7 +20,7 @@ module Versioned
   private
 
   def record_create_version
-    versions.create!(operation: 'create', changeset: {})
+    versions.create!(operation: 'create', changeset: attributes.transform_values { |value| [nil, value] })
   end
 
   def record_update_version
@@ -30,13 +30,19 @@ module Versioned
 
   def record_delete_version
     # The owner is already destroyed, so create directly rather than through
-    # its association. Deletion records only the event and retains history.
-    Version.create!(record: self, operation: 'delete', changeset: {})
+    # its association. Retain the final attributes and history.
+    Version.create!(
+      record: self, operation: 'delete',
+      changeset: attributes.transform_values { |value| [value, nil] }
+    )
   end
 
-  # An update changeset maps each changed attribute to [before, after], e.g.
+  # A changeset maps each changed attribute to [before, after], e.g.
   # { 'syllabication' => [nil, 'co.li'] } for E. coli.
-  # Create and delete versions have an empty changeset; timestamps are omitted.
+  # Create and delete versions change every attribute from or to nothing,
+  # retaining the full attributes: { 'rank' => [nil, 'species'] } on create and
+  # { 'rank' => ['species', nil] } on delete.
+  # Only update changesets omit timestamps.
   def versioned_changes
     changeset = saved_changes.except('created_at', 'updated_at')
 

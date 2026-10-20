@@ -5,14 +5,15 @@ class Name::VersionedTest < ActiveSupport::TestCase
     @name = Name.new(name: 'E. coli', rank: 'species')
   end
 
-  test 'creating a name records an empty changeset' do
+  test 'creating a name changes all attributes from nothing' do
     assert_difference -> { @name.versions.count } do
       @name.save!
     end
 
     version = @name.versions.last
     assert_equal 'create', version.operation
-    assert_empty version.changeset
+    assert_equal @name.attributes.as_json.transform_values { |value| [nil, value] },
+                 version.changeset
   end
 
   test 'updating a name records only changed attributes' do
@@ -59,8 +60,10 @@ class Name::VersionedTest < ActiveSupport::TestCase
     end
   end
 
-  test 'deleting a name records an empty changeset' do
+  test 'deleting a name changes all final attributes to nothing' do
     @name.save!
+    @name.update!(syllabication: 'co.li')
+    attributes = @name.attributes.as_json
     versions = Version.where(record: @name)
 
     assert_difference -> { versions.count } do
@@ -69,7 +72,7 @@ class Name::VersionedTest < ActiveSupport::TestCase
 
     version = versions.last
     assert_equal 'delete', version.operation
-    assert_empty version.changeset
+    assert_equal attributes.transform_values { |value| [value, nil] }, version.changeset
   end
 
   test 'deleting a name retains its history' do
