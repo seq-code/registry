@@ -3,7 +3,7 @@ class Name::PublicHistory
   KEYS = %w[
     name rank syllabication status priority_date authority
     nomenclatural_status taxonomic_status proposal_kind corrigendum_from corrigendum_kind
-    type_material type_accession nomenclatural_type_type nomenclatural_type_id
+    nomenclatural_type_type nomenclatural_type_id
     proposed_in_id corrigendum_in_id assigned_in_id
     parent_id correct_name_id basonym_id redirect_id genome_id genome_strain
     ncbi_taxonomy lpsn_url gtdb_accession algaebase_species algaebase_taxonomy
