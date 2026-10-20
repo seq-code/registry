@@ -304,6 +304,10 @@ class Publication < ApplicationRecord
     "#{authors_et_al(format)}, #{journal_date.year}"
   end
 
+  def display(_html = true)
+    short_citation
+  end
+
   def citation
     "#{short_citation}, #{journal_raw || pub_type.tr('-', ' ')}"
   end
