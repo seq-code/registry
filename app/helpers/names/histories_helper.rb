@@ -75,14 +75,25 @@ module Names::HistoriesHelper
     [before_parts, after_parts]
   end
 
+  # Diff rich text HTML, rendering each side as formatted text with its changes
+  # marked. The HTML is sanitized as ActionText content is, plus ins and del.
+  def history_html_diff(before, after)
+    HtmlDiff.diff(before, after).map do |html|
+      sanitize(
+        html,
+        tags: ActionText::ContentHelper.allowed_tags + %w[ins del],
+        attributes: ActionText::ContentHelper.allowed_attributes
+      )
+    end
+  end
+
   private
 
   # Name attributes that need domain-specific rendering, or nil for the rest.
   def history_name_values(changes, attribute)
     case attribute
     when 'description', 'etymology_text'
-      # Recorded as HTML; diff the readable text.
-      history_diff_parts(*changes.map { |html| html && ActionText::Content.new(html).to_plain_text })
+      history_html_diff(*changes)
     when 'etymology'
       history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
     when 'genome_id'

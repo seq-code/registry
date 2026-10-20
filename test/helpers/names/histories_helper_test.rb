@@ -12,6 +12,16 @@ class Names::HistoriesHelperTest < ActionView::TestCase
     assert_equal 'coli, <ins class="text-success">from</ins> the colon', after
   end
 
+  test 'diffs rich text as sanitized HTML' do
+    changes = ['<div>A <strong>gut</strong> bacterium</div>',
+               '<div>A <strong>gut</strong> <script>alert(1)</script>bacterium <em>E. coli</em></div>']
+    before, after = history_values(changes, attribute: 'description')
+
+    assert_equal '<div>A <strong>gut</strong> bacterium</div>', before
+    assert_not_includes after, '<script>'
+    assert_includes after, '<em><ins class="text-success">E. coli</ins></em>'
+  end
+
   test 'keeps distant edits separate and escapes their content' do
     changes = [
       { name: 'E. coli', etymology_xx_description: '< E. coli >' },
