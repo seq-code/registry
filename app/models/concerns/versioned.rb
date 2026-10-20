@@ -19,8 +19,21 @@ module Versioned
 
   private
 
+  def versioned_attributes
+    attributes.transform_values { |value| versioned_value(value) }
+  end
+
+  def versioned_saved_changes
+    saved_changes.transform_values { |values| values.map { |value| versioned_value(value) } }
+  end
+
+  # A rich text's body is a Content object; record its HTML.
+  def versioned_value(value)
+    value.is_a?(ActionText::Content) ? value.to_html.presence : value
+  end
+
   def record_create_version
-    versions.create!(operation: 'create', changeset: attributes.transform_values { |value| [nil, value] })
+    versions.create!(operation: 'create', changeset: versioned_attributes.transform_values { |value| [nil, value] })
   end
 
   def record_update_version
@@ -33,7 +46,7 @@ module Versioned
     # its association. Retain the final attributes and history.
     Version.create!(
       record: self, operation: 'delete',
-      changeset: attributes.transform_values { |value| [value, nil] }
+      changeset: versioned_attributes.transform_values { |value| [value, nil] }
     )
   end
 
@@ -44,7 +57,7 @@ module Versioned
   # { 'rank' => ['species', nil] } on delete.
   # Only update changesets omit timestamps.
   def versioned_changes
-    changeset = saved_changes.except('created_at', 'updated_at')
+    changeset = versioned_saved_changes.except('created_at', 'updated_at')
 
     # A polymorphic ID is only meaningful together with its record type.
     polymorphic_sets = self.class.reflect_on_all_associations(:belongs_to)

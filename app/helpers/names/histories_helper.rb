@@ -10,6 +10,11 @@ module Names::HistoriesHelper
     values.map { |value| safe_join(Array(value)).presence || '—' }
   end
 
+  # Rich text changes are shown as changes of the name itself.
+  def history_record_type(version)
+    version.record_type == 'ActionText::RichText' ? 'Name' : version.record_type
+  end
+
   def history_record_reference(record_class, id)
     return unless id
 
@@ -75,6 +80,9 @@ module Names::HistoriesHelper
   # Name attributes that need domain-specific rendering, or nil for the rest.
   def history_name_values(changes, attribute)
     case attribute
+    when 'description', 'etymology_text'
+      # Recorded as HTML; diff the readable text.
+      history_diff_parts(*changes.map { |html| html && ActionText::Content.new(html).to_plain_text })
     when 'etymology'
       history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
     when 'genome_id'

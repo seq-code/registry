@@ -18,7 +18,8 @@
       </thead>
       <% @versions.each do |version| %>
         <% changes = @history.changes_for(version) %>
-        <% record_change = version.record_type != 'Name' %>
+        <% record_type = history_record_type(version) %>
+        <% record_change = record_type != 'Name' %>
         <tbody class="name-history-version" data-version-id="<%= version.id %>">
           <% if record_change %>
             <tr class="name-history-record">
@@ -33,7 +34,7 @@
             </tr>
           <% end %>
           <% changes.each_with_index do |(attribute, values), index| %>
-            <% before, after = history_values(values, attribute: attribute, record_type: version.record_type) %>
+            <% before, after = history_values(values, attribute: attribute, record_type: record_type) %>
             <tr class="name-history-change">
               <% if index.zero? && !record_change %>
                 <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size %>">
@@ -42,7 +43,7 @@
                   </time>
                 </th>
               <% end %>
-              <th scope="row"><%= version.record_type.constantize.human_attribute_name(attribute) %></th>
+              <th scope="row"><%= record_type.constantize.human_attribute_name(attribute) %></th>
               <td class="name-history-before"><%= before %></td>
               <td class="name-history-after"><%= after %></td>
             </tr>

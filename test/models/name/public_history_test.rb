@@ -30,6 +30,15 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     }, @history.changes_for(version))
   end
 
+  test 'shows description and etymology text edits as name changes' do
+    @name.update!(description: 'A gut bacterium', etymology_text: 'From the colon', notes: 'Internal')
+    @name.reload.update!(description: 'A commensal gut bacterium')
+
+    changes = @history.versions(page: 1).flat_map { |version| @history.changes_for(version).keys }
+
+    assert_equal %w[description description etymology_text], changes.sort
+  end
+
   test 'combines publication links unlinks and relinks with name updates newest first' do
     publication = publications(:one)
     start = Time.zone.local(2026, 10, 1, 12)

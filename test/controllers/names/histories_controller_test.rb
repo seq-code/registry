@@ -12,6 +12,18 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_select '.name-history-version', count: 2
   end
 
+  test 'renders description edits as changes of the name' do
+    name = names(:escherichia_coli)
+    name.update!(description: 'A gut bacterium')
+    name.reload.update!(description: 'A commensal gut bacterium')
+
+    get name_history_path(name)
+
+    assert_response :success
+    assert_select '.name-history-version', count: 2
+    assert_select '.name-history-after ins', text: /commensal/
+  end
+
   test 'does not reveal private name history' do
     name = Name.create!(
       name: 'E. coli', rank: 'species', status: 5, created_by: users(:contributor)

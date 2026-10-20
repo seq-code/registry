@@ -11,6 +11,8 @@ class Name::PublicHistory
   ].concat(Name::ETYMOLOGY_COLUMNS).freeze
   # unlinked_at is shown as whether the publication or placement is linked.
   PUBLICATION_NAME_KEYS = %w[unlinked_at emends not_valid_proposal].freeze
+  # Only these rich texts of the name appear in the public history.
+  RICH_TEXT_NAMES = %w[description etymology_text].freeze
   PLACEMENT_KEYS = %w[unlinked_at parent_id incertae_sedis publication_id preferred].freeze
 
   def initialize(name)
@@ -20,7 +22,7 @@ class Name::PublicHistory
   # Load all histories and filter displayable changes in Ruby before pagination.
   # Each version's record is loaded up front to label link changes.
   def versions(page:)
-    name_versions.or(publication_versions).or(placement_versions)
+    name_versions.or(publication_versions).or(placement_versions).or(rich_text_versions)
                  .includes(:record)
                  .order(created_at: :desc, id: :desc)
                  .select { |version| changes_for(version).any? }
@@ -35,6 +37,8 @@ class Name::PublicHistory
       publication_changes_for(version)
     when 'Placement'
       placement_changes_for(version)
+    when 'ActionText::RichText'
+      rich_text_changes_for(version)
     else
       raise ArgumentError, "Unsupported public history record type: #{version.record_type}"
     end
@@ -65,6 +69,27 @@ class Name::PublicHistory
     # versioned_together records unchanged companion values too.
     changes.reject! { |_, values| values.first == values.last }
     changes
+  end
+
+  def rich_text_versions
+    Version.where(
+      record_type: 'ActionText::RichText',
+      record_id: ActionText::RichText.where(
+        record: @name, name: RICH_TEXT_NAMES
+      ).select(:id)
+    )
+  end
+
+  # A rich text version is shown as a change of the name's attribute it holds,
+  # found in the changeset of a created or deleted rich text, or else on the
+  # rich text itself:
+  #   { 'description' => [nil, '<div>A gut bacterium</div>'] }
+  def rich_text_changes_for(version)
+    body = version.changeset['body']
+    attribute = version.changeset['name']&.compact&.first || version.record&.name
+    return {} unless body && body.first != body.last && RICH_TEXT_NAMES.include?(attribute)
+
+    { attribute => body }
   end
 
   def publication_versions
