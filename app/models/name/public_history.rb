@@ -1,6 +1,6 @@
 class Name::PublicHistory
   # Only these recorded attributes appear in the public history.
-  KEYS = %w[
+  NAME_KEYS = %w[
     name rank syllabication status priority_date authority
     nomenclatural_status taxonomic_status proposal_kind corrigendum_from corrigendum_kind
     nomenclatural_type_type nomenclatural_type_id
@@ -9,6 +9,8 @@ class Name::PublicHistory
     ncbi_taxonomy lpsn_url gtdb_accession algaebase_species algaebase_taxonomy
     wikidata_item wikispecies_entry
   ].concat(Name::ETYMOLOGY_COLUMNS).freeze
+  # unlinked_at is shown as whether the publication is linked.
+  PUBLICATION_NAME_KEYS = %w[unlinked_at emends not_valid_proposal].freeze
 
   def initialize(name)
     @name = name
@@ -47,7 +49,7 @@ class Name::PublicHistory
   # Group etymology and polymorphic type attributes before removing unchanged
   # companions, so each side retains the context needed to render it.
   def name_changes_for(version)
-    changes = version.changeset.slice(*KEYS)
+    changes = version.changeset.slice(*NAME_KEYS)
     etymology = changes.extract!(*Name::ETYMOLOGY_COLUMNS)
     if etymology.any?
       changes['etymology'] = etymology_snapshots(etymology, changes['name'])
@@ -75,7 +77,7 @@ class Name::PublicHistory
     return { 'linked' => [false, true] } if version.operation == 'create'
     return {} unless version.operation == 'update'
 
-    changes = version.changeset.dup
+    changes = version.changeset.slice(*PUBLICATION_NAME_KEYS)
     unlinked_at = changes.delete('unlinked_at')
     return changes unless unlinked_at
 

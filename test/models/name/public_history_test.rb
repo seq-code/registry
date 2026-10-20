@@ -168,12 +168,13 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     assert_equal({ 'emends' => [false, true] }, @history.changes_for(version))
   end
 
-  test 'includes publication relationship changes without an attribute allowlist' do
-    values = [publications(:one).id, publications(:no_doi).id]
+  test 'keeps only allowlisted publication attributes' do
     version = Version.new(record_type: 'PublicationName', operation: 'update', changeset: {
-      'publication_id' => values
+      'publication_id' => [publications(:one).id, publications(:no_doi).id],
+      'name_id' => [names(:escherichia_coli).id, names(:escherichia_colie).id],
+      'emends' => [false, true]
     })
 
-    assert_equal({ 'publication_id' => values }, @history.changes_for(version))
+    assert_equal({ 'emends' => [false, true] }, @history.changes_for(version))
   end
 end
