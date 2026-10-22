@@ -52,5 +52,11 @@ jobs:
       - name: Prepare database
         run: bin/rails db:prepare
 
+      # System tests run in their own process: requests from a finished
+      # browser session (e.g., the ActionCable socket) can otherwise consume
+      # the global Warden sign-in hooks set by the next integration test
       - name: Run tests
-        run: bin/rails test:all
+        run: bin/rails test
+
+      - name: Run system tests
+        run: bin/rails test:system
