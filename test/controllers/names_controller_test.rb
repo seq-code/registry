@@ -99,6 +99,40 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal(target_name, name_paratype.name)
   end
 
+  test 'name page shows accepted tags without curator controls' do
+    get name_url(names(:escherichia))
+
+    assert_response :success
+    assert_select 'a[href=?]', tag_path(tags(:eponym))
+    assert_select 'form[action=?]', name_tags_path, count: 0
+  end
+
+  test 'name page hides proposed tags from non-curators' do
+    get name_url(names(:escherichia_coli))
+
+    assert_response :success
+    assert_select 'a[href=?]', tag_path(tags(:toponym)), count: 0
+  end
+
+  test 'name page shows tag controls to curators' do
+    sign_in(users(:curator))
+    get name_url(names(:escherichia_coli))
+
+    assert_response :success
+    assert_select 'form[action=?]', name_tags_path
+    assert_select 'a[title=?]', 'accept tag toponym'
+    assert_select 'a[title=?]', 'reject tag toponym'
+  end
+
+  test 'name page shows rejected tags with undo to curators' do
+    get name_url(names(:bacteria))
+    assert_select 'a[title=?]', 'undo rejection of tag eponym', count: 0
+
+    sign_in(users(:curator))
+    get name_url(names(:bacteria))
+    assert_select 'a[title=?]', 'undo rejection of tag eponym'
+  end
+
   private
 
     def autocomplete_values

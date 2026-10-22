@@ -1,9 +1,28 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  color: MyString
+geographic:
+  name: geographic
+  slug: geographic
+  color: '#1f6f8b'
 
-two:
-  name: MyOtherString
-  color: MyString
+toponym:
+  name: toponym
+  slug: toponym
+  color: '#5fa8c4'
+  parent: geographic
+
+commemorative:
+  name: commemorative
+  slug: commemorative
+  color: '#7b3f8c'
+
+eponym:
+  name: eponym
+  slug: eponym
+  color: '#b386c0'
+  parent: commemorative
+
+masculine:
+  name: masculine
+  slug: masculine
+  color: '#6c757d'

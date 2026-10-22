@@ -1,14 +1,145 @@
-<p id="notice"><%= notice %></p>
+<% provide(:title, @tag.name) %>
 
-<p>
-  <strong>Name:</strong>
-  <%= @tag.name %>
-</p>
+<%# TODO: Restore the JSON button once the tag JSON views conform to the API
+    design patterns %>
+<%#= download_buttons(
+      [[tag_url(@tag, format: :json), 'file-code', 'JSON']]
+    ) %>
 
-<p>
-  <strong>Color:</strong>
-  <%= @tag.color %>
-</p>
+<h1><%= tag_badge(@tag, link: false) %></h1>
+<hr/>
 
-<%= link_to 'Edit', edit_tag_path(@tag) %> |
-<%= link_to 'Back', tags_path %>
+<dl class="main-section name-details">
+  <h2><%= fa_icon('tag', class: 'float-right') %> Definition</h2>
+
+  <dt><%= fa_icon('code') %> Slug</dt>
+  <dd><code><%= @tag.slug %></code></dd>
+
+  <% if @tag.description? %>
+    <dt><%= fa_icon('align-left') %> Description</dt>
+    <dd><%= @tag.description %></dd>
+  <% end %>
+
+  <% if @tag.parent %>
+    <dt><%= fa_icon('level-up-alt') %> Umbrella tag</dt>
+    <dd><%= tag_badge(@tag.parent) %></dd>
+  <% end %>
+
+  <% if @child_tags.any? %>
+    <dt><%= fa_icon('sitemap') %> Sub-tags</dt>
+    <dd>
+      <% @child_tags.each do |child| %>
+        <%= tag_badge(child) %>
+      <% end %>
+    </dd>
+  <% end %>
+</dl>
+
+<h2>
+  Names
+  <div class="badge badge-count"><%= @accepted_names.total_entries %></div>
+</h2>
+
+<% if @accepted_names.empty? %>
+  <p class="text-muted">No names have been assigned this tag yet.</p>
+<% else %>
+  <%= pager @accepted_names %>
+  <table class="table table-hover table-responsive-md">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Rank</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @accepted_names.each do |name| %>
+        <tr>
+          <td><%= link_to(name.name_html, name) %></td>
+          <td><%= name.rank.try(:capitalize) %></td>
+          <td><%= name.status_name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= pager @accepted_names %>
+<% end %>
+
+<% if current_curator? && @proposed_names.any? %>
+  <h2>
+    Pending proposals
+    <div class="badge badge-count"><%= @proposed_names.size %></div>
+  </h2>
+  <table class="table table-hover table-responsive-md">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Proposed by</th>
+        <th>Notes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @proposed_names.each do |name_tag| %>
+        <tr>
+          <td><%= link_to(name_tag.name.name_html, name_tag.name) %></td>
+          <td><%= name_tag.proposed_by %></td>
+          <td><%= name_tag.notes %></td>
+          <td>
+            <%= link_to(
+                  name_tag_path(name_tag, name_tag: { status_int: 1 }),
+                  method: :patch, class: 'btn btn-sm btn-success',
+                  title: 'accept proposal'
+                ) do %>
+              <%= fa_icon('check') %> Accept
+            <% end %>
+            <%= link_to(
+                  name_tag_path(name_tag, name_tag: { status_int: 2 }),
+                  method: :patch, class: 'btn btn-sm btn-danger',
+                  title: 'reject proposal'
+                ) do %>
+              <%= fa_icon('times') %> Reject
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<% if current_curator? && @rejected_names.any? %>
+  <h2>
+    Rejected
+    <div class="badge badge-count"><%= @rejected_names.size %></div>
+  </h2>
+  <table class="table table-hover table-responsive-md">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Proposed by</th>
+        <th>Notes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @rejected_names.each do |name_tag| %>
+        <tr>
+          <td><%= link_to(name_tag.name.name_html, name_tag.name) %></td>
+          <td><%= name_tag.proposed_by %></td>
+          <td><%= name_tag.notes %></td>
+          <td>
+            <%= link_to(
+                  name_tag_path(name_tag, name_tag: { status_int: 0 }),
+                  method: :patch, class: 'btn btn-sm btn-secondary',
+                  title: 'undo rejection'
+                ) do %>
+              <%= fa_icon('undo') %> Undo rejection
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<%= render(partial: 'curator') %>

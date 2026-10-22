@@ -1,29 +1,54 @@
-<p id="notice"><%= notice %></p>
+<% provide(:title, 'Tags') %>
 
-<h1>Tags</h1>
+<%# TODO: Restore the JSON button once the tag JSON views conform to the API
+    design patterns %>
+<%#= download_buttons(
+      [[tags_url(format: :json), 'file-code', 'JSON']]
+    ) %>
 
-<table>
+<h1>
+  Tags
+  <div class="badge badge-count"><%= @tags.count %></div>
+</h1>
+<hr/>
+
+<table class="table table-hover table-responsive-md">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Color</th>
-      <th colspan="3"></th>
+      <th>Tag</th>
+      <th>Description</th>
+      <th>Names</th>
+      <% if current_curator? %>
+        <th>Actions</th>
+      <% end %>
     </tr>
   </thead>
-
   <tbody>
-    <% @tags.each do |tag| %>
-      <tr>
-        <td><%= tag.name %></td>
-        <td><%= tag.color %></td>
-        <td><%= link_to 'Show', tag %></td>
-        <td><%= link_to 'Edit', edit_tag_path(tag) %></td>
-        <td><%= link_to 'Destroy', tag, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <% @umbrella_tags.each do |umbrella| %>
+      <%= render(partial: 'index_row', locals: { tag: umbrella }) %>
+      <% umbrella.children.sort_by(&:name).each do |tag| %>
+        <%= render(partial: 'index_row', locals: { tag: tag, indent: true }) %>
+      <% end %>
+    <% end %>
+    <% if @standalone_tags.any? %>
+      <tr class="table-light">
+        <th colspan="<%= current_curator? ? 4 : 3 %>">Stand-alone</th>
       </tr>
+      <% @standalone_tags.each do |tag| %>
+        <%= render(partial: 'index_row', locals: { tag: tag, indent: true }) %>
+      <% end %>
     <% end %>
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Tag', new_tag_path %>
+<% if current_curator? %>
+  <dl name="curator" class="main-section name-details actions-section">
+    <h2>Curator Actions</h2>
+    <dd class="pt-2">
+      <%= link_to(new_tag_url, class: 'btn btn-primary btn-sm') do %>
+        <%= fa_icon('plus') %> New tag
+      <% end %>
+      &raquo; Define a new umbrella, sub-tag, or stand-alone tag
+    </dd>
+  </dl>
+<% end %>

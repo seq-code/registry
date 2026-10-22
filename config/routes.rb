@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   end
 
   resources :tags
+  resources :name_tags, only: %i[create update destroy]
   # General configuration
   root(to: 'application#main')
   concern(:autocompletable) do

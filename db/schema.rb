@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_08_28_100000) do
+ActiveRecord::Schema.define(version: 2026_10_16_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -180,6 +180,18 @@ ActiveRecord::Schema.define(version: 2026_08_28_100000) do
     t.index ["name_id"], name: "index_name_paratypes_on_name_id"
     t.index ["nomenclatural_type_type", "nomenclatural_type_id"], name: "index_name_paratypes_on_nomenclatural_type"
     t.index ["publication_id"], name: "index_name_paratypes_on_publication_id"
+  end
+
+  create_table "name_tags", force: :cascade do |t|
+    t.bigint "name_id", null: false
+    t.bigint "tag_id", null: false
+    t.integer "status_int", default: 0, null: false
+    t.string "proposed_by"
+    t.text "notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name_id", "tag_id"], name: "index_name_tags_on_name_id_and_tag_id", unique: true
+    t.index ["tag_id"], name: "index_name_tags_on_tag_id"
   end
 
   create_table "names", force: :cascade do |t|
@@ -499,7 +511,11 @@ ActiveRecord::Schema.define(version: 2026_08_28_100000) do
     t.string "color"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "slug", null: false
+    t.bigint "parent_id"
     t.index ["name"], name: "index_tags_on_name", unique: true
+    t.index ["parent_id"], name: "index_tags_on_parent_id"
+    t.index ["slug"], name: "index_tags_on_slug", unique: true
   end
 
   create_table "tutorials", force: :cascade do |t|
@@ -596,6 +612,8 @@ ActiveRecord::Schema.define(version: 2026_08_28_100000) do
   add_foreign_key "name_correspondences", "users"
   add_foreign_key "name_paratypes", "names"
   add_foreign_key "name_paratypes", "publications"
+  add_foreign_key "name_tags", "names"
+  add_foreign_key "name_tags", "tags"
   add_foreign_key "names", "genomes"
   add_foreign_key "names", "registers"
   add_foreign_key "names", "tutorials"
@@ -614,6 +632,7 @@ ActiveRecord::Schema.define(version: 2026_08_28_100000) do
   add_foreign_key "registers", "publications"
   add_foreign_key "registers", "users"
   add_foreign_key "reports", "users"
+  add_foreign_key "tags", "tags", column: "parent_id"
   add_foreign_key "tutorials", "users"
   add_foreign_key "wikispecies_credentials", "users"
 end
