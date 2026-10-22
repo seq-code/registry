@@ -51,4 +51,16 @@ class PlacementsControllerTest < ActionDispatch::IntegrationTest
     assert_not_predicate placement, :incertae_sedis?
     assert_equal names(:escherichia), @name.parent
   end
+
+  test 'removing an alternative placement keeps the name parent' do
+    name = names(:escherichia_coli)
+    placement = Placement.create!(
+      name: name, parent: names(:bacteria), incertae_sedis: true,
+      incertae_sedis_text: 'Family placement unresolved'
+    )
+
+    delete placement_path(placement)
+
+    assert_equal names(:escherichia), name.reload.parent
+  end
 end
