@@ -39,6 +39,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          # Newer runner images only build the latest patch of each series
+          ruby-version: '3.3'
           bundler-cache: true
 
       - name: Set up Node
