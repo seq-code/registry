@@ -80,10 +80,44 @@ module Name::Wiki
     wikispecies_submitted_at.present? && wikispecies_submitted_at > 1.hour.ago
   end
 
+  # Cache key set while Wikispecies requests are paused (see
+  # +#wikispecies_request+)
+  WIKISPECIES_BACKOFF_KEY = 'wikispecies_backoff'
+
+  ##
+  # Request the Wikispecies page at +url+, and return its contents, +:missing+
+  # if the page doesn't exist, or +nil+ if it couldn't be checked. If
+  # Wikispecies throttles the request, further requests are paused for the
+  # time it asks for (or 10 minutes)
+  def wikispecies_request(url)
+    return if Rails.cache.read(WIKISPECIES_BACKOFF_KEY)
+
+    res = external_response(url)
+    return if res.nil?
+
+    case res
+    when Net::HTTPSuccess
+      normalize_encoding(res.body.to_s)
+    when Net::HTTPNotFound
+      :missing
+    when Net::HTTPTooManyRequests, Net::HTTPServiceUnavailable
+      wait = res['Retry-After'].to_i
+      wait = 10.minutes.to_i unless wait.positive?
+      Rails.cache.write(WIKISPECIES_BACKOFF_KEY, true, expires_in: wait)
+      nil
+    end
+  end
+
+  ##
+  # Check the Wikispecies page (and template, if needed) of the name, and
+  # record any issues. If Wikispecies can't be checked (e.g., when throttled),
+  # the previous results are kept, and checked again next time
   def check_wikispecies
+    doc = wikispecies_request(wikispecies_url)
+    return if doc.nil?
+
     issues = []
-    doc = external_request(wikispecies_url)
-    if !doc.present?
+    if doc == :missing
       issues << 'missing page'
     else
       xml = Nokogiri::HTML.parse(doc)
@@ -110,9 +144,10 @@ module Name::Wiki
     end
 
     if wikispecies_needs_template?
-      unless external_request(wikispecies_template_url).present?
-        issues << 'missing template'
-      end
+      template = wikispecies_request(wikispecies_template_url)
+      return if template.nil?
+
+      issues << 'missing template' if template == :missing
     end
 
     update_columns(
