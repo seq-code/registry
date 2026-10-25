@@ -3,16 +3,12 @@
 require 'application_system_test_case'
 
 class PlacementsTest < ApplicationSystemTestCase
-  include Warden::Test::Helpers
-
   setup do
     @user = users(:curator)
     @parent = names(:escherichia)
 
-    login_as(@user, scope: :user)
+    sign_in(@user)
   end
-
-  teardown { Warden.test_reset! }
 
   test 'creating the first placement for a name' do
     name = Name.create!(

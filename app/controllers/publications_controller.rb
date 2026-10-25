@@ -1,4 +1,5 @@
 class PublicationsController < ApplicationController
+  before_action(:skip_session_cookie, only: %i[autocomplete])
   before_action(
     :set_publication,
     only: %i[show edit update destroy names]

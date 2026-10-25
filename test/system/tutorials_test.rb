@@ -3,18 +3,14 @@
 require 'application_system_test_case'
 
 class TutorialsTest < ApplicationSystemTestCase
-  include Warden::Test::Helpers
-
   setup do
     @user = users(:contributor)
     @tutorial = Tutorial.create!(
       pipeline: 'batch', user: @user, step: 0, ongoing: true
     )
 
-    login_as(@user, scope: :user)
+    sign_in(@user)
   end
-
-  teardown { Warden.test_reset! }
 
   test 'batch uploading a single genus' do
     family = names(:nanobdellaceae)
