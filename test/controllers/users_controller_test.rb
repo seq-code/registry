@@ -198,6 +198,83 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_match('mailto:seqcode@bio.aau.dk', response.body)
   end
 
+  test 'community_members_active downloads active members as CSV' do
+    sign_in(@officer)
+    @contributor.update!(
+      given: 'Ada', family: 'Lovelace', affiliation: '=HYPERLINK("x")',
+      department: 'Computing', position: 'Graduate Student',
+      community_member: true, community_member_expires_on: Date.current
+    )
+    @admin.update!(
+      community_member: true,
+      community_member_expires_on: Date.current - 1.day
+    )
+
+    get(community_members_active_path(format: :csv))
+
+    assert_response(:success)
+    assert_equal('text/csv', response.media_type)
+    assert_match(
+      "seqcode-community-members-#{Date.current}.csv",
+      response.headers['Content-Disposition']
+    )
+    assert_equal(
+      [
+        ['Full name', 'Email', 'Affiliation', 'Department', 'Position'],
+        [
+          'Lovelace, Ada', 'contributor@example.com', %q('=HYPERLINK("x")),
+          'Computing', 'Graduate Student'
+        ]
+      ],
+      CSV.parse(response.body)
+    )
+  end
+
+  test 'community_members_active lists active members in HTML' do
+    sign_in(@officer)
+    @contributor.update!(
+      given: 'Ada', family: 'Lovelace', affiliation: 'Analytical Engines',
+      community_member: true, community_member_expires_on: Date.current
+    )
+    @admin.update!(
+      community_member: true,
+      community_member_expires_on: Date.current - 1.day
+    )
+
+    get(community_members_active_path)
+
+    assert_response(:success)
+    assert_select('h1 .badge-count', text: '1')
+    assert_select('a[href=?]', 'mailto:contributor@example.com',
+                  text: 'Lovelace, Ada')
+    assert_select('a[href=?]', 'mailto:admin@example.com', count: 0)
+    assert_match('Analytical Engines', response.body)
+    assert_select(
+      'a.btn[href=?]', community_members_active_url(format: :csv), text: 'CSV'
+    )
+  end
+
+  test 'community_members_active is not accessible to non-officers' do
+    sign_in(@admin)
+
+    get(community_members_active_path)
+    assert_redirected_to(root_path)
+
+    get(community_members_active_path(format: :csv))
+    assert_redirected_to(root_path)
+  end
+
+  test 'officer dashboard tab links to the active members list and CSV' do
+    sign_in(@officer)
+
+    get(dashboard_path(tab: :officer))
+
+    assert_select('a[href=?]', community_members_active_path)
+    assert_select(
+      'a[href=?]', community_members_active_path(format: :csv)
+    )
+  end
+
   test 'officer dashboard tab renders with no pending applications or members' do
     sign_in(@officer)
 

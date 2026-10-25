@@ -10,7 +10,9 @@ class UsersController < ApplicationController
   )
   before_action(
     :authenticate_officer!,
-    only: %i[community_member_grant community_member_deny]
+    only: %i[
+      community_member_grant community_member_deny community_members_active
+    ]
   )
   before_action(
     :set_user,
@@ -190,7 +192,45 @@ class UsersController < ApplicationController
     )
   end
 
+  # GET /community_members/active
+  # GET /community_members/active.csv
+  def community_members_active
+    members = User.community_members_active.order(:family, :given)
+    respond_to do |format|
+      format.html do
+        @crumbs = [
+          ['Officer dashboard', dashboard_path(tab: :officer)],
+          'Active community members'
+        ]
+        @members = members.paginate(page: params[:page], per_page: 30)
+      end
+      format.csv do
+        send_data(
+          community_members_csv(members), type: 'text/csv',
+          filename: "seqcode-community-members-#{Date.current}.csv"
+        )
+      end
+    end
+  end
+
   private
+
+    def community_members_csv(members)
+      CSV.generate do |rows|
+        rows << ['Full name', 'Email', 'Affiliation', 'Department', 'Position']
+        members.each do |u|
+          rows << [
+            u.full_name, u.email, u.affiliation, u.department, u.position
+          ].map { |value| csv_safe(value) }
+        end
+      end
+    end
+
+    # Prevent spreadsheet applications from interpreting user-provided
+    # +value+ as a formula
+    def csv_safe(value)
+      value.to_s.start_with?('=', '+', '-', '@') ? "'#{value}" : value
+    end
 
     # Update the +@user+ status with +params+, and record +membership_event+
     # if it's a SeqCode Community membership change
