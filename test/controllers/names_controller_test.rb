@@ -29,6 +29,18 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, names(:draft_by_contributor).name
   end
 
+  test 'observing lists all observed names regardless of status' do
+    names(:escherichia).add_observer(@user)
+    names(:draft_by_contributor).add_observer(@user)
+
+    get observing_names_url
+
+    assert_response :success
+    assert_includes @response.body, names(:escherichia).name
+    assert_includes @response.body, names(:draft_by_contributor).name
+    assert_not_includes @response.body, names(:escherichia_coli).name
+  end
+
   test 'type_genomes JSON reports the nomenclatural type class as Genome' do
     get name_type_genomes_url(format: :json)
 
