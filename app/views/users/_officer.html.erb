@@ -54,5 +54,17 @@
         (<%= @active_community_members.count %>)
       <% end %>
     </li>
+    <li class="nav-item">
+      <%= link_to(community_members_active_path) do %>
+        <%= fa_icon('list') %>
+        List all active community members
+      <% end %>
+    </li>
+    <li class="nav-item">
+      <%= link_to(community_members_active_path(format: :csv)) do %>
+        <%= fa_icon('file-csv') %>
+        Download active community members (CSV)
+      <% end %>
+    </li>
   </ul>
 <% end %>

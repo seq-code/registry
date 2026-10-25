@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   post 'community_members/apply' => 'users#community_member_apply', as: :community_member_apply
   post 'community_members/grant/:username' => 'users#community_member_grant', as: :community_member_grant
   post 'community_members/deny/:username' => 'users#community_member_deny', as: :community_member_deny
+  get 'community_members/active(.:format)' => 'users#community_members_active', as: :community_members_active
   devise_for(:users, controllers: { registrations: 'users/registrations' })
 
   namespace :wikispecies do
