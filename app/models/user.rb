@@ -43,6 +43,7 @@ class User < ApplicationRecord
   has_many(:name_correspondences, dependent: :nullify)
   has_many(:register_correspondences, dependent: :nullify)
   has_many(:tutorials, dependent: :nullify)
+  has_many(:community_membership_events, dependent: :delete_all)
   has_many(:checks, dependent: :nullify)
   has_many(:checked_names, -> { distinct }, through: :checks, source: :name)
   has_many(:observe_names, dependent: :destroy)
@@ -201,13 +202,25 @@ class User < ApplicationRecord
   end
 
   ##
-  # Can the user (re)apply for SeqCode Community membership right now? Always
-  # true before a first application; renewals are only open in the six
-  # months before (or after) the current membership expires
+  # Can the user (re)apply for SeqCode Community membership right now? Never
+  # while an application is pending review; otherwise, always true before a
+  # first application, and renewals are only open in the six months before
+  # (or after) the current membership expires
   def can_apply_for_community_membership?
+    return false if community_member_applied_at?
     return true if community_member_expires_on.blank?
 
     Date.current >= community_member_expires_on - 6.months
+  end
+
+  ##
+  # Update the SeqCode Community membership fields with +params+ and, if
+  # successful, record +event+ (see +CommunityMembershipEvent::EVENTS+).
+  # Returns whether the update succeeded
+  def update_community_membership(params, event)
+    transaction do
+      update(params) && community_membership_events.create!(event: event)
+    end.present?
   end
 
   ##

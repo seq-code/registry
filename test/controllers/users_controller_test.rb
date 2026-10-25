@@ -67,6 +67,59 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_nil(@contributor.reload.community_member_applied_at)
   end
 
+  test 'community membership changes are recorded as events' do
+    complete_community_member_profile!(@contributor)
+    sign_in(@contributor)
+    post(community_member_apply_path)
+    sign_in(@officer)
+    post(community_member_grant_path(@contributor))
+
+    @contributor.reload.update!(
+      community_member_expires_on: Date.current + 5.months
+    )
+    sign_in(@contributor)
+    post(community_member_apply_path)
+    sign_in(@officer)
+    post(community_member_deny_path(@contributor))
+
+    assert_equal(
+      %w[application grant renewal deny],
+      @contributor.community_membership_events.order(:id).pluck(:event)
+    )
+  end
+
+  test 'rejected community membership actions are not recorded as events' do
+    sign_in(@contributor)
+    assert_not(@contributor.community_member_profile_complete?)
+
+    assert_no_difference('CommunityMembershipEvent.count') do
+      post(community_member_apply_path)
+      post(community_member_grant_path(@contributor))
+    end
+  end
+
+  test 'community_member tab shows a pending renewal of an active membership' do
+    sign_in(@contributor)
+    complete_community_member_profile!(@contributor)
+    expires_on = Date.current + 5.months
+    @contributor.update!(
+      community_member: true,
+      community_member_started_on: Date.new(2023, 1, 1),
+      community_member_expires_on: expires_on
+    )
+
+    post(community_member_apply_path)
+    follow_redirect!
+
+    assert_response(:success)
+    text = response.body.squish
+    assert_match(/Your renewal request from .+ is pending review/, text)
+    assert_match(
+      "remains valid through #{expires_on.strftime('%B %-d, %Y')}", text
+    )
+    assert_select('a[href=?]', community_member_apply_path, count: 0)
+  end
+
   test 'community_member_grant approves the application and sets tracking fields' do
     sign_in(@officer)
     @contributor.update!(community_member_applied_at: Time.current)

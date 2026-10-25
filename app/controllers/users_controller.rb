@@ -158,9 +158,13 @@ class UsersController < ApplicationController
   end
 
   def community_member_apply
+    event =
+      current_user.community_member_started_on? ? 'renewal' : 'application'
     if current_user.can_apply_for_community_membership? &&
        current_user.community_member_profile_complete? &&
-       current_user.update(community_member_applied_at: Time.current)
+       current_user.update_community_membership(
+         { community_member_applied_at: Time.current }, event
+       )
       flash[:notice] =
         'Application received, we will evaluate it as soon as possible'
       # TODO Notify all officers
@@ -171,23 +175,33 @@ class UsersController < ApplicationController
   end
 
   def community_member_grant
-    status_application_action(
+    status_application_action({
       community_member: true,
       community_member_applied_at: nil,
       community_member_started_on:
         @user.community_member_started_on || Date.current,
       community_member_expires_on: User.community_membership_cohort_end
-    )
+    }, membership_event: 'grant')
   end
 
   def community_member_deny
-    status_application_action(community_member_applied_at: nil)
+    status_application_action(
+      { community_member_applied_at: nil }, membership_event: 'deny'
+    )
   end
 
   private
 
-    def status_application_action(params)
-      if @user.update(params)
+    # Update the +@user+ status with +params+, and record +membership_event+
+    # if it's a SeqCode Community membership change
+    def status_application_action(params, membership_event: nil)
+      updated =
+        if membership_event
+          @user.update_community_membership(params, membership_event)
+        else
+          @user.update(params)
+        end
+      if updated
         flash[:notice] = 'Application successfully processed'
 
         # Notify user

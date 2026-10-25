@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_10_16_100000) do
+ActiveRecord::Schema.define(version: 2026_10_25_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -72,6 +72,13 @@ ActiveRecord::Schema.define(version: 2026_10_16_100000) do
     t.index ["name_id", "kind"], name: "index_checks_on_name_id_and_kind", unique: true
     t.index ["name_id"], name: "index_checks_on_name_id"
     t.index ["user_id"], name: "index_checks_on_user_id"
+  end
+
+  create_table "community_membership_events", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "event", null: false
+    t.datetime "created_at", null: false
+    t.index ["user_id"], name: "index_community_membership_events_on_user_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -600,6 +607,7 @@ ActiveRecord::Schema.define(version: 2026_10_16_100000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "checks", "names"
   add_foreign_key "checks", "users"
+  add_foreign_key "community_membership_events", "users"
   add_foreign_key "contacts", "authors"
   add_foreign_key "contacts", "publications"
   add_foreign_key "contacts", "users"
