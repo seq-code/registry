@@ -77,6 +77,15 @@ class UserTest < ActiveSupport::TestCase
     assert(user.can_apply_for_community_membership?)
   end
 
+  test 'can_apply_for_community_membership? is false while an application is pending' do
+    user = users(:contributor)
+    user.community_member_applied_at = Time.current
+    assert_not(user.can_apply_for_community_membership?)
+
+    user.community_member_expires_on = Date.current + 5.months
+    assert_not(user.can_apply_for_community_membership?)
+  end
+
   test 'community_member_applications scopes to users with a pending application' do
     applicant = users(:contributor)
     applicant.update!(community_member_applied_at: Time.current)
