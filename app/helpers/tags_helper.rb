@@ -4,12 +4,18 @@ module TagsHelper
     bg = tag.color.presence || '#6c757d'
     style = "background-color: #{bg}; color: #{tag_text_color(bg)};"
     style += ' opacity: 0.5;' if faded
-    opts = { class: 'badge badge-pill', style: style, title: tag.slug }
+    opts = { class: 'badge badge-pill', style: style, title: tag_title(tag) }
     if link
       link_to(tag.name, tag_path(tag), opts)
     else
       content_tag(:span, tag.name, opts)
     end
+  end
+
+  # Plain-text description of the tag (for hover titles), or its slug if it
+  # has no description
+  def tag_title(tag)
+    tag.description.to_plain_text.squish.presence || tag.slug
   end
 
   # Black or white text depending on the luminance of a hex color

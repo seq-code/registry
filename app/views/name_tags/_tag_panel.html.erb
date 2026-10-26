@@ -1,4 +1,6 @@
-<% name_tags = name.name_tags.includes(:tag).sort_by { |nt| nt.tag.name } %>
+<% name_tags =
+     name.name_tags.includes(tag: :rich_text_description)
+         .sort_by { |nt| nt.tag.name } %>
 <% accepted = name_tags.select(&:accepted?) %>
 <% can_tag = current_curator? && name.can_edit_validated?(current_user) %>
 <% if accepted.any? || can_tag %>

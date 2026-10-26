@@ -67,6 +67,21 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', new_tag_path, count: 0
   end
 
+  test 'tag badges use the plain-text description as hover title' do
+    tags(:masculine).update!(description: 'Grammatically <i>masculine</i>')
+
+    get tags_url
+    assert_select 'a.badge[title=?]', 'Grammatically masculine',
+                  text: 'masculine'
+    assert_select 'a.badge[title=?]', 'toponym', text: 'toponym'
+
+    sign_in(users(:curator))
+    tags(:toponym).update!(description: 'Named after a real place')
+    get name_url(names(:escherichia_coli))
+    assert_select 'a.badge[title=?]', 'Named after a real place',
+                  text: 'toponym'
+  end
+
   test 'index links to pending tags for curators only' do
     get tags_url
     assert_select 'a[href=?]', pending_name_tags_url, count: 0
