@@ -7,6 +7,64 @@ class NameTagsControllerTest < ActionDispatch::IntegrationTest
     @name = names(:bacillus)
   end
 
+  test 'pending lists names with proposed tags and all their tags' do
+    sign_in(users(:curator))
+    name = names(:escherichia_coli)
+    NameTag.create!(name: name, tag: tags(:eponym), status_int: 1)
+
+    get pending_name_tags_url
+
+    assert_response :success
+    assert_select 'h1 .badge-count', text: '1'
+    assert_select 'tbody tr', count: 1
+    assert_select 'tbody td a[href=?]', name_path(name)
+    assert_select 'a[title=?]', 'accept tag toponym'
+    assert_select 'a[title=?]', 'reject tag toponym'
+    assert_select 'a[title=?]', 'remove tag eponym'
+    assert_select 'tbody td a[href=?]', name_path(names(:escherichia)), count: 0
+    assert_select 'tbody td a[href=?]', name_path(names(:bacteria)), count: 0
+  end
+
+  test 'pending shows the parsed etymology' do
+    sign_in(users(:curator))
+    names(:escherichia_coli).update!(etymology_xx_description: 'of the colon')
+
+    get pending_name_tags_url
+
+    assert_select 'tbody td', text: /of the colon/
+  end
+
+  test 'accepting from the pending list returns to it' do
+    sign_in(users(:curator))
+    name_tag = name_tags(:escherichia_coli_toponym)
+
+    patch name_tag_url(name_tag),
+          params: { name_tag: { status_int: 1 } },
+          headers: { 'HTTP_REFERER' => pending_name_tags_url(page: 1) }
+
+    assert_redirected_to pending_name_tags_url(page: 1)
+    assert_predicate(name_tag.reload, :accepted?)
+  end
+
+  test 'curator dashboard links to pending tags' do
+    sign_in(users(:curator))
+
+    get dashboard_url(tab: :curator)
+
+    assert_response :success
+    assert_select 'a[href=?]', pending_name_tags_path,
+                  text: /Names with pending tags/
+  end
+
+  test 'pending is only visible to curators' do
+    get pending_name_tags_url
+    assert_redirected_to root_url
+
+    sign_in(users(:contributor))
+    get pending_name_tags_url
+    assert_redirected_to root_url
+  end
+
   test 'curator applies an accepted tag' do
     sign_in(users(:curator))
 

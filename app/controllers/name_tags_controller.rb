@@ -1,7 +1,16 @@
 class NameTagsController < ApplicationController
   before_action(:authenticate_user!, only: %i[create])
-  before_action(:authenticate_curator!, only: %i[update destroy])
+  before_action(:authenticate_curator!, only: %i[update destroy pending])
   before_action(:set_name_tag, only: %i[update destroy])
+
+  # GET /name_tags/pending
+  def pending
+    @crumbs = [['Tags', tags_url], 'Pending tags']
+    @names =
+      Name.where(id: NameTag.where(status_int: 0).select(:name_id))
+          .includes(name_tags: { tag: :rich_text_description }).order(:name)
+          .paginate(page: params[:page], per_page: 30)
+  end
 
   # POST /name_tags
   def create

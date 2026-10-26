@@ -1,0 +1,47 @@
+<h1>
+  Pending tags
+  <div class="badge badge-count"><%= @names.total_entries %></div>
+</h1>
+<p class="text-muted">
+  Names with tags proposed for review. Accept or reject each proposal; names
+  leave this list once none of their tags are pending.
+</p>
+<hr/>
+
+<%= pager(@names) %>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Etymology</th>
+      <th>Tags</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @names.each do |name| %>
+      <tr>
+        <td><%= link_to(name.name_html, name) %></td>
+        <td>
+          <% if name.etymology? %>
+            <%= name.full_etymology(true) %>
+          <% else %>
+            <span class="text-muted">No etymology</span>
+          <% end %>
+        </td>
+        <td>
+          <%= render(
+                partial: 'name_tags/tags',
+                locals: {
+                  name_tags: name.name_tags.sort_by { |nt| nt.tag.name },
+                  can_tag: name.can_edit_validated?(current_user)
+                }
+              ) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= pager(@names) %>
+
+<br/>
+<%= render(partial: 'shared/cc') %>
