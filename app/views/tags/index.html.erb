@@ -50,5 +50,14 @@
       <% end %>
       &raquo; Define a new umbrella, sub-tag, or stand-alone tag
     </dd>
+    <dd class="pt-2">
+      <%= link_to(pending_name_tags_url, class: 'btn btn-primary btn-sm') do %>
+        <%= fa_icon('tasks') %> Review pending tags
+      <% end %>
+      &raquo; Accept or reject the tags proposed for
+      <%= pluralize(
+            NameTag.where(status_int: 0).distinct.count(:name_id), 'name'
+          ) %>
+    </dd>
   </dl>
 <% end %>

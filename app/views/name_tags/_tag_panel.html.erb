@@ -1,64 +1,15 @@
 <% name_tags = name.name_tags.includes(:tag).sort_by { |nt| nt.tag.name } %>
 <% accepted = name_tags.select(&:accepted?) %>
-<% proposed = name_tags.select(&:proposed?) %>
-<% rejected = name_tags.select(&:rejected?) %>
 <% can_tag = current_curator? && name.can_edit_validated?(current_user) %>
 <% if accepted.any? || can_tag %>
   <dt><%= fa_icon('tags') %> Tags</dt>
   <dd>
-    <% accepted.each do |name_tag| %>
-      <span class="text-nowrap mr-1">
-        <%= tag_badge(name_tag.tag) %>
-        <% if can_tag %>
-          <%= link_to(
-                name_tag, method: :delete, class: 'text-danger',
-                title: "remove tag #{name_tag.tag.name}",
-                data: { confirm: "Remove the tag #{name_tag.tag.name}?" }
-              ) do %>
-            <%= fa_icon('times-circle') %>
-          <% end %>
-        <% end %>
-      </span>
-    <% end %>
+    <%= render(
+          partial: 'name_tags/tags',
+          locals: { name_tags: name_tags, can_tag: can_tag }
+        ) %>
 
     <% if can_tag %>
-      <% proposed.each do |name_tag| %>
-        <span class="text-nowrap mr-1">
-          <%= tag_badge(name_tag.tag, faded: true) %>
-          <span class="text-muted small">
-            (proposed by <%= name_tag.proposed_by || 'unknown' %>)
-          </span>
-          <%= link_to(
-                name_tag_path(name_tag, name_tag: { status_int: 1 }),
-                method: :patch, class: 'text-success',
-                title: "accept tag #{name_tag.tag.name}"
-              ) do %>
-            <%= fa_icon('check-circle') %>
-          <% end %>
-          <%= link_to(
-                name_tag_path(name_tag, name_tag: { status_int: 2 }),
-                method: :patch, class: 'text-danger',
-                title: "reject tag #{name_tag.tag.name}"
-              ) do %>
-            <%= fa_icon('times-circle') %>
-          <% end %>
-        </span>
-      <% end %>
-
-      <% rejected.each do |name_tag| %>
-        <span class="text-nowrap mr-1">
-          <del><%= tag_badge(name_tag.tag, faded: true) %></del>
-          <span class="text-muted small">(rejected)</span>
-          <%= link_to(
-                name_tag_path(name_tag, name_tag: { status_int: 0 }),
-                method: :patch, class: 'text-secondary',
-                title: "undo rejection of tag #{name_tag.tag.name}"
-              ) do %>
-            <%= fa_icon('undo') %>
-          <% end %>
-        </span>
-      <% end %>
-
       <% options = tag_grouped_options(except: name_tags.map(&:tag)) %>
       <% if options.any? %>
         <%= form_with(

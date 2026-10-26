@@ -67,6 +67,16 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', new_tag_path, count: 0
   end
 
+  test 'index links to pending tags for curators only' do
+    get tags_url
+    assert_select 'a[href=?]', pending_name_tags_url, count: 0
+
+    sign_in(users(:curator))
+    get tags_url
+    assert_select 'dl[name=curator] a[href=?]', pending_name_tags_url
+    assert_select 'dl[name=curator]', text: /tags proposed for 1 name/
+  end
+
   test 'index shows edit links to curators' do
     sign_in(users(:curator))
     get tags_url
