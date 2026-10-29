@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_10_29_110000) do
+ActiveRecord::Schema.define(version: 2026_10_29_120000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -336,6 +336,7 @@ ActiveRecord::Schema.define(version: 2026_10_29_110000) do
     t.boolean "ncbi_taxonomy"
     t.datetime "deleted_at"
     t.boolean "incertae_sedis", default: false, null: false
+    t.index ["name_id"], name: "index_placements_on_active_preferred_name", unique: true, where: "((preferred = true) AND (deleted_at IS NULL))"
     t.index ["name_id"], name: "index_placements_on_name_id"
     t.index ["publication_id"], name: "index_placements_on_publication_id"
   end
