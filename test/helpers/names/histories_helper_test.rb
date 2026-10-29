@@ -68,8 +68,6 @@ class Names::HistoriesHelperTest < ActionView::TestCase
     assert_equal [link_to(genome.display, genome), '—'],
                  history_values([['Genome', genome.id], [nil, nil]],
                                 attribute: 'nomenclatural_type')
-    assert_equal ['—', link_to(genome.display, genome)],
-                 history_values([nil, genome.id], attribute: 'genome_id')
   end
 
   test 'does not resolve polymorphic types that are not models' do

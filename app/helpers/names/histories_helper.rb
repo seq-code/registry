@@ -86,9 +86,6 @@ module Names::HistoriesHelper
       history_html_diff(*changes)
     when 'etymology'
       history_text_diff(*changes.map { |attributes| Name.new(attributes).full_etymology })
-    when 'genome_id'
-      # This legacy column has a custom reader, but no belongs_to association.
-      changes.map { |id| history_record_reference(Genome, id) }
     when 'corrigendum_kind'
       changes.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
     when 'status'
