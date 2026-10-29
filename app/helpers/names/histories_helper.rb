@@ -48,7 +48,7 @@ module Names::HistoriesHelper
     end
   end
 
-  def history_diff_parts(before, after)
+  def history_text_diff(before, after)
     chunks = TextDiff.chunks(before, after)
 
     before_parts = chunks.filter_map do |unchanged, text, _|
@@ -85,7 +85,7 @@ module Names::HistoriesHelper
     when 'description', 'etymology_text'
       history_html_diff(*changes)
     when 'etymology'
-      history_diff_parts(*changes.map { |attributes| Name.new(attributes).full_etymology })
+      history_text_diff(*changes.map { |attributes| Name.new(attributes).full_etymology })
     when 'genome_id'
       # This legacy column has a custom reader, but no belongs_to association.
       changes.map { |id| history_record_reference(Genome, id) }
@@ -109,7 +109,7 @@ module Names::HistoriesHelper
     elsif association
       changes.map { |id| history_record_reference(association.klass, id) }
     elsif changes.any? { |value| value.is_a?(String) }
-      history_diff_parts(*changes)
+      history_text_diff(*changes)
     else
       changes.map { |value| { true => 'Yes', false => 'No' }.fetch(value, value) }
     end
