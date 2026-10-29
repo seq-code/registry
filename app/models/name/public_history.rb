@@ -50,7 +50,7 @@ class Name::PublicHistory
     @name.versions.where(operation: 'update')
   end
 
-  # Group etymology and polymorphic type attributes before removing unchanged
+  # Group etymology and nomenclatural type attributes before removing unchanged
   # companions, so each side retains the context needed to render it.
   def name_changes_for(version)
     changes = version.changeset.slice(*NAME_KEYS)
@@ -58,13 +58,9 @@ class Name::PublicHistory
     if etymology.any?
       changes['etymology'] = etymology_snapshots(etymology, changes['name'])
     end
-    Name.reflect_on_all_associations(:belongs_to).select(&:polymorphic?).each do |reflection|
-      reference = changes.extract!(reflection.foreign_type, reflection.foreign_key)
-      next if reference.empty?
-
-      types = reference.fetch(reflection.foreign_type, [nil, nil])
-      ids = reference.fetch(reflection.foreign_key, [nil, nil])
-      changes[reflection.name.to_s] = types.zip(ids)
+    nomenclatural_type = changes.extract!('nomenclatural_type_type', 'nomenclatural_type_id')
+    if nomenclatural_type.any?
+      changes['nomenclatural_type'] = nomenclatural_type_references(nomenclatural_type)
     end
     # versioned_together records unchanged companion values too.
     changes.reject! { |_, values| values.first == values.last }
@@ -110,41 +106,36 @@ class Name::PublicHistory
     link_record_changes(version, PLACEMENT_KEYS)
   end
 
-  # Linking a record is a create and unlinking is an update of deleted_at, so
-  # both are shown as a change of 'linked'. A creation also lists each
-  # attribute it was added with that has a value:
-  #   { 'linked' => [false, true], 'parent_id' => [nil, 2], 'incertae_sedis' => [nil, true] }
-  # Updates show only the changed attributes:
-  #   { 'linked' => [true, false], 'emends' => [true, false] }
+  # Linking a record is a create and unlinking or relinking is an update of
+  # deleted_at; both are shown only as a change of 'linked':
+  #   { 'linked' => [false, true] }
+  # Other updates show the changed attributes:
+  #   { 'emends' => [true, false] }
   def link_record_changes(version, keys)
-    changes = version.changeset.slice(*keys)
-
     case version.operation
     when 'create'
-      # deleted_at is shown as 'linked'; skip attributes the link was created
-      # without, such as the default false roles.
-      added = changes.except('deleted_at').reject { |_, (_, after)| after.blank? }
-      { 'linked' => [false, true] }.merge(added)
+      { 'linked' => [false, true] }
     when 'update'
-      link_changes(changes)
+      changes = version.changeset.slice(*keys)
+      # A nil deleted_at means the record is linked.
+      linked = changes.delete('deleted_at')&.map(&:nil?)
+      # Changing the timestamp of an already unlinked record is not a link change.
+      if linked && linked.first != linked.last
+        { 'linked' => linked }
+      else
+        changes
+      end
     else
       {}
     end
   end
 
-  # Replace an deleted_at change with a 'linked' change listed first:
-  #   { 'deleted_at' => [nil, '2026-10-01T12:00:00Z'], 'emends' => [true, false] }
-  #     => { 'linked' => [true, false], 'emends' => [true, false] }
-  def link_changes(changes)
-    deleted_at = changes.delete('deleted_at')
-    return changes unless deleted_at
-
-    # A nil deleted_at means the record is linked.
-    linked = deleted_at.map(&:nil?)
-    # Changing the timestamp of an already unlinked record is not a link change.
-    return changes if linked.first == linked.last
-
-    { 'linked' => linked }.merge(changes)
+  # Pair the type and ID on each side:
+  #   [['Strain', 1], ['Genome', 2]]
+  def nomenclatural_type_references(nomenclatural_type)
+    types = nomenclatural_type.fetch('nomenclatural_type_type', [nil, nil])
+    ids = nomenclatural_type.fetch('nomenclatural_type_id', [nil, nil])
+    types.zip(ids)
   end
 
   # Include the name because full_etymology derives the :xx particle from its

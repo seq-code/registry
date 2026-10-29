@@ -98,7 +98,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     ] }, @history.changes_for(@name.versions.last))
   end
 
-  test 'tracks placements through their addition changes and unlinking' do
+  test 'tracks placements through linking, changes, and unlinking' do
     placement = Placement.create!(
       name: @name, parent: names(:bacteria), incertae_sedis: true,
       incertae_sedis_text: 'Family placement unresolved'
@@ -111,9 +111,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     assert_equal [
       { 'linked' => [true, false] },
       { 'publication_id' => [nil, publications(:one).id] },
-      { 'linked' => [false, true],
-        'parent_id' => [nil, names(:bacteria).id],
-        'incertae_sedis' => [nil, true] }
+      { 'linked' => [false, true] }
     ], versions.map { |version| @history.changes_for(version) }
   end
 

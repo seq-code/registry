@@ -86,6 +86,8 @@ module Names::HistoriesHelper
       history_html_diff(*changes)
     when 'etymology'
       history_text_diff(*changes.map { |attributes| Name.new(attributes).full_etymology })
+    when 'nomenclatural_type'
+      changes.map { |type, id| history_nomenclatural_type_reference(type, id) }
     when 'corrigendum_kind'
       changes.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
     when 'status'
@@ -94,16 +96,13 @@ module Names::HistoriesHelper
   end
 
   # Link foreign keys to their records, diff text, and show booleans as Yes/No.
-  # Ordinary associations are matched by their actual foreign key, which need
-  # not follow the association's name. Polymorphic references arrive grouped
-  # under the association's name as [type, id] pairs.
+  # Associations are matched by their actual foreign key, which need not follow
+  # the association's name.
   def history_attribute_values(model, changes, attribute)
     association = model.reflect_on_all_associations(:belongs_to).find do |reflection|
-      attribute == (reflection.polymorphic? ? reflection.name.to_s : reflection.foreign_key)
+      reflection.foreign_key == attribute
     end
-    if association&.polymorphic?
-      changes.map { |type, id| history_polymorphic_reference(type, id) }
-    elsif association
+    if association
       changes.map { |id| history_record_reference(association.klass, id) }
     elsif changes.any? { |value| value.is_a?(String) }
       history_text_diff(*changes)
@@ -112,7 +111,8 @@ module Names::HistoriesHelper
     end
   end
 
-  def history_polymorphic_reference(type, id)
+  # The type and ID arrive grouped as a [type, id] pair on each side.
+  def history_nomenclatural_type_reference(type, id)
     # Resolve only model classes, not any constant a recorded type string names.
     record_class = type&.safe_constantize
     if record_class.is_a?(Class) && record_class < ApplicationRecord
