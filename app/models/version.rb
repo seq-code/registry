@@ -1,6 +1,6 @@
 class Version < ApplicationRecord
-  # Historical records remain accessible when their model retains soft-deleted rows.
-  belongs_to :record, -> { respond_to?(:with_deleted) ? with_deleted : all },
-             polymorphic: true, optional: true
+  belongs_to :record, polymorphic: true, optional: true
+  # The record whose history includes this version, e.g. the name of a placement.
+  belongs_to :owner, polymorphic: true, optional: true
   belongs_to :user, optional: true
 end

@@ -29,23 +29,18 @@ module Names::HistoriesHelper
     end
   end
 
-  # Label a link's changes with what it links to.
+  # Label a link's changes with what it links to. Publication links identify
+  # their publication, which a deleted link's create and delete versions still
+  # record. Placement headings stay neutral because a placement's current parent
+  # may differ from earlier edits.
   def history_record_heading(version)
-    return history_link_reference(version.record) if version.record
+    return 'Placement' if version.record_type == 'Placement'
 
-    # The link itself was deleted, e.g. along with its publication.
-    "#{version.record_type.constantize.model_name.human} (deleted)"
-  end
+    publication_id =
+      version.record&.publication_id || version.changeset['publication_id']&.compact&.first
+    return 'Publication (deleted)' unless publication_id
 
-  # Publication links identify their publication. Placement headings stay neutral
-  # because a retained placement's current parent may differ from earlier edits.
-  def history_link_reference(record)
-    case record
-    when PublicationName
-      safe_join(['Publication: ', link_to(record.display, record.publication)])
-    when Placement
-      'Placement'
-    end
+    safe_join(['Publication: ', history_record_reference(Publication, publication_id)])
   end
 
   def history_text_diff(before, after)

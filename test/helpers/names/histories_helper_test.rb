@@ -83,4 +83,13 @@ class Names::HistoriesHelperTest < ActionView::TestCase
       [5, 10], attribute: 'status', record_type: 'PublicationName'
     )
   end
+
+  test 'labels a deleted publication link with its publication' do
+    publication = publications(:one)
+    link = PublicationName.create!(name: names(:escherichia_coli), publication: publication)
+    link.destroy!
+
+    assert_equal "Publication: #{link_to(publication.display, publication)}",
+                 history_record_heading(Version.where(record: link).last)
+  end
 end

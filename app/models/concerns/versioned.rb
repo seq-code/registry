@@ -4,6 +4,7 @@ module Versioned
   included do
     has_many :versions, as: :record
     class_attribute :versioned_attribute_sets, default: []
+    class_attribute :versioned_owner_association
 
     after_create :record_create_version
     after_update :record_update_version
@@ -14,6 +15,12 @@ module Versioned
     # Changing any member records before/after values for every member.
     def versioned_together(*attributes)
       self.versioned_attribute_sets = versioned_attribute_sets + [attributes.map(&:to_s)]
+    end
+
+    # Versions belong to the history of this association's record rather than
+    # their own, e.g. a placement's versions are part of its name's history.
+    def versioned_owner(association)
+      self.versioned_owner_association = association
     end
   end
 
@@ -33,20 +40,25 @@ module Versioned
   end
 
   def record_create_version
-    versions.create!(operation: 'create', user: Current.user, changeset: versioned_attributes.transform_values { |value| [nil, value] })
+    record_version('create', versioned_attributes.transform_values { |value| [nil, value] })
   end
 
   def record_update_version
     changeset = versioned_changes
-    versions.create!(operation: 'update', user: Current.user, changeset: changeset) if changeset.any?
+    record_version('update', changeset) if changeset.any?
   end
 
   def record_delete_version
-    # The owner is already destroyed, so create directly rather than through
-    # its association. Retain the final attributes and history.
+    record_version('delete', versioned_attributes.transform_values { |value| [value, nil] })
+  end
+
+  # Create directly rather than through versions, which is unavailable once the
+  # record is destroyed.
+  def record_version(operation, changeset)
+    owner = versioned_owner_association ? public_send(versioned_owner_association) : self
     Version.create!(
-      record: self, operation: 'delete', user: Current.user,
-      changeset: versioned_attributes.transform_values { |value| [value, nil] }
+      record: self, owner: owner, operation: operation, user: Current.user,
+      changeset: changeset
     )
   end
 

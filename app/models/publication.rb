@@ -18,9 +18,7 @@ class Publication < ApplicationRecord
     dependent: :destroy
   )
   has_many(:publication_subjects, dependent: :destroy)
-  has_many(:publication_names)
-  has_many(:all_publication_names, -> { with_deleted },
-           class_name: 'PublicationName', dependent: :destroy, inverse_of: :publication)
+  has_many(:publication_names, dependent: :destroy)
   has_many(:authors, through: :publication_authors)
   has_many(:subjects, through: :publication_subjects)
   has_many(:names, through: :publication_names)
@@ -40,9 +38,7 @@ class Publication < ApplicationRecord
     foreign_key: 'assigned_in_id', inverse_of: :assigned_in,
     dependent: :nullify
   )
-  has_many(:placements)
-  has_many(:all_placements, -> { with_deleted },
-           class_name: 'Placement', dependent: :nullify, inverse_of: :publication)
+  has_many(:placements, dependent: :nullify)
   has_many(:contacts)
 
   class << self

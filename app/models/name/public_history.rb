@@ -9,11 +9,10 @@ class Name::PublicHistory
     ncbi_taxonomy lpsn_url gtdb_accession algaebase_species algaebase_taxonomy
     wikidata_item wikispecies_entry
   ].concat(Name::ETYMOLOGY_COLUMNS).freeze
-  # deleted_at is shown as whether the publication or placement is linked.
-  PUBLICATION_NAME_KEYS = %w[deleted_at emends not_valid_proposal].freeze
+  PUBLICATION_NAME_KEYS = %w[emends not_valid_proposal].freeze
   # Only these rich texts of the name appear in the public history.
   RICH_TEXT_NAMES = %w[description etymology_text].freeze
-  PLACEMENT_KEYS = %w[deleted_at parent_id incertae_sedis publication_id preferred].freeze
+  PLACEMENT_KEYS = %w[parent_id incertae_sedis publication_id preferred].freeze
 
   def initialize(name)
     @name = name
@@ -22,11 +21,11 @@ class Name::PublicHistory
   # Load all histories and filter displayable changes in Ruby before pagination.
   # Each version's record is loaded up front to label link changes.
   def versions(page:)
-    name_versions.or(publication_versions).or(placement_versions).or(rich_text_versions)
-                 .includes(:record, :user)
-                 .order(created_at: :desc, id: :desc)
-                 .select { |version| changes_for(version).any? }
-                 .paginate(page: page, per_page: 25)
+    Version.where(owner: @name)
+           .includes(:record, :user)
+           .order(created_at: :desc, id: :desc)
+           .select { |version| changes_for(version).any? }
+           .paginate(page: page, per_page: 25)
   end
 
   def changes_for(version)
@@ -46,13 +45,11 @@ class Name::PublicHistory
 
   private
 
-  def name_versions
-    @name.versions.where(operation: 'update')
-  end
-
   # Group etymology and nomenclatural type attributes before removing unchanged
   # companions, so each side retains the context needed to render it.
   def name_changes_for(version)
+    return {} unless version.operation == 'update'
+
     changes = version.changeset.slice(*NAME_KEYS)
     etymology = changes.extract!(*Name::ETYMOLOGY_COLUMNS)
     if etymology.any?
@@ -67,15 +64,6 @@ class Name::PublicHistory
     changes
   end
 
-  def rich_text_versions
-    Version.where(
-      record_type: 'ActionText::RichText',
-      record_id: ActionText::RichText.where(
-        record: @name, name: RICH_TEXT_NAMES
-      ).select(:id)
-    )
-  end
-
   # A rich text version is shown as a change of the name's attribute it holds,
   # found in the changeset of a created or deleted rich text, or else on the
   # rich text itself:
@@ -88,45 +76,23 @@ class Name::PublicHistory
     { attribute => body }
   end
 
-  def publication_versions
-    Version.where(
-      record_type: 'PublicationName', record_id: @name.all_publication_names.select(:id)
-    )
-  end
-
   def publication_changes_for(version)
     link_record_changes(version, PUBLICATION_NAME_KEYS)
-  end
-
-  def placement_versions
-    Version.where(record_type: 'Placement', record_id: @name.all_placements.select(:id))
   end
 
   def placement_changes_for(version)
     link_record_changes(version, PLACEMENT_KEYS)
   end
 
-  # Linking a record is a create and unlinking or relinking is an update of
-  # deleted_at; both are shown only as a change of 'linked':
+  # Creating and deleting a link are shown only as a change of 'linked':
   #   { 'linked' => [false, true] }
-  # Other updates show the changed attributes:
+  # Updates show the changed attributes:
   #   { 'emends' => [true, false] }
   def link_record_changes(version, keys)
     case version.operation
-    when 'create'
-      { 'linked' => [false, true] }
-    when 'update'
-      changes = version.changeset.slice(*keys)
-      # A nil deleted_at means the record is linked.
-      linked = changes.delete('deleted_at')&.map(&:nil?)
-      # Changing the timestamp of an already unlinked record is not a link change.
-      if linked && linked.first != linked.last
-        { 'linked' => linked }
-      else
-        changes
-      end
-    else
-      {}
+    when 'create' then { 'linked' => [false, true] }
+    when 'delete' then { 'linked' => [true, false] }
+    else version.changeset.slice(*keys)
     end
   end
 

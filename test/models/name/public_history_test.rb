@@ -95,17 +95,9 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
 
   test 'shows unlinking a publication' do
     link = PublicationName.create!(name: @name, publication: publications(:one))
-    link.soft_delete!
+    link.destroy!
 
     assert_equal({ 'linked' => [true, false] }, latest_change)
-  end
-
-  test 'shows relinking a publication' do
-    link = PublicationName.create!(name: @name, publication: publications(:one))
-    link.soft_delete!
-    link.update!(deleted_at: nil)
-
-    assert_equal({ 'linked' => [false, true] }, latest_change)
   end
 
   test 'shows linking a placement' do
@@ -123,7 +115,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
 
   test 'shows unlinking a placement' do
     placement = Placement.create!(name: @name, parent: names(:escherichia))
-    placement.soft_delete!
+    placement.destroy!
 
     assert_equal({ 'linked' => [true, false] }, latest_change)
   end

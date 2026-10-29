@@ -1,9 +1,6 @@
 class Name < ApplicationRecord
   has_many(:pseudonyms, dependent: :destroy)
-  has_many(:publication_names)
-  # Owner deletion also removes the relationships retained for history.
-  has_many(:all_publication_names, -> { with_deleted },
-           class_name: 'PublicationName', dependent: :destroy, inverse_of: :name)
+  has_many(:publication_names, dependent: :destroy)
   has_many(:publications, through: :publication_names)
   has_many(
     :name_correspondences, -> { order(:created_at) }, dependent: :destroy
@@ -29,20 +26,16 @@ class Name < ApplicationRecord
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
   has_many(
     :placements, -> { includes(:parent) },
-    inverse_of: :name
+    dependent: :destroy, inverse_of: :name
   )
-  has_many(:all_placements, -> { with_deleted },
-           class_name: 'Placement', dependent: :destroy, inverse_of: :name)
   delegate(
     :incertae_sedis, :incertae_sedis?, :incertae_sedis_html,
     :incertae_sedis_text, to: :placement, allow_nil: true
   )
   has_many(
     :child_placements, -> { includes(:name) },
-    class_name: 'Placement', foreign_key: 'parent_id'
+    class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy
   )
-  has_many(:all_child_placements, -> { with_deleted },
-           class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy)
   has_many(:observe_names, dependent: :destroy)
   has_many(:observers, through: :observe_names, source: :user)
   has_many(
