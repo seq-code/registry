@@ -334,8 +334,8 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
     t.string "incertae_sedis_legacy"
     t.boolean "gtdb_taxonomy"
     t.boolean "ncbi_taxonomy"
-    t.datetime "deleted_at"
     t.boolean "incertae_sedis", default: false, null: false
+    t.datetime "deleted_at"
     t.index ["name_id"], name: "index_placements_on_active_preferred_name", unique: true, where: "((preferred = true) AND (deleted_at IS NULL))"
     t.index ["name_id"], name: "index_placements_on_name_id"
     t.index ["publication_id"], name: "index_placements_on_publication_id"
@@ -575,10 +575,10 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
   create_table "versions", force: :cascade do |t|
     t.string "record_type", null: false
     t.bigint "record_id", null: false
+    t.bigint "user_id"
     t.string "operation", null: false
     t.jsonb "changeset", null: false
     t.datetime "created_at", null: false
-    t.bigint "user_id"
     t.index ["record_type", "record_id"], name: "index_versions_on_record"
     t.index ["user_id"], name: "index_versions_on_user_id"
   end
