@@ -80,6 +80,6 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
     get name_history_path(name)
 
     assert_response :success
-    assert_select '.name-history-record', text: /Placement:\s+incertae sedis \(Bacteria\)/, count: 2
+    assert_select '.name-history-record', text: /\bPlacement\s*$/, count: 2
   end
 end

@@ -153,16 +153,15 @@ class Names::HistoriesHelperTest < ActionView::TestCase
     end
   end
 
-  test 'identifies links by their publication or placement parent' do
+  test 'identifies publications and uses neutral placement headings' do
     publication = publications(:one)
     parent = names(:bacteria)
-    parent_link = link_to(parent.display, parent)
 
     assert_equal "Publication: #{link_to(publication.display, publication)}",
                  history_link_reference(PublicationName.new(publication: publication))
-    assert_equal "Placement: #{parent_link}",
+    assert_equal 'Placement',
                  history_link_reference(Placement.new(parent: parent))
-    assert_equal "Placement: <i>incertae sedis</i> (#{parent_link})",
+    assert_equal 'Placement',
                  history_link_reference(Placement.new(parent: parent, incertae_sedis: true))
   end
 

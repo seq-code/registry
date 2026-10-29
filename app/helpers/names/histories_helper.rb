@@ -37,24 +37,14 @@ module Names::HistoriesHelper
     "#{version.record_type.constantize.model_name.human} (deleted)"
   end
 
-  # Identify a publication link by its publication, and a placement by its
-  # parent, marking incertae sedis placements:
-  #   publication link
-  #     => Publication: <a href="/publications/1">Smith 2026</a>
-  #   placement under Escherichia
-  #     => Placement: <a href="/names/1">Escherichia</a>
-  #   incertae sedis placement under Bacteria
-  #     => Placement: <i>incertae sedis</i> (<a href="/names/2">Bacteria</a>)
-  #   placement under a deleted parent
-  #     => Placement: Name #3 (deleted)
+  # Publication links identify their publication. Placement headings stay neutral
+  # because a retained placement's current parent may differ from earlier edits.
   def history_link_reference(record)
     case record
     when PublicationName
       safe_join(['Publication: ', link_to(record.display, record.publication)])
     when Placement
-      parent = history_record_reference(Name, record.parent_id)
-      parent = safe_join([content_tag(:i, 'incertae sedis'), ' (', parent, ')']) if record.incertae_sedis?
-      safe_join(['Placement: ', parent])
+      'Placement'
     end
   end
 
