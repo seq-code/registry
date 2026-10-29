@@ -118,10 +118,7 @@ module Names::HistoriesHelper
     if record_class.is_a?(Class) && record_class < ApplicationRecord
       history_record_reference(record_class, id)
     elsif id
-      # Older versions may have recorded an ID without its unchanged type.
-      "#{type || 'Unknown type'} ##{id}"
-    else
-      type
+      "#{type} ##{id}"
     end
   end
 end

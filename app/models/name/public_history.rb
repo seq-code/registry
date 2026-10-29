@@ -139,9 +139,9 @@ class Name::PublicHistory
   end
 
   # Include the name because full_etymology derives the :xx particle from its
-  # last word. Older versions without a name pair use the current name.
+  # last word.
   def etymology_snapshots(etymology, names)
-    before_name, after_name = names || [@name.name, @name.name]
+    before_name, after_name = names
     before_attributes = etymology.transform_values(&:first)
     after_attributes = etymology.transform_values(&:last)
 
