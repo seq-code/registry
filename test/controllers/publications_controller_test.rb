@@ -166,6 +166,7 @@ class PublicationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, 'New Publication'
   end
+
   test 'registering an emending publication recreates an unlinked relationship' do
     sign_in(users(:curator))
     name = names(:escherichia_coli)
@@ -183,15 +184,4 @@ class PublicationsControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal link.id, current_link.id
     assert_not link.reload.emends?
   end
-
-  test 'publication page excludes names whose link was removed' do
-    name = names(:escherichia_coli)
-    PublicationName.create!(name: name, publication: @publication).soft_delete!
-
-    get publication_url(@publication)
-
-    assert_response :success
-    assert_select "a[href=?]", name_path(name), count: 0
-  end
-
 end

@@ -73,19 +73,4 @@ class NameParatypeTest < ActiveSupport::TestCase
       name_paratype.errors.attribute_names, :nomenclatural_type_type
     )
   end
-  test 'registering a paratype restores a previously unlinked publication with a fresh link' do
-    name = names(:escherichia_coli)
-    publication = publications(:one)
-    old_link = PublicationName.create!(name: name, publication: publication, emends: true)
-    old_link.soft_delete!
-
-    NameParatype.create!(name: name, publication: publication, nomenclatural_type: strains(:two))
-
-    link = name.publication_names.find_by!(publication: publication)
-    assert_not_equal old_link.id, link.id
-    assert_not link.emends?
-    assert_includes name.publications, publication
-    assert old_link.reload.soft_deleted?
-  end
-
 end

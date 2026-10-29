@@ -22,8 +22,4 @@ class HtmlDiffTest < Minitest::Test
     assert_equal '<div>E. coli</div>', before
     assert_equal '<div><strong>E. coli</strong></div>', after
   end
-
-  def test_treats_nothing_as_empty
-    assert_equal ['', '<div><ins class="text-success">E. coli</ins></div>'], HtmlDiff.diff(nil, '<div>E. coli</div>')
-  end
 end

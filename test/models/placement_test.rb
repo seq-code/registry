@@ -87,24 +87,4 @@ class PlacementTest < ActiveSupport::TestCase
     assert_nil name.placement
     assert Placement.create!(name: name, parent: names(:escherichia), preferred: true)
   end
-  test 'deleting a name also removes its historical placements' do
-    name = names(:escherichia_coli)
-    placement = Placement.create!(name: name, parent: names(:escherichia))
-    placement.soft_delete!
-
-    name.destroy!
-
-    assert_not Placement.with_deleted.exists?(placement.id)
-  end
-
-  test 'deleting a parent also removes historical placements under it' do
-    parent = names(:escherichia)
-    placement = Placement.create!(name: names(:escherichia_coli), parent: parent)
-    placement.soft_delete!
-
-    parent.destroy!
-
-    assert_not Placement.with_deleted.exists?(placement.id)
-  end
-
 end

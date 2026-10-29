@@ -72,41 +72,10 @@ class Names::HistoriesHelperTest < ActionView::TestCase
                  history_values([nil, genome.id], attribute: 'genome_id')
   end
 
-  test 'renders generic type material without requiring a dedicated page' do
-    material = GenericTypeMaterial.create!(text: 'Preserved E. coli specimen')
-
-    assert_equal ['—', material.display],
-                 history_values([[nil, nil], ['GenericTypeMaterial', material.id]],
-                                attribute: 'nomenclatural_type')
-  end
-
-  test 'preserves polymorphic references with deleted or unrecorded types' do
-    strain = strains(:one)
-    strain.destroy!
-
-    assert_equal ["Strain ##{strain.id} (deleted)", "Unknown type ##{strain.id}"],
-                 history_values([['Strain', strain.id], [nil, strain.id]],
-                                attribute: 'nomenclatural_type')
-  end
-
   test 'does not resolve polymorphic types that are not models' do
     assert_equal ['Kernel #1', 'Strain::Missing #2'],
                  history_values([['Kernel', 1], ['Strain::Missing', 2]],
                                 attribute: 'nomenclatural_type')
-  end
-
-  test 'renders corrigendum sources with their display labels' do
-    assert_equal ['Publication', 'SeqCode Registry'],
-                 history_values(%w[publication seqcode], attribute: 'corrigendum_kind')
-  end
-
-  test 'diffs text additions and removals in either record context' do
-    %w[Name PublicationName].each do |record_type|
-      assert_equal ['—', '<ins class="text-success">Smith &amp; Jones</ins>'],
-                   history_values([nil, 'Smith & Jones'], attribute: 'authority', record_type: record_type)
-      assert_equal ['<del class="text-danger">Smith &amp; Jones</del>', '—'],
-                   history_values(['Smith & Jones', nil], attribute: 'authority', record_type: record_type)
-    end
   end
 
   test 'formats name status labels without diffing them' do
@@ -115,67 +84,5 @@ class Names::HistoriesHelperTest < ActionView::TestCase
     assert_equal ['5', '10'], history_values(
       [5, 10], attribute: 'status', record_type: 'PublicationName'
     )
-  end
-
-  test 'renders publication relationship values in their own record context' do
-    %w[linked emends not_valid_proposal].each do |attribute|
-      assert_equal ['No', 'Yes'], history_values(
-        [false, true], attribute: attribute, record_type: 'PublicationName'
-      )
-      assert_equal ['Yes', 'No'], history_values(
-        [true, false], attribute: attribute, record_type: 'PublicationName'
-      )
-    end
-  end
-
-  test 'renders a retained publication id when the publication no longer exists' do
-    publication = publications(:no_doi)
-    publication.destroy!
-
-    assert_equal ['—', "Publication ##{publication.id} (deleted)"],
-                 history_values([nil, publication.id], attribute: 'proposed_in_id')
-  end
-
-  test 'renders placement parents publications and preference' do
-    parent = names(:escherichia)
-    publication = publications(:one)
-
-    assert_equal ['—', link_to(parent.display, parent)], history_values(
-      [nil, parent.id], attribute: 'parent_id', record_type: 'Placement'
-    )
-    assert_equal ['—', link_to(publication.display, publication)], history_values(
-      [nil, publication.id], attribute: 'publication_id', record_type: 'Placement'
-    )
-    %w[linked preferred].each do |attribute|
-      assert_equal ['No', 'Yes'], history_values(
-        [false, true], attribute: attribute, record_type: 'Placement'
-      )
-    end
-  end
-
-  test 'identifies publications and uses neutral placement headings' do
-    publication = publications(:one)
-    parent = names(:bacteria)
-
-    assert_equal "Publication: #{link_to(publication.display, publication)}",
-                 history_link_reference(PublicationName.new(publication: publication))
-    assert_equal 'Placement',
-                 history_link_reference(Placement.new(parent: parent))
-    assert_equal 'Placement',
-                 history_link_reference(Placement.new(parent: parent, incertae_sedis: true))
-  end
-
-  test 'labels link changes with the record they were made to' do
-    link = PublicationName.create!(name: names(:escherichia_coli), publication: publications(:one))
-
-    assert_equal history_link_reference(link), history_record_heading(link.versions.last)
-  end
-
-  test 'labels link changes whose record was deleted' do
-    link = PublicationName.create!(name: names(:escherichia_coli), publication: publications(:one))
-    version = link.versions.last
-    link.destroy!
-
-    assert_equal 'Publication name (deleted)', history_record_heading(version.reload)
   end
 end

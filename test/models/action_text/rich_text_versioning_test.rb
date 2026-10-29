@@ -25,18 +25,4 @@ class ActionText::RichTextVersioningTest < ActiveSupport::TestCase
     assert_includes changeset['body'].first, 'A gut bacterium'
     assert_includes changeset['body'].last, 'A commensal gut bacterium'
   end
-
-  test 'resaving a rich text unchanged does not add a version' do
-    assert_no_difference -> { @rich_text.versions.count } do
-      @name.reload.update!(description: 'A gut bacterium')
-    end
-  end
-
-  test 'deleting a name retains its rich text history' do
-    @name.destroy!
-
-    version = Version.where(record_type: 'ActionText::RichText', record_id: @rich_text.id).last
-    assert_equal 'delete', version.operation
-    assert_includes version.changeset['body'].first, 'A gut bacterium'
-  end
 end

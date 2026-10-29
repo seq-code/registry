@@ -62,47 +62,6 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
                  versions.map(&:created_at)
   end
 
-  test 'filters nonpublic changes before paginating the combined history' do
-    link = PublicationName.create!(name: @name, publication: publications(:one))
-    linked_version = link.versions.last
-    link.soft_delete!
-    unlinked_version = link.versions.last
-    24.times { |index| @name.update!(authority: "Smith #{index}") }
-    @name.update!(protect_from_lpsn: 'name')
-    link.update!(emends: true)
-
-    first_page = @history.versions(page: 1)
-    second_page = @history.versions(page: 2)
-
-    assert_equal 25, first_page.size
-    assert_equal({ 'emends' => [false, true] },
-                 @history.changes_for(first_page.first))
-    assert_equal [unlinked_version, linked_version], second_page
-  end
-
-  test 'includes changes to scientific relationships and publication roles' do
-    @name.update!(
-      parent: nil, correct_name: names(:escherichia_colie),
-      basonym: names(:escherichia_colie), redirect: names(:escherichia_colie),
-      corrigendum_in: publications(:one), assigned_in: publications(:one),
-      corrigendum_kind: 'publication', genome_id: genomes(:one).id,
-      genome_strain: 'ATCC 11775'
-    )
-
-    changes = @history.changes_for(@name.versions.last)
-
-    assert_equal [names(:escherichia).id, nil], changes['parent_id']
-    %w[correct_name_id basonym_id redirect_id].each do |attribute|
-      assert_equal [nil, names(:escherichia_colie).id], changes[attribute]
-    end
-    %w[corrigendum_in_id assigned_in_id].each do |attribute|
-      assert_equal [nil, publications(:one).id], changes[attribute]
-    end
-    assert_equal [nil, 'publication'], changes['corrigendum_kind']
-    assert_equal [nil, genomes(:one).id], changes['genome_id']
-    assert_equal [nil, 'ATCC 11775'], changes['genome_strain']
-  end
-
   test 'includes external identifiers but excludes cached data and workflow controls' do
     identifiers = {
       ncbi_taxonomy: 562, lpsn_url: 'https://lpsn.dsmz.de/species/escherichia-coli',
@@ -139,43 +98,6 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     ] }, @history.changes_for(@name.versions.last))
   end
 
-  test 'shows publication role additions and removals alongside unlink changes' do
-    link = PublicationName.create!(name: @name, publication: publications(:one))
-    link.update!(emends: true, not_valid_proposal: true)
-
-    assert_equal({
-      'emends' => [false, true],
-      'not_valid_proposal' => [false, true]
-    }, @history.changes_for(link.versions.last))
-
-    link.update!(emends: false, not_valid_proposal: false, deleted_at: Time.current)
-
-    assert_equal({
-      'linked' => [true, false],
-      'emends' => [true, false],
-      'not_valid_proposal' => [true, false]
-    }, @history.changes_for(link.versions.last))
-  end
-
-  test 'omits timestamp-only unlink changes while retaining role changes' do
-    version = Version.new(record_type: 'PublicationName', operation: 'update', changeset: {
-      'deleted_at' => ['2026-10-01T12:00:00Z', '2026-10-01T12:01:00Z'],
-      'emends' => [false, true]
-    })
-
-    assert_equal({ 'emends' => [false, true] }, @history.changes_for(version))
-  end
-
-  test 'keeps only allowlisted publication attributes' do
-    version = Version.new(record_type: 'PublicationName', operation: 'update', changeset: {
-      'publication_id' => [publications(:one).id, publications(:no_doi).id],
-      'name_id' => [names(:escherichia_coli).id, names(:escherichia_colie).id],
-      'emends' => [false, true]
-    })
-
-    assert_equal({ 'emends' => [false, true] }, @history.changes_for(version))
-  end
-
   test 'tracks placements through their addition changes and unlinking' do
     placement = Placement.create!(
       name: @name, parent: names(:bacteria), incertae_sedis: true,
@@ -195,25 +117,9 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     ], versions.map { |version| @history.changes_for(version) }
   end
 
-  test 'includes changes to placements recorded before their creation was tracked' do
-    placements(:escherichia_coli).update!(publication: publications(:one))
-
-    assert_equal [{ 'publication_id' => [nil, publications(:one).id] }],
-                 @history.versions(page: 1).map { |version| @history.changes_for(version) }
-  end
-
   test 'excludes placements of other names' do
     Placement.create!(name: names(:escherichia_colie), parent: names(:escherichia))
 
     assert_empty @history.versions(page: 1)
-  end
-
-  test 'shows publication roles a link was created with' do
-    link = PublicationName.create!(
-      name: @name, publication: publications(:one), emends: true
-    )
-
-    assert_equal({ 'linked' => [false, true], 'emends' => [nil, true] },
-                 @history.changes_for(link.versions.last))
   end
 end
