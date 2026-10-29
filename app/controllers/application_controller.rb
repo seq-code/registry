@@ -140,6 +140,14 @@ class ApplicationController < ActionController::Base
 
   protected
 
+    # Don't write the session cookie in the response, for requests that don't
+    # change the session but can overlap with others (e.g., autocomplete while
+    # typing). Otherwise, a late response can overwrite the cookie set by a
+    # concurrent request, dropping its flash message or session changes
+    def skip_session_cookie
+      request.session_options[:skip] = true
+    end
+
     def authenticate_admin!
       authenticate_role! :admin?
     end

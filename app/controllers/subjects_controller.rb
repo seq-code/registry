@@ -1,4 +1,5 @@
 class SubjectsController < ApplicationController
+  before_action :skip_session_cookie, only: [:autocomplete]
   before_action :set_subject, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_contributor!, only: [:new, :edit, :create, :update, :destroy]
 

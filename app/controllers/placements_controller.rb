@@ -148,7 +148,8 @@ class PlacementsController < ApplicationController
   # DELETE /placements/1
   def destroy
     Placement.transaction do
-      @name.update(parent: nil, assigned_in: nil)
+      # Only the preferred placement determines the name's classification.
+      @name.update(parent: nil, assigned_in: nil) if @placement.preferred?
       @placement.soft_delete!
     end
     redirect_to(@name, notice: 'Name placement was removed')

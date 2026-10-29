@@ -20,13 +20,13 @@ module NameFilterable
 
     # Maps status strings to their corresponding integer values.
     # @param status [String] The status string (e.g., 'SeqCode', 'ICNP').
-    # @return [Integer, Array<Integer>] The status value(s).
+    # @return [Integer, Array<Integer>, nil] The status value(s), or nil (no
+    #   status filter) for 'all' and other statuses, such as 'user' in lists
+    #   that are already filtered (e.g., observed names)
     def map_status_to_value(status)
       status = status.to_s.downcase
-      return nil if status == 'all'
-
       status = 'icnafp' if status == 'icn'
-      name_status_filters[status] || status
+      name_status_filters[status]
     end
   end
 

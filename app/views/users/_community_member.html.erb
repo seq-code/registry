@@ -8,13 +8,22 @@
 <br/>
 
 <p>
-  <% if current_user.community_member_active? %>
+  <% if current_user.community_member_applied_at? %>
+    Your
+    <%= current_user.community_member_started_on? ?
+          'renewal request' : 'application' %>
+    from
+    <%= current_user.community_member_applied_at.strftime('%B %-d, %Y') %>
+    is pending review by our administrators.
+    <% if current_user.community_member_active? %>
+      Your current membership remains valid through
+      <%= current_user.community_member_expires_on.strftime('%B %-d, %Y') %>.
+    <% end %>
+  <% elsif current_user.community_member_active? %>
     You are registered as a SeqCode Community member since
     <%= current_user.community_member_started_on&.strftime('%B %Y') %>.
     Your current membership runs through
     <%= current_user.community_member_expires_on&.strftime('%B %-d, %Y') %>.
-  <% elsif current_user.community_member_applied_at? %>
-    Your application is pending review by our administrators.
   <% elsif current_user.community_member? %>
     Your SeqCode Community membership expired on
     <%= current_user.community_member_expires_on&.strftime('%B %-d, %Y') %>.

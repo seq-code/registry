@@ -58,6 +58,20 @@ class Name < ApplicationRecord
     :paratype_strains, through: :name_paratypes, source: :nomenclatural_type,
     source_type: 'Strain'
   )
+  has_many(:name_tags, dependent: :destroy)
+  has_many(:tags, through: :name_tags)
+  has_many(
+    :accepted_tags,
+    -> { where(name_tags: { status_int: 1 }) },
+    through: :name_tags,
+    source: :tag
+  )
+  has_many(
+    :proposed_tags,
+    -> { where(name_tags: { status_int: 0 }) },
+    through: :name_tags,
+    source: :tag
+  )
 
   belongs_to(:nomenclatural_type, polymorphic: true, optional: true)
   belongs_to(

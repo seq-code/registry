@@ -33,24 +33,41 @@ module HasExternalResources
     update_column(:queued_external, nil)
   end
 
+  # Identifies the Registry in external requests, as required by some services
+  # (e.g., Wikimedia, which throttles generic user agents more aggressively)
+  EXTERNAL_USER_AGENT =
+    'SeqCodeRegistry/1.0 (https://registry.seqco.de; seqcode@bio.aau.dk)'
+
   ##
-  # Generate a request to the external +uri+, and return the reponse body
-  # if successful or +nil+ otherwise (fails silently). If the return code
-  # is 204 (empty contents), returns +empty+
-  def external_request(uri, empty = nil)
+  # Generate a request to the external +uri+, and return the response, or
+  # +nil+ if the request couldn't be completed (fails silently)
+  def external_response(uri)
     return if Rails.configuration.bypass_external_apis
 
     require 'uri'
     require 'net/http'
 
     ephemeral_report << "Request: #{uri}"
-    res = Net::HTTP.get_response(URI(uri))
+    res = Net::HTTP.get_response(
+      URI(uri), 'User-Agent' => EXTERNAL_USER_AGENT
+    )
     unless res.is_a?(Net::HTTPSuccess)
       msg = "External Request #{uri} returned #{res}"
       Rails.logger.error(msg)
       ephemeral_report.error(msg)
-      return nil
     end
+    res
+  rescue
+    nil
+  end
+
+  ##
+  # Generate a request to the external +uri+, and return the reponse body
+  # if successful or +nil+ otherwise (fails silently). If the return code
+  # is 204 (empty contents), returns +empty+
+  def external_request(uri, empty = nil)
+    res = external_response(uri)
+    return nil unless res.is_a?(Net::HTTPSuccess)
 
     res.is_a?(Net::HTTPNoContent) ? empty :
       res.body ? normalize_encoding(res.body) : nil

@@ -74,6 +74,13 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
     t.index ["user_id"], name: "index_checks_on_user_id"
   end
 
+  create_table "community_membership_events", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "event", null: false
+    t.datetime "created_at", null: false
+    t.index ["user_id"], name: "index_community_membership_events_on_user_id"
+  end
+
   create_table "contacts", force: :cascade do |t|
     t.bigint "publication_id", null: false
     t.bigint "user_id", null: false
@@ -180,6 +187,18 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
     t.index ["name_id"], name: "index_name_paratypes_on_name_id"
     t.index ["nomenclatural_type_type", "nomenclatural_type_id"], name: "index_name_paratypes_on_nomenclatural_type"
     t.index ["publication_id"], name: "index_name_paratypes_on_publication_id"
+  end
+
+  create_table "name_tags", force: :cascade do |t|
+    t.bigint "name_id", null: false
+    t.bigint "tag_id", null: false
+    t.integer "status_int", default: 0, null: false
+    t.string "proposed_by"
+    t.text "notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name_id", "tag_id"], name: "index_name_tags_on_name_id_and_tag_id", unique: true
+    t.index ["tag_id"], name: "index_name_tags_on_tag_id"
   end
 
   create_table "names", force: :cascade do |t|
@@ -334,8 +353,8 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
     t.string "incertae_sedis_legacy"
     t.boolean "gtdb_taxonomy"
     t.boolean "ncbi_taxonomy"
-    t.boolean "incertae_sedis", default: false, null: false
     t.datetime "deleted_at"
+    t.boolean "incertae_sedis", default: false, null: false
     t.index ["name_id"], name: "index_placements_on_active_preferred_name", unique: true, where: "((preferred = true) AND (deleted_at IS NULL))"
     t.index ["name_id"], name: "index_placements_on_name_id"
     t.index ["publication_id"], name: "index_placements_on_publication_id"
@@ -502,7 +521,11 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
     t.string "color"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "slug", null: false
+    t.bigint "parent_id"
     t.index ["name"], name: "index_tags_on_name", unique: true
+    t.index ["parent_id"], name: "index_tags_on_parent_id"
+    t.index ["slug"], name: "index_tags_on_slug", unique: true
   end
 
   create_table "tutorials", force: :cascade do |t|
@@ -575,10 +598,10 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
   create_table "versions", force: :cascade do |t|
     t.string "record_type", null: false
     t.bigint "record_id", null: false
-    t.bigint "user_id"
     t.string "operation", null: false
     t.jsonb "changeset", null: false
     t.datetime "created_at", null: false
+    t.bigint "user_id"
     t.index ["record_type", "record_id"], name: "index_versions_on_record"
     t.index ["user_id"], name: "index_versions_on_user_id"
   end
@@ -598,6 +621,7 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "checks", "names"
   add_foreign_key "checks", "users"
+  add_foreign_key "community_membership_events", "users"
   add_foreign_key "contacts", "authors"
   add_foreign_key "contacts", "publications"
   add_foreign_key "contacts", "users"
@@ -610,6 +634,8 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
   add_foreign_key "name_correspondences", "users"
   add_foreign_key "name_paratypes", "names"
   add_foreign_key "name_paratypes", "publications"
+  add_foreign_key "name_tags", "names"
+  add_foreign_key "name_tags", "tags"
   add_foreign_key "names", "genomes"
   add_foreign_key "names", "registers"
   add_foreign_key "names", "tutorials"
@@ -628,6 +654,7 @@ ActiveRecord::Schema.define(version: 2026_10_29_120000) do
   add_foreign_key "registers", "publications"
   add_foreign_key "registers", "users"
   add_foreign_key "reports", "users"
+  add_foreign_key "tags", "tags", column: "parent_id"
   add_foreign_key "tutorials", "users"
   add_foreign_key "versions", "users"
   add_foreign_key "wikispecies_credentials", "users"

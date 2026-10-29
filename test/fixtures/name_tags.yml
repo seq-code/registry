@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+escherichia_eponym:
+  name: escherichia
+  tag: eponym
+  status_int: 1 # accepted
+  proposed_by: curator
+
+escherichia_coli_toponym:
+  name: escherichia_coli
+  tag: toponym
+  status_int: 0 # proposed
+  proposed_by: llm
+
+draft_toponym:
+  name: escherichia_colie
+  tag: toponym
+  status_int: 1 # accepted
+
+bacteria_eponym:
+  name: bacteria
+  tag: eponym
+  status_int: 2 # rejected

@@ -7,6 +7,7 @@ class NamesController < ApplicationController
   include Filterable
   include NameFilterable
 
+  before_action(:skip_session_cookie, only: %i[autocomplete])
   before_action(:set_tutorial)
   before_action(:set_name_and_notifications, only: %i[show])
   before_action(

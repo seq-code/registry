@@ -10,7 +10,9 @@ class UsersController < ApplicationController
   )
   before_action(
     :authenticate_officer!,
-    only: %i[community_member_grant community_member_deny]
+    only: %i[
+      community_member_grant community_member_deny community_members_active
+    ]
   )
   before_action(
     :set_user,
@@ -158,9 +160,13 @@ class UsersController < ApplicationController
   end
 
   def community_member_apply
+    event =
+      current_user.community_member_started_on? ? 'renewal' : 'application'
     if current_user.can_apply_for_community_membership? &&
        current_user.community_member_profile_complete? &&
-       current_user.update(community_member_applied_at: Time.current)
+       current_user.update_community_membership(
+         { community_member_applied_at: Time.current }, event
+       )
       flash[:notice] =
         'Application received, we will evaluate it as soon as possible'
       # TODO Notify all officers
@@ -171,23 +177,71 @@ class UsersController < ApplicationController
   end
 
   def community_member_grant
-    status_application_action(
+    status_application_action({
       community_member: true,
       community_member_applied_at: nil,
       community_member_started_on:
         @user.community_member_started_on || Date.current,
       community_member_expires_on: User.community_membership_cohort_end
-    )
+    }, membership_event: 'grant')
   end
 
   def community_member_deny
-    status_application_action(community_member_applied_at: nil)
+    status_application_action(
+      { community_member_applied_at: nil }, membership_event: 'deny'
+    )
+  end
+
+  # GET /community_members/active
+  # GET /community_members/active.csv
+  def community_members_active
+    members = User.community_members_active.order(:family, :given)
+    respond_to do |format|
+      format.html do
+        @crumbs = [
+          ['Officer dashboard', dashboard_path(tab: :officer)],
+          'Active community members'
+        ]
+        @members = members.paginate(page: params[:page], per_page: 30)
+      end
+      format.csv do
+        send_data(
+          community_members_csv(members), type: 'text/csv',
+          filename: "seqcode-community-members-#{Date.current}.csv"
+        )
+      end
+    end
   end
 
   private
 
-    def status_application_action(params)
-      if @user.update(params)
+    def community_members_csv(members)
+      CSV.generate do |rows|
+        rows << ['Full name', 'Email', 'Affiliation', 'Department', 'Position']
+        members.each do |u|
+          rows << [
+            u.full_name, u.email, u.affiliation, u.department, u.position
+          ].map { |value| csv_safe(value) }
+        end
+      end
+    end
+
+    # Prevent spreadsheet applications from interpreting user-provided
+    # +value+ as a formula
+    def csv_safe(value)
+      value.to_s.start_with?('=', '+', '-', '@') ? "'#{value}" : value
+    end
+
+    # Update the +@user+ status with +params+, and record +membership_event+
+    # if it's a SeqCode Community membership change
+    def status_application_action(params, membership_event: nil)
+      updated =
+        if membership_event
+          @user.update_community_membership(params, membership_event)
+        else
+          @user.update(params)
+        end
+      if updated
         flash[:notice] = 'Application successfully processed'
 
         # Notify user

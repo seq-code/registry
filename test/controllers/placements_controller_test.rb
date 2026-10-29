@@ -65,4 +65,16 @@ class PlacementsControllerTest < ActionDispatch::IntegrationTest
     assert placement.reload.soft_deleted?
     assert_not_includes name.reload.alt_placements, placement
   end
+
+  test 'removing an alternative placement keeps the name parent' do
+    name = names(:escherichia_coli)
+    placement = Placement.create!(
+      name: name, parent: names(:bacteria), incertae_sedis: true,
+      incertae_sedis_text: 'Family placement unresolved'
+    )
+
+    delete placement_path(placement)
+
+    assert_equal names(:escherichia), name.reload.parent
+  end
 end

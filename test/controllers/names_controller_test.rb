@@ -29,6 +29,18 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert_includes @response.body, names(:draft_by_contributor).name
   end
 
+  test 'observing lists all observed names regardless of status' do
+    names(:escherichia).add_observer(@user)
+    names(:draft_by_contributor).add_observer(@user)
+
+    get observing_names_url
+
+    assert_response :success
+    assert_includes @response.body, names(:escherichia).name
+    assert_includes @response.body, names(:draft_by_contributor).name
+    assert_not_includes @response.body, names(:escherichia_coli).name
+  end
+
   test 'type_genomes JSON reports the nomenclatural type class as Genome' do
     get name_type_genomes_url(format: :json)
 
@@ -97,6 +109,40 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
 
     name_paratype = NameParatype.last
     assert_equal(target_name, name_paratype.name)
+  end
+
+  test 'name page shows accepted tags without curator controls' do
+    get name_url(names(:escherichia))
+
+    assert_response :success
+    assert_select 'a[href=?]', tag_path(tags(:eponym))
+    assert_select 'form[action=?]', name_tags_path, count: 0
+  end
+
+  test 'name page hides proposed tags from non-curators' do
+    get name_url(names(:escherichia_coli))
+
+    assert_response :success
+    assert_select 'a[href=?]', tag_path(tags(:toponym)), count: 0
+  end
+
+  test 'name page shows tag controls to curators' do
+    sign_in(users(:curator))
+    get name_url(names(:escherichia_coli))
+
+    assert_response :success
+    assert_select 'form[action=?]', name_tags_path
+    assert_select 'a[title=?]', 'accept tag toponym'
+    assert_select 'a[title=?]', 'reject tag toponym'
+  end
+
+  test 'name page shows rejected tags with undo to curators' do
+    get name_url(names(:bacteria))
+    assert_select 'a[title=?]', 'undo rejection of tag eponym', count: 0
+
+    sign_in(users(:curator))
+    get name_url(names(:bacteria))
+    assert_select 'a[title=?]', 'undo rejection of tag eponym'
   end
 
   private
