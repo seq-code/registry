@@ -104,7 +104,6 @@ namespace :ncbi do
 
       placement =
         Placement
-          .linked
           .create_with(ncbi_taxonomy: true)
           .find_or_create_by(name: name, parent: parent)
 
