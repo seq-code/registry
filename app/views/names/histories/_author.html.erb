@@ -1,0 +1,6 @@
+<% if version.user %>
+  <%= fa_icon('user') %>
+  <%= link_to(version.user.username, version.user, title: version.user.display_name) %>
+<% else %>
+  <span class="text-muted">—</span>
+<% end %>

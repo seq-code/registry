@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_10_25_100000) do
+ActiveRecord::Schema.define(version: 2026_10_29_120000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -353,7 +353,9 @@ ActiveRecord::Schema.define(version: 2026_10_25_100000) do
     t.string "incertae_sedis_legacy"
     t.boolean "gtdb_taxonomy"
     t.boolean "ncbi_taxonomy"
+    t.datetime "deleted_at"
     t.boolean "incertae_sedis", default: false, null: false
+    t.index ["name_id"], name: "index_placements_on_active_preferred_name", unique: true, where: "((preferred = true) AND (deleted_at IS NULL))"
     t.index ["name_id"], name: "index_placements_on_name_id"
     t.index ["publication_id"], name: "index_placements_on_publication_id"
   end
@@ -387,8 +389,9 @@ ActiveRecord::Schema.define(version: 2026_10_25_100000) do
     t.datetime "updated_at", null: false
     t.boolean "emends", default: false
     t.boolean "not_valid_proposal", default: false
+    t.datetime "deleted_at"
     t.index ["name_id"], name: "index_publication_names_on_name_id"
-    t.index ["publication_id", "name_id"], name: "index_publication_names_on_publication_id_and_name_id", unique: true
+    t.index ["publication_id", "name_id"], name: "index_publication_names_on_publication_id_and_name_id", unique: true, where: "(deleted_at IS NULL)"
     t.index ["publication_id"], name: "index_publication_names_on_publication_id"
   end
 
@@ -592,6 +595,17 @@ ActiveRecord::Schema.define(version: 2026_10_25_100000) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "versions", force: :cascade do |t|
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.string "operation", null: false
+    t.jsonb "changeset", null: false
+    t.datetime "created_at", null: false
+    t.bigint "user_id"
+    t.index ["record_type", "record_id"], name: "index_versions_on_record"
+    t.index ["user_id"], name: "index_versions_on_user_id"
+  end
+
   create_table "wikispecies_credentials", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.text "encrypted_access_token", null: false
@@ -642,5 +656,6 @@ ActiveRecord::Schema.define(version: 2026_10_25_100000) do
   add_foreign_key "reports", "users"
   add_foreign_key "tags", "tags", column: "parent_id"
   add_foreign_key "tutorials", "users"
+  add_foreign_key "versions", "users"
   add_foreign_key "wikispecies_credentials", "users"
 end

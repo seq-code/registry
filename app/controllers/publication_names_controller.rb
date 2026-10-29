@@ -19,7 +19,7 @@ class PublicationNamesController < ApplicationController
       if name.assigned_in? publication
         name.update(assigned_in: nil)
       end
-      @publication_name.destroy
+      @publication_name.soft_delete!
     end
 
     redirect_to(

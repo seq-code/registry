@@ -150,7 +150,7 @@ class PlacementsController < ApplicationController
     Placement.transaction do
       # Only the preferred placement determines the name's classification.
       @name.update(parent: nil, assigned_in: nil) if @placement.preferred?
-      @placement.destroy
+      @placement.soft_delete!
     end
     redirect_to(@name, notice: 'Name placement was removed')
   end

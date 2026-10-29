@@ -166,4 +166,22 @@ class PublicationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes @response.body, 'New Publication'
   end
+
+  test 'registering an emending publication recreates an unlinked relationship' do
+    sign_in(users(:curator))
+    name = names(:escherichia_coli)
+    link = PublicationName.create!(name: name, publication: @publication)
+    link.soft_delete!
+
+    post publications_url, params: {
+      publication: { doi: "id:#{@publication.id}" },
+      link_name: { id: name.id, as: 'emend' }
+    }
+
+    assert_response :redirect
+    current_link = name.publication_names.find_by!(publication: @publication)
+    assert current_link.emends?
+    assert_not_equal link.id, current_link.id
+    assert_not link.reload.emends?
+  end
 end

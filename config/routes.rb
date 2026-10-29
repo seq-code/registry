@@ -127,6 +127,7 @@ Rails.application.routes.draw do
            path: '/not_validly_proposed_in/:publication_id'
     end
     resources :pseudonyms
+    resource(:history, only: :show, module: :names)
   end
 
   # Taxonomic placements
