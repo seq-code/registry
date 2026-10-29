@@ -5,6 +5,8 @@ class Name::VersionedTest < ActiveSupport::TestCase
     @name = Name.new(name: 'E. coli', rank: 'species')
   end
 
+  teardown { Current.reset }
+
   test 'creating a name changes all attributes from nothing' do
     assert_difference -> { @name.versions.count } do
       @name.save!
@@ -27,6 +29,16 @@ class Name::VersionedTest < ActiveSupport::TestCase
     assert_equal 'update', version.operation
     assert_equal [nil, 'co.li'], version.changeset['syllabication']
     assert_equal %w[syllabication], version.changeset.keys
+  end
+
+  test 'records the current user as the version author' do
+    Current.user = users(:curator)
+
+    assert_difference -> { @name.versions.count } do
+      @name.save!
+    end
+
+    assert_equal users(:curator), @name.versions.last.user
   end
 
   test 'updating only timestamps does not add a version' do
