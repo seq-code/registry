@@ -83,4 +83,16 @@ class Names::HistoriesHelperTest < ActionView::TestCase
       [5, 10], attribute: 'status', record_type: 'PublicationName'
     )
   end
+
+  test 'labels each version of a deleted publication link with its publication' do
+    publication = publications(:one)
+    link = PublicationName.create!(name: names(:escherichia_coli), publication: publication)
+    link.update!(emends: true)
+    link.destroy!
+
+    heading = "Publication: #{link_to(publication.display, publication)}"
+    Version.where(record: link).each do |version|
+      assert_equal heading, history_record_heading(version), version.operation
+    end
+  end
 end

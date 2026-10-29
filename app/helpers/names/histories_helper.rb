@@ -29,22 +29,17 @@ module Names::HistoriesHelper
     end
   end
 
-  # Label a link's changes with what it links to.
+  # Label a link's changes with what it links to. Publication links identify
+  # their publication, even once deleted. Placement headings stay neutral
+  # because a placement's current parent may differ from earlier edits.
   def history_record_heading(version)
-    return history_link_reference(version.record) if version.record
-
-    # The link itself was deleted, e.g. along with its publication.
-    "#{version.record_type.constantize.model_name.human} (deleted)"
-  end
-
-  # Publication links identify their publication. Placement headings stay neutral
-  # because a retained placement's current parent may differ from earlier edits.
-  def history_link_reference(record)
-    case record
-    when PublicationName
-      safe_join(['Publication: ', link_to(record.display, record.publication)])
-    when Placement
+    case version.record_type
+    when 'Placement'
       'Placement'
+    when 'PublicationName'
+      history_publication_name_heading(version)
+    else
+      raise ArgumentError, "Unsupported history record heading: #{version.record_type}"
     end
   end
 
@@ -78,6 +73,11 @@ module Names::HistoriesHelper
   end
 
   private
+
+  def history_publication_name_heading(version)
+    publication_id = version.changeset['publication_id'].compact.first
+    safe_join(['Publication: ', history_record_reference(Publication, publication_id)])
+  end
 
   # Name attributes that need domain-specific rendering, or nil for the rest.
   def history_name_values(changes, attribute)

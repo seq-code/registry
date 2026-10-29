@@ -21,7 +21,8 @@ class ActionText::RichTextVersioningTest < ActiveSupport::TestCase
     end
 
     changeset = @rich_text.versions.last.changeset
-    assert_equal %w[body], changeset.keys
+    assert_equal %w[body name], changeset.keys.sort
+    assert_equal %w[description description], changeset['name']
     assert_includes changeset['body'].first, 'A gut bacterium'
     assert_includes changeset['body'].last, 'A commensal gut bacterium'
   end

@@ -1,4 +1,6 @@
 # Rich text lives in its own records, so version them like any other record.
 Rails.application.config.to_prepare do
   ActionText::RichText.include(Versioned)
+  ActionText::RichText.versioned_owner(:record)
+  ActionText::RichText.always_versioned(:name)
 end
