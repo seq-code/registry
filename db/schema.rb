@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_10_20_110000) do
+ActiveRecord::Schema.define(version: 2026_10_29_110000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -334,7 +334,7 @@ ActiveRecord::Schema.define(version: 2026_10_20_110000) do
     t.string "incertae_sedis_legacy"
     t.boolean "gtdb_taxonomy"
     t.boolean "ncbi_taxonomy"
-    t.datetime "unlinked_at"
+    t.datetime "deleted_at"
     t.boolean "incertae_sedis", default: false, null: false
     t.index ["name_id"], name: "index_placements_on_name_id"
     t.index ["publication_id"], name: "index_placements_on_publication_id"
@@ -369,9 +369,9 @@ ActiveRecord::Schema.define(version: 2026_10_20_110000) do
     t.datetime "updated_at", null: false
     t.boolean "emends", default: false
     t.boolean "not_valid_proposal", default: false
-    t.datetime "unlinked_at"
+    t.datetime "deleted_at"
     t.index ["name_id"], name: "index_publication_names_on_name_id"
-    t.index ["publication_id", "name_id"], name: "index_publication_names_on_publication_id_and_name_id", unique: true, where: "(unlinked_at IS NULL)"
+    t.index ["publication_id", "name_id"], name: "index_publication_names_on_publication_id_and_name_id", unique: true, where: "(deleted_at IS NULL)"
     t.index ["publication_id"], name: "index_publication_names_on_publication_id"
   end
 

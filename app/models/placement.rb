@@ -1,6 +1,6 @@
 class Placement < ApplicationRecord
-  include Unlinking
   include Versioned
+  include SoftDeletable
 
   belongs_to(:name)
   belongs_to(
@@ -17,7 +17,9 @@ class Placement < ApplicationRecord
   )
   validates(
     :preferred,
-    uniqueness: { scope: :name_id, conditions: -> { linked }, if: :preferred? }
+    uniqueness: {
+      scope: :name_id, conditions: -> { where(deleted_at: nil) }, if: :preferred?
+    }
   )
 
   after_save(:harmonize_name_parent)
@@ -52,6 +54,6 @@ class Placement < ApplicationRecord
   private
 
   def harmonize_name_parent
-    name.update(parent: incertae_sedis? ? nil : parent) if preferred && !unlinked?
+    name.update(parent: incertae_sedis? ? nil : parent) if preferred && !soft_deleted?
   end
 end

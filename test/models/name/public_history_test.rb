@@ -47,8 +47,8 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
       link = PublicationName.create!(name: @name, publication: publication)
     end
     travel_to(start + 1.minute) { @name.update!(authority: 'Smith') }
-    travel_to(start + 2.minutes) { link.unlink! }
-    travel_to(start + 3.minutes) { link.update!(unlinked_at: nil) }
+    travel_to(start + 2.minutes) { link.soft_delete! }
+    travel_to(start + 3.minutes) { link.update!(deleted_at: nil) }
 
     versions = @history.versions(page: 1)
 
@@ -65,7 +65,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
   test 'filters nonpublic changes before paginating the combined history' do
     link = PublicationName.create!(name: @name, publication: publications(:one))
     linked_version = link.versions.last
-    link.unlink!
+    link.soft_delete!
     unlinked_version = link.versions.last
     24.times { |index| @name.update!(authority: "Smith #{index}") }
     @name.update!(protect_from_lpsn: 'name')
@@ -148,7 +148,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
       'not_valid_proposal' => [false, true]
     }, @history.changes_for(link.versions.last))
 
-    link.update!(emends: false, not_valid_proposal: false, unlinked_at: Time.current)
+    link.update!(emends: false, not_valid_proposal: false, deleted_at: Time.current)
 
     assert_equal({
       'linked' => [true, false],
@@ -159,7 +159,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
 
   test 'omits timestamp-only unlink changes while retaining role changes' do
     version = Version.new(record_type: 'PublicationName', operation: 'update', changeset: {
-      'unlinked_at' => ['2026-10-01T12:00:00Z', '2026-10-01T12:01:00Z'],
+      'deleted_at' => ['2026-10-01T12:00:00Z', '2026-10-01T12:01:00Z'],
       'emends' => [false, true]
     })
 
@@ -182,7 +182,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
       incertae_sedis_text: 'Family placement unresolved'
     )
     placement.update!(publication: publications(:one))
-    placement.unlink!
+    placement.soft_delete!
 
     versions = @history.versions(page: 1)
 

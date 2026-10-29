@@ -62,7 +62,7 @@ class PlacementsControllerTest < ActionDispatch::IntegrationTest
     delete placement_path(placement)
 
     assert_redirected_to name_path(name)
-    assert placement.reload.unlinked?
+    assert placement.reload.soft_deleted?
     assert_not_includes name.reload.alt_placements, placement
   end
 end

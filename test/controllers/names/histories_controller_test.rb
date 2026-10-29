@@ -43,7 +43,7 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
       name: 'E. coli', rank: 'species', status: 5, created_by: users(:contributor)
     )
     name.update!(syllabication: 'co.li')
-    PublicationName.create!(name: name, publication: publications(:one)).unlink!
+    PublicationName.create!(name: name, publication: publications(:one)).soft_delete!
 
     get name_history_path(name)
 
@@ -75,7 +75,7 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
     Placement.create!(
       name: name, parent: names(:bacteria), incertae_sedis: true,
       incertae_sedis_text: 'Family placement unresolved'
-    ).unlink!
+    ).soft_delete!
 
     get name_history_path(name)
 

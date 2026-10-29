@@ -149,7 +149,7 @@ class PlacementsController < ApplicationController
   def destroy
     Placement.transaction do
       @name.update(parent: nil, assigned_in: nil)
-      @placement.unlink!
+      @placement.soft_delete!
     end
     redirect_to(@name, notice: 'Name placement was removed')
   end
@@ -158,7 +158,7 @@ class PlacementsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_placement
-    @placement = Placement.linked.find(params[:id])
+    @placement = Placement.find(params[:id])
   end
 
   def set_name

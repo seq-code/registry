@@ -1,6 +1,6 @@
 class PublicationName < ApplicationRecord
-  include Unlinking
   include Versioned
+  include SoftDeletable
 
   belongs_to(:publication)
   belongs_to(:name)

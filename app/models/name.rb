@@ -1,9 +1,10 @@
 class Name < ApplicationRecord
   has_many(:pseudonyms, dependent: :destroy)
-  # A deleted name no longer needs its publication links, including unlinked ones.
-  has_many(:publication_names, dependent: :destroy)
-  has_many(:publications, -> { merge(PublicationName.linked) },
-           through: :publication_names)
+  has_many(:publication_names)
+  # Owner deletion also removes the relationships retained for history.
+  has_many(:all_publication_names, -> { with_deleted },
+           class_name: 'PublicationName', dependent: :destroy, inverse_of: :name)
+  has_many(:publications, through: :publication_names)
   has_many(
     :name_correspondences, -> { order(:created_at) }, dependent: :destroy
   )
@@ -26,19 +27,22 @@ class Name < ApplicationRecord
   alias :correspondences :name_correspondences
   has_many(:checks, dependent: :destroy)
   has_many(:check_users, -> { distinct }, through: :checks, source: :user)
-  # A deleted name no longer needs its placements, including unlinked ones.
   has_many(
     :placements, -> { includes(:parent) },
-    dependent: :destroy, inverse_of: :name
+    inverse_of: :name
   )
+  has_many(:all_placements, -> { with_deleted },
+           class_name: 'Placement', dependent: :destroy, inverse_of: :name)
   delegate(
     :incertae_sedis, :incertae_sedis?, :incertae_sedis_html,
     :incertae_sedis_text, to: :placement, allow_nil: true
   )
   has_many(
     :child_placements, -> { includes(:name) },
-    class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy
+    class_name: 'Placement', foreign_key: 'parent_id'
   )
+  has_many(:all_child_placements, -> { with_deleted },
+           class_name: 'Placement', foreign_key: 'parent_id', dependent: :destroy)
   has_many(:observe_names, dependent: :destroy)
   has_many(:observers, through: :observe_names, source: :user)
   has_many(
@@ -666,7 +670,7 @@ class Name < ApplicationRecord
   end
 
   def publication_names_ordered
-    publication_names.linked.left_joins(:publication).order(journal_date: :desc)
+    publication_names.left_joins(:publication).order(journal_date: :desc)
   end
 
   def citations
@@ -830,7 +834,7 @@ class Name < ApplicationRecord
   end
 
   def emended_in
-    publication_names.linked.where(emends: true).map(&:publication)
+    publication_names.where(emends: true).map(&:publication)
   end
 
   def emended_in?(publication)
@@ -838,7 +842,7 @@ class Name < ApplicationRecord
   end
 
   def not_validly_proposed_in
-    publication_names.linked.where(not_valid_proposal: true).map(&:publication)
+    publication_names.where(not_valid_proposal: true).map(&:publication)
   end
 
   def not_validly_proposed_in?(publication)
@@ -1203,11 +1207,11 @@ class Name < ApplicationRecord
   end
 
   def alt_placements
-    @alt_placements ||= placements.linked.where(preferred: false)
+    @alt_placements ||= placements.where(preferred: false)
   end
 
   def alt_child_placements
-    @alt_child_placements ||= child_placements.linked.where(preferred: false)
+    @alt_child_placements ||= child_placements.where(preferred: false)
   end
 
   def alt_children
@@ -1215,7 +1219,7 @@ class Name < ApplicationRecord
   end
 
   def placement
-    @placement ||= placements.linked.where(preferred: true).first
+    @placement ||= placements.where(preferred: true).first
   end
 
   def consistent_placement?
@@ -1492,17 +1496,17 @@ class Name < ApplicationRecord
 
   def ensure_consistent_placement
     if parent_id.present?
-      pp = placements.linked.where(
+      pp = placements.where(
         parent_id: parent_id, incertae_sedis: false
       ).first
       if pp.present?
         if pp.preferred?
           true
         else
-          placements.linked.update(preferred: false) && pp.update(preferred: true)
+          placements.update(preferred: false) && pp.update(preferred: true)
         end
       else
-        placements.linked.update(preferred: false) &&
+        placements.update(preferred: false) &&
           Placement.new(
             name_id: id,
             parent_id: parent_id,
@@ -1510,11 +1514,11 @@ class Name < ApplicationRecord
             preferred: true
           ).save
       end
-    elsif placements.linked.where(preferred: true, incertae_sedis: true).exists?
+    elsif placements.where(preferred: true, incertae_sedis: true).exists?
       true
     else
       # Conservatively preserve as alternative placement
-      placements.linked.update(preferred: false)
+      placements.update(preferred: false)
     end
   end
 

@@ -359,8 +359,8 @@ module Tutorial::Batch
             parent.save!
           end
           name = Name.find_by_variants(par['name'])
-          placement = name.placements.linked.find_or_initialize_by(parent: parent)
-          name.placements.linked.where(preferred: true).where.not(id: placement.id)
+          placement = name.placements.find_or_initialize_by(parent: parent)
+          name.placements.where(preferred: true).where.not(id: placement.id)
               .find_each { |current| current.update!(preferred: false) }
           placement.update!(
             incertae_sedis: par['incertae_sedis'] || false,
