@@ -1,0 +1,21 @@
+<h2 class="text-secondary">SeqCode Community</h2><hr/>
+<dt>Members</dt>
+<dd>
+  <% if (count = term.members_count) %>
+    <% if term.past? %>
+      <%= count %> members globally by the end of the term.
+    <% else %>
+      Currently <%= count %> members globally.
+    <% end %>
+  <% end %>
+  <% unless term.past? %>
+    You can also <%= link_to('join the community', page_join_url) %>.
+  <% end %>
+  <% if term.statutes_url %>
+    To learn more about the organizational structure,
+    <%= link_to(
+          'read the Statutes of the SeqCode Committee',
+          term.statutes_url, target: '_blank'
+        ) %>.
+  <% end %>
+</dd>
