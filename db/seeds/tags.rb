@@ -65,7 +65,13 @@ tag_seeds = [
    'morphological terms that apply to virtually all organisms in the group ' \
    '(e.g. *monas*, *bacterium*, *microbium*, *bacillus* used generically ' \
    'rather than to describe a specific distinguishing trait of this ' \
-   'organism).'],
+   'organism). Similarly, do not assign for terms that describe the ' \
+   'organism\'s environment or ecological role rather than its own ' \
+   'properties (e.g. *pelagicus* = of the open sea is `econym`, not ' \
+   '`phenonym`). Do not assign for metaphorical or poetic epithets that ' \
+   'describe the circumstances of discovery or a narrative about the ' \
+   'organism rather than its measurable properties (e.g. *audaxviator* = ' \
+   'bold traveler).'],
   ['chemonym', 'trait', '#7fbf7f',
    'Named after a chemical compound, element, or metabolic property',
    'The chemical or metabolic property must be of the organism itself, not ' \
@@ -90,10 +96,14 @@ tag_seeds = [
   ['classical', nil, '#5d4037',
    'Epithet is a direct word from a dormant scholarly language used ' \
    'largely unmodified',
-   'Covers Latin, Ancient Greek, Sanskrit, and other dormant scholarly ' \
-   'languages. Not for constructed compounds or commemoratives. Can ' \
-   'co-occur freely with content tags (e.g. `classical` + `phenonym` for ' \
-   '*gracilis*).'],
+   'The word must appear in classical sources largely unmodified — not ' \
+   'merely constructed from classical roots. New Latin coinages built from ' \
+   'Latin or Greek components (e.g. *oxygeniifera*, *diazotrophica*, ' \
+   '*Methylomirabilis*) are NOT classical even if every root is Latin or ' \
+   'Greek. Typical markers of New Latin construction: compound roots joined ' \
+   'with connecting vowels, -fer/-vorus/-philus/-tropha suffixes on ' \
+   'non-classical stems, or any term not found in classical Latin or ' \
+   'Ancient Greek dictionaries.'],
   ['chrononym', nil, '#6d4c41',
    'Named after a time, period, season, or calendar unit',
    'Includes geological eras, seasons, times of day, and calendar-specific ' \

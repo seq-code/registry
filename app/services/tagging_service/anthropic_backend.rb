@@ -44,9 +44,12 @@ class TaggingService::AnthropicBackend
       - Assign ALL tags that apply; they are not mutually exclusive
       - Always assign the umbrella tag when assigning any of its sub-tags
       - Umbrella terms can be assigned even if no children terms are
-      - Use confidence "low" when the assignment requires inference beyond
-        what is explicitly stated in the etymology, or when two tags are
-        plausible but you cannot determine which applies
+      - Use confidence "low" whenever the tag assignment requires
+        interpretation beyond what is explicitly stated in the etymology, or
+        when the name could plausibly fit multiple categories. When confidence
+        is low, prefer omitting the tag over including it — a missed tag is
+        less harmful than a wrong one, since proposed tags are reviewed by
+        curators.
 
       ## Name to tag
       Name: #{name.name}
