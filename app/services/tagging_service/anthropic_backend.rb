@@ -29,43 +29,9 @@ class TaggingService::AnthropicBackend
 
       ## Tag definitions
 
-      ### Umbrella tags (assign the umbrella whenever you assign a sub-tag)
-      - geographic: name references a place or environment
-        - toponym: named after a real geographic place (country, region, city,
-          river, lake, ocean, mountain, etc.)
-        - econym: named after a habitat or environmental feature
-          (e.g. marinus, lacustris, thermophilus)
-        - fictional-place: named after a fictional or mythological place
-        - metronym: named after a measurement, coordinate, or physical
-          parameter (depth, elevation, etc.); also add "trait" umbrella if the
-          parameter is physiological/ecological rather than locational
-      - commemorative: name references a named entity
-        - eponym: named after a real person
-        - organonym: named after another organism or taxon (not a substrate)
-        - institutonym: named after an institution, project, or organization
-        - mythonym: named after a deity, mythological figure, or fictional
-          person/character
-      - trait: name describes a property of the organism or its context
-        - phenonym: named after a phenotypic trait (morphology, pigmentation,
-          physiology, etc.)
-        - chemonym: named after a chemical compound, element, or metabolic
-          property
-        - chrononym: named after a time, period, season, or calendar unit
-          (geological eras, seasons, times of day, calendar-specific periods
-          such as a harvest month); also add "phenonym" if it describes a
-          biological activity pattern, or "econym" if seasonal environmental
-        - numeronym: named after a number, quantity, or order — including
-          ordinal/sequential use (e.g. primus for first discovered)
-      - formed: name whose construction is the defining feature
-        - acronym: formed from initials or an abbreviation
-        - arbitrary: constructed for phonotactic/orthographic reasons; roots
-          may still be identifiable; can co-occur with content tags
-
-      ### Cross-cutting tags (no umbrella)
-      - mythological: assign whenever you assign "fictional-place" or "mythonym"
-      - classical: epithet is a direct word from a dormant scholarly language
-        (Latin, Ancient Greek, Sanskrit, etc.) used largely unmodified — not a
-        constructed compound or commemorative; can co-occur with content tags
+      Sub-tags are indented under their umbrella tag; tags with no indentation
+      and no sub-tags are standalone.
+      #{tag_definitions}
 
       ### Gender tags — assign ONLY for genus, species, or subspecies ranks
       Assign exactly one of:
@@ -77,6 +43,7 @@ class TaggingService::AnthropicBackend
       ## Rules
       - Assign ALL tags that apply; they are not mutually exclusive
       - Always assign the umbrella tag when assigning any of its sub-tags
+      - Umbrella terms can be assigned even if no children terms are
       - Use confidence "low" when the assignment requires inference beyond
         what is explicitly stated in the etymology, or when two tags are
         plausible but you cannot determine which applies
@@ -86,6 +53,23 @@ class TaggingService::AnthropicBackend
       Rank: #{name.rank}
       Etymology: #{etym}
     PROMPT
+  end
+
+  # Tag definitions from the database, with sub-tags nested under their
+  # umbrella tag and curation rules appended from +prompt_notes+
+  def tag_definitions
+    tags = Tag.with_rich_text_description.order(:name).to_a
+    children = tags.group_by(&:parent_id)
+    children[nil].to_a.flat_map do |tag|
+      [tag_definition(tag)] +
+        children[tag.id].to_a.map { |child| "  #{tag_definition(child)}" }
+    end.join("\n")
+  end
+
+  def tag_definition(tag)
+    line = "- #{tag.slug}: #{tag.description&.to_plain_text}"
+    line += " [Note: #{tag.prompt_notes}]" if tag.prompt_notes.present?
+    line
   end
 
   def call_api(messages)

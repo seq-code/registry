@@ -22,6 +22,10 @@
           hint: 'Only top-level tags can be used as umbrellas'
         ) %>
     <%= f.input(:description, as: :rich_text_area) %>
+    <%= f.input(
+          :prompt_notes, as: :text,
+          label: 'Prompt notes (internal, not shown in UI)'
+        ) %>
   </div>
 
   <div class="form-actions">
