@@ -61,7 +61,11 @@ tag_seeds = [
    'itself',
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
    'etc. Do NOT use for properties of the environment, the isolation ' \
-   'source, or the circumstances of discovery.'],
+   'source, or the circumstances of discovery. Do not assign for generic ' \
+   'morphological terms that apply to virtually all organisms in the group ' \
+   '(e.g. *monas*, *bacterium*, *microbium*, *bacillus* used generically ' \
+   'rather than to describe a specific distinguishing trait of this ' \
+   'organism).'],
   ['chemonym', 'trait', '#7fbf7f',
    'Named after a chemical compound, element, or metabolic property',
    'The chemical or metabolic property must be of the organism itself, not ' \
