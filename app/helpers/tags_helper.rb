@@ -18,6 +18,15 @@ module TagsHelper
     tag.description.to_plain_text.squish.presence || tag.slug
   end
 
+  # Who proposed the tag, with the reported confidence (if any) as a hover
+  # title
+  def name_tag_proposer(name_tag)
+    proposer = name_tag.proposed_by || 'unknown'
+    return proposer unless name_tag.confidence
+
+    content_tag(:abbr, proposer, title: "#{name_tag.confidence} confidence")
+  end
+
   # Black or white text depending on the luminance of a hex color
   def tag_text_color(hex)
     rgb = hex.to_s.delete('#')

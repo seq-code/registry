@@ -38,4 +38,10 @@ class NameTag < ApplicationRecord
   def rejected?
     status_int == 2
   end
+
+  # Confidence reported by the tagging service (stored in +notes+ as
+  # "confidence: high"), or +nil+ if none was recorded
+  def confidence
+    notes.to_s[/confidence: (\w+)/, 1]
+  end
 end

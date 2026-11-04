@@ -47,6 +47,14 @@ class NameTagTest < ActiveSupport::TestCase
     assert_includes(names(:bacteria).tags, tags(:eponym))
   end
 
+  test 'confidence is read from notes' do
+    name_tag = name_tags(:escherichia_coli_toponym)
+    assert_nil(name_tag.confidence)
+
+    name_tag.notes = 'confidence: low'
+    assert_equal('low', name_tag.confidence)
+  end
+
   test 'destroying a name removes its name tags' do
     assert_difference('NameTag.count', -1) do
       names(:bacteria).destroy

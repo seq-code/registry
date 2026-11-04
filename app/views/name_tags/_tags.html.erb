@@ -23,7 +23,7 @@
     <span class="text-nowrap mr-1">
       <%= tag_badge(name_tag.tag, faded: true) %>
       <span class="text-muted small">
-        (proposed by <%= name_tag.proposed_by || 'unknown' %>)
+        (proposed by <%= name_tag_proposer(name_tag) %>)
       </span>
       <%= link_to(
             name_tag_path(name_tag, name_tag: { status_int: 1 }),

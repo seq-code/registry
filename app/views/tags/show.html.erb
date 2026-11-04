@@ -83,7 +83,7 @@
       <% @proposed_names.each do |name_tag| %>
         <tr>
           <td><%= link_to(name_tag.name.name_html, name_tag.name) %></td>
-          <td><%= name_tag.proposed_by %></td>
+          <td><%= name_tag_proposer(name_tag) %></td>
           <td><%= name_tag.notes %></td>
           <td>
             <%= link_to(
@@ -125,7 +125,7 @@
       <% @rejected_names.each do |name_tag| %>
         <tr>
           <td><%= link_to(name_tag.name.name_html, name_tag.name) %></td>
-          <td><%= name_tag.proposed_by %></td>
+          <td><%= name_tag_proposer(name_tag) %></td>
           <td><%= name_tag.notes %></td>
           <td>
             <%= link_to(
