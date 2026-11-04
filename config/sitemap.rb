@@ -12,6 +12,11 @@ SitemapGenerator::Sitemap.create(max_sitemap_links: 20_000) do
     add page_api_path, changefreq: :monthly, priority: 0.4
     add page_about_path, changefreq: :weekly, priority: 0.8
     add page_committee_path, changefreq: :monthly, priority: 0.6
+    # Past committee terms (the current one is page_committee_path, and
+    # upcoming ones remain unlisted)
+    CommitteeTerm.started.select(&:past?).each do |term|
+      add page_committee_path(term: term), changefreq: :yearly, priority: 0.4
+    end
     add page_news_path, changefreq: :monthly, priority: 0.6
     add page_prize_path, changefreq: :monthly, priority: 0.4
     add page_publications_path, changefreq: :monthly, priority: 0.4

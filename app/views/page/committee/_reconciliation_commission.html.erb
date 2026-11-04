@@ -1,0 +1,30 @@
+<h2 class="text-secondary">Reconciliation Commission</h2><hr/>
+<% id = modal('Functions of Reconciliation Commission', size: :lg) do %>
+  Examples of matters on which the Reconciliation Commission ought to render
+  decisions include:
+  <ol>
+    <li>cases in which the consequences or interpretation of a rule are
+      uncertain.</li>
+    <li>cases in which the application of a name is likely to endanger health
+      or have serious economic consequences.</li>
+    <li>cases where the application of a rule is likely to lead to
+      confusion.</li>
+    <li>proposals of neotype sequences (see SeqCode
+      <%= link_to_rule('18c') %>).</li>
+    <li>situations where the priority of names is unclear (see also SeqCode
+      <%= link_to_rule('23c') %>).</li>
+    <li>consideration of names proposed to be contrary to the General
+      Considerations or Principles of the SeqCode
+      (<%= link_to_rule('45') %>).</li>
+    <li>other matters referred to it by the administrative components of the
+      SeqCode Committee.</li>
+  </ol>
+<% end %>
+<p class="lead">
+  The Reconciliation Commission is the judicial branch of the SeqCode
+  Committee and is the only body authorized to render decisions on the
+  application of the SeqCode.
+  <%= modal_button(id, class: 'text-primary') do %>
+    Functions of the Reconciliation Commission
+  <% end %>.
+</p>

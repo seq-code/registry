@@ -17,10 +17,11 @@ Rails.application.routes.draw do
   # Static pages
   namespace :page do
     %i[
-      api about committee connect dashboard_map help initiative issues join
+      api about connect dashboard_map help initiative issues join
       news prize publications seqcode linkout status
       sandbox stats videos
     ].each { |i| get(i) }
+    get('committee(/:term)', action: :committee, as: :committee)
   end
   get  'help' => 'page#help_index', as: :help_index
   get  'help/:topic' => 'page#help', as: :help

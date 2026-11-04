@@ -1,0 +1,60 @@
+# SeqCode Committee, term 2027-2030 (draft)
+#
+# Unlisted until the term starts: reachable at /page/committee/2027, but not
+# linked from anywhere nor included in the sitemap. On January 1st 2027 it
+# automatically becomes the current committee at /page/committee
+#
+# See config/committee/2023.yml for the format. Roles without people are
+# displayed as "To be announced"
+
+# Add members_count with the final count by the end of the term (see 2023.yml)
+statutes_url: https://www.isme-microbes.org/sites/default/files/SeqCode%20Statutues%201.0.pdf
+
+bodies:
+  executive_board:
+    - role: Chair
+      people: [konstantinidis_2027]
+    - role: Vice-Chair
+      people: [palmer_2027]
+    - role: Secretary
+      people: [venter]
+    - role: <i>Ex Officio</i> Members
+      people: [sutcliffe, chuvochina_2027, rodriguez_r_2027, hugenholtz]
+    - role: Members without Portfolio
+      people: [jangid, wang_yinzhao]
+
+  legislative_commission:
+    - role: Chair
+      people: [sutcliffe_2027]
+    - role: Vice-Chair
+      people: [hedlund]
+    - role: Secretary
+      people: [singh]
+    - role: Additional Members
+      people: [jimenez_avella]
+
+  reconciliation_commission:
+    - role: Chair
+      people: [chuvochina_2027]
+    - role: Vice-Chair
+      people: [hitch]
+    - role: Secretary
+      people: [priest_2027]
+    - role: Additional Members
+      people: [krynauw]
+
+  registry_working_group:
+    - role: Chair
+      people: [rodriguez_r_2027]
+    - role: Secretary
+      people: [dzunkova]
+    - role: Coopted Members
+      people: []
+
+  standards_working_group:
+    - role: Chair
+      people: [hugenholtz]
+    - role: Secretary
+      people: [li]
+    - role: Coopted Members
+      people: []

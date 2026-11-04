@@ -10,7 +10,14 @@ class PageController < ApplicationController
   end
 
   # GET /page/committee
+  # GET /page/committee/2023
   def committee
+    @current_term = CommitteeTerm.current
+    @term = @current_term
+    return unless params[:term]
+
+    @term = CommitteeTerm.find(params[:term])
+    @crumbs = [['Committee', page_committee_path], @term.label]
   end
 
   # GET /page/connect

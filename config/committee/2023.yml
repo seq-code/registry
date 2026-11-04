@@ -1,0 +1,57 @@
+# SeqCode Committee, term 2023-2026
+#
+# Bodies are listed in display order; each body key must have a matching
+# description partial in app/views/page/committee/_<body>.html.erb. Roles list
+# people by their id in config/committee/people.yml
+
+# Shown only once the term is over (the current term displays the live count
+# of active community members): update with the final count by the end of 2026
+members_count: 144
+statutes_url: https://www.isme-microbes.org/sites/default/files/SeqCode%20Statutues%201.0.pdf
+
+bodies:
+  executive_board:
+    - role: Chair
+      people: [whitman]
+    - role: Vice-Chair
+      people: [reysenbach]
+    - role: Secretary
+      people: [venter]
+    - role: <i>Ex Officio</i> Members
+      people: [sutcliffe, chuvochina, rodriguez_r, konstantinidis]
+    - role: Members without Portfolio
+      people: [wang, hugenholtz]
+
+  legislative_commission:
+    - role: Chair
+      people: [sutcliffe]
+    - role: Vice-Chair
+      people: [singh]
+    - role: Secretary
+      people: [hedlund]
+
+  reconciliation_commission:
+    - role: Chair
+      people: [chuvochina]
+    - role: Vice-Chair
+      people: [palmer]
+    - role: Secretary
+      people: [priest]
+    - role: Additional Members
+      people: [rodriguez_r, probst]
+
+  registry_working_group:
+    - role: Chair
+      people: [rodriguez_r]
+    - role: Secretary
+      people: [ghosh]
+    - role: Coopted Members
+      people: [dzunkova, chuvochina, palmer, eloe_fadrosh]
+
+  standards_working_group:
+    - role: Chair
+      people: [konstantinidis]
+    - role: Secretary
+      people: [li]
+    - role: Coopted Members
+      people: [parks, rossello_mora, finn, mchardy, kyrpides]

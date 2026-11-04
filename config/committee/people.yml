@@ -1,0 +1,823 @@
+# People who have served on the SeqCode Committee, shared across terms
+# (see config/committee/<start year>.yml). Bios may include basic HTML
+# (e.g., <i>, <a>, <br/>), which is sanitized when rendered
+#
+# Entries are sorted by key. A person whose details changed between terms has
+# one entry per version, with the start year of the term as suffix (e.g.,
+# konstantinidis for 2023 and konstantinidis_2027)
+
+chuvochina:
+  name: Maria Chuvochina
+  affiliation: The University of Queensland, Australia
+  url: https://orcid.org/0000-0002-3977-6012
+  bio: |
+    I am currently working as a research fellow and principal taxonomy
+    curator at the Australian Centre for Ecogenomics (ACE) at the University
+    of Queensland, Australia. I received my double-badge doctoral degree in
+    Molecular Microbiology in 2011 from the University of Grenoble, France
+    and Petersburg Nuclear Physics Institute, Russia. I then moved to the
+    University of Queensland where I further mastered my research and
+    teaching skills in the areas of microbial ecology and biochemistry. In
+    2016, I joined the Genome Taxonomy Database project as a taxonomy
+    curator with the focus on taxonomic research and curation. Working as a
+    taxonomy curator sparked my interest in prokaryotic nomenclature
+    including both art of scientific naming and regulations behind the
+    application of names to taxa. I gained operational skills of Latin and
+    Greek languages that allowed me to master the formation rules of
+    prokaryotic names and was invited to serve as a nomenclature editor at
+    the International Journal of Systematic and Evolutionary Microbiology
+    (IJSEM). Joining IJSEM allowed me to expand my knowledge on Prokaryotic
+    Code and later to join the International Committee on Systematics of
+    Prokaryotes (ICSP). One of the limitations of the Prokaryotic Code that
+    has been recognised for decade is the exclusion of uncultured
+    prokaryotes. This has stirred numerous debates and eventually resulted
+    in proposal to modernize the practice of naming, viz. by incorporation
+    of genomic sequences as nomenclature types. Since ICSP didn’t express
+    its wish to adopt this proposal, it triggered a development of the Code
+    of Nomenclature of Prokaryotes Described from Sequence Data,
+    colloquially known as the SeqCode. I have been actively involved in the
+    SeqCode initiative and the development of its registry resources that
+    are aimed to modernize and facilitate naming of uncultured prokaryotes.
+    Apart from being involved in the drafting the code itself, I am
+    currently curating names submitted to the SeqCode registry and managing
+    the SeqCode Twitter account. I thrive on learning and sharing my
+    knowledge, and I hope that my expertise can be useful to the community
+    and the field in general.
+
+chuvochina_2027:
+  name: Maria Chuvochina
+  affiliation: Aalborg University, Denmark
+  url: https://orcid.org/0000-0002-3977-6012
+  bio: |
+    I am currently working as a research fellow and principal taxonomy
+    curator at the Australian Centre for Ecogenomics (ACE) at the University
+    of Queensland, Australia. I received my double-badge doctoral degree in
+    Molecular Microbiology in 2011 from the University of Grenoble, France
+    and Petersburg Nuclear Physics Institute, Russia. I then moved to the
+    University of Queensland where I further mastered my research and
+    teaching skills in the areas of microbial ecology and biochemistry. In
+    2016, I joined the Genome Taxonomy Database project as a taxonomy
+    curator with the focus on taxonomic research and curation. Working as a
+    taxonomy curator sparked my interest in prokaryotic nomenclature
+    including both art of scientific naming and regulations behind the
+    application of names to taxa. I gained operational skills of Latin and
+    Greek languages that allowed me to master the formation rules of
+    prokaryotic names and was invited to serve as a nomenclature editor at
+    the International Journal of Systematic and Evolutionary Microbiology
+    (IJSEM). Joining IJSEM allowed me to expand my knowledge on Prokaryotic
+    Code and later to join the International Committee on Systematics of
+    Prokaryotes (ICSP). One of the limitations of the Prokaryotic Code that
+    has been recognised for decade is the exclusion of uncultured
+    prokaryotes. This has stirred numerous debates and eventually resulted
+    in proposal to modernize the practice of naming, viz. by incorporation
+    of genomic sequences as nomenclature types. Since ICSP didn’t express
+    its wish to adopt this proposal, it triggered a development of the Code
+    of Nomenclature of Prokaryotes Described from Sequence Data,
+    colloquially known as the SeqCode. I have been actively involved in the
+    SeqCode initiative and the development of its registry resources that
+    are aimed to modernize and facilitate naming of uncultured prokaryotes.
+    Apart from being involved in the drafting the code itself, I am
+    currently curating names submitted to the SeqCode registry and managing
+    the SeqCode Twitter account. I thrive on learning and sharing my
+    knowledge, and I hope that my expertise can be useful to the community
+    and the field in general.
+
+dzunkova:
+  name: Maria Dzunkova
+  affiliation: University of Valencia, Spain
+  url: https://www.uv.es/institute-integrative-systems-biology-i2sysbio/en/research/researchgroups/microbial-single-cell-genomics/microbial-single-cell-genomics.html
+  bio: |
+    Maria Dzunkova is leading the Microbial Single-Cell Genomics group at
+    the Institute for Integrative Systems Biology (I2SysBio) which belongs
+    to the University of Valencia (UV) and the Spanish National Research
+    Council (CSIC), as is lecturing Bioinformatics and Omics-studies at the
+    Department of Genetics at the UV. She has been working in the field of
+    microbial genomics since 2009. After defending her PhD thesis entitled
+    "Metagenomics of the Human Gut Microbiome Directed by the Flow
+    Cytometry" at the UV she got a postdoc position at the Australian Centre
+    for Ecogenomics at the University of Queensland (2016-2019), where she
+    developed "single-cell viral tagging" method for exploring the phage
+    host range without the need for microbial culturing and applied it to
+    the human gut microbiome. Afterweards she was invited to a second
+    postdoc (2016-2021) at the DOE Joint Genome Institute (Lawrence Berkeley
+    National Laboratory) where she studied the relationships between the
+    phages and bacteria in environmental samples and explored new targeted
+    single-cell genomics techniques for discovering symbiotic microbes of
+    the marine soft-bodied animals capable of producing bioactive molecules.
+    During her career, Maria has been working on discovering,
+    characterization and taxonomic classification of uncultured bacteria
+    from different environments, including the human microbiome, microbiome
+    associated to soft bodied animals, hot springs microbial mats, polluted
+    industrial environments and soil. During her postdoctoral stay at the
+    Australian Centre for Ecogenomics she has been working under supervision
+    of prof. Phil Hugenholtz, the founder of the Genome Taxonomy Database
+    (GTDB). Although she was not a member of the GTDB development team, she
+    feels very passionate about this project and uses GTDB for
+    classification of the previously unknown bacteria discovered in her
+    projects. Naturally, she feels also very enthusiastic about the SeqCode
+    initiative, too. ORCID: 0000-0002-1765-0697.
+
+eloe_fadrosh:
+  name: Emiley Eloe-Fadrosh
+  affiliation: DOE Joint Genome Institute, USA
+  bio: ''
+
+finn:
+  name: Robert Finn
+  affiliation: European Bioinformatics Institute (EMBL-EBI), UK
+  bio: |
+    Rob Finn is the Lead of the Microbiome Informatics team at EMBL's
+    European Bioinformatics Institute. This team produces MGnify, a world
+    leading resource for the functional and taxonomic analysis and archiving
+    of microbiome derived sequence data. He is co-lead of the Ensembl
+    resource, and is specifically involved in producing the microbial
+    divisions. Recent efforts across both resources include the production
+    of biome specific genome catalogues (isolate and metagenome assembled
+    genomes) and harmonising that prokaryotic annotation pipelines.
+
+ghosh:
+  name: Anwesha Ghosh
+  affiliation: Indian Institute of Science Education and Research, Kolkata, India
+  url: https://sites.google.com/view/drghoshanwesha/home
+  bio: |
+    I am trained as a classical microbiologist with expertise in a
+    culture-based approach. During my PhD, I used a multi-omics approach to
+    identify bacteria from the world’s largest contiguous mangroves, the
+    Sundarbans. During isolation, I learnt extensively about bacterial
+    systematics using literature. More research showed that there were
+    several levels of complexities involved in naming new isolates and
+    though there is a central guiding pattern, there are many specific rules
+    involved with certain genera. I worked extensively with <i>Vibrio</i>,
+    more specifically, with a member of the Vibrio Harveyi clade. Though
+    this bacterium is fascinating, I think it is one of the toughest groups
+    to be studied as obtained results from your experiments often do not
+    conform with available information from the literature. Only with
+    accurate and extensive knowledge of molecular phylogeny can one fully
+    understand the genome of these organisms.With an extensive set of
+    tools/software available, analyzing a bacterial genome appears easy if
+    one’s aim is to generate a pretty circular genome map that is commonly
+    seen in publications. But from personal experience, I have seen that
+    many researchers, especially ECRs use automated platforms to make
+    contigs and then annotate genomes. Consequently, they are unaware of the
+    accurate or rather correct approach to analyzing a genome. E.g., what
+    parameters should you check to ascertain that your genome does not have
+    contamination? Extensive knowledge with proper guidance would be
+    mandatory to learn these methods. During my PhD, I have tried to
+    understand these processes and look closely at two bacterial genomes,
+    including <i>Vibrio</i> sp. and <i>Marinomonas</i> sp., and two
+    cyanobacterial genomes, namely, <i>Nostocellipsosporum</i> NOK and
+    <i>Synechococcus moorigangaii</i> CMS01. I have worked with
+    understanding the organism under culture conditions using a wide array
+    of biochemical tests and then have attempted to validate the findings by
+    annotating the genome using functional gene databases. In an Indian
+    context, microbial systematics is a difficult area to work on. Our
+    current Biodiversity Laws come in direct conflict with international
+    guidance that is in place. E.g. India mandates the involvement of its
+    National Biodiversity Authority while naming and submitting new
+    biological microorganisms to international culture collections and
+    continues to monitor the usage of these organisms in future as these new
+    microbes are a ‘Biological Asset’ of the country. This rule has come in
+    direct conflict with the requirement of unrestricted usage and
+    deposition of strains to two international culture collections. India
+    being a land of rich biodiversity hosts a repertoire of new organisms
+    that are yet to be discovered. Understanding these new microbes would
+    expand our knowledge of microbial systems and hence my keen interest in
+    the subject of Microbial Systematics.
+
+hedlund:
+  name: Brian Hedlund
+  affiliation: University of Nevada, Las Vegas, USA
+  url: https://www.unlv.edu/people/brian-hedlund
+  bio: |
+    Dr. Brian Hedlund is a Professor in the School of Life Sciences at the
+    School of Life Sciences at the University of Nevada, Las Vegas (UNLV).
+    He earned his BS (1994) in Biology from the University of Illinois at
+    Urbana-Champaign and his PhD (2000) from the University of Washington,
+    under the supervision of Jim Staley. Prior to joining the faculty at
+    UNLV, he was a Postdoctoral Fellow at the Center for Archaeal Studies at
+    the University of Regensburg, Germany, under the supervision of Karl
+    Stetter. Dr. Hedlund's research focuses on the microbiology and
+    biogeochemistry of both thermal and non-thermal springs and microbial
+    biodiversity exploration in diverse environments using both cultivation
+    and cultivation-independent methods. His laboratory has described and
+    named a new class, a new family, and several genera and species under
+    the International Code of Nomenclature of Prokaryotes. Through
+    collaborative work, he has also used stable-isotope labeling approaches
+    and other techniques to test hypotheses about major uncultivated groups
+    derived from single-cell genomics or metagenomics data. Dr. Hedlund is a
+    founding member of the SeqCode Initiative and is dedicated to its
+    development.
+
+# TODO: complete affiliation (only the country is known so far) and bio
+hitch:
+  name: Thomas Hitch
+  affiliation: Hong Kong, China
+  bio: ''
+
+hugenholtz:
+  name: Phil Hugenholtz
+  affiliation: The University of Queensland, Australia
+  bio: |
+    I have had a long standing interest in microbial diversity, in
+    particular the uncultured microbial majority. More recently I have been
+    drawn into nomenclatural issues via the Genome Taxonomy Database (GTDB)
+    project, which highlighted to me the need for the SeqCode. My research
+    strengths in the context of the SeqCode are phylogenetics, comparative
+    genomics and microbial taxonomy.
+
+# TODO: complete affiliation (only the country is known so far) and bio
+jangid:
+  name: Kamlesh Jangid
+  affiliation: India
+  bio: ''
+
+# TODO: complete affiliation (only the country is known so far) and bio
+jimenez_avella:
+  name: Diego Jiménez Avella
+  affiliation: Saudi Arabia
+  bio: ''
+
+konstantinidis:
+  name: Kostas Konstantinidis
+  affiliation: Georgia Institute of Technology, USA
+  url: http://enve-omics.gatech.edu
+  bio: |
+    Dr. Kostas Konstantinidis is the Richard C. Tucker Professor in the
+    School of Civil and Environmental Engineering and the School of
+    Biological Sciences (adjunct) at Georgia Tech and Program Faculty for
+    the Coulter Department of Biomedical Engineering at Georgia Tech and
+    Emory University. He earned his BS (1999) in Agricultural Sciences from
+    the Aristotle University of Thessaloniki, Greece and his PhD (2004)
+    from the Center for Microbial Ecology at Michigan State University,
+    under the supervision of James Tiedje. Prior to joining the faculty at
+    Georgia Tech, he was a Postdoctoral Fellow in the Department of Civil
+    and Environmental Engineering at MIT under the supervision of Ed DeLong.
+    Dr Konstantinidis is an expert in environmental microbiology and
+    microbial ecology, and the development of associated omics and
+    bioinformatics techniques. He has published 180 papers in these areas,
+    13 in PNAS alone, which have received >25,000 citations. Accordingly,
+    he is in the top 1% of world's Highly Cited scientists and engineers by
+    Clarivate/Web of Science. Specifically for taxonomy and the SeqCode, he
+    has developed novel genome-based methods to catalogue the diversity
+    among prokaryotic isolate genomes and metagenomes such as the Average
+    Nucleotide Identity (ANI) of all shared genes between two organisms
+    (<a href='http://enve-omics.ce.gatech.edu/g'>http://enve-omics.ce.gatech.edu/g</a>).
+    ANI has been recognized internationally as a replacement of the
+    “golden standard” of prokaryotic taxonomy, DNA-DNA hybridization, and he
+    received the prestigious Skerman Award from the World Federation for
+    Culture Collections for the ANI work. Dr Konstantinidis is among the
+    founding member of the SeqCode initiative and is committed to further
+    assist the development of the initiative.
+
+konstantinidis_2027:
+  name: Kostas Konstantinidis
+  affiliation: Georgia Institute of Technology, USA
+  url: http://enve-omics.gatech.edu
+  bio: |
+    Dr. Kostas Konstantinidis is the Richard C. Tucker Professor in the
+    School of Civil and Environmental Engineering and the School of
+    Biological Sciences (adjunct) at Georgia Tech and Program Faculty for
+    the Coulter Department of Biomedical Engineering at Georgia Tech and
+    Emory University. He earned his BS (1999) in Agricultural Sciences from
+    the Aristotle University of Thessaloniki, Greece and his PhD (2004) from
+    the Center for Microbial Ecology at Michigan State University, under the
+    supervision of James Tiedje. Prior to joining the faculty at Georgia
+    Tech, he was a Postdoctoral Fellow in the Department of Civil and
+    Environmental Engineering at MIT under the supervision of Ed DeLong. Dr.
+    Konstantinidis is an expert in environmental microbiology and microbial
+    ecology, and the development of associated omics and bioinformatics
+    techniques. He has published 250 papers in these areas, 13 in PNAS alone,
+    which have received >50,000 citations. Accordingly, he is in the top 1%
+    of world's Highly Cited scientists and engineers by Clarivate/Web of
+    Science. Specifically for taxonomy and the SeqCode, he has developed
+    novel genome-based methods to catalogue the diversity among prokaryotic
+    isolate genomes and metagenomes such as the Average Nucleotide Identity
+    (ANI) of all shared genes between two organisms
+    (<a href="https://enveomics.scigap.org"
+    target="_blank">enveomics.scigap.org</a>). ANI has been recognized
+    internationally as a replacement of the “golden standard” of
+    prokaryotic taxonomy, DNA-DNA hybridization, and he received the
+    prestigious Skerman Award from the World Federation for Culture
+    Collections for the ANI work. Dr. Konstantinidis is among the founding
+    member of the SeqCode initiative and is committed to further assist
+    the development of the initiative. He serves as the Editor in Chief of
+    Systematic and Applied Microbiology (SAM), the Treasurer of the Bergey's
+    Manual Trust (BMT), and the Chair of the SeqCode's governing committee.
+
+krynauw:
+  name: Chrizelle Krynauw
+  affiliation: UK
+  bio: ''
+
+kyrpides:
+  name: Nikos Kyrpides
+  affiliation: DOE Joint Genome Institute, LBNL, Berkeley, USA
+  bio: ''
+
+li:
+  name: Cheng Li
+  affiliation: James Madison University, USA
+  bio: |
+    Cheng Li is an Assistant Professor at James Madison University and a
+    respected researcher in applying microorganisms that can perform
+    extracellular electron transfer to remediate environments and
+    sequestrate carbon from the atmosphere.
+    His academic journey began at Oregon State University, where he
+    developed a strong foundation in research and a deep passion for his
+    subjects. At James Madison University, Cheng Li has excelled as an
+    educator, inspiring students through engaging lectures and fostering a
+    dynamic learning environment. Cheng's current research focuses on
+    enriching cable bacteria for engineering applications and using
+    bioelectrochemical systems to remediate sedimentary environments. His
+    collaborative spirit extends to his research, where he has made
+    significant contributions to the understanding of cable bacteria and
+    their applications in engineered systems such as microbial fuel cells.
+    Cheng's work in these areas has earned recognition and respect in
+    academic circles, and his innovative research projects continue to push
+    the boundaries of knowledge. Besides his academic pursuits, Cheng
+    maintains a healthy lifestyle by weightlifting and running,
+    complementing his scholarly endeavors.
+
+mchardy:
+  name: Alice McHardy
+  affiliation: Technical University of Braunschweig, Germany
+  bio: ''
+
+palmer:
+  name: Marike Palmer
+  affiliation: University of Nevada, Las Vegas, USA
+  url: https://www.researchgate.net/profile/Marike-Palmer
+  bio: |
+    I completed an MSc (2014) and a PhD (2018) in microbial systematics at
+    the University of Pretoria, South Africa, under the guidance of Fanus
+    Venter and Emma Steenkamp. This work entailed testing and establishing
+    evolutionary hypotheses for the clinically and agriculturally important
+    genus, <i>Pantoea</i>, and its close relatives. The four primary
+    research papers that resulted from this work tested various phylogenomic
+    approaches and fully integrated genomics into the polyphasic taxonomy of
+    this group. This culminated in the establishment of a novel genus,
+    <i>Mixta</i>, to accommodate species outside of known genera and
+    resulted in clarification of the taxonomic position of numerous species.
+    Since then, I have authored or co-authored three Bergey's Manual genus
+    chapters on this group of bacteria (2022). I accepted a postdoctoral
+    position at the University of Pretoria, until early 2019, where
+    collaborations focused on discovery and characterization of rhizobia
+    allowed the establishment of two novel genera in the β-rhizobia, and
+    description of &gt;10 new species. This was followed by a postdoctoral
+    appointment in the research group of Brian Hedlund at the University of
+    Nevada Las Vegas, USA, where I am currently based. My scientific
+    interests and skillset place my research at the transect between
+    systematics and ecology, and I have become increasingly involved in
+    projects utilizing environmental genomics to capture more of the
+    diversity in particular environments, including geothermal springs, and
+    establishing taxonomies for largely understudied groups. These groups
+    often include as-yet-uncultivated microbial lineages or microbes that
+    can only be maintained in stable mixed or co-cultures, e.g., the
+    <i>Wolframiiraptoraceae</i>, a family in the archaeal order
+    “Caldarchaeales” (syn. “Aigarchaeota”). In total, I have assisted in
+    delineating species and establishing taxonomies based on phylogenomics
+    for more than ten lineages, including one bacterial phylum, one
+    bacterial class, several bacterial families and genera, and two archaeal
+    orders. I have also generated names that are validated or will be
+    validated under either the SeqCode or the ICNP where readily available
+    axenic cultures exist, for &gt;100 taxa, thus facilitating effective
+    communication for these groups. As my research has shifted largely to
+    include organisms that cannot yet be maintained as axenic cultures in
+    vitro, and due to my extensive experience in prokaryotic taxonomy
+    including nomenclature under the ICNP, I became part of the team
+    developing and establishing the SeqCode, known as the SeqCode steering
+    committee, and assisted in drafting and editing the SeqCode v. 1.0 and
+    associated publications. I am currently also serving as a curator in the
+    SeqCode Registry and have contributed heavily toward the testing and
+    development of various features of the registry.
+
+palmer_2027:
+  name: Marike Palmer
+  affiliation: University of Manitoba, Canada
+  url: https://www.researchgate.net/profile/Marike-Palmer
+  bio: |
+    I completed an MSc (2014) and a PhD (2018) in microbial systematics at
+    the University of Pretoria, South Africa, under the guidance of Fanus
+    Venter and Emma Steenkamp. This work entailed testing and establishing
+    evolutionary hypotheses for the clinically and agriculturally important
+    genus, <i>Pantoea</i>, and its close relatives. The four primary
+    research papers that resulted from this work tested various phylogenomic
+    approaches and fully integrated genomics into the polyphasic taxonomy of
+    this group. This culminated in the establishment of a novel genus,
+    <i>Mixta</i>, to accommodate species outside of known genera and
+    resulted in clarification of the taxonomic position of numerous species.
+    Since then, I have authored or co-authored three Bergey's Manual genus
+    chapters on this group of bacteria (2022). I accepted a postdoctoral
+    position at the University of Pretoria, until early 2019, where
+    collaborations focused on discovery and characterization of rhizobia
+    allowed the establishment of two novel genera in the β-rhizobia, and
+    description of &gt;10 new species. This was followed by a postdoctoral
+    appointment in the research group of Brian Hedlund at the University of
+    Nevada Las Vegas, USA, where I am currently based. My scientific
+    interests and skillset place my research at the transect between
+    systematics and ecology, and I have become increasingly involved in
+    projects utilizing environmental genomics to capture more of the
+    diversity in particular environments, including geothermal springs, and
+    establishing taxonomies for largely understudied groups. These groups
+    often include as-yet-uncultivated microbial lineages or microbes that
+    can only be maintained in stable mixed or co-cultures, e.g., the
+    <i>Wolframiiraptoraceae</i>, a family in the archaeal order
+    “Caldarchaeales” (syn. “Aigarchaeota”). In total, I have assisted in
+    delineating species and establishing taxonomies based on phylogenomics
+    for more than ten lineages, including one bacterial phylum, one
+    bacterial class, several bacterial families and genera, and two archaeal
+    orders. I have also generated names that are validated or will be
+    validated under either the SeqCode or the ICNP where readily available
+    axenic cultures exist, for &gt;100 taxa, thus facilitating effective
+    communication for these groups. As my research has shifted largely to
+    include organisms that cannot yet be maintained as axenic cultures in
+    vitro, and due to my extensive experience in prokaryotic taxonomy
+    including nomenclature under the ICNP, I became part of the team
+    developing and establishing the SeqCode, known as the SeqCode steering
+    committee, and assisted in drafting and editing the SeqCode v. 1.0 and
+    associated publications. I am currently also serving as a curator in the
+    SeqCode Registry and have contributed heavily toward the testing and
+    development of various features of the registry.
+
+parks:
+  name: Donovan Parks
+  affiliation: Microba, Australia
+  bio: |
+    Donovan Parks holds a PhD in computer science from Dalhousie University
+    and has developed a number of bioinformatic programs including GTDB-Tk,
+    CheckM, STAMP, and GenGIS. He has expertise in microbial ecology,
+    phylogenetics, and metagenome-assembled genomes. Donovan is a
+    bioinformatic consultant working in the private and public sectors,
+    including for the Australian Centre for Ecogenomics at the University
+    of Queensland where he helps develop and maintain the Genome Taxonomy
+    Database, an initiative to establish a standardized bacterial and
+    archaeal taxonomy based on genome phylogeny.
+
+priest:
+  name: Taylor Priest
+  affiliation: Max Planck Institute for Marine Microbiology, Bremen, Germany
+  bio: |
+    I am a microbial ecologist with a keen interest in evolution and
+    systematics. I undertook my PhD at the Max Planck Institute for Marine
+    Microbiology in Bremen, Germany, wherein I studied the ecology of
+    microbial communities in the Arctic and the interface between the Arctic
+    and Atlantic Oceans. In particular, I focused on characterizing the
+    taxonomic and functional composition of microbial communities over
+    environmental, spatial and temporal gradients. At the foundation of my
+    research is bioinformatics and the application of long-read
+    metagenomics. Much of my time has been dedicated to phylogenetic
+    analysis of communities using single-copy and 16S rRNA genes as well as
+    individual species and populations through metagenome-assembled genomes.
+    It is from this that I gained a deep appreciation of the importance of
+    systematics. One of the published studies from my PhD consisted of a
+    phylogenetic and ecological description of an abundant group of marine
+    bacteria (NS5 Marine Group), which I subsequently delineated into four
+    novel candidate genera using metagenomics, 16S rRNA gene sequences,
+    microscopy and cultivation. My current research is focused on assessing
+    the impact of changing conditions on microbial communities in the Arctic
+    Ocean as well as investigating the distribution of populations and
+    species over space and time to better understand evolution and
+    adaptation.
+
+priest_2027:
+  name: Taylor Priest
+  affiliation: Max Planck Institute for Marine Microbiology, Bremen, Germany
+  bio: |
+    I am a microbial ecologist with a keen interest in evolution and
+    systematics. I undertook my PhD at the Max Planck Institute for Marine
+    Microbiology in Bremen, Germany, wherein I studied the ecology of
+    microbial communities in the Arctic and the interface between the Arctic
+    and Atlantic Oceans. In particular, I focused on characterizing the
+    taxonomic and functional composition of microbial communities over
+    environmental, spatial and temporal gradients. At the foundation of my
+    research is bioinformatics and the application of long-read
+    metagenomics. Much of my time has been dedicated to phylogenetic
+    analysis of communities using single-copy and 16S rRNA genes as well as
+    individual species and populations through metagenome-assembled genomes.
+    It is from this that I gained a deep appreciation of the importance of
+    systematics. One of the published studies from my PhD consisted of a
+    phylogenetic and ecological description of an abundant group of marine
+    bacteria (NS5 Marine Group), which I subsequently delineated into four
+    novel candidate genera using metagenomics, 16S rRNA gene sequences,
+    microscopy and cultivation. My current research is focused on assessing
+    the impact of changing conditions on microbial communities in the Arctic
+    Ocean as well as investigating the distribution of populations and
+    species over space and time to better understand evolution and
+    adaptation.
+
+probst:
+  name: Alex Probst
+  affiliation: University of Duisburg-Essen, Germany
+  url: https://scholar.google.de/citations?user=ZFbd814AAAAJ
+  bio: |
+    Alexander Josef Probst is a microbiologist mainly interested in aquatic
+    microbiome functioning, the uncultivated microbial diversity, and the
+    One Health concept. Alexander received his PhD at the Archaea Center
+    (University of Regensburg, Germany) working under Christine
+    Moissl-Eichinger and Reinhard Wirth, his doctoral father. Prior,
+    throughout and after graduate school, Alexander worked as a
+    bioinformatics scientist at Second Genome Inc., where he contributed to
+    more than 100 different microbiome studies, particularly focusing on the
+    human microbiome. After doing a postdoc in Jill Banfield's lab at UC
+    Berkeley, where he deepened his knowledge in deep subsurface
+    microbiology, Alexander was appointed as an interim professor for
+    aquatic microbial ecology at the University of Duisburg-Essen. In May
+    2018 Alexander was promoted associate professor (W2) for "Aquatic
+    Microbial Ecology” and subsequently in 2022 full professor (W3) and
+    research professor (reduced working load) for "Environmental
+    Metagenomics" in the Research Center One Health Ruhr at the University
+    Alliance Ruhr.Alexander uses integrated omics and sophisticated
+    microscopy methods to explore the ecophsyiology of archaea and bacteria
+    in aquatic systems, deciphers their interaction with each other and with
+    viruses, and focuses on generating a mechanistic understanding of
+    microbiome function in aquatic ecosystems of the deep biosphere,
+    groundwater, and rivers.
+
+reysenbach:
+  name: Anna-Louise Reysenbach
+  affiliation: Portland State University, USA
+  bio: |
+    Anna-Louise Reysenbach is a Professor of Microbiology at Portland State
+    University. Her research focuses on the microbial ecology of high
+    temperature ecosystems. Her laboratory uses a combination of
+    metagenomics and cultivation to understand the function of poorly
+    studied thermophiles. Her laboratory has isolated, described and named
+    many novel archaeal and bacterial thermophiles from deep-sea
+    hydrothermal vents and terrestrial hot springs. She has served on
+    numerous editorial boards, chaired the US-UNOLS Deep-Submergence Science
+    Committee (DESSC), and is currently an Associate Member of the Bergey's
+    Manual of Systematics of Archaea and Bacteria (BMSAB). She helped
+    develop the SeqCode, through an initial series of workshops funded by
+    the US-National Science Foundation.
+
+rodriguez_r:
+  name: Luis Miguel Rodriguez-R
+  affiliation: Aalborg University, Aalborg, Denmark
+  url: https://rodriguez-r.com/
+  bio: |
+    I am a biologist (BSc) from the National University of Colombia (Bogotá,
+    Colombia), and I hold an MSc in Microbiology from Los Andes University
+    (Bogotá, Colombia), and an MSc in Applied Informatics from the
+    University of Montpellier (Montpellier, France). I obtained my Ph.D. in
+    Bioinformatics from the Georgia Institute of Technology (Atlanta, USA)
+    with a dissertation on Bioinformatics and Microbial Ecology that
+    received the Sigma Xi award for the best PhD thesis of 2017, a
+    competitive distinction for which doctoral theses of all schools and
+    faculties at Georgia Tech are considered. My Ph.D. work established the
+    basis of multiple lines of research in which I am currently a
+    collaborator. After my graduation, I served as a postdoctoral fellow in
+    the Georgia Institute of Technology, and later as Research Faculty in
+    the School of Civil and Environmental Engineering. I was later a
+    tenure-track assistant professor at the Department of Microbiology and the
+    Digital Science Center (DiSC) of the University of Innsbruck (Austria).
+    I'm now an associate professor at the Department of Chemistry and
+    Bioscience of Aalborg University (Denmark).
+    My publication record includes 85 peer reviewed publications including
+    four published book chapters (about a third as first author), and my
+    work has been cited over 15,000 times with an H-index of 41 (Google
+    Scholar). I have presented multiple workshops, seminars, and symposia on
+    microbiome analysis, ecological studies, and genomics and metagenomics,
+    and serve as a frequent reviewer of multiple international journals. I
+    have produced dozens of bioinformatic tools and interfaces, including
+    distributed and cloud computing, web applications, implementations of
+    novel statistical techniques, and original bioinformatic algorithms,
+    altogether experiencing over 10,000 downloads and online queries per
+    month. Additionally, my work on microbial ecology and evolution has
+    attracted considerable attention, including works in journals such as
+    The ISME Journal, Nature Communications, and Applied and Environmental
+    Microbiology, among others. More recently, my work on prokaryotic
+    genomics related to the Microbial Genomes Atlas (MiGA) has garnered
+    international attention as one of three leading frameworks for the
+    development of prokaryotic taxonomy on the basis of draft or complete
+    genomes. The MiGA framework has also promoted the development of
+    software such as FastANI (1,624 citations) and FastAAI (under
+    development), and public release of multiple genome collections
+    including from freshwater, biogas reactors, and oil-impacted
+    environments. I am a member of the SeqCode Steering Committee, and have
+    recently coauthored papers in prokaryotic nomenclature in venues such as
+    Nature Microbiology, Systematic and Applied Microbiology, and the
+    International Journal of Systematic and Evolutionary Microbiology.
+
+rodriguez_r_2027:
+  name: Luis Miguel Rodriguez-R
+  affiliation: Aalborg University, Aalborg, Denmark
+  url: https://rodriguez-r.com/
+  bio: |
+    I am a biologist (BSc) from the National University of Colombia (Bogotá,
+    Colombia), and I hold an MSc in Microbiology from Los Andes University
+    (Bogotá, Colombia), and an MSc in Applied Informatics from the
+    University of Montpellier (Montpellier, France). I obtained my Ph.D. in
+    Bioinformatics from the Georgia Institute of Technology (Atlanta, USA)
+    with a dissertation on Bioinformatics and Microbial Ecology that
+    received the Sigma Xi award for the best PhD thesis of 2017, a
+    competitive distinction for which doctoral theses of all schools and
+    faculties at Georgia Tech are considered. My Ph.D. work established the
+    basis of multiple lines of research in which I am currently a
+    collaborator. After my graduation, I served as a postdoctoral fellow in
+    the Georgia Institute of Technology, and later as Research Faculty in
+    the School of Civil and Environmental Engineering. I was later a
+    tenure-track assistant professor at the Department of Microbiology and the
+    Digital Science Center (DiSC) of the University of Innsbruck (Austria).
+    I'm now an associate professor at the Department of Chemistry and
+    Bioscience of Aalborg University (Denmark).
+    My publication record includes 90 peer reviewed publications including
+    five published book chapters (about a third as first author), and my
+    work has been cited over 16,000 times with an H-index of 42 (Google
+    Scholar). I have presented multiple workshops, seminars, and symposia on
+    microbiome analysis, ecological studies, and genomics and metagenomics,
+    and serve as a frequent reviewer of multiple international journals. I
+    have produced dozens of bioinformatic tools and interfaces, including
+    distributed and cloud computing, web applications, implementations of
+    novel statistical techniques, and original bioinformatic algorithms,
+    altogether experiencing over 10,000 downloads and online queries per
+    month. Additionally, my work on microbial ecology and evolution has
+    attracted considerable attention, including works in journals such as
+    The ISME Journal, Nature Communications, and Applied and Environmental
+    Microbiology, among others. More recently, my work on prokaryotic
+    genomics related to the Microbial Genomes Atlas (MiGA) has garnered
+    international attention as one of three leading frameworks for the
+    development of prokaryotic taxonomy on the basis of draft or complete
+    genomes. The MiGA framework has also promoted the development of
+    software such as FastANI (1,624 citations) and FastAAI (under
+    development), and public release of multiple genome collections
+    including from freshwater, biogas reactors, and oil-impacted
+    environments. I am a member of the SeqCode Steering Committee, and have
+    recently coauthored papers in prokaryotic nomenclature in venues such as
+    Nature Microbiology, Systematic and Applied Microbiology, and the
+    International Journal of Systematic and Evolutionary Microbiology.
+
+rossello_mora:
+  name: Ramon Rossello-Mora
+  affiliation: IMEDEA; CSIC-UIB, Mallorca, Spain
+  bio: |
+    Ramon Rossello-Mora is currently Professor of Research at the Spanish
+    Council (CSIC), and working in the research institute IMEDEA (CSIC-UIB)
+    leading the Marine Microbiology Group. He did his PhD at the University
+    of the Balearic Islands and postdocs at the Technical University of
+    Berlin, Technical University of Munich and the Max-Planck Institute for
+    Marine Microbiology in Bremen. Specialized in molecular microbial
+    ecology of marine sediments and hypersaline environments, as well as in
+    theoretical and practical aspects of microbial taxonomy. Has supervised
+    13 PhD and 9 Master theses. As taxonomist he has been granted with the
+    2017 Bergey’s Award, and has served as Vice-Chair of the Judicial
+    Commission of the International Committee for Systematics of Prokaryotes
+    until April 2023. He is executive editor of Systematic and Applied
+    Microbiology since 2006, and Member of the European Academy of
+    Microbiology since 2016.<br/><br/>
+
+    His expertise is on microbial systematics, taxonomy, phylogeny and
+    molecular ecology of (especially) marine and hyperhalophilic
+    prokaryotes. He has been working on genomics and metagenomics of
+    prokaryotes, on the evaluation of the species concept for prokaryotes,
+    developing tools for taxonomic measurements as the
+    <a href="https://jspecies.ribohost.com/jspeciesws/">JSpecies</a> and
+    <a href="https://imedea.uib-csic.es/mmg/ltp/">LTP</a> as well as
+    different aspects of molecular microbial ecology.
+
+singh:
+  name: Nitin Kumar Singh
+  affiliation: NASA-JPL-Caltech, USA
+  url: https://planetaryprotection.jpl.nasa.gov/singh-bio
+  bio: |
+    Dr. Nitin Kumar Singh's 15+ years of research in Microbiology
+    encompasses Microbial taxonomy, Microbial Genomics, Metagenomics, and
+    Microbial ecology study, analysis and interpretation. He is specialized
+    in working on pathogenic microbes and their biofilm found in the
+    hospital environment / clean room (SAF) to understand how microbes adapt
+    to become more pathogenic under anthropogenic pressures. His work on
+    Acinetobacter sp. and Bacillus anthracis clad has helped in the
+    taxonomic resolution of both the genus. Until date, he has played a
+    crucial role in validly describing 13 novel bacterial species from
+    various environments and has been involved in the Genomic and
+    Metagenomics analysis of various projects like ISS-MO, ISS-MOP, CASIS,
+    IMPAS, SPACE-X, JPL-SAF, HEPA and MARS 2020. His experience in analyzing
+    complex eukaryotic genomes like Fungi, Human, Insects, and Plants have
+    helped narrow down the correlative dynamics of the dominant prokaryotic,
+    and eukaryotic population in ISS/SAF and establishing its genomic
+    identity through metagenome resolved genomes. He has been instrumental
+    in the implementation of BIG-DATA analysis and visualization leading to
+    the co-relational analysis of all the studies conducted at BPPG. Dr.
+    Singh also serves as a permanent staff member on Caltech's Institutional
+    Review Board (IRB), Institutional Animal Care and Use Committee (IACUC),
+    and Institutional Biosafety Committee (IBC).
+
+sutcliffe:
+  name: Iain Sutcliffe
+  affiliation: Northumbria University, UK
+  url: https://www.northumbria.ac.uk/about-us/our-staff/s/iain-sutcliffe/
+  bio: |
+    I took my degree and PhD at the University of Newcastle upon Tyne, UK,
+    the latter supervised by Norman Shaw, a pioneer in using bacterial
+    lipids for chemotaxonomy. Subsequent post- doctoral research in
+    Newcastle included a Wellcome Trust Fellowship in Taxonomy, studying
+    actinomycete lipoglycans as chemotaxonomic markers. Since 2003, I have
+    been based Northumbria University, UK, where my research investigates
+    the biology of membrane-anchored macromolecules within the cell
+    envelopes of bacteria, and actinomycete systematics. From 2009-2019, I
+    was Editor-in- Chief of Antonie van Leeuwenhoek, during which time the
+    journal developed as a major forum for papers in microbial systematics.
+    In 2014, with Mike Goodfellow and Jongsik Chun, I edited New Approaches
+    to Prokaryotic Systematics (Methods in Microbiology 41. Elsevier). Since
+    2017, I have been Chair of the International Committee on Systematics of
+    Prokaryotes (ICSP) but must stand down in 2023. Since 2018 I have been
+    actively involved in the SeqCode Initiative, both as a participant in
+    the various SeqCode workshops, in helping draft the “Roadmap for naming
+    uncultivated Archaea and Bacteria” (Nature Micro, 2020) and to draft the
+    SeqCode itself (Nature Micro, 2022). More recently, as part of the
+    SeqCode Organising Committee I have play a leading role in drafting the
+    Statutes for the SeqCode governance. I believe this depth of experience
+    will serve me well as incoming Chair of SeqCode Legislative Commission.
+
+sutcliffe_2027:
+  name: Iain Sutcliffe
+  affiliation: Northumbria University, UK
+  url: https://www.northumbria.ac.uk/about-us/our-staff/s/iain-sutcliffe/
+  bio: |
+    I took my degree and PhD at the University of Newcastle upon Tyne, UK,
+    the latter supervised by Norman Shaw, a pioneer in using bacterial
+    lipids for chemotaxonomy. Subsequent post- doctoral research in
+    Newcastle included a Wellcome Trust Fellowship in Taxonomy, studying
+    actinomycete lipoglycans as chemotaxonomic markers. From 2003, I was
+    based Northumbria University, UK (and am currently Emeritus Professor),
+    where my research investigated the biology of membrane-anchored
+    macromolecules within the cell envelopes of bacteria, and actinomycete
+    systematics. From 2009-2019, I was Editor-in- Chief of Antonie van
+    Leeuwenhoek, during which time the journal developed as a major forum
+    for papers in microbial systematics. In 2014, with Mike Goodfellow and
+    Jongsik Chun, I edited New Approaches to Prokaryotic Systematics
+    (Methods in Microbiology 41. Elsevier). From 2017-2023 I was Chair of
+    the International Committee on Systematics of Prokaryotes (ICSP). I
+    have been actively involved in the SeqCode since 2018, both as a
+    participant in the various SeqCode workshops, in helping draft the
+    “Roadmap for naming uncultivated Archaea and Bacteria” (Nature Micro,
+    2020) and drafting the SeqCode itself (Nature Micro, 2022). In 2025 I
+    was awarded the Bergey's Medal for 'distinguished achievement in
+    bacterial taxonomy' by the Bergey's Manual Trust. I served as Chair of
+    SeqCode Legislative Commission (2022-2026) and, as part of the SeqCode
+    Executive, I lead the publication of the Statutes for the governance
+    of the SeqCode community. I look forward to serving a second term as
+    Chair of SeqCode Legislative Commission. 
+venter:
+  name: Fanus Venter
+  affiliation: University of Pretoria, South Africa
+  url: https://www.fabinet.up.ac.za/index.php/people-profile?profile=939
+  bio: |
+    Fanus (SN) Venter is a professor in the Department of Biochemistry,
+    Genetics and Microbiology at the University of Pretoria, South Africa.
+    The main focus of his research is bacterial evolution, systematics and
+    diversity. Through the use of comparative genomics, his research
+    attempts to understand the functions, biology and evolution of bacteria
+    associated with plants. His current focus related to bacterial
+    systematics is on the nitrogen-fixing rhizobium species isolated from
+    indigenous legumes in South Africa. His research group has already
+    described several new species belonging to these genera (ORCID
+    0000-0002-5726-4918). He is associate editor of the International
+    Journal of Systematic and Evolutionary Microbiology and Systematics and
+    Applied Microbiology.
+
+wang:
+  name: Fengping Wang
+  affiliation: Shanghai Jiao Tong University, China
+  url: https://soo.sjtu.edu.cn/en/szTeachers/4029.html
+  bio: ''
+
+# TODO: complete affiliation (only the country is known so far) and bio
+wang_yinzhao:
+  name: Yinzhao Wang
+  affiliation: China
+  bio: ''
+
+whitman:
+  name: Barny Whitman
+  affiliation: University of Georgia, USA
+  bio: |
+    My personal motivation for working on the SeqCode came from my
+    experiences in my laboratory's research and with Bergey's Manual.
+    In my own research, I learned some of the potential for genomes to
+    reveal great truths about organisms. Not only do they provide insights
+    into physiology, metabolism, and evolution, they also inform us of
+    chemotaxis, aggregation, stress responses and other properties
+    associated with lifestyle. Equally exciting, genomes illuminate the
+    huge gaps in basic knowledge about organisms. For instance, after more
+    than twenty years it is still not possible to confidently annotate many
+    of the genes in methanogenic archaea. From Bergey's, I also learned some
+    of the enormous wealth of prokaryotic biology. Even though most species
+    are cloaked in our profound ignorance of their true natures, they are
+    endlessly fascinating; our knowledge of them being largely limited by
+    failures of imagination.When metagenomics became a mature technology,
+    it was easy to envision a complete description of prokaryotic life
+    comprised of genome sequences from representatives of all the major
+    taxa, knowledge of the distributions of prokaryotes based upon rRNA
+    gene surveys, and an understanding of how to decipher what the genome
+    sequences tell us about organisms' properties. While the skeleton of
+    such a description already exists, the task for the future is a matter
+    of refinement and adding detail. When complete, this description will
+    be one of the great achievements of modern microbiology.Crucial to this
+    task is the ability to create stable names that are shared among the
+    community of microbiologists. Hence, the SeqCode. Following the
+    precedent of the ICNP, the SeqCode will create a system of naming that
+    can be applied widely to both uncultivated and cultivated prokaryotes.
+    It will be a foundational tool to any database of prokaryotes, and it is
+    a necessary component of a complete description of prokaryotic life. As
+    chair of the SeqCode Executive Board, my goals are to ensure that the
+    SeqCode is accessible, easy to use, and widely applied.
