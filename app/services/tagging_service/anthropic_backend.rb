@@ -26,8 +26,6 @@ class TaggingService::AnthropicBackend
     <<~PROMPT
       You are a taxonomic nomenclature assistant. Given the etymology of a
       prokaryotic name, assign zero or more tags from the closed list below.
-      Respond ONLY with a JSON object — no explanation, no markdown, no
-      preamble.
 
       ## Tag definitions
 
@@ -87,9 +85,6 @@ class TaggingService::AnthropicBackend
       Name: #{name.name}
       Rank: #{name.rank}
       Etymology: #{etym}
-
-      ## Required response format
-      {"tags": [{"slug": "eponym", "confidence": "high"}, ...]}
     PROMPT
   end
 
@@ -110,7 +105,8 @@ class TaggingService::AnthropicBackend
     req.body = JSON.generate(
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      messages: messages
+      messages: messages,
+      output_config: { format: { type: 'json_schema', schema: response_schema } }
     )
 
     http = Net::HTTP.new(API_URI.host, API_URI.port)
@@ -136,12 +132,39 @@ class TaggingService::AnthropicBackend
     raise TaggingService::Error, "Anthropic API invalid JSON: #{e.message}"
   end
 
+  def response_schema
+    {
+      type: 'object',
+      properties: {
+        tags: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              slug: { type: 'string', enum: Tag.order(:slug).pluck(:slug) },
+              confidence: { type: 'string', enum: %w[high low] }
+            },
+            required: %w[slug confidence],
+            additionalProperties: false
+          }
+        }
+      },
+      required: %w[tags],
+      additionalProperties: false
+    }
+  end
+
   def parse_response(body)
+    case body['stop_reason']
+    when 'refusal'
+      raise TaggingService::Error, 'Model declined to tag this name'
+    when 'max_tokens'
+      raise TaggingService::Error, 'Model response truncated (max_tokens)'
+    end
+
     # The text may not be the first content block (e.g., after thinking)
     text_block = Array(body['content']).find { |b| b['type'] == 'text' }
-    text = text_block&.dig('text').to_s.strip
-    # Strip markdown code fences if the model adds them despite instructions
-    text = text.gsub(/\A```(?:json)?\n?/, '').gsub(/\n?```\z/, '').strip
+    text = text_block&.dig('text').to_s
     parsed = JSON.parse(text)
     proposals = parsed['tags'] || []
     filter_proposals(proposals)
