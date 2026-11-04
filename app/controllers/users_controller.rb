@@ -121,19 +121,19 @@ class UsersController < ApplicationController
   end
 
   def contributor_grant
-    status_application_action(contributor: true)
+    status_application_action({ contributor: true })
   end
 
   def curator_grant
-    status_application_action(curator: true, contributor: true)
+    status_application_action({ curator: true, contributor: true })
   end
 
   def contributor_deny
-    status_application_action(contributor_statement: nil)
+    status_application_action({ contributor_statement: nil })
   end
 
   def curator_deny
-    status_application_action(curator_statement: nil)
+    status_application_action({ curator_statement: nil })
   end
 
   def community_member_update

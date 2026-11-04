@@ -9,6 +9,49 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     @officer = users(:officer)
   end
 
+  test 'contributor_grant makes the user a contributor' do
+    sign_in(@admin)
+    @officer.update!(contributor_statement: 'Please')
+
+    post(contributor_grant_path(@officer))
+
+    assert_redirected_to(dashboard_path)
+    assert(@officer.reload.contributor?)
+  end
+
+  test 'curator_grant makes the user a curator and contributor' do
+    sign_in(@admin)
+    @officer.update!(curator_statement: 'Please')
+
+    post(curator_grant_path(@officer))
+
+    assert_redirected_to(dashboard_path)
+    assert(@officer.reload.curator?)
+    assert(@officer.contributor?)
+  end
+
+  test 'contributor_deny clears the contributor statement' do
+    sign_in(@admin)
+    @officer.update!(contributor_statement: 'Please')
+
+    post(contributor_deny_path(@officer))
+
+    assert_redirected_to(dashboard_path)
+    assert_nil(@officer.reload.contributor_statement)
+    assert_not(@officer.contributor?)
+  end
+
+  test 'curator_deny clears the curator statement' do
+    sign_in(@admin)
+    @officer.update!(curator_statement: 'Please')
+
+    post(curator_deny_path(@officer))
+
+    assert_redirected_to(dashboard_path)
+    assert_nil(@officer.reload.curator_statement)
+    assert_not(@officer.curator?)
+  end
+
   test 'community_member_update saves permitted profile fields' do
     sign_in(@contributor)
 
