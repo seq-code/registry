@@ -75,6 +75,7 @@ namespace :tags do
         proposals
           .map do |p|
             basis = p['basis'].present? ? ":#{p['basis']}" : ''
+            basis += '; capped' if p['capped']
             implied =
               if p['implied_by'].blank? then ''
               elsif p['direct'] then "; also ←#{p['implied_by'].join('+')}"
@@ -97,6 +98,7 @@ namespace :tags do
             if proposal['basis'].present?
               nt.notes += "; basis: #{proposal['basis']}"
             end
+            nt.notes += '; capped from high' if proposal['capped']
             if proposal['implied_by'].present?
               nt.notes += proposal['direct'] ? '; also' : ';'
               nt.notes += " implied by: #{proposal['implied_by'].join(', ')}"

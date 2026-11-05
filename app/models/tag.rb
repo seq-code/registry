@@ -42,6 +42,7 @@ class Tag < ApplicationRecord
     }
   )
   validate(:parent_is_top_level)
+  validate(:explicit_basis_pattern_compiles)
 
   class << self
     def top_level
@@ -125,6 +126,13 @@ class Tag < ApplicationRecord
                   .reject(&:empty?).uniq
   end
 
+  # Case-insensitive +explicit_basis_pattern+, or +nil+ if there is none
+  def explicit_basis_regexp
+    return if explicit_basis_pattern.blank?
+
+    Regexp.new(explicit_basis_pattern, Regexp::IGNORECASE)
+  end
+
   # Tags added automatically whenever this tag is proposed: the parent (if
   # any) and the explicitly implied tags
   def all_implied_tags
@@ -145,6 +153,12 @@ class Tag < ApplicationRecord
   end
 
   private
+
+  def explicit_basis_pattern_compiles
+    explicit_basis_regexp
+  rescue RegexpError => e
+    errors.add(:explicit_basis_pattern, "is not a valid regexp: #{e.message}")
+  end
 
   # The hierarchy is only two levels deep (umbrella → sub-tag), which also
   # rules out cycles

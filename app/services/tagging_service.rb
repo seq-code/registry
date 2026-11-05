@@ -6,10 +6,13 @@ class TaggingService
   # Tag::CONFIDENCE_LEVELS }, expanded with implied tags (which also carry
   # 'implied_by' => [slugs]); see Tag.expand. Proposals based only on one of
   # their tag's excluded bases are dropped before expansion, so they don't
-  # imply other tags either
+  # imply other tags either. High-confidence proposals whose basis lacks the
+  # explicit evidence their tag requires are capped at medium (and carry
+  # 'capped' => true); see cap_unsupported_confidence
   # Raises TaggingService::Error on unrecoverable failure
   def self.propose(name)
-    Tag.expand(drop_excluded_bases(backend.new.propose(name)))
+    proposals = drop_excluded_bases(backend.new.propose(name))
+    Tag.expand(cap_unsupported_confidence(proposals))
   end
 
   def self.drop_excluded_bases(proposals)
@@ -19,6 +22,21 @@ class TaggingService
     proposals.reject do |proposal|
       excluded.fetch(proposal['slug'], [])
               .include?(Tag.normalize_basis(proposal['basis']))
+    end
+  end
+
+  # Lower to medium the high-confidence proposals of tags with an
+  # +explicit_basis_pattern+ whose basis is blank or doesn't match it
+  def self.cap_unsupported_confidence(proposals)
+    patterns =
+      Tag.where.not(explicit_basis_pattern: [nil, ''])
+         .to_h { |tag| [tag.slug, tag.explicit_basis_regexp] }
+    proposals.map do |proposal|
+      pattern = patterns[proposal['slug']]
+      next proposal unless pattern && proposal['confidence'] == 'high'
+      next proposal if pattern.match?(proposal['basis'].to_s)
+
+      proposal.merge('confidence' => 'medium', 'capped' => true)
     end
   end
 

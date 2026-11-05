@@ -118,6 +118,7 @@ class TaggingService::AnthropicBackend
     req.body = JSON.generate(
       model: MODEL,
       max_tokens: MAX_TOKENS,
+      temperature: 0,
       messages: messages,
       output_config: { format: { type: 'json_schema', schema: response_schema } }
     )

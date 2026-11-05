@@ -47,7 +47,11 @@ tag_seeds = [
    'those. The name counts as an organonym even when phrased as \'from the ' \
    'land of X\' or \'from the X lands\', where X is an organism (e.g. ' \
    '*Bilamarchaeum*, *Burarchaeum*); any indirect place reference is ' \
-   'secondary.'],
+   'secondary. However, when the etymology explicitly names a specific ' \
+   'place (e.g. a reserve, park, or site) as the basis of the name, assign ' \
+   '`toponym` with high confidence and not `organonym`, even if that place ' \
+   'is itself named after an organism (e.g. *Pristimantibacillus*, from ' \
+   'the Pristimantis natural reserve).'],
   ['institutonym', 'commemorative', '#b386c0',
    'Named after an institution, project, or organization',
    'When the institution is referenced through its acronym (e.g. ANSTO, ' \
@@ -192,6 +196,15 @@ tag_excluded_bases = {
   'trait' => generic_bases
 }
 
+# Regular expressions the basis of a proposal must match for the tag to be
+# proposed at high confidence; otherwise it is capped at medium (see
+# TaggingService.propose). Tags not listed here have no pattern
+tag_explicit_basis_patterns = {
+  'masculine' => '\bmasc\.',
+  'feminine' => '\bfem\.',
+  'neuter' => '\bneut\.'
+}
+
 # Tags added automatically whenever another tag is proposed (beyond the
 # tag's own umbrella), as [tag slug, implied tag slug]
 tag_implication_seeds = [
@@ -207,6 +220,7 @@ tag_seeds.each do |slug, parent_slug, color, description, prompt_notes|
   tag.description = description
   tag.prompt_notes = prompt_notes
   tag.excluded_bases = tag_excluded_bases[slug]&.join("\n")
+  tag.explicit_basis_pattern = tag_explicit_basis_patterns[slug]
   tag.save!
 end
 

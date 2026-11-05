@@ -101,7 +101,7 @@ class TagsController < ApplicationController
     def tag_params
       params.require(:tag).permit(
         :name, :slug, :color, :parent_id, :description, :prompt_notes,
-        :excluded_bases, implied_tag_ids: []
+        :excluded_bases, :explicit_basis_pattern, implied_tag_ids: []
       )
     end
 
