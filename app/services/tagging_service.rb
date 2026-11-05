@@ -6,14 +6,20 @@ class TaggingService
   # Tag::CONFIDENCE_LEVELS }, expanded with implied tags (which also carry
   # 'implied_by' => [slugs]); see Tag.expand. Proposals based only on one of
   # their tag's excluded bases are dropped before expansion, so they don't
-  # imply other tags either. High-confidence proposals whose basis lacks the
-  # explicit evidence their tag requires are capped at medium (and carry
-  # 'capped' => true); see cap_unsupported_confidence
+  # imply other tags either. Gender tags are then decided from the name's
+  # own etymology whenever it declares a gender; see assign_gender
   # Raises TaggingService::Error on unrecoverable failure
   def self.propose(name)
     proposals = drop_excluded_bases(backend.new.propose(name))
-    Tag.expand(cap_unsupported_confidence(proposals))
+    Tag.expand(assign_gender(name, proposals))
   end
+
+  # Gender tag slugs and the Name predicate declaring each gender
+  GENDER_PREDICATES = {
+    'masculine' => :masculine?,
+    'feminine' => :feminine?,
+    'neuter' => :neuter?
+  }.freeze
 
   def self.drop_excluded_bases(proposals)
     excluded =
@@ -25,19 +31,49 @@ class TaggingService
     end
   end
 
-  # Lower to medium the high-confidence proposals of tags with an
-  # +explicit_basis_pattern+ whose basis is blank or doesn't match it
-  def self.cap_unsupported_confidence(proposals)
-    patterns =
-      Tag.where.not(explicit_basis_pattern: [nil, ''])
-         .to_h { |tag| [tag.slug, tag.explicit_basis_regexp] }
-    proposals.map do |proposal|
-      pattern = patterns[proposal['slug']]
-      next proposal unless pattern && proposal['confidence'] == 'high'
-      next proposal if pattern.match?(proposal['basis'].to_s)
+  # Replace the gender proposals with the gender declared in the grammar of
+  # +name+ itself: a single declared gender is proposed at high confidence,
+  # and several declared genders as gender-uncertain. If none is declared,
+  # the model's gender proposals are kept but capped at medium confidence
+  # (carrying 'capped' => true). Ranks without grammatical gender get no
+  # gender tags at all
+  def self.assign_gender(name, proposals)
+    others = proposals.reject { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
+    return others unless Helpers::GENDER_RANKS.include?(name.rank)
 
-      proposal.merge('confidence' => 'medium', 'capped' => true)
+    declared = GENDER_PREDICATES.select do |_slug, predicate|
+      declares_gender?(name, predicate)
+    end.keys
+    case declared.size
+    when 0
+      proposals.map do |proposal|
+        next proposal unless Tag::GENDER_SLUGS.include?(proposal['slug']) &&
+                             proposal['confidence'] == 'high'
+
+        proposal.merge('confidence' => 'medium', 'capped' => true)
+      end
+    when 1
+      others + declared_gender(declared.first, 'declared in etymology')
+    else
+      others + declared_gender(
+        'gender-uncertain', 'declared in etymology (multiple genders)'
+      )
     end
+  end
+
+  # Whether +predicate+ holds for +name+, treating errors as false
+  def self.declares_gender?(name, predicate)
+    name.public_send(predicate) ? true : false
+  rescue StandardError
+    false
+  end
+
+  # A high-confidence proposal of the gender tag +slug+ with +basis+, or none
+  # if the tag doesn't exist
+  def self.declared_gender(slug, basis)
+    return [] unless Tag.exists?(slug: slug)
+
+    [{ 'slug' => slug, 'confidence' => 'high', 'basis' => basis }]
   end
 
   def self.backend

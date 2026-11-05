@@ -32,12 +32,6 @@
                  'based only on one of these terms are dropped)'
         ) %>
     <%= f.input(
-          :explicit_basis_pattern,
-          label: 'Explicit basis pattern (regex; proposals of this tag ' \
-                 'whose basis does not match are capped at medium ' \
-                 'confidence)'
-        ) %>
-    <%= f.input(
           :implied_tag_ids,
           label: 'Implies',
           collection: Tag.where.not(id: @tag.id).order(:name),

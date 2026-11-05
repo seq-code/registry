@@ -25,7 +25,9 @@ tag_seeds = [
    'hemisphere (e.g. *polaris*, *meridionalis*), are `geographic` but not ' \
    '`toponym`. A habitat type (e.g. a mine, a swamp) is `econym`, not ' \
    '`toponym`. Named regions such as Antarctica (e.g. *antarcticus*) ' \
-   'remain `toponym`.'],
+   'remain `toponym`. A person honoured for work in or on a place (e.g. ' \
+   '*allenii*, named for Eugene T. Allen for his work on the geochemistry ' \
+   'of Yellowstone National Park) is `eponym` only, not `toponym`.'],
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
    '<i>lacustris</i>, <i>thermophilus</i>)',
@@ -147,7 +149,9 @@ tag_seeds = [
    'Applies to vocabulary (nouns, adjectives, verbs) taken from a ' \
    'non-classical language (e.g. Dharawal *gugara*, kookaburra; *bilama*, ' \
    'freshwater turtle). Not for personal names or place names that are ' \
-   'merely Latinized. Can co-occur with `indigenous` and with content tags.'],
+   'merely Latinized. Can co-occur with `indigenous` and with content ' \
+   'tags. Not for words from dormant languages (e.g. Akkadian, Sanskrit); ' \
+   'use `classical` for those.'],
   ['indigenous', nil, '#d84315',
    'Name derived from a word or name of an Indigenous language or culture',
    'Covers vocabulary, clan or group names, and mythological figures from ' \
@@ -163,8 +167,9 @@ tag_seeds = [
    '*Methylomirabilis*) are NOT classical even if every root is Latin or ' \
    'Greek. Typical markers of New Latin construction: compound roots joined ' \
    'with connecting vowels, -fer/-vorus/-philus/-tropha suffixes on ' \
-   'non-classical stems, or any term not found in classical Latin or ' \
-   'Ancient Greek dictionaries.'],
+   'non-classical stems, or any term not found in dictionaries of ' \
+   'classical Latin, Ancient Greek, Sanskrit, Akkadian, or other dormant ' \
+   'languages.'],
   ['masculine', nil, '#6c757d',
    'Grammatically masculine',
    'Assign only for genus, species, or subspecies ranks. Assign only when ' \
@@ -191,18 +196,11 @@ tag_seeds = [
 # only on one of them are dropped (see TaggingService.propose). Tags not
 # listed here have no exclusions
 generic_bases = %w[bacter bacterium bacillus monas microbium archaeum]
+trait_bases = generic_bases + %w[cola vivens bios]
 tag_excluded_bases = {
-  'phenonym' => generic_bases,
-  'trait' => generic_bases
-}
-
-# Regular expressions the basis of a proposal must match for the tag to be
-# proposed at high confidence; otherwise it is capped at medium (see
-# TaggingService.propose). Tags not listed here have no pattern
-tag_explicit_basis_patterns = {
-  'masculine' => '\bmasc\.',
-  'feminine' => '\bfem\.',
-  'neuter' => '\bneut\.'
+  'phenonym' => trait_bases,
+  'trait' => trait_bases,
+  'classical' => generic_bases
 }
 
 # Tags added automatically whenever another tag is proposed (beyond the
@@ -220,7 +218,6 @@ tag_seeds.each do |slug, parent_slug, color, description, prompt_notes|
   tag.description = description
   tag.prompt_notes = prompt_notes
   tag.excluded_bases = tag_excluded_bases[slug]&.join("\n")
-  tag.explicit_basis_pattern = tag_explicit_basis_patterns[slug]
   tag.save!
 end
 

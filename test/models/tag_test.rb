@@ -114,18 +114,6 @@ class TagTest < ActiveSupport::TestCase
     assert_empty(tags(:geographic).all_implied_tags)
   end
 
-  test 'explicit_basis_pattern must be a valid regexp' do
-    tag = tags(:masculine)
-    tag.explicit_basis_pattern = '\bmasc('
-
-    assert_not(tag.valid?)
-    assert_includes(tag.errors.attribute_names, :explicit_basis_pattern)
-
-    tag.explicit_basis_pattern = '\bmasc\.'
-    assert(tag.valid?)
-    assert_match(tag.explicit_basis_regexp, 'N.L. MASC. n.')
-  end
-
   test 'a tag cannot imply itself' do
     implication = TagImplication.new(tag: tags(:eponym),
                                      implied_tag: tags(:eponym))
