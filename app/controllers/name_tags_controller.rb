@@ -22,6 +22,7 @@ class NameTagsController < ApplicationController
       redirect_back(fallback_location: root_path) and return
     end
 
+    @name_tag.actor = current_user.username
     if @name_tag.save
       flash[:notice] = "Tag #{@name_tag.status} for #{name.name}"
     else
@@ -34,6 +35,7 @@ class NameTagsController < ApplicationController
 
   # PATCH /name_tags/1
   def update
+    @name_tag.actor = current_user.username
     if @name_tag.update(
          params.require(:name_tag).permit(:status_int, :notes)
        )
@@ -47,6 +49,7 @@ class NameTagsController < ApplicationController
   # DELETE /name_tags/1
   def destroy
     name = @name_tag.name
+    @name_tag.actor = current_user.username
     @name_tag.destroy
     flash[:notice] = 'Tag removed'
     redirect_back(fallback_location: name)

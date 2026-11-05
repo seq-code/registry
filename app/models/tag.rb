@@ -65,7 +65,6 @@ class Tag < ApplicationRecord
     # proposed by the backend (even if also implied), false otherwise.
     # Unknown confidences are normalized to 'low'
     def expand(proposals)
-      implied = implied_slugs_map
       expanded = {}
       proposals.each do |proposal|
         slug = proposal['slug']
@@ -75,38 +74,69 @@ class Tag < ApplicationRecord
         entry['confidence'] = max_confidence(entry['confidence'], confidence)
       end
 
-      loop do
-        changed = false
-        expanded.values.each do |source|
-          implied.fetch(source['slug'], []).each do |slug|
-            entry = expanded[slug] ||= {
-              'slug' => slug, 'confidence' => source['confidence'],
-              'direct' => false
-            }
-            confidence =
-              max_confidence(entry['confidence'], source['confidence'])
-            implied_by = entry['implied_by'] || []
-            next if confidence == entry['confidence'] &&
-                    implied_by.include?(source['slug'])
+      graph = implication_graph(&:slug)
+      nodes = -> { expanded.keys }
+      propagate_implications(graph, nodes) do |source_slug, slug|
+        source = expanded[source_slug]
+        entry = expanded[slug] ||= {
+          'slug' => slug, 'confidence' => source['confidence'],
+          'direct' => false
+        }
+        confidence = max_confidence(entry['confidence'], source['confidence'])
+        implied_by = entry['implied_by'] || []
+        next false if confidence == entry['confidence'] &&
+                      implied_by.include?(source_slug)
 
-            entry['confidence'] = confidence
-            entry['implied_by'] = implied_by | [source['slug']]
-            changed = true
-          end
-        end
-        break unless changed
+        entry['confidence'] = confidence
+        entry['implied_by'] = implied_by | [source_slug]
+        true
       end
 
       expanded.values
     end
 
+    # Ids of every tag implied by the tags with +tag_ids+, directly or through
+    # a chain (as in Tag.expand), mapped to the ids among +tag_ids+ implying
+    # each of them
+    def implied_closure(tag_ids)
+      tag_ids = tag_ids.to_a.uniq
+      closure = {}
+      graph = implication_graph(&:id)
+      nodes = -> { tag_ids | closure.keys }
+      propagate_implications(graph, nodes) do |source, id|
+        origins = closure.fetch(source, [])
+        origins |= [source] if tag_ids.include?(source)
+        known = closure[id] || []
+        next false if (origins - known).empty?
+
+        closure[id] = known | origins
+        true
+      end
+      closure
+    end
+
     private
 
-    # Slug => slugs of all implied tags (parent and implications), loaded in
-    # one query
-    def implied_slugs_map
+    # Key => keys of all implied tags (parent and implications), with the key
+    # of each tag given by the block, loaded in one query
+    def implication_graph(&key)
       tags = includes(:parent, :implied_tags).to_a
-      tags.to_h { |tag| [tag.slug, tag.all_implied_tags.map(&:slug)] }
+      tags.to_h { |tag| [key.call(tag), tag.all_implied_tags.map(&key)] }
+    end
+
+    # Visit every implication in +graph+ from the current +nodes+ (a lambda,
+    # as the block may add nodes), yielding source and implied keys, until
+    # the block returns false for all of them
+    def propagate_implications(graph, nodes)
+      loop do
+        changed = false
+        nodes.call.each do |source|
+          graph.fetch(source, []).each do |target|
+            changed = true if yield(source, target)
+          end
+        end
+        break unless changed
+      end
     end
 
     def normalize_confidence(confidence)

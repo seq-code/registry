@@ -92,6 +92,8 @@ namespace :tags do
           next unless tag
 
           NameTag.find_or_create_by(name: name, tag: tag) do |nt|
+            # The implied tags are proposals of their own, from Tag.expand
+            nt.skip_implication_cascade = true
             nt.status_int  = 0  # proposed
             nt.proposed_by = 'llm'
             nt.notes       = "confidence: #{proposal['confidence']}"

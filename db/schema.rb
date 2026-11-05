@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_11_06_100000) do
+ActiveRecord::Schema.define(version: 2026_11_06_110000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -197,6 +197,7 @@ ActiveRecord::Schema.define(version: 2026_11_06_100000) do
     t.text "notes"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "pre_cascade_status_int"
     t.index ["name_id", "tag_id"], name: "index_name_tags_on_name_id_and_tag_id", unique: true
     t.index ["tag_id"], name: "index_name_tags_on_tag_id"
   end

@@ -114,6 +114,25 @@ class TagTest < ActiveSupport::TestCase
     assert_empty(tags(:geographic).all_implied_tags)
   end
 
+  test 'implied_closure maps implied tags to the input tags implying them' do
+    create_expansion_tags
+    mythological = Tag.find_by(slug: 'mythological')
+    mythonym = Tag.find_by(slug: 'mythonym')
+    # A chain: mythological implies toponym
+    mythological.implied_tags << tags(:toponym)
+
+    closure = Tag.implied_closure([mythonym.id, tags(:eponym).id])
+
+    assert_equal(
+      [mythonym.id, tags(:eponym).id].sort,
+      closure[tags(:commemorative).id].sort
+    )
+    assert_equal([mythonym.id], closure[mythological.id])
+    assert_equal([mythonym.id], closure[tags(:toponym).id])
+    assert_equal([mythonym.id], closure[tags(:geographic).id])
+    assert_nil(closure[mythonym.id])
+  end
+
   test 'a tag cannot imply itself' do
     implication = TagImplication.new(tag: tags(:eponym),
                                      implied_tag: tags(:eponym))

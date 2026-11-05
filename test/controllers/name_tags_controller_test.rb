@@ -68,17 +68,32 @@ class NameTagsControllerTest < ActionDispatch::IntegrationTest
   test 'curator applies an accepted tag' do
     sign_in(users(:curator))
 
-    assert_difference('NameTag.count', 1) do
+    # The tag and its umbrella, accepted through the implication cascade
+    assert_difference('NameTag.count', 2) do
       post name_tags_url,
            params: { name_tag: { name_id: @name.id, tag_id: tags(:eponym).id } },
            headers: { 'HTTP_REFERER' => name_url(@name) }
     end
 
-    name_tag = NameTag.last
+    name_tag = NameTag.find_by(name: @name, tag: tags(:eponym))
     assert_redirected_to name_url(@name)
     assert_predicate(name_tag, :accepted?)
     assert_equal('curator', name_tag.proposed_by)
     assert_includes(@name.reload.accepted_tags, tags(:eponym))
+
+    umbrella = NameTag.find_by(name: @name, tag: tags(:commemorative))
+    assert_predicate(umbrella, :accepted?)
+    assert_equal('curator', umbrella.proposed_by)
+  end
+
+  test 'curator removing an accepted tag reverts its cascade' do
+    sign_in(users(:curator))
+    post name_tags_url,
+         params: { name_tag: { name_id: @name.id, tag_id: tags(:eponym).id } }
+
+    assert_difference('NameTag.count', -2) do
+      delete name_tag_url(NameTag.find_by(name: @name, tag: tags(:eponym)))
+    end
   end
 
   test 'curator can explicitly propose and set proposed_by' do
@@ -91,7 +106,7 @@ class NameTagsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    name_tag = NameTag.last
+    name_tag = NameTag.find_by(name: @name, tag: tags(:eponym))
     assert_predicate(name_tag, :proposed?)
     assert_equal('llm', name_tag.proposed_by)
   end
@@ -112,7 +127,8 @@ class NameTagsControllerTest < ActionDispatch::IntegrationTest
   test 'non-curators can only propose tags under their own username' do
     sign_in(users(:contributor))
 
-    assert_difference('NameTag.count', 1) do
+    # The tag and its umbrella, proposed through the implication cascade
+    assert_difference('NameTag.count', 2) do
       post name_tags_url, params: {
         name_tag: {
           name_id: names(:draft_by_contributor).id, tag_id: tags(:eponym).id,
@@ -121,7 +137,8 @@ class NameTagsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    name_tag = NameTag.last
+    name_tag =
+      NameTag.find_by(name: names(:draft_by_contributor), tag: tags(:eponym))
     assert_predicate(name_tag, :proposed?)
     assert_equal('contributor', name_tag.proposed_by)
   end
