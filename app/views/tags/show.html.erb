@@ -33,6 +33,24 @@
       <% end %>
     </dd>
   <% end %>
+
+  <% if @implied_tags.any? %>
+    <dt><%= fa_icon('arrow-right') %> Implies</dt>
+    <dd>
+      <% @implied_tags.each do |implied| %>
+        <%= tag_badge(implied) %>
+      <% end %>
+    </dd>
+  <% end %>
+
+  <% if @implying_tags.any? %>
+    <dt><%= fa_icon('arrow-left') %> Implied by</dt>
+    <dd>
+      <% @implying_tags.each do |implying| %>
+        <%= tag_badge(implying) %>
+      <% end %>
+    </dd>
+  <% end %>
 </dl>
 
 <h2>

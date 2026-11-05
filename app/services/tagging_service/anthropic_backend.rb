@@ -29,26 +29,34 @@ class TaggingService::AnthropicBackend
 
       ## Tag definitions
 
-      Sub-tags are indented under their umbrella tag; tags with no indentation
-      and no sub-tags are standalone.
+      Sub-tags are marked with their umbrella tag, as in "toponym (under
+      geographic)"; tags without a marker are top-level.
       #{tag_definitions}
 
       ### Gender tags — assign ONLY for genus, species, or subspecies ranks
-      Assign exactly one of:
+      Assign at most one of:
       - masculine, feminine, neuter, gender-uncertain
       gender-uncertain applies when masc. and fem. forms are identical
       (e.g. most participles) or when the protologue explicitly notes
       uncertainty.
+      Endings shared between genders (e.g. -orum, -i, -um in masculine and
+      neuter second-declension forms) do not determine gender on their own.
+      Without an explicit statement in the etymology or the known gender of
+      the referenced noun, assign no gender tag.
 
       ## Rules
       - Assign ALL tags that apply; they are not mutually exclusive
-      - Always assign the umbrella tag when assigning any of its sub-tags
       - Umbrella terms can be assigned even if no children terms are
-      - Use confidence "low" whenever the tag assignment requires
-        interpretation beyond what is explicitly stated in the etymology, or
-        when the name could plausibly fit multiple categories. When confidence
-        is low, prefer omitting the tag over including it — a missed tag is
-        less harmful than a wrong one, since proposed tags are reviewed by
+      - The etymology is authoritative: when it explicitly states a gender, a
+        formation type (e.g. "arbitrary name"), or the source of a reference,
+        follow it even if the word's form suggests otherwise.
+      - Use one of three confidence levels. "high": the tag follows directly
+        from what the etymology states. "medium": the tag is reasonable but
+        relies on a conventional or borderline reading (e.g. a shape suffix
+        alone). "low": the tag requires interpretation beyond what is
+        stated, or the name could plausibly fit other categories. When
+        confidence would be low, prefer omitting the tag — a missed tag is
+        less harmful than a wrong one, since proposals are reviewed by
         curators.
 
       ## Name to tag
@@ -58,19 +66,22 @@ class TaggingService::AnthropicBackend
     PROMPT
   end
 
-  # Tag definitions from the database, with sub-tags nested under their
-  # umbrella tag and curation rules appended from +prompt_notes+
+  # Tag definitions from the database, with sub-tags nested and marked under
+  # their umbrella tag and curation rules appended from +prompt_notes+
   def tag_definitions
     tags = Tag.with_rich_text_description.order(:name).to_a
     children = tags.group_by(&:parent_id)
     children[nil].to_a.flat_map do |tag|
       [tag_definition(tag)] +
-        children[tag.id].to_a.map { |child| "  #{tag_definition(child)}" }
+        children[tag.id].to_a.map do |child|
+          "  #{tag_definition(child, parent: tag)}"
+        end
     end.join("\n")
   end
 
-  def tag_definition(tag)
-    line = "- #{tag.slug}: #{tag.description&.to_plain_text}"
+  def tag_definition(tag, parent: nil)
+    label = parent ? "#{tag.slug} (under #{parent.slug})" : tag.slug
+    line = "- #{label}: #{tag.description&.to_plain_text}"
     line += " [Note: #{tag.prompt_notes}]" if tag.prompt_notes.present?
     line
   end
@@ -129,7 +140,7 @@ class TaggingService::AnthropicBackend
             type: 'object',
             properties: {
               slug: { type: 'string', enum: Tag.order(:slug).pluck(:slug) },
-              confidence: { type: 'string', enum: %w[high low] }
+              confidence: { type: 'string', enum: Tag::CONFIDENCE_LEVELS }
             },
             required: %w[slug confidence],
             additionalProperties: false

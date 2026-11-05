@@ -2,10 +2,12 @@ class TaggingService
   class Error < StandardError
   end
 
-  # Returns Array of { slug: String, confidence: "high" | "low" }
+  # Returns Array of { 'slug' => String, 'confidence' => one of
+  # Tag::CONFIDENCE_LEVELS }, expanded with implied tags (which also carry
+  # 'implied_by' => [slugs]); see Tag.expand
   # Raises TaggingService::Error on unrecoverable failure
   def self.propose(name)
-    backend.new.propose(name)
+    Tag.expand(backend.new.propose(name))
   end
 
   def self.backend

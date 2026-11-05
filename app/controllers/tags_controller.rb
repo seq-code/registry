@@ -28,6 +28,8 @@ class TagsController < ApplicationController
     @rejected_names = @tag.name_tags.where(status_int: 2)
                           .includes(:name).order('names.name')
     @child_tags = @tag.children.order(:name)
+    @implied_tags = @tag.implied_tags.order(:name)
+    @implying_tags = @tag.implying_tags.order(:name)
   end
 
   # GET /tags/new
@@ -96,7 +98,8 @@ class TagsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def tag_params
       params.require(:tag).permit(
-        :name, :slug, :color, :parent_id, :description, :prompt_notes
+        :name, :slug, :color, :parent_id, :description, :prompt_notes,
+        implied_tag_ids: []
       )
     end
 

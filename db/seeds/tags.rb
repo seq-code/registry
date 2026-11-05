@@ -12,7 +12,7 @@ tag_seeds = [
   # Umbrellas and sub-tags
   ['geographic', nil, '#1f6f8b',
    'Name references a place or environment',
-   'Assign the umbrella tag whenever assigning any geographic sub-tag.'],
+   nil],
   ['toponym', 'geographic', '#5fa8c4',
    'Named after a real geographic place (country, region, city, river, ' \
    'lake, ocean, mountain, etc.)',
@@ -23,17 +23,11 @@ tag_seeds = [
    nil],
   ['fictional-place', 'geographic', '#5fa8c4',
    'Named after a fictional or mythological place',
-   'Also assign `mythological` whenever this tag is assigned.'],
-  ['metronym', 'geographic', '#5fa8c4',
-   'Named after a measurement, coordinate, or physical parameter (depth, ' \
-   'elevation, etc.)',
-   'Also assign `geographic`. Co-tag with `trait` when the parameter is a ' \
-   'physiological or ecological property of the organism rather than a ' \
-   'location (e.g. a temperature range for a thermophile).'],
+   nil],
 
   ['commemorative', nil, '#7b3f8c',
    'Name references a named entity',
-   'Assign the umbrella tag whenever assigning any commemorative sub-tag.'],
+   nil],
   ['eponym', 'commemorative', '#b386c0',
    'Named after a real person',
    nil],
@@ -48,24 +42,25 @@ tag_seeds = [
   ['mythonym', 'commemorative', '#b386c0',
    'Named after a deity, mythological figure, or fictional person or ' \
    'character',
-   'Also assign `mythological` whenever this tag is assigned.'],
+   nil],
 
   ['trait', nil, '#2e7d32',
    'Name describes a phenotypic, physiological, or metabolic property of ' \
    'the organism itself',
    'Do not use for properties of the environment, the isolation source, or ' \
-   'the circumstances of discovery. Assign the umbrella tag whenever ' \
-   'assigning `phenonym` or `chemonym`.'],
+   'the circumstances of discovery.'],
   ['phenonym', 'trait', '#7fbf7f',
    'Named after a phenotypic or physiological property of the organism ' \
    'itself',
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
    'etc. Do NOT use for properties of the environment, the isolation ' \
-   'source, or the circumstances of discovery. Do not assign for generic ' \
-   'morphological terms that apply to virtually all organisms in the group ' \
-   '(e.g. *monas*, *bacterium*, *microbium*, *bacillus* used generically ' \
-   'rather than to describe a specific distinguishing trait of this ' \
-   'organism). Similarly, do not assign for terms that describe the ' \
+   'source, or the circumstances of discovery. Generic suffixes that apply ' \
+   'to virtually all organisms in the group (e.g. *-bacter*, *-bacterium*, ' \
+   '*-monas*, *-microbium*, *-archaeum*) never justify this tag. Shape ' \
+   'suffixes (e.g. *-coccus*, *-spirillum*, *-vibrio*) justify it only with ' \
+   'medium confidence when they stand alone. A shape term modified by a ' \
+   'descriptive element, or a specific morphological term such as ' \
+   '*-thrix*, justifies it normally. Similarly, do not assign for terms that describe the ' \
    'organism\'s environment or ecological role rather than its own ' \
    'properties (e.g. *pelagicus* = of the open sea is `econym`, not ' \
    '`phenonym`). Do not assign for metaphorical or poetic epithets that ' \
@@ -79,7 +74,7 @@ tag_seeds = [
 
   ['formed', nil, '#a8551c',
    'Name whose construction is the defining feature',
-   'Assign the umbrella tag whenever assigning `acronym` or `arbitrary`.'],
+   nil],
   ['acronym', 'formed', '#d9955e',
    'Formed from initials or an abbreviation',
    nil],
@@ -88,11 +83,40 @@ tag_seeds = [
    'Roots may still be identifiable. Can co-occur freely with content tags ' \
    '(e.g. `chemonym`).'],
 
+  ['dimensional', nil, '#3949ab',
+   'Name references a time, number, order, or physical measure',
+   nil],
+  ['chrononym', 'dimensional', '#7986cb',
+   'Named after a time, period, season, or calendar unit',
+   'Includes geological eras, seasons, times of day, and calendar-specific ' \
+   'periods (e.g. a harvest month). Co-tag with `trait` when it describes a ' \
+   'biological activity pattern of the organism. Co-tag with `econym` and ' \
+   '`geographic` when it describes a seasonal environmental context.'],
+  ['numeronym', 'dimensional', '#7986cb',
+   'Named after a number, quantity, or order',
+   'Includes ordinal/sequential use such as order of discovery (e.g. ' \
+   '*primus*). Co-tag with `trait` when the number describes a property of ' \
+   'the organism (e.g. *triflagellatus*).'],
+  ['metronym', 'dimensional', '#7986cb',
+   'Named after a measurement, coordinate, or physical parameter (depth, ' \
+   'elevation, etc.)',
+   'Co-tag with `geographic` (and usually `econym`) when the measure is ' \
+   'locational (e.g. hadal depth in *Hadalarchaeum*). Co-tag with `trait` ' \
+   'when the parameter is a physiological or ecological property of the ' \
+   'organism.'],
+
   # Standalones
   ['mythological', nil, '#8c6d1f',
    'Cross-cutting tag for names referencing mythology or fiction',
-   'Assign whenever `fictional-place` or `mythonym` is assigned. Do not ' \
-   'assign alone.'],
+   'Added automatically when `mythonym` or `fictional-place` is assigned; ' \
+   'may also be assigned directly for other mythological references.'],
+  ['literary', nil, '#ad1457',
+   'Named in reference to a literary work',
+   'Covers quotations, characters, places, or other elements of a literary ' \
+   'work (e.g. *audaxviator*, from the Latin inscription in Jules Verne\'s ' \
+   '*Journey to the Center of the Earth*). Co-occurs with `mythonym` or ' \
+   '`fictional-place` when the reference is to a character or place from ' \
+   'that work.'],
   ['classical', nil, '#5d4037',
    'Epithet is a direct word from a dormant scholarly language used ' \
    'largely unmodified',
@@ -104,18 +128,6 @@ tag_seeds = [
    'with connecting vowels, -fer/-vorus/-philus/-tropha suffixes on ' \
    'non-classical stems, or any term not found in classical Latin or ' \
    'Ancient Greek dictionaries.'],
-  ['chrononym', nil, '#6d4c41',
-   'Named after a time, period, season, or calendar unit',
-   'Includes geological eras, seasons, times of day, and calendar-specific ' \
-   'periods (e.g. a harvest month). Co-tag with `trait` when it describes a ' \
-   'biological activity pattern of the organism. Co-tag with `econym` and ' \
-   '`geographic` when it describes a seasonal environmental context. Assign ' \
-   'no umbrella otherwise.'],
-  ['numeronym', nil, '#455a64',
-   'Named after a number, quantity, or order',
-   'Includes ordinal/sequential use such as order of discovery (e.g. ' \
-   '*primus*). Co-tag with `trait` when the number describes a property of ' \
-   'the organism (e.g. *triflagellatus*). Assign no umbrella otherwise.'],
   ['masculine', nil, '#6c757d',
    'Grammatically masculine',
    'Assign only for genus, species, or subspecies ranks. Assign only when ' \
@@ -133,7 +145,16 @@ tag_seeds = [
    'Use when masc. and fem. forms are identical (e.g. most participles) or ' \
    'when the protologue explicitly notes uncertainty. Do not use when the ' \
    'gender is determinable in principle but not from the etymology as ' \
-   'written — in that case assign no gender tag.']
+   'written — in that case assign no gender tag. Do not use when the ' \
+   'etymology explicitly states the gender; an explicit statement is ' \
+   'authoritative.']
+]
+
+# Tags added automatically whenever another tag is proposed (beyond the
+# tag's own umbrella), as [tag slug, implied tag slug]
+tag_implication_seeds = [
+  %w[mythonym mythological],
+  %w[fictional-place mythological]
 ]
 
 tag_seeds.each do |slug, parent_slug, color, description, prompt_notes|
@@ -146,4 +167,11 @@ tag_seeds.each do |slug, parent_slug, color, description, prompt_notes|
   tag.save!
 end
 
-puts "Seeded #{tag_seeds.size} tags"
+tag_implication_seeds.each do |slug, implied_slug|
+  TagImplication.find_or_create_by!(
+    tag: Tag.find_by!(slug: slug), implied_tag: Tag.find_by!(slug: implied_slug)
+  )
+end
+
+puts "Seeded #{tag_seeds.size} tags and " \
+     "#{tag_implication_seeds.size} tag implications"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_11_04_100000) do
+ActiveRecord::Schema.define(version: 2026_11_05_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -513,6 +513,15 @@ ActiveRecord::Schema.define(version: 2026_11_04_100000) do
     t.index ["name"], name: "index_subjects_on_name", unique: true
   end
 
+  create_table "tag_implications", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.bigint "implied_tag_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["implied_tag_id"], name: "index_tag_implications_on_implied_tag_id"
+    t.index ["tag_id", "implied_tag_id"], name: "index_tag_implications_on_tag_id_and_implied_tag_id", unique: true
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "name"
     t.string "color"
@@ -641,6 +650,8 @@ ActiveRecord::Schema.define(version: 2026_11_04_100000) do
   add_foreign_key "registers", "publications"
   add_foreign_key "registers", "users"
   add_foreign_key "reports", "users"
+  add_foreign_key "tag_implications", "tags"
+  add_foreign_key "tag_implications", "tags", column: "implied_tag_id"
   add_foreign_key "tags", "tags", column: "parent_id"
   add_foreign_key "tutorials", "users"
   add_foreign_key "wikispecies_credentials", "users"

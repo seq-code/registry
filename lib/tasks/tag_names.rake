@@ -10,6 +10,10 @@ namespace :tags do
       DRY_RUN=1      print proposals without writing to the database
       RANK=genus     only process names of this rank (genus, species, or
                      subspecies)
+      MIN_CONFIDENCE=medium
+                     only keep proposals at or above this confidence (high,
+                     medium, or low; default: low), applied after implied
+                     tags are added
   DESC
   task propose: :environment do
     dry_run = ENV['DRY_RUN'] == '1'
@@ -20,6 +24,11 @@ namespace :tags do
         abort "RANK must be one of: #{ranks.join(', ')}"
       end
       ranks = [ENV['RANK']]
+    end
+    levels = Tag::CONFIDENCE_LEVELS
+    min_confidence = ENV['MIN_CONFIDENCE'].presence || levels.first
+    unless levels.include?(min_confidence)
+      abort "MIN_CONFIDENCE must be one of: #{levels.reverse.join(', ')}"
     end
 
     scope = Name
@@ -39,7 +48,10 @@ namespace :tags do
     puts
 
     scope.find_each do |name|
-      proposals = TaggingService.propose(name)
+      proposals =
+        TaggingService.propose(name).select do |p|
+          levels.index(p['confidence']) >= levels.index(min_confidence)
+        end
 
       if proposals.empty?
         puts "  #{name.name} (#{name.rank}): no tags proposed"
@@ -49,7 +61,10 @@ namespace :tags do
 
       slugs =
         proposals
-          .map { |p| "#{p['slug']}(#{p['confidence'].to_s[0]})" }
+          .map do |p|
+            implied = p['implied_by'] ? "←#{p['implied_by'].join('+')}" : ''
+            "#{p['slug']}(#{p['confidence'][0]}#{implied})"
+          end
           .join(', ')
       puts "  #{name.name} (#{name.rank}): #{slugs}"
 
@@ -62,6 +77,9 @@ namespace :tags do
             nt.status_int  = 0  # proposed
             nt.proposed_by = 'llm'
             nt.notes       = "confidence: #{proposal['confidence']}"
+            if proposal['implied_by']
+              nt.notes += "; implied by: #{proposal['implied_by'].join(', ')}"
+            end
           end
         end
       end

@@ -26,6 +26,14 @@
           :prompt_notes, as: :text,
           label: 'Prompt notes (internal, not shown in UI)'
         ) %>
+    <%= f.input(
+          :implied_tag_ids,
+          label: 'Implies',
+          collection: Tag.where.not(id: @tag.id).order(:name),
+          input_html: { multiple: true },
+          hint: 'Tags added automatically whenever this tag is proposed ' \
+                '(the umbrella tag is always added)'
+        ) %>
   </div>
 
   <div class="form-actions">
