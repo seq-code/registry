@@ -38,6 +38,14 @@
         <%= render(partial: 'index_row', locals: { tag: tag, indent: true }) %>
       <% end %>
     <% end %>
+    <% if @gender_tags.any? %>
+      <tr class="table-light">
+        <th colspan="<%= current_curator? ? 4 : 3 %>">Grammatical gender</th>
+      </tr>
+      <% @gender_tags.each do |tag| %>
+        <%= render(partial: 'index_row', locals: { tag: tag, indent: true }) %>
+      <% end %>
+    <% end %>
   </tbody>
 </table>
 

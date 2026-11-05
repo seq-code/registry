@@ -2,6 +2,9 @@ class Tag < ApplicationRecord
   # Confidence levels reported for tag proposals, from lowest to highest
   CONFIDENCE_LEVELS = %w[low medium high].freeze
 
+  # Stand-alone tags for grammatical gender
+  GENDER_SLUGS = %w[masculine feminine neuter gender-uncertain].freeze
+
   has_rich_text(:description)
 
   # Self-referential parent/children
@@ -43,6 +46,13 @@ class Tag < ApplicationRecord
   class << self
     def top_level
       where(parent_id: nil)
+    end
+
+    # Downcased +basis+ without surrounding whitespace, hyphens, or
+    # punctuation (e.g., "-Bacter" → "bacter")
+    def normalize_basis(basis)
+      edges = /\A[[:punct:][:space:]]+|[[:punct:][:space:]]+\z/
+      basis.to_s.downcase.gsub(edges, '')
     end
 
     # Expand tag +proposals+ (Array of Hash with String keys 'slug' and
@@ -108,6 +118,13 @@ class Tag < ApplicationRecord
     end
   end
 
+  # Terms in +excluded_bases+ (one per line), normalized as with
+  # Tag.normalize_basis
+  def excluded_bases_list
+    excluded_bases.to_s.lines.map { |term| Tag.normalize_basis(term) }
+                  .reject(&:empty?).uniq
+  end
+
   # Tags added automatically whenever this tag is proposed: the parent (if
   # any) and the explicitly implied tags
   def all_implied_tags
@@ -121,6 +138,10 @@ class Tag < ApplicationRecord
 
   def top_level?
     parent_id.nil?
+  end
+
+  def gender?
+    GENDER_SLUGS.include?(slug)
   end
 
   private

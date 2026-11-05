@@ -12,7 +12,8 @@ tag_seeds = [
   # Umbrellas and sub-tags
   ['geographic', nil, '#1f6f8b',
    'Name references a place or environment',
-   nil],
+   'Assign alone, without any sub-tag, for broad regions defined by ' \
+   'position, such as the poles or a hemisphere.'],
   ['toponym', 'geographic', '#5fa8c4',
    'Named after a real geographic place (country, region, city, river, ' \
    'lake, ocean, mountain, etc.)',
@@ -20,7 +21,11 @@ tag_seeds = [
    'assign when the etymology mentions a place merely as context — e.g. ' \
    'the range of a referenced organism (\'a bird endemic to Australia\'), ' \
    'or a site mentioned in passing — unless the name is formed from that ' \
-   'place.'],
+   'place. Broad regions defined by position, such as the poles or a ' \
+   'hemisphere (e.g. *polaris*, *meridionalis*), are `geographic` but not ' \
+   '`toponym`. A habitat type (e.g. a mine, a swamp) is `econym`, not ' \
+   '`toponym`. Named regions such as Antarctica (e.g. *antarcticus*) ' \
+   'remain `toponym`.'],
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
    '<i>lacustris</i>, <i>thermophilus</i>)',
@@ -39,7 +44,10 @@ tag_seeds = [
    'Named after another organism or taxon',
    'The referenced entity must be another organism or taxon, not a ' \
    'substrate or metabolic property — use `phenonym` or `chemonym` for ' \
-   'those.'],
+   'those. The name counts as an organonym even when phrased as \'from the ' \
+   'land of X\' or \'from the X lands\', where X is an organism (e.g. ' \
+   '*Bilamarchaeum*, *Burarchaeum*); any indirect place reference is ' \
+   'secondary.'],
   ['institutonym', 'commemorative', '#b386c0',
    'Named after an institution, project, or organization',
    'When the institution is referenced through its acronym (e.g. ANSTO, ' \
@@ -48,6 +56,10 @@ tag_seeds = [
    'Named after a deity, mythological figure, or fictional person or ' \
    'character',
    nil],
+  ['ethnonym', 'commemorative', '#b386c0',
+   'Named after a people, ethnic group, clan, or community',
+   'Not for individual persons (use `eponym`). A place mentioned only as ' \
+   'where the group lives or lived does not by itself justify `toponym`.'],
 
   ['trait', nil, '#2e7d32',
    'Name describes a phenotypic, physiological, or metabolic property of ' \
@@ -60,10 +72,11 @@ tag_seeds = [
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
    'etc. Do NOT use for properties of the environment, the isolation ' \
    'source, or the circumstances of discovery. Generic suffixes denoting a ' \
-   'microorganism in general (e.g. *-bacter*, *-bacterium*, *-monas*, ' \
-   '*-microbium*, *-archaeum*) never justify this tag at any confidence ' \
-   'level. Shape suffixes (e.g. *-coccus*, *-spirillum*, *-vibrio*) justify ' \
-   'it only with medium confidence when they stand alone. A shape term ' \
+   'microorganism in general (e.g. *-bacter*, *-bacterium*, *-bacillus*, ' \
+   '*-monas*, *-microbium*, *-archaeum*) never justify this tag at any ' \
+   'confidence level. Shape suffixes (e.g. *-coccus*, *-spirillum*, ' \
+   '*-vibrio*) justify it only with medium confidence when they stand ' \
+   'alone. A shape term ' \
    'modified by a descriptive element, or a specific morphological term ' \
    'such as *-thrix*, justifies it normally. Similarly, do not assign for ' \
    'terms that describe the organism\'s environment or ecological role ' \
@@ -125,6 +138,18 @@ tag_seeds = [
    '*Journey to the Center of the Earth*). Co-occurs with `mythonym` or ' \
    '`fictional-place` when the reference is to a character or place from ' \
    'that work.'],
+  ['vernacular', nil, '#f9a825',
+   'Name derived from a word of a living or non-classical language',
+   'Applies to vocabulary (nouns, adjectives, verbs) taken from a ' \
+   'non-classical language (e.g. Dharawal *gugara*, kookaburra; *bilama*, ' \
+   'freshwater turtle). Not for personal names or place names that are ' \
+   'merely Latinized. Can co-occur with `indigenous` and with content tags.'],
+  ['indigenous', nil, '#d84315',
+   'Name derived from a word or name of an Indigenous language or culture',
+   'Covers vocabulary, clan or group names, and mythological figures from ' \
+   'Indigenous languages and cultures (e.g. Dharawal *buru*; the ' \
+   'Norongarragal clan; Tiddalik). Can co-occur with `vernacular`, ' \
+   '`ethnonym`, `mythonym`, and content tags.'],
   ['classical', nil, '#5d4037',
    'Epithet is a direct word from a dormant scholarly language used ' \
    'largely unmodified',
@@ -158,6 +183,15 @@ tag_seeds = [
    'authoritative.']
 ]
 
+# Terms that never justify a tag on their own: proposals of the tag based
+# only on one of them are dropped (see TaggingService.propose). Tags not
+# listed here have no exclusions
+generic_bases = %w[bacter bacterium bacillus monas microbium archaeum]
+tag_excluded_bases = {
+  'phenonym' => generic_bases,
+  'trait' => generic_bases
+}
+
 # Tags added automatically whenever another tag is proposed (beyond the
 # tag's own umbrella), as [tag slug, implied tag slug]
 tag_implication_seeds = [
@@ -172,6 +206,7 @@ tag_seeds.each do |slug, parent_slug, color, description, prompt_notes|
   tag.parent = parent_slug && Tag.find_by!(slug: parent_slug)
   tag.description = description
   tag.prompt_notes = prompt_notes
+  tag.excluded_bases = tag_excluded_bases[slug]&.join("\n")
   tag.save!
 end
 

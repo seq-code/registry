@@ -12,6 +12,8 @@ class TagsController < ApplicationController
       Tag.top_level.with_rich_text_description
          .includes(children: :rich_text_description)
          .order(:name).partition(&:umbrella?)
+    @gender_tags, @standalone_tags = @standalone_tags.partition(&:gender?)
+    @gender_tags.sort_by! { |tag| Tag::GENDER_SLUGS.index(tag.slug) }
     @name_counts = visible_names(NameTag.where(status_int: 1).joins(:name))
                      .group(:tag_id).count
   end
@@ -99,7 +101,7 @@ class TagsController < ApplicationController
     def tag_params
       params.require(:tag).permit(
         :name, :slug, :color, :parent_id, :description, :prompt_notes,
-        implied_tag_ids: []
+        :excluded_bases, implied_tag_ids: []
       )
     end
 

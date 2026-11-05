@@ -4,10 +4,22 @@ class TaggingService
 
   # Returns Array of { 'slug' => String, 'confidence' => one of
   # Tag::CONFIDENCE_LEVELS }, expanded with implied tags (which also carry
-  # 'implied_by' => [slugs]); see Tag.expand
+  # 'implied_by' => [slugs]); see Tag.expand. Proposals based only on one of
+  # their tag's excluded bases are dropped before expansion, so they don't
+  # imply other tags either
   # Raises TaggingService::Error on unrecoverable failure
   def self.propose(name)
-    Tag.expand(backend.new.propose(name))
+    Tag.expand(drop_excluded_bases(backend.new.propose(name)))
+  end
+
+  def self.drop_excluded_bases(proposals)
+    excluded =
+      Tag.where.not(excluded_bases: [nil, ''])
+         .to_h { |tag| [tag.slug, tag.excluded_bases_list] }
+    proposals.reject do |proposal|
+      excluded.fetch(proposal['slug'], [])
+              .include?(Tag.normalize_basis(proposal['basis']))
+    end
   end
 
   def self.backend

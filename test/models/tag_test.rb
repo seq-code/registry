@@ -123,17 +123,21 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test 'expand adds the parent of a sub-tag' do
-    result = expanded([{ 'slug' => 'eponym', 'confidence' => 'high' }])
+    result = expanded([
+      { 'slug' => 'eponym', 'confidence' => 'high', 'basis' => 'Gauci' }
+    ])
 
     assert_equal(%w[eponym commemorative], result.keys)
+    # Implied only: no basis
     assert_equal(
       { 'slug' => 'commemorative', 'confidence' => 'high',
         'direct' => false, 'implied_by' => %w[eponym] },
       result['commemorative']
     )
-    # Direct only
+    # Direct only: keeps its basis
     assert_equal(
-      { 'slug' => 'eponym', 'confidence' => 'high', 'direct' => true },
+      { 'slug' => 'eponym', 'confidence' => 'high', 'basis' => 'Gauci',
+        'direct' => true },
       result['eponym']
     )
   end
@@ -151,11 +155,12 @@ class TagTest < ActiveSupport::TestCase
 
   test 'expand raises an umbrella to the confidence of its child' do
     result = expanded([
-      { 'slug' => 'commemorative', 'confidence' => 'low' },
-      { 'slug' => 'eponym', 'confidence' => 'high' }
+      { 'slug' => 'commemorative', 'confidence' => 'low', 'basis' => 'Gauci' },
+      { 'slug' => 'eponym', 'confidence' => 'high', 'basis' => 'Gauci' }
     ])
 
     assert_equal('high', result['commemorative']['confidence'])
+    assert_equal('Gauci', result['commemorative']['basis'])
     # Direct and also implied
     assert_equal(true, result['commemorative']['direct'])
     assert_equal(%w[eponym], result['commemorative']['implied_by'])

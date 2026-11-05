@@ -1,0 +1,64 @@
+require 'test_helper'
+require 'minitest/mock'
+
+class TaggingServiceTest < ActiveSupport::TestCase
+  setup do
+    generic = "bacter\nbacterium\nmonas\n"
+    trait = Tag.create!(name: 'trait', slug: 'trait', color: '#000000',
+                        excluded_bases: generic)
+    Tag.create!(name: 'phenonym', slug: 'phenonym', color: '#000000',
+                parent: trait, excluded_bases: generic)
+    Tag.create!(name: 'chemonym', slug: 'chemonym', color: '#000000',
+                parent: trait)
+  end
+
+  # Run TaggingService.propose with a backend returning +proposals+, so no
+  # API call is made
+  def propose_with(*proposals)
+    backend = Class.new do
+      define_method(:propose) { |_name| proposals }
+    end
+    TaggingService.stub(:backend, backend) do
+      TaggingService.propose(names(:bacillus)).map { |p| p['slug'] }
+    end
+  end
+
+  test 'excluded_bases_list normalizes the terms' do
+    tag = Tag.new(excluded_bases: " -Bacter\n\nMonas.\r\nbacter\n")
+
+    assert_equal(%w[bacter monas], tag.excluded_bases_list)
+  end
+
+  test 'propose drops proposals based on an excluded basis' do
+    slugs = propose_with(
+      { 'slug' => 'phenonym', 'confidence' => 'high', 'basis' => 'bacter' }
+    )
+
+    # Dropped before expansion, so no trait is implied either
+    assert_empty(slugs)
+  end
+
+  test 'propose normalizes the basis before matching exclusions' do
+    slugs = propose_with(
+      { 'slug' => 'phenonym', 'confidence' => 'high', 'basis' => '-Bacter' }
+    )
+
+    assert_empty(slugs)
+  end
+
+  test 'propose keeps proposals with a specific basis' do
+    slugs = propose_with(
+      { 'slug' => 'phenonym', 'confidence' => 'high', 'basis' => 'thrix' }
+    )
+
+    assert_equal(%w[phenonym trait], slugs)
+  end
+
+  test 'propose keeps proposals of tags without exclusions' do
+    slugs = propose_with(
+      { 'slug' => 'chemonym', 'confidence' => 'high', 'basis' => 'bacter' }
+    )
+
+    assert_equal(%w[chemonym trait], slugs)
+  end
+end

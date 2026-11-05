@@ -17,18 +17,46 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'index groups stand-alone tags after the umbrellas' do
+    Tag.create!(name: 'classical', slug: 'classical', color: '#5d4037')
     get tags_url
 
     rows = css_select('tbody tr').map { |tr| tr.text.squish }
     heading = rows.index('Stand-alone')
     assert_not_nil(heading)
     assert_operator(
-      rows.index { |r| r.start_with?('masculine') }, :>, heading
+      rows.index { |r| r.start_with?('classical') }, :>, heading
     )
     assert_operator(
       rows.index { |r| r.start_with?('toponym') }, :<, heading
     )
-    assert_select 'td.pl-5 a', text: 'masculine'
+    assert_select 'td.pl-5 a', text: 'classical'
+  end
+
+  test 'index groups gender tags after the stand-alone tags' do
+    Tag.create!(name: 'classical', slug: 'classical', color: '#5d4037')
+    Tag.create!(name: 'neuter', slug: 'neuter', color: '#6c757d')
+    get tags_url
+
+    rows = css_select('tbody tr').map { |tr| tr.text.squish }
+    heading = rows.index('Grammatical gender')
+    assert_not_nil(heading)
+    assert_operator(rows.index('Stand-alone'), :<, heading)
+    assert_operator(
+      rows.index { |r| r.start_with?('classical') }, :<, heading
+    )
+    gender = rows[(heading + 1)..].map { |r| r.split.first }
+    assert_equal(%w[masculine neuter], gender)
+  end
+
+  test 'index omits the stand-alone heading when only gender tags remain' do
+    get tags_url
+
+    rows = css_select('tbody tr').map { |tr| tr.text.squish }
+    assert_nil(rows.index('Stand-alone'))
+    assert_operator(
+      rows.index { |r| r.start_with?('masculine') }, :>,
+      rows.index('Grammatical gender')
+    )
   end
 
   test 'index shows descriptions instead of slugs' do

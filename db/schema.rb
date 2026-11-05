@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_11_05_100000) do
+ActiveRecord::Schema.define(version: 2026_11_05_110000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -530,6 +530,7 @@ ActiveRecord::Schema.define(version: 2026_11_05_100000) do
     t.string "slug", null: false
     t.bigint "parent_id"
     t.text "prompt_notes"
+    t.text "excluded_bases"
     t.index ["name"], name: "index_tags_on_name", unique: true
     t.index ["parent_id"], name: "index_tags_on_parent_id"
     t.index ["slug"], name: "index_tags_on_slug", unique: true

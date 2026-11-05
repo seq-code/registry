@@ -27,6 +27,11 @@
           label: 'Prompt notes (internal, not shown in UI)'
         ) %>
     <%= f.input(
+          :excluded_bases, as: :text,
+          label: 'Excluded bases (one per line; proposals of this tag ' \
+                 'based only on one of these terms are dropped)'
+        ) %>
+    <%= f.input(
           :implied_tag_ids,
           label: 'Implies',
           collection: Tag.where.not(id: @tag.id).order(:name),

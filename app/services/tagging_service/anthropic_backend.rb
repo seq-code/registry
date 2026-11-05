@@ -68,6 +68,11 @@ class TaggingService::AnthropicBackend
         confidence would be low, prefer omitting the tag — a missed tag is
         less harmful than a wrong one, since proposals are reviewed by
         curators.
+      - For every tag, set `basis` to the specific root, word, or name in the
+        etymology on which the tag is based, written as it appears in the
+        etymology (e.g. `Svalbard`, `telma`, `Vincent Gauci`, `ANSTO`). Use
+        the root or word itself, not its gloss or grammar. If a tag has no
+        specific basis in the etymology, do not propose it.
 
       ## Name to tag
       Name: #{name.name}
@@ -150,9 +155,10 @@ class TaggingService::AnthropicBackend
             type: 'object',
             properties: {
               slug: { type: 'string', enum: Tag.order(:slug).pluck(:slug) },
-              confidence: { type: 'string', enum: Tag::CONFIDENCE_LEVELS }
+              confidence: { type: 'string', enum: Tag::CONFIDENCE_LEVELS },
+              basis: { type: 'string' }
             },
-            required: %w[slug confidence],
+            required: %w[slug confidence basis],
             additionalProperties: false
           }
         }
