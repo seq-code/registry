@@ -4,9 +4,14 @@ namespace :tags do
     Only processes genera, species, and subspecies with no existing NameTag
     (of any status).
     Creates NameTag records with status: proposed, proposed_by: "llm".
+    Names are processed in order of ID, so OFFSET/LIMIT windows are
+    reproducible. Note that names with any NameTag are excluded, so a run
+    without DRY_RUN shifts later offsets: windows are only stable between dry
+    runs or when no proposals have been written.
 
     Options (set as ENV vars):
       LIMIT=50       process at most N names (default: all)
+      OFFSET=100     skip the first N names before applying LIMIT (default: 0)
       DRY_RUN=1      print proposals without writing to the database
       RANK=genus     only process names of this rank (genus, species, or
                      subspecies)
@@ -18,6 +23,8 @@ namespace :tags do
   task propose: :environment do
     dry_run = ENV['DRY_RUN'] == '1'
     limit   = ENV['LIMIT']&.to_i
+    offset  = ENV['OFFSET'].to_i
+    abort 'OFFSET must not be negative' if offset.negative?
     ranks   = %w[genus species subspecies] # only these ranks are tagged
     if ENV['RANK'].present?
       unless ranks.include?(ENV['RANK'])
@@ -36,9 +43,14 @@ namespace :tags do
       .where(name_tags: { id: nil })
       .where(status: 15) # Valid (SeqCode): validly published only
       .where(rank: ranks)
+      .order('names.id')
+      .offset(offset)
     scope = scope.limit(limit) if limit&.positive?
+    # +find_each+ imposes its own ordering and ignores offset/limit, so
+    # select the window's IDs first and iterate over those
+    ids = scope.pluck('names.id')
 
-    total    = scope.count
+    total    = ids.size
     proposed = 0
     skipped  = 0
     failed   = 0
@@ -47,7 +59,7 @@ namespace :tags do
     puts "Backend: #{Rails.configuration.tagging_backend}"
     puts
 
-    scope.find_each do |name|
+    Name.where(id: ids).find_each do |name|
       proposals =
         TaggingService.propose(name).select do |p|
           levels.index(p['confidence']) >= levels.index(min_confidence)
