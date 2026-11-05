@@ -53,6 +53,12 @@ class NameTagTest < ActiveSupport::TestCase
 
     name_tag.notes = 'confidence: low'
     assert_equal('low', name_tag.confidence)
+
+    name_tag.notes = 'confidence: medium; implied by: eponym'
+    assert_equal('medium', name_tag.confidence)
+
+    name_tag.notes = 'confidence: high; also implied by: econym, toponym'
+    assert_equal('high', name_tag.confidence)
   end
 
   test 'destroying a name removes its name tags' do

@@ -128,10 +128,14 @@ class TagTest < ActiveSupport::TestCase
     assert_equal(%w[eponym commemorative], result.keys)
     assert_equal(
       { 'slug' => 'commemorative', 'confidence' => 'high',
-        'implied_by' => %w[eponym] },
+        'direct' => false, 'implied_by' => %w[eponym] },
       result['commemorative']
     )
-    assert_nil(result['eponym']['implied_by'])
+    # Direct only
+    assert_equal(
+      { 'slug' => 'eponym', 'confidence' => 'high', 'direct' => true },
+      result['eponym']
+    )
   end
 
   test 'expand adds both the parent and the implied tags of mythonym' do
@@ -142,6 +146,7 @@ class TagTest < ActiveSupport::TestCase
     assert_equal('medium', result['commemorative']['confidence'])
     assert_equal('medium', result['mythological']['confidence'])
     assert_equal(%w[mythonym], result['mythological']['implied_by'])
+    assert_equal(false, result['mythological']['direct'])
   end
 
   test 'expand raises an umbrella to the confidence of its child' do
@@ -151,6 +156,8 @@ class TagTest < ActiveSupport::TestCase
     ])
 
     assert_equal('high', result['commemorative']['confidence'])
+    # Direct and also implied
+    assert_equal(true, result['commemorative']['direct'])
     assert_equal(%w[eponym], result['commemorative']['implied_by'])
   end
 

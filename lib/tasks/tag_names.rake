@@ -74,7 +74,11 @@ namespace :tags do
       slugs =
         proposals
           .map do |p|
-            implied = p['implied_by'] ? "←#{p['implied_by'].join('+')}" : ''
+            implied =
+              if p['implied_by'].blank? then ''
+              elsif p['direct'] then "; also ←#{p['implied_by'].join('+')}"
+              else "←#{p['implied_by'].join('+')}"
+              end
             "#{p['slug']}(#{p['confidence'][0]}#{implied})"
           end
           .join(', ')
@@ -89,8 +93,9 @@ namespace :tags do
             nt.status_int  = 0  # proposed
             nt.proposed_by = 'llm'
             nt.notes       = "confidence: #{proposal['confidence']}"
-            if proposal['implied_by']
-              nt.notes += "; implied by: #{proposal['implied_by'].join(', ')}"
+            if proposal['implied_by'].present?
+              nt.notes += proposal['direct'] ? '; also' : ';'
+              nt.notes += " implied by: #{proposal['implied_by'].join(', ')}"
             end
           end
         end

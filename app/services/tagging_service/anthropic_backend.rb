@@ -47,6 +47,16 @@ class TaggingService::AnthropicBackend
       ## Rules
       - Assign ALL tags that apply; they are not mutually exclusive
       - Umbrella terms can be assigned even if no children terms are
+      - Assign an umbrella without any of its sub-tags only when the name
+        clearly fits the umbrella but none of its sub-tags applies. For
+        example, do not assign `commemorative` unless the name honours a
+        person, organism, institution, or mythological or fictional figure.
+      - Generic suffixes that denote a microorganism in general (e.g.
+        -bacter, -bacterium, -monas, -microbium, -archaeum) never justify
+        `phenonym` or `trait`, at any confidence level — not even medium or
+        low. Likewise, a root describing where or how the organism lives
+        (e.g. vivens, living, in a habitat compound) is `econym`, not
+        `phenonym`.
       - The etymology is authoritative: when it explicitly states a gender, a
         formation type (e.g. "arbitrary name"), or the source of a reference,
         follow it even if the word's form suggests otherwise.

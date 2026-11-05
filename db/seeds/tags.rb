@@ -16,7 +16,11 @@ tag_seeds = [
   ['toponym', 'geographic', '#5fa8c4',
    'Named after a real geographic place (country, region, city, river, ' \
    'lake, ocean, mountain, etc.)',
-   nil],
+   'Assign only when the name itself is derived from the place. Do not ' \
+   'assign when the etymology mentions a place merely as context — e.g. ' \
+   'the range of a referenced organism (\'a bird endemic to Australia\'), ' \
+   'or a site mentioned in passing — unless the name is formed from that ' \
+   'place.'],
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
    '<i>lacustris</i>, <i>thermophilus</i>)',
@@ -38,7 +42,8 @@ tag_seeds = [
    'those.'],
   ['institutonym', 'commemorative', '#b386c0',
    'Named after an institution, project, or organization',
-   nil],
+   'When the institution is referenced through its acronym (e.g. ANSTO, ' \
+   'CAS), also assign `acronym`.'],
   ['mythonym', 'commemorative', '#b386c0',
    'Named after a deity, mythological figure, or fictional person or ' \
    'character',
@@ -54,19 +59,22 @@ tag_seeds = [
    'itself',
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
    'etc. Do NOT use for properties of the environment, the isolation ' \
-   'source, or the circumstances of discovery. Generic suffixes that apply ' \
-   'to virtually all organisms in the group (e.g. *-bacter*, *-bacterium*, ' \
-   '*-monas*, *-microbium*, *-archaeum*) never justify this tag. Shape ' \
-   'suffixes (e.g. *-coccus*, *-spirillum*, *-vibrio*) justify it only with ' \
-   'medium confidence when they stand alone. A shape term modified by a ' \
-   'descriptive element, or a specific morphological term such as ' \
-   '*-thrix*, justifies it normally. Similarly, do not assign for terms that describe the ' \
-   'organism\'s environment or ecological role rather than its own ' \
-   'properties (e.g. *pelagicus* = of the open sea is `econym`, not ' \
-   '`phenonym`). Do not assign for metaphorical or poetic epithets that ' \
-   'describe the circumstances of discovery or a narrative about the ' \
-   'organism rather than its measurable properties (e.g. *audaxviator* = ' \
-   'bold traveler).'],
+   'source, or the circumstances of discovery. Generic suffixes denoting a ' \
+   'microorganism in general (e.g. *-bacter*, *-bacterium*, *-monas*, ' \
+   '*-microbium*, *-archaeum*) never justify this tag at any confidence ' \
+   'level. Shape suffixes (e.g. *-coccus*, *-spirillum*, *-vibrio*) justify ' \
+   'it only with medium confidence when they stand alone. A shape term ' \
+   'modified by a descriptive element, or a specific morphological term ' \
+   'such as *-thrix*, justifies it normally. Similarly, do not assign for ' \
+   'terms that describe the organism\'s environment or ecological role ' \
+   'rather than its own properties (e.g. *pelagicus* = of the open sea is ' \
+   '`econym`, not `phenonym`). Do not assign for metaphorical or poetic ' \
+   'epithets that describe the circumstances of discovery or a narrative ' \
+   'about the organism rather than its measurable properties (e.g. ' \
+   '*audaxviator* = bold traveler). Terms describing abundance, dominance, ' \
+   'commonness, or distribution (e.g. *commune*, *subdominans*, ' \
+   '*ubiqueversans*) are not organismal traits; do not assign this tag or ' \
+   '`trait` for them.'],
   ['chemonym', 'trait', '#7fbf7f',
    'Named after a chemical compound, element, or metabolic property',
    'The chemical or metabolic property must be of the organism itself, not ' \

@@ -51,14 +51,17 @@ class Tag < ApplicationRecord
     # takes the highest confidence among the proposals implying it, which
     # can raise (but never lower) the confidence of a tag that was also
     # proposed directly. Implied entries record their provenance as
-    # 'implied_by' => [slugs]. Unknown confidences are normalized to 'low'
+    # 'implied_by' => [slugs]. Every entry carries 'direct' => true if it was
+    # proposed by the backend (even if also implied), false otherwise.
+    # Unknown confidences are normalized to 'low'
     def expand(proposals)
       implied = implied_slugs_map
       expanded = {}
       proposals.each do |proposal|
         slug = proposal['slug']
         confidence = normalize_confidence(proposal['confidence'])
-        entry = expanded[slug] ||= proposal.merge('confidence' => confidence)
+        entry = expanded[slug] ||=
+          proposal.merge('confidence' => confidence, 'direct' => true)
         entry['confidence'] = max_confidence(entry['confidence'], confidence)
       end
 
@@ -66,8 +69,10 @@ class Tag < ApplicationRecord
         changed = false
         expanded.values.each do |source|
           implied.fetch(source['slug'], []).each do |slug|
-            entry = expanded[slug] ||=
-              { 'slug' => slug, 'confidence' => source['confidence'] }
+            entry = expanded[slug] ||= {
+              'slug' => slug, 'confidence' => source['confidence'],
+              'direct' => false
+            }
             confidence =
               max_confidence(entry['confidence'], source['confidence'])
             implied_by = entry['implied_by'] || []
