@@ -33,10 +33,17 @@ module Versioned
 
   private
 
+  # Every attribute's current value, e.g. { 'rank' => 'species', ... }.
+  # Create and delete versions record this full snapshot as the after or
+  # before side of each pair.
   def versioned_attributes
     attributes.transform_values { |value| versioned_value(value) }
   end
 
+  # The attributes changed by the save that just happened, as Rails'
+  # saved_changes reports them: { 'rank' => ['genus', 'species'] }.
+  # Update versions start from this. Like versioned_attributes, it converts
+  # values that cannot be stored in the changeset as they are.
   def versioned_saved_changes
     saved_changes.transform_values { |values| values.map { |value| versioned_value(value) } }
   end
