@@ -1,4 +1,7 @@
 class Placement < ApplicationRecord
+  include Versioned
+  versioned_owner(:name)
+
   belongs_to(:name)
   belongs_to(
     :parent, optional: true, class_name: 'Name', foreign_key: 'parent_id'

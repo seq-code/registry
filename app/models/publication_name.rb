@@ -1,4 +1,8 @@
 class PublicationName < ApplicationRecord
+  include Versioned
+  versioned_owner(:name)
+  always_versioned(:publication_id)
+
   belongs_to(:publication)
   belongs_to(:name)
 

@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include PageHelper
 
   before_action(:check_api!)
+  before_action { Current.user = current_user }
   before_action(:store_user_location!, if: :storable_location?)
 
   rescue_from ActionController::InvalidAuthenticityToken do |exception|
