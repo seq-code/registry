@@ -1,13 +1,23 @@
 module Names::HistoriesHelper
+  include DiffHelper
+
   # Render a recorded [before, after] pair as two display values.
   def history_values(changes, attribute:, record_type: 'Name')
-    # Some name attributes need domain-specific formatting; everything else,
-    # on any record type, is rendered generically from its model.
-    values = history_name_values(changes, attribute) if record_type == 'Name'
-    values ||= history_attribute_values(record_type.constantize, changes, attribute)
-    
-    # Diffs return arrays of parts; empty values show as a dash.
-    values.map { |value| safe_join(Array(value)).presence || '—' }
+    values =
+      case [record_type, attribute]
+      when ['Name', 'description'], ['Name', 'etymology_text']
+        html_diff(*changes)
+      when ['Name', 'etymology']
+        text_diff(*changes.map { |attributes| Name.new(attributes).full_etymology })
+      when ['Name', 'corrigendum_kind']
+        changes.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
+      when ['Name', 'status']
+        changes.map { |code| Name.status_hash.dig(code, :name) || code }
+      else
+        history_attribute_values(record_type.constantize, changes, attribute)
+      end
+
+    values.map { |value| ERB::Util.html_escape(value).presence || '—' }
   end
 
   # Rich text changes are shown as changes of the name itself.
@@ -37,61 +47,14 @@ module Names::HistoriesHelper
     when 'Placement'
       'Placement'
     when 'PublicationName'
-      history_publication_name_heading(version)
+      publication_id = version.changeset['publication_id'].compact.first
+      safe_join(['Publication: ', history_record_reference(Publication, publication_id)])
     else
       raise ArgumentError, "Unsupported history record heading: #{version.record_type}"
     end
   end
 
-  def history_text_diff(before, after)
-    chunks = TextDiff.chunks(before, after)
-
-    before_parts = chunks.filter_map do |unchanged, text, _|
-      next if text.empty?
-
-      unchanged ? text : content_tag(:del, text, class: 'text-danger')
-    end
-    after_parts = chunks.filter_map do |unchanged, _, text|
-      next if text.empty?
-
-      unchanged ? text : content_tag(:ins, text, class: 'text-success')
-    end
-
-    [before_parts, after_parts]
-  end
-
-  # Diff rich text HTML, rendering each side as formatted text with its changes
-  # marked. The HTML is sanitized as ActionText content is, plus ins and del.
-  def history_html_diff(before, after)
-    HtmlDiff.diff(before, after).map do |html|
-      sanitize(
-        html,
-        tags: ActionText::ContentHelper.allowed_tags + %w[ins del],
-        attributes: ActionText::ContentHelper.allowed_attributes
-      )
-    end
-  end
-
   private
-
-  def history_publication_name_heading(version)
-    publication_id = version.changeset['publication_id'].compact.first
-    safe_join(['Publication: ', history_record_reference(Publication, publication_id)])
-  end
-
-  # Name attributes that need domain-specific rendering, or nil for the rest.
-  def history_name_values(changes, attribute)
-    case attribute
-    when 'description', 'etymology_text'
-      history_html_diff(*changes)
-    when 'etymology'
-      history_text_diff(*changes.map { |attributes| Name.new(attributes).full_etymology })
-    when 'corrigendum_kind'
-      changes.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
-    when 'status'
-      changes.map { |code| Name.status_hash.dig(code, :name) || code }
-    end
-  end
 
   # Link foreign keys to their records, diff text, and show booleans as Yes/No.
   # Ordinary associations are matched by their actual foreign key, which need
@@ -106,7 +69,7 @@ module Names::HistoriesHelper
     elsif association
       changes.map { |id| history_record_reference(association.klass, id) }
     elsif changes.any? { |value| value.is_a?(String) }
-      history_text_diff(*changes)
+      text_diff(*changes)
     else
       changes.map { |value| { true => 'Yes', false => 'No' }.fetch(value, value) }
     end
