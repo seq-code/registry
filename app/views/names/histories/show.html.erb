@@ -18,41 +18,27 @@
         </tr>
       </thead>
       <% @versions.each do |version| %>
-        <% changes = @history.changes_for(version) %>
-        <% record_type = history_record_type(version) %>
-        <% record_change = record_type != 'Name' %>
+        <% rows = history_rows(version, @history.changes_for(version)) %>
         <tbody class="name-history-version" data-version-id="<%= version.id %>">
-          <% if record_change %>
-            <tr class="name-history-record">
-              <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size + 1 %>">
-                <time datetime="<%= version.created_at.iso8601 %>">
-                  <%= version.created_at.strftime('%F %H:%M %Z') %>
-                </time>
-              </th>
-              <td class="name-history-author" rowspan="<%= changes.size + 1 %>">
-                <%= render('names/histories/author', version: version) %>
-              </td>
-              <th colspan="3">
-                <%= history_record_heading(version) %>
-              </th>
-            </tr>
-          <% end %>
-          <% changes.each_with_index do |(attribute, values), index| %>
-            <% before, after = history_values(values, attribute: attribute, record_type: record_type) %>
-            <tr class="name-history-change">
-              <% if index.zero? && !record_change %>
-                <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size %>">
+          <% rows.each_with_index do |(label, before, after), index| %>
+            <tr class="<%= before ? 'name-history-change' : 'name-history-record' %>">
+              <% if index.zero? %>
+                <th class="name-history-date" scope="rowgroup" rowspan="<%= rows.size %>">
                   <time datetime="<%= version.created_at.iso8601 %>">
                     <%= version.created_at.strftime('%F %H:%M %Z') %>
                   </time>
                 </th>
-                <td class="name-history-author" rowspan="<%= changes.size %>">
+                <td class="name-history-author" rowspan="<%= rows.size %>">
                   <%= render('names/histories/author', version: version) %>
                 </td>
               <% end %>
-              <th scope="row"><%= record_type.constantize.human_attribute_name(attribute) %></th>
-              <td class="name-history-before"><%= before %></td>
-              <td class="name-history-after"><%= after %></td>
+              <% if before %>
+                <th scope="row"><%= label %></th>
+                <td class="name-history-before"><%= before %></td>
+                <td class="name-history-after"><%= after %></td>
+              <% else %>
+                <th colspan="3"><%= label %></th>
+              <% end %>
             </tr>
           <% end %>
         </tbody>

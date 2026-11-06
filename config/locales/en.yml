@@ -31,3 +31,6 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    models:
+      publication_name: "Publication link"

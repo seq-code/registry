@@ -3,8 +3,8 @@ module Versioned
 
   included do
     has_many :versions, as: :record
-    class_attribute :versioned_attribute_sets, default: []
     class_attribute :versioned_owner_association
+    class_attribute :versioned_attribute_sets, default: []
     class_attribute :always_versioned_attributes, default: []
 
     after_create :record_create_version
@@ -13,7 +13,8 @@ module Versioned
   end
 
   class_methods do
-    # Changing any member records before/after values for every member.
+    # Changing any member also records the other members' values, e.g. every
+    # part of an etymology so each side can be read as a whole.
     def versioned_together(*attributes)
       self.versioned_attribute_sets = versioned_attribute_sets + [attributes.map(&:to_s)]
     end
@@ -89,23 +90,14 @@ module Versioned
                            .select(&:polymorphic?)
                            .map { |association| [association.foreign_key, association.foreign_type] }
 
-    changed_columns = changeset.keys
     (self.class.versioned_attribute_sets + polymorphic_sets).each do |columns|
-      changeset.merge!(versioned_together_changes(columns, changed_columns))
+      next unless columns.intersect?(changeset.keys)
+
+      (columns - changeset.keys).each do |column|
+        values = [attribute_before_last_save(column), self[column]]
+        changeset[column] = values unless values == [nil, nil]
+      end
     end
     changeset
-  end
-
-  # If any listed column changed, include each member with a value as an
-  # ordinary [before, after] pair, including unchanged columns such as language:
-  # { 'etymology_xx_lang' => ['N.L.', 'N.L.'],
-  #   'etymology_xx_description' => ['of the colon', 'from the colon'] }.
-  def versioned_together_changes(columns, changed_columns)
-    return {} if (changed_columns & columns).empty?
-
-    columns.filter_map do |column|
-      values = [attribute_before_last_save(column), self[column]]
-      [column, values] unless values == [nil, nil]
-    end.to_h
   end
 end

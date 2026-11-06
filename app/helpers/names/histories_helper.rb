@@ -1,87 +1,70 @@
 module Names::HistoriesHelper
   include DiffHelper
 
-  # Render a recorded [before, after] pair as two display values.
-  def history_values(changes, attribute:, record_type: 'Name')
-    values =
-      case [record_type, attribute]
-      when ['Name', 'description'], ['Name', 'etymology_text']
-        html_diff(*changes)
-      when ['Name', 'etymology']
-        text_diff(*changes.map { |attributes| Name.new(attributes).full_etymology })
-      when ['Name', 'corrigendum_kind']
-        changes.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
-      when ['Name', 'status']
-        changes.map { |code| Name.status_hash.dig(code, :name) || code }
-      else
-        history_attribute_values(record_type.constantize, changes, attribute)
-      end
+  HISTORY_OPERATIONS = { 'create' => 'added', 'update' => 'changed', 'delete' => 'removed' }.freeze
 
-    values.map { |value| ERB::Util.html_escape(value).presence || '—' }
-  end
-
-  # Rich text changes are shown as changes of the name itself.
-  def history_record_type(version)
-    version.record_type == 'ActionText::RichText' ? 'Name' : version.record_type
-  end
-
-  def history_record_reference(record_class, id)
-    return unless id
-
-    record = record_class.find_by(id: id)
-    if record.nil?
-      "#{record_class.name} ##{id} (deleted)"
-    elsif record.is_a?(GenericTypeMaterial)
-      # Generic type material has no dedicated page to link to.
-      record.display
-    else
-      link_to(record.display, record)
+  # Rows to render for a version's changes, each [label, before, after].
+  # Changes to records linked to the name start with a [heading] row, e.g.
+  # ['Placement added'].
+  def history_rows(version, changes)
+    if version.record_type == 'ActionText::RichText'
+      label = Name.human_attribute_name(version.changeset['name'].compact.first)
+      return [[label, *history_display(html_diff(*changes['body']))]]
     end
-  end
 
-  # Label a link's changes with what it links to. Publication links identify
-  # their publication, even once deleted. Placement headings stay neutral
-  # because a placement's current parent may differ from earlier edits.
-  def history_record_heading(version)
-    case version.record_type
-    when 'Placement'
-      'Placement'
-    when 'PublicationName'
-      publication_id = version.changeset['publication_id'].compact.first
-      safe_join(['Publication: ', history_record_reference(Publication, publication_id)])
-    else
-      raise ArgumentError, "Unsupported history record heading: #{version.record_type}"
+    model = version.record_type.constantize
+    rows = changes.map do |attribute, values|
+      [model.human_attribute_name(attribute), *history_display(history_values(model, attribute, values))]
     end
+    return rows if model == Name
+
+    [["#{model.model_name.human} #{HISTORY_OPERATIONS.fetch(version.operation)}"], *rows]
   end
 
   private
 
-  # Link foreign keys to their records, diff text, and show booleans as Yes/No.
-  # Ordinary associations are matched by their actual foreign key, which need
-  # not follow the association's name. Polymorphic references arrive grouped
-  # under the association's name as [type, id] pairs.
-  def history_attribute_values(model, changes, attribute)
-    association = model.reflect_on_all_associations(:belongs_to).find do |reflection|
-      attribute == (reflection.polymorphic? ? reflection.name.to_s : reflection.foreign_key)
-    end
-    if association&.polymorphic?
-      changes.map { |type, id| history_polymorphic_reference(type, id) }
-    elsif association
-      changes.map { |id| history_record_reference(association.klass, id) }
-    elsif changes.any? { |value| value.is_a?(String) }
-      text_diff(*changes)
+  # Link records, diff text, and show booleans as Yes/No.
+  def history_values(model, attribute, values)
+    association = model.reflect_on_association(attribute.delete_suffix('_id'))
+    name_values = history_name_values(attribute, values) if model == Name
+    if name_values
+      name_values
+    elsif association&.polymorphic?
+      values.map { |type, id| history_record_link(type, id) }
+    elsif association&.belongs_to?
+      values.map { |id| history_record_link(association.class_name, id) }
+    elsif values.any?(String)
+      text_diff(*values)
     else
-      changes.map { |value| { true => 'Yes', false => 'No' }.fetch(value, value) }
+      values.map { |value| { true => 'Yes', false => 'No' }.fetch(value, value) }
     end
   end
 
-  def history_polymorphic_reference(type, id)
-    # Resolve only model classes, not any constant a recorded type string names.
-    record_class = type&.safe_constantize
-    if record_class.is_a?(Class) && record_class < ApplicationRecord
-      history_record_reference(record_class, id)
-    elsif id
-      "#{type} ##{id}"
+  # Name attributes recorded in a form that needs translating to be read.
+  def history_name_values(attribute, values)
+    case attribute
+    when 'etymology'
+      text_diff(*values.map { |attributes| Name.new(attributes).full_etymology })
+    when 'status'
+      values.map { |code| Name.status_hash.dig(code, :name) || code }
+    when 'corrigendum_kind'
+      values.map { |kind| Name.corrigendum_kinds.dig(kind&.to_sym, :name) || kind }
     end
+  end
+
+  def history_record_link(type, id)
+    return unless id
+
+    # Resolve only model classes, not any constant a recorded type names.
+    record_class = type.safe_constantize
+    record = record_class.find_by(id: id) if record_class.is_a?(Class) && record_class < ApplicationRecord
+    return "#{type} ##{id} (deleted)" unless record
+
+    # Some records, such as generic type material, have no page of their own.
+    link_to_if(respond_to?("#{record.model_name.singular_route_key}_path"), record.display, record)
+  end
+
+  def history_display(values)
+    values.map { |value| ERB::Util.html_escape(value).presence || '—' }
   end
 end

@@ -95,3 +95,6 @@ group :rubocop do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
 end
+
+# Local development inspector backend
+gem 'ywb', path: '../../yrrah/ywb/ruby', group: :development

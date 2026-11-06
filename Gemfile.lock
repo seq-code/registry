@@ -1,3 +1,9 @@
+PATH
+  remote: ../../yrrah/ywb/ruby
+  specs:
+    ywb (0.1.0)
+      websocket-driver (~> 0.8)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -535,6 +541,7 @@ DEPENDENCIES
   will_paginate-bootstrap4
   wkhtmltopdf-binary (<= 0.12.6.6)
   yui-compressor (>= 0.12)
+  ywb!
 
 BUNDLED WITH
    2.7.1

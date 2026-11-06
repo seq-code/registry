@@ -12,6 +12,7 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select '.name-history-version', count: 2
+    assert_select '.name-history-record th[colspan]', text: 'Publication link added'
   end
 
   test 'does not reveal private name history' do

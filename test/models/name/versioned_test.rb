@@ -49,19 +49,16 @@ class Name::VersionedTest < ActiveSupport::TestCase
     end
   end
 
-  test 'changing an etymology description snapshots valued etymology attributes' do
-    @name.assign_attributes(
-      etymology_xx_lang: 'N.L.', etymology_xx_description: 'of the colon'
-    )
-    @name.save!
+  test 'changing an etymology description records the other etymology parts and the name' do
+    @name.update!(etymology_xx_lang: 'N.L.', etymology_xx_description: 'of the colon')
 
     @name.update!(etymology_xx_description: 'from the colon')
 
-    changeset = @name.versions.last.changeset
-    assert_equal %w[etymology_xx_description etymology_xx_lang name], changeset.keys.sort
-    assert_equal ['of the colon', 'from the colon'], changeset['etymology_xx_description']
-    assert_equal ['N.L.', 'N.L.'], changeset['etymology_xx_lang']
-    assert_equal ['E. coli', 'E. coli'], changeset['name']
+    assert_equal({
+      'etymology_xx_description' => ['of the colon', 'from the colon'],
+      'etymology_xx_lang' => ['N.L.', 'N.L.'],
+      'name' => ['E. coli', 'E. coli']
+    }, @name.versions.last.changeset)
   end
 
   test 'changing a polymorphic relationship id records its unchanged record type' do

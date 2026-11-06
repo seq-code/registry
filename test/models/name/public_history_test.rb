@@ -18,106 +18,78 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     }, latest_change)
   end
 
-  test 'omits name creation and versions without public changes' do
+  test 'omits versions without public changes' do
+    @name.update!(gbif_json: '{}')
+
+    assert_empty @history.versions(page: 1)
+  end
+
+  test 'shows public attributes a name was created with' do
     name = Name.create!(name: 'Escherichia ruysiae', rank: 'species')
-    name.update!(gbif_json: '{}')
 
-    assert_empty Name::PublicHistory.new(name).versions(page: 1)
+    changes = Name::PublicHistory.new(name).changes_for(name.versions.last)
+
+    assert_equal [nil, 'Escherichia ruysiae'], changes['name']
+    assert_not_includes changes, 'syllabication'
   end
 
-  test 'shows adding an etymology' do
-    @name.update!(etymology_xx_lang: 'N.L.', etymology_xx_description: 'of the colon')
-
-    assert_equal({ 'etymology' => [
-      { 'name' => 'Escherichia coli', 'etymology_xx_lang' => nil,
-        'etymology_xx_description' => nil },
-      { 'name' => 'Escherichia coli', 'etymology_xx_lang' => 'N.L.',
-        'etymology_xx_description' => 'of the colon' }
-    ] }, latest_change)
-  end
-
-  test 'shows changing an etymology with its unchanged parts' do
+  test 'groups an etymology change with its unchanged parts and the name' do
     @name.update!(etymology_xx_lang: 'N.L.', etymology_xx_description: 'of the colon')
     @name.update!(etymology_xx_description: 'from the colon')
 
     assert_equal({ 'etymology' => [
-      { 'name' => 'Escherichia coli', 'etymology_xx_lang' => 'N.L.',
-        'etymology_xx_description' => 'of the colon' },
-      { 'name' => 'Escherichia coli', 'etymology_xx_lang' => 'N.L.',
-        'etymology_xx_description' => 'from the colon' }
+      { 'etymology_xx_lang' => 'N.L.', 'etymology_xx_description' => 'of the colon',
+        'name' => 'Escherichia coli' },
+      { 'etymology_xx_lang' => 'N.L.', 'etymology_xx_description' => 'from the colon',
+        'name' => 'Escherichia coli' }
     ] }, latest_change)
   end
 
-  test 'shows renaming with the etymology under each name' do
+  test 'shows the etymology under each name when renaming' do
     @name.update!(etymology_xx_lang: 'N.L.', etymology_xx_description: 'of the colon')
     @name.update!(name: 'Escherichia colonica')
 
-    assert_equal({
-      'name' => ['Escherichia coli', 'Escherichia colonica'],
-      'etymology' => [
-        { 'name' => 'Escherichia coli', 'etymology_xx_lang' => 'N.L.',
-          'etymology_xx_description' => 'of the colon' },
-        { 'name' => 'Escherichia colonica', 'etymology_xx_lang' => 'N.L.',
-          'etymology_xx_description' => 'of the colon' }
-      ]
-    }, latest_change)
+    assert_equal ['Escherichia coli', 'Escherichia colonica'], latest_change['name']
+    assert_equal ['Escherichia coli', 'Escherichia colonica'],
+                 latest_change['etymology'].map { |attributes| attributes['name'] }
   end
 
-  test 'shows setting a nomenclatural type' do
+  test 'pairs a nomenclatural type with its record type' do
     @name.update!(nomenclatural_type: strains(:one))
-
-    assert_equal({ 'nomenclatural_type' => [[nil, nil], ['Strain', strains(:one).id]] },
-                 latest_change)
-  end
-
-  test 'shows changing a nomenclatural type' do
-    @name.update!(nomenclatural_type: strains(:one))
-    @name.update!(nomenclatural_type: strains(:two))
+    @name.update!(nomenclatural_type: genomes(:one))
 
     assert_equal({ 'nomenclatural_type' => [
-      ['Strain', strains(:one).id], ['Strain', strains(:two).id]
+      ['Strain', strains(:one).id], ['Genome', genomes(:one).id]
     ] }, latest_change)
   end
 
-  test 'shows removing a nomenclatural type' do
-    @name.update!(nomenclatural_type: strains(:one))
-    @name.update!(nomenclatural_type: nil)
-
-    assert_equal({ 'nomenclatural_type' => [['Strain', strains(:one).id], [nil, nil]] },
-                 latest_change)
-  end
-
-  test 'shows linking a publication' do
-    PublicationName.create!(name: @name, publication: publications(:one))
-
-    assert_equal({ 'linked' => [false, true] }, latest_change)
-  end
-
-  test 'shows unlinking a publication' do
+  test 'shows the publication of a changed publication link' do
     link = PublicationName.create!(name: @name, publication: publications(:one))
-    link.destroy!
+    link.update!(emends: true)
 
-    assert_equal({ 'linked' => [true, false] }, latest_change)
+    assert_equal({
+      'publication_id' => [publications(:one).id, publications(:one).id],
+      'emends' => [false, true]
+    }, latest_change)
   end
 
-  test 'shows linking a placement' do
-    Placement.create!(name: @name, parent: names(:escherichia))
-
-    assert_equal({ 'linked' => [false, true] }, latest_change)
-  end
-
-  test 'shows changing a placement' do
+  test 'shows the parent of a changed placement' do
     placement = Placement.create!(name: @name, parent: names(:escherichia))
     placement.update!(publication: publications(:one))
 
-    assert_equal({ 'publication_id' => [nil, publications(:one).id] }, latest_change)
+    assert_equal({
+      'parent_id' => [names(:escherichia).id, names(:escherichia).id],
+      'publication_id' => [nil, publications(:one).id]
+    }, latest_change)
   end
 
-  test 'shows unlinking a placement' do
-    placement = Placement.create!(name: @name, parent: names(:escherichia))
-    placement.destroy!
+  test 'shows public rich texts of the name' do
+    @name.update!(description: 'A gut bacterium', notes: 'Check the type strain')
 
-    assert_equal({ 'linked' => [true, false] }, latest_change)
+    versions = @history.versions(page: 1)
+
+    assert_equal 1, versions.size
+    assert_equal 'description', versions.first.changeset['name'].compact.first
   end
 
   test 'lists name and relationship changes together newest first' do
@@ -126,10 +98,7 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
 
     versions = @history.versions(page: 1)
 
-    assert_equal 2, versions.size
-    assert_equal({ 'authority' => [nil, 'Castellani and Chalmers 1919'] },
-                 @history.changes_for(versions.first))
-    assert_equal({ 'linked' => [false, true] }, @history.changes_for(versions.second))
+    assert_equal %w[Name PublicationName], versions.map(&:record_type)
   end
 
   test 'excludes placements of other names' do

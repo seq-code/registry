@@ -1,6 +1,7 @@
 class Placement < ApplicationRecord
   include Versioned
   versioned_owner(:name)
+  always_versioned(:parent_id)
 
   belongs_to(:name)
   belongs_to(
