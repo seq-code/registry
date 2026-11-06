@@ -6,7 +6,9 @@ Rails.application.routes.draw do
     get 'dev/autocomplete', to: 'dev#autocomplete'
   end
 
-  resources :tags
+  resources :tags do
+    get :curator, on: :member
+  end
   resources :name_tags, only: %i[create update destroy] do
     get :pending, on: :collection
   end

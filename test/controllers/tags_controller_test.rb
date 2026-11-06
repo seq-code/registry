@@ -135,11 +135,19 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h2', text: /Pending proposals/, count: 0
   end
 
-  test 'show lists all accepted names and pending proposals to curators' do
+  test 'show lists all accepted names to curators' do
     sign_in(users(:curator))
     get tag_url(@tag)
 
     assert_select 'a[href=?]', name_path(names(:escherichia_colie))
+    assert_select 'h2', text: /Pending proposals/, count: 0
+  end
+
+  test 'curator page lists pending proposals' do
+    sign_in(users(:curator))
+    get curator_tag_url(@tag)
+
+    assert_response :success
     assert_select 'h2', text: /Pending proposals/
     assert_select(
       'a[href=?]',
@@ -147,6 +155,17 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
         name_tags(:escherichia_coli_toponym), name_tag: { status_int: 1 }
       )
     )
+    assert_select '.crumbs a[href=?]', tag_path(@tag), text: 'toponym'
+    assert_select '.crumbs span.active', text: 'Curator'
+  end
+
+  test 'curator page requires a curator' do
+    get curator_tag_url(@tag)
+    assert_response :redirect
+
+    sign_in(users(:contributor))
+    get curator_tag_url(@tag)
+    assert_redirected_to root_url
   end
 
   test 'show lists accepted public names' do
@@ -194,15 +213,15 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     assert_select '.crumbs a[href=?]', tag_url(@tag), text: 'toponym'
   end
 
-  test 'show lists rejections with undo links to curators only' do
+  test 'curator page lists rejections with undo links' do
     undo = name_tag_path(
       name_tags(:bacteria_eponym), name_tag: { status_int: 0 }
     )
+    sign_in(users(:curator))
     get tag_url(tags(:eponym))
     assert_select 'a[href=?]', undo, count: 0
 
-    sign_in(users(:curator))
-    get tag_url(tags(:eponym))
+    get curator_tag_url(tags(:eponym))
     assert_select 'h2', text: /Rejected/
     assert_select 'a[href=?]', undo
   end
@@ -211,10 +230,13 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     get tag_url(@tag)
     assert_select 'dl[name=curator]', count: 0
     assert_select 'a[href=?]', edit_tag_url(@tag), count: 0
+    assert_select 'a[href=?]', curator_tag_url(@tag), count: 0
 
     sign_in(users(:curator))
     get tag_url(@tag)
     assert_select 'dl[name=curator] a[href=?]', edit_tag_url(@tag)
+    assert_select 'dl[name=curator] a[href=?]', curator_tag_url(@tag)
+    assert_select 'dl[name=curator]', text: /1 pending, 0 rejected/
     assert_select 'h1 a[href=?]', edit_tag_path(@tag), count: 0
   end
 

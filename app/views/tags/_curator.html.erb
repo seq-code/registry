@@ -7,5 +7,13 @@
       <% end %>
       &raquo; Update the name, slug, color, umbrella tag, or description
     </dd>
+    <dd class="pt-2">
+      <%= link_to(curator_tag_url(@tag), class: 'btn btn-primary btn-sm') do %>
+        <%= fa_icon('tasks') %> Review proposals
+      <% end %>
+      &raquo; Accept or reject pending proposals
+      (<%= @proposed_count %> pending,
+      <%= @rejected_count %> rejected)
+    </dd>
   </dl>
 <% end %>

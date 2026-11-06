@@ -1,7 +1,7 @@
 class TagsController < ApplicationController
-  before_action(:set_tag, only: %i[ show edit update destroy ])
+  before_action(:set_tag, only: %i[ show curator edit update destroy ])
   before_action(
-    :authenticate_curator!, only: %i[ new create edit update destroy ]
+    :authenticate_curator!, only: %i[ curator new create edit update destroy ]
   )
 
   # GET /tags or /tags.json
@@ -25,13 +25,22 @@ class TagsController < ApplicationController
     @crumbs << @tag.name
     @accepted_names = visible_names(@tag.accepted_names)
                         .order(:name).paginate(page: params[:page])
+    @proposed_count = @tag.name_tags.where(status_int: 0).count
+    @rejected_count = @tag.name_tags.where(status_int: 2).count
+    @child_tags = @tag.children.order(:name)
+    @implied_tags = @tag.implied_tags.order(:name)
+    @implying_tags = @tag.implying_tags.order(:name)
+  end
+
+  # GET /tags/1/curator
+  def curator
+    @crumbs = [['Tags', tags_url]]
+    @crumbs << [@tag.parent.name, @tag.parent] if @tag.parent
+    @crumbs << [@tag.name, @tag] << 'Curator'
     @proposed_names = @tag.name_tags.where(status_int: 0)
                           .includes(:name).order('names.name')
     @rejected_names = @tag.name_tags.where(status_int: 2)
                           .includes(:name).order('names.name')
-    @child_tags = @tag.children.order(:name)
-    @implied_tags = @tag.implied_tags.order(:name)
-    @implying_tags = @tag.implying_tags.order(:name)
   end
 
   # GET /tags/new
