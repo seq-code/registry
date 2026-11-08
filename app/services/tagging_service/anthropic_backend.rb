@@ -42,8 +42,8 @@ class TaggingService::AnthropicBackend
       "neut." means neuter (e.g. "L. gen. n. abyssi" says nothing about
       gender). Apply the first of these rules that resolves it:
       1. A gender stated in the etymology for the name itself is
-         authoritative. A statement of several genders (e.g. "masc. / fem.
-         adj.") only means the form is shared; apply the rules below.
+         authoritative. A statement of several genders for the name itself
+         (e.g. "masc. / fem. adj.") is gender-uncertain.
       2. An adjectival or participial epithet, including present participles
          in -ans or -ens, takes the gender of the genus it is combined with
          (see "Genus gender" below). When the genus gender is not recorded,

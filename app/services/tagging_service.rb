@@ -33,12 +33,11 @@ class TaggingService
   end
 
   # Replace the gender proposals with the gender declared in the grammar of
-  # +name+ itself, proposed at high confidence. Otherwise (no gender or
-  # several genders declared, as in "masc. / fem. adj.", where the genus
-  # decides), the model's gender proposals are kept but capped at medium
-  # confidence (carrying 'capped' => true), and reduced to one (see
-  # single_gender). Ranks without grammatical gender get no gender tags at
-  # all
+  # +name+ itself, proposed at high confidence, or gender-uncertain if
+  # several genders are declared (e.g. "masc. / fem. adj."). Otherwise, the
+  # model's gender proposals are kept but capped at medium confidence
+  # (carrying 'capped' => true), and reduced to one (see single_gender).
+  # Ranks without grammatical gender get no gender tags at all
   def self.assign_gender(name, proposals)
     others = proposals.reject { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
     return others unless Helpers::GENDER_RANKS.include?(name.rank)
@@ -47,6 +46,10 @@ class TaggingService
     if declared.size == 1
       return others +
              declared_proposal(declared.first, 'declared in etymology')
+    elsif declared.size > 1
+      return others + declared_proposal(
+        'gender-uncertain', 'declared in etymology (multiple genders)'
+      )
     end
 
     capped = proposals.map do |proposal|
@@ -147,11 +150,27 @@ class TaggingService
     others + [uncertain]
   end
 
-  # Gender tag slugs declared in the grammar of +name+
+  # Gender terms in grammar, however separated (e.g. "masc./fem.",
+  # "masc., fem."), mapped to their tags
+  GENDER_TERMS = {
+    'masc' => 'masculine', 'fem' => 'feminine', 'neut' => 'neuter'
+  }.freeze
+  GENDER_TERM_PATTERN =
+    /(?<![[:alpha:]])(masc|fem|neut)(?:\.|uline|inine|er)?(?![[:alpha:]])/i
+
+  # Gender tag slugs declared in the grammar of +name+ itself, from the Name
+  # predicates and from the gender terms found in the grammar, which the
+  # predicates miss when they aren't separated by spaces
   def self.declared_genders(name)
-    GENDER_PREDICATES.select do |_slug, predicate|
+    declared = GENDER_PREDICATES.select do |_slug, predicate|
       declares_gender?(name, predicate)
     end.keys
+    terms =
+      name.grammar.to_s.scan(GENDER_TERM_PATTERN).flatten
+          .map { |term| GENDER_TERMS[term.downcase] }
+    GENDER_PREDICATES.keys & (declared | terms)
+  rescue StandardError
+    declared || []
   end
 
   # Replace the classical proposals with one decided from the etymology if

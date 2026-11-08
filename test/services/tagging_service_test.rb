@@ -133,16 +133,43 @@ class TaggingServiceTest < ActiveSupport::TestCase
     assert_equal('high', genders.first['confidence'])
   end
 
-  test 'propose caps gender proposals for several declared genders' do
-    # e.g. "masc. / fem. adj.": the form is shared, so the genus decides
+  test 'propose assigns gender-uncertain for several declared genders' do
     genders = gender_proposals_with(
       proposal('feminine', 'high'),
       rank: 'species', declared: %w[masculine feminine]
     )
 
-    assert_equal(['feminine'], genders.map { |p| p['slug'] })
-    assert_equal('medium', genders.first['confidence'])
-    assert_equal(true, genders.first['capped'])
+    assert_equal(
+      [{ 'slug' => 'gender-uncertain', 'confidence' => 'high',
+         'basis' => 'declared in etymology (multiple genders)',
+         'direct' => true }],
+      genders
+    )
+  end
+
+  test 'propose detects several declared genders however separated' do
+    name = Name.find(names(:bacillus_subtilis).id)
+    ['masc. / fem. adj.', 'masc./fem. adj.', 'masc., fem. adj.',
+     'masculine or feminine adj.'].each do |grammar|
+      name.etymology_xx_grammar = grammar
+      genders = proposals_with(proposal('masculine', 'high'), name: name)
+                .select { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
+
+      assert_equal(
+        [%w[gender-uncertain high]],
+        genders.map { |p| p.values_at('slug', 'confidence') }, grammar
+      )
+    end
+  end
+
+  test 'propose does not read the noun abbreviation as neuter' do
+    assert_equal(
+      %w[feminine],
+      TaggingService.declared_genders(
+        Name.new(name: 'Foo bar', rank: 'species',
+                 etymology_xx_grammar: 'fem. n.')
+      )
+    )
   end
 
   test 'propose caps high gender proposals if no gender is declared' do

@@ -329,9 +329,10 @@ tag_seeds = [
    'Use only when no gender rule resolves the gender (e.g. an adjectival ' \
    'epithet whose genus name does not reveal its gender, or a genitive ' \
    'noun whose nominative cannot be determined), or when the protologue explicitly notes ' \
-   'uncertainty. Participles and adjectives with forms shared between ' \
-   'genders take the gender of the genus and are not gender-uncertain by ' \
-   'themselves. Do not use when the etymology states a single gender for ' \
+   'uncertainty, or when the etymology declares several genders for the ' \
+   'name itself (e.g. masc. / fem.). Otherwise, participles and ' \
+   'adjectives with forms shared between genders take the gender of the ' \
+   'genus and are not gender-uncertain by themselves. Do not use when the etymology states a single gender for ' \
    'the name; an explicit statement is authoritative.']
 ]
 
