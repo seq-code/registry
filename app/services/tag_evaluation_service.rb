@@ -6,9 +6,13 @@
 # be dumped as JSON as is):
 #   'id', 'name', 'rank', 'etymology'
 #   'partial'  => true if the name still has proposed NameTags
-#   'curator'  => slugs of the accepted tags, expanded with the tags they
-#                 imply (as accepting a tag does; see Tag.implied_closure)
-#   'rejected' => slugs of the tags explicitly rejected for the name
+#   'curator'  => slugs of the tags accepted directly (not through the
+#                 cascade), expanded with the tags they currently imply (as
+#                 accepting a tag does; see Tag.implied_closure), so the set
+#                 follows the current tag structure
+#   'rejected' => slugs of the tags explicitly rejected for the name,
+#                 including those accepted through the cascade over a
+#                 rejection that are no longer implied
 #   'runs'     => one Array of proposals per run, as returned by
 #                 TaggingService.propose (already expanded by Tag.expand)
 class TagEvaluationService
@@ -39,7 +43,8 @@ class TagEvaluationService
       if tag.present?
         tag_id = Tag.find_by!(slug: tag).id
         implying = Tag.implied_closure(Tag.pluck(:id))[tag_id] || []
-        accepted = accepted.where(tag_id: [tag_id] + implying)
+        accepted = accepted.where(pre_cascade_status_int: nil)
+                           .where(tag_id: [tag_id] + implying)
       end
       scope = scope.where(id: accepted.select(:name_id)).offset(offset)
       limit.to_i.positive? ? scope.limit(limit) : scope
@@ -59,8 +64,16 @@ class TagEvaluationService
     def curator_decisions(name)
       name_tags = name.name_tags.to_a
       slugs = Tag.pluck(:id, :slug).to_h
-      accepted = name_tags.select(&:accepted?).map(&:tag_id)
+      direct = name_tags.select do |nt|
+        nt.accepted? && nt.pre_cascade_status_int.nil?
+      end
+      accepted = direct.map(&:tag_id)
       expanded = accepted | Tag.implied_closure(accepted).keys
+      rejected = name_tags.select do |nt|
+        nt.rejected? ||
+          (nt.pre_cascade_status_int == status_int(:rejected) &&
+           !expanded.include?(nt.tag_id))
+      end
       {
         'id' => name.id,
         'name' => name.name,
@@ -68,9 +81,7 @@ class TagEvaluationService
         'etymology' => etymology_text(name),
         'partial' => name_tags.any?(&:proposed?),
         'curator' => slugs.values_at(*expanded).compact.sort,
-        'rejected' =>
-          slugs.values_at(*name_tags.select(&:rejected?).map(&:tag_id))
-               .compact.sort
+        'rejected' => slugs.values_at(*rejected.map(&:tag_id)).compact.sort
       }
     end
 

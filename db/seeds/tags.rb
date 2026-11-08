@@ -27,7 +27,9 @@ tag_seeds = [
    '`toponym`. Named regions such as Antarctica (e.g. *antarcticus*) ' \
    'remain `toponym`. A person honoured for work in or on a place (e.g. ' \
    '*allenii*, named for Eugene T. Allen for his work on the geochemistry ' \
-   'of Yellowstone National Park) is `eponym` only, not `toponym`.'],
+   'of Yellowstone National Park) is `eponym` only, not `toponym`. ' \
+   'Likewise, a study site mentioned only as context is not `toponym` ' \
+   '(e.g. *Bilamarchaeum*, \'turtle lands\').'],
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
    '<i>lacustris</i>, <i>thermophilus</i>)',
@@ -49,7 +51,8 @@ tag_seeds = [
    'Named after another organism or taxon',
    'The referenced entity must be another organism or taxon, not a ' \
    'chemical substance or metabolic property — use `chemonym` or ' \
-   '`phenonym` for those. The name counts as an organonym even when phrased as \'from the ' \
+   '`phenonym` for those — nor a mythological or fictional character, ' \
+   'even an animal — use `mythonym`. The name counts as an organonym even when phrased as \'from the ' \
    'land of X\' or \'from the X lands\', where X is an organism (e.g. ' \
    '*Bilamarchaeum*, *Burarchaeum*); any indirect place reference is ' \
    'secondary. However, when the etymology explicitly names a specific ' \
@@ -64,7 +67,8 @@ tag_seeds = [
   ['mythonym', 'commemorative', '#b386c0',
    'Named after a deity, mythological figure, or fictional person or ' \
    'character',
-   nil],
+   'Includes mythological or fictional animals, which are `mythonym` and ' \
+   'not `organonym`.'],
   ['ethnonym', 'commemorative', '#b386c0',
    'Named after a people, ethnic group, clan, or community',
    'Not for individual persons (use `eponym`). A place mentioned only as ' \
@@ -83,7 +87,9 @@ tag_seeds = [
    'processes such as nitrogen fixation or fermentation). Independent of ' \
    '`chemonym`: a metabolism naming a substance or particle (e.g. ' \
    'sulfur-metabolizing, electron-eating) is both, and one naming none ' \
-   '(e.g. fermenting) is only `phenonym`. Do NOT use for properties of ' \
+   '(e.g. fermenting) is only `phenonym`. The size of the organism (e.g. ' \
+   '*nano-*, *micro-*, *minutus*) is also `dimensional`, without a ' \
+   'sub-tag. Do NOT use for properties of ' \
    'the environment, the isolation source, or the circumstances of discovery. Generic suffixes denoting a ' \
    'microorganism in general (e.g. *-bacter*, *-bacterium*, *-bacillus*, ' \
    '*-monas*, *-microbium*, *-archaeum*) never justify this tag at any ' \
@@ -101,15 +107,6 @@ tag_seeds = [
    'commonness, or distribution (e.g. *commune*, *subdominans*, ' \
    '*ubiqueversans*) are not organismal traits; do not assign this tag or ' \
    '`trait` for them.'],
-  ['chemonym', 'trait', '#7fbf7f',
-   'Named after a chemical substance or particle (element, ion, compound, ' \
-   'functional group, chemical mixture such as oil or salt, or a particle ' \
-   'such as the electron)',
-   'Decide by what the root names, not by what it says about the ' \
-   'organism. Independent of `phenonym`: a substance in the habitat (e.g. ' \
-   'of oil sand, belonging to salt) is only `chemonym`, and a metabolism ' \
-   'naming a substance or particle (e.g. sulfur-metabolizing, ' \
-   'electron-eating) is both.'],
 
   ['formed', nil, '#a8551c',
    'Name whose construction is the defining feature',
@@ -123,8 +120,11 @@ tag_seeds = [
    '(e.g. `chemonym`).'],
 
   ['dimensional', nil, '#3949ab',
-   'Name references a time, number, order, or physical measure',
-   nil],
+   'Name references a time, number, order, physical measure, or the size ' \
+   'of the organism',
+   'Assign alone, without any sub-tag, for names referring to the size of ' \
+   'the organism (e.g. *nano-*, *micro-*, *minutus*), together with ' \
+   '`phenonym`. The generic suffix *-microbium* is not a size reference.'],
   ['chrononym', 'dimensional', '#7986cb',
    'Named after a time, period, season, or calendar unit',
    'Includes geological eras, seasons, times of day, and calendar-specific ' \
@@ -142,9 +142,19 @@ tag_seeds = [
    'Co-tag with `geographic` (and usually `econym`) when the measure is ' \
    'locational (e.g. hadal depth in *Hadalarchaeum*). Co-tag with `trait` ' \
    'when the parameter is a physiological or ecological property of the ' \
-   'organism.'],
+   'organism. Not for the size of the organism: use `dimensional` alone ' \
+   '(with `phenonym`).'],
 
   # Standalones
+  ['chemonym', nil, '#00838f',
+   'Named after a chemical substance or particle (element, ion, compound, ' \
+   'functional group, chemical mixture such as oil or salt, or a particle ' \
+   'such as the electron)',
+   'Decide by what the root names, not by what it says about the ' \
+   'organism. Independent of `phenonym` (and so of `trait`): a substance ' \
+   'in the habitat (e.g. of oil sand, belonging to salt) is only ' \
+   '`chemonym`, and a metabolism naming a substance or particle (e.g. ' \
+   'sulfur-metabolizing, electron-eating) is both.'],
   ['mythological', nil, '#8c6d1f',
    'Cross-cutting tag for names referencing mythology or fiction',
    'Added automatically when `mythonym` or `fictional-place` is assigned; ' \
@@ -190,7 +200,8 @@ tag_seeds = [
    'participial epithets take the gender of the genus, genitive noun ' \
    'epithets the gender of the noun in the genitive, and nouns in ' \
    'apposition their own gender. A gender not stated for the name itself ' \
-   'takes at most medium confidence.'],
+   'takes at most medium confidence. In New Latin, salt names in -as, ' \
+   '-atis (e.g. *phosphas*, *nitras*, *sulfas*) are masculine.'],
   ['feminine', nil, '#6c757d',
    'Grammatically feminine',
    'Same rules as `masculine`.'],

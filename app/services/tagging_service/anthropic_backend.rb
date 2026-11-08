@@ -59,6 +59,8 @@ class TaggingService::AnthropicBackend
          - Otherwise, use the standard gender of the Latin or Greek noun
            (e.g. abyssus is feminine, termes is masculine).
       4. A noun in apposition takes its own gender.
+      In New Latin etymologies, salt names in -as, -atis (e.g. phosphas,
+      nitras, sulfas) are masculine.
       Use gender-uncertain only when none of these rules resolves the gender
       (e.g. an adjectival epithet whose genus gender is unknown, or a bare
       genitive in -i whose nominative is not given). A gender not stated in
@@ -66,6 +68,10 @@ class TaggingService::AnthropicBackend
 
       ## Rules
       - Assign ALL tags that apply; they are not mutually exclusive
+      - Tag what the name itself refers to, not places, institutions, or
+        other context that the etymology mentions only to explain the name
+        (e.g. Bilamarchaeum means "turtle lands"; the study site mentioned
+        is context, not a `toponym`).
       - Umbrella terms can be assigned even if no children terms are
       - Assign an umbrella without any of its sub-tags only when the name
         clearly fits the umbrella but none of its sub-tags applies. For
@@ -89,6 +95,12 @@ class TaggingService::AnthropicBackend
         For example, "sulfur-metabolizing" and "electron-eating" get both,
         "fermenting" gets only `phenonym`, and "of oil sand" or "belonging
         to salt" (habitats) get only `chemonym`.
+      - A mythological or fictional character is a `mythonym`, not an
+        `organonym`, even when the character is an animal.
+      - Names referring to the organism's size (e.g. nano-, micro-,
+        minutus) get both `phenonym` (with `trait`) and `dimensional`.
+        Assign `dimensional` on its own, without any of its sub-tags. The
+        generic suffix -microbium is not a size reference.
       - `classical` applies only to a name or epithet that is a single word
         from a dormant language, used largely unmodified. A compound or
         neologism is not `classical`, even when every root is classical

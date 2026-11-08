@@ -8,8 +8,7 @@ class TaggingServiceTest < ActiveSupport::TestCase
                         excluded_bases: generic)
     Tag.create!(name: 'phenonym', slug: 'phenonym', color: '#000000',
                 parent: trait, excluded_bases: generic)
-    Tag.create!(name: 'chemonym', slug: 'chemonym', color: '#000000',
-                parent: trait)
+    Tag.create!(name: 'chemonym', slug: 'chemonym', color: '#000000')
     %w[feminine neuter gender-uncertain].each do |slug|
       Tag.create!(name: slug.tr('-', ' '), slug: slug, color: '#000000')
     end
@@ -97,7 +96,7 @@ class TaggingServiceTest < ActiveSupport::TestCase
       { 'slug' => 'chemonym', 'confidence' => 'high', 'basis' => 'bacter' }
     )
 
-    assert_equal(%w[chemonym trait], slugs)
+    assert_equal(%w[chemonym], slugs)
   end
 
   test 'propose replaces gender proposals with the declared gender' do
@@ -165,6 +164,66 @@ class TaggingServiceTest < ActiveSupport::TestCase
 
     assert_equal(['neuter'], genders.map { |p| p['slug'] })
     assert_equal('high', genders.first['confidence'])
+  end
+
+  # Classical proposals of TaggingService.propose for Bacillus with the
+  # etymology +fields+ ({ [component, field] => value }) and a backend
+  # returning +proposals+
+  def classical_proposals_with(*proposals, fields)
+    Tag.create!(name: 'classical', slug: 'classical', color: '#000000')
+    name = Name.find(names(:bacillus).id) # Without fields from earlier calls
+    fields.each do |(component, field), value|
+      name.set_etymology(component, field, value)
+    end
+    proposals_with(*proposals, name: name)
+      .select { |p| p['slug'] == 'classical' }
+  end
+
+  test 'propose assigns classical to a single Latin word' do
+    classical = classical_proposals_with(
+      proposal('classical', 'low'),
+      [:xx, :lang] => 'L.', [:xx, :grammar] => 'masc. n.'
+    )
+
+    assert_equal(
+      [{ 'slug' => 'classical', 'confidence' => 'high',
+         'basis' => 'L. Bacillus', 'direct' => true }],
+      classical
+    )
+  end
+
+  test 'propose assigns classical to a single Latin particle like the name' do
+    classical = classical_proposals_with(
+      [:p1, :lang] => 'L.', [:p1, :particle] => 'bacillus'
+    )
+
+    assert_equal(['high'], classical.map { |p| p['confidence'] })
+  end
+
+  test 'propose leaves classical to the model otherwise' do
+    {
+      'New Latin' => { [:xx, :lang] => 'N.L.' },
+      'Greek' => { [:xx, :lang] => 'Gr.' },
+      'another word' => { [:p1, :lang] => 'L.', [:p1, :particle] => 'bacill-' },
+      'several components' => {
+        [:xx, :lang] => 'L.', [:p1, :lang] => 'L.',
+        [:p1, :particle] => 'bacillus'
+      }
+    }.each do |label, fields|
+      classical = classical_proposals_with(proposal('classical', 'low'), fields)
+      assert_equal(['low'], classical.map { |p| p['confidence'] }, label)
+      Tag.find_by(slug: 'classical').destroy!
+    end
+  end
+
+  test 'propose leaves classical to the model for free-text etymologies' do
+    name = names(:bacillus)
+    name.etymology_text = 'L. masc. n. bacillus, a small rod'
+    name.etymology_xx_lang = 'L.'
+
+    assert_nil(TaggingService.classical_word(name))
+    name.etymology_text = nil
+    assert_equal('Bacillus', TaggingService.classical_word(name))
   end
 
   test 'genus gender prefers the accepted tag of the genus' do

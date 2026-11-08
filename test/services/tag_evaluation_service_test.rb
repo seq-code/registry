@@ -81,6 +81,23 @@ class TagEvaluationServiceTest < ActiveSupport::TestCase
     )
   end
 
+  test 'curator set follows the current structure, not stale cascades' do
+    name = names(:escherichia)
+    accepted = TagEvaluationService.status_int(:accepted)
+    rejected = TagEvaluationService.status_int(:rejected)
+    # Accepted through the cascade of tags that no longer imply them: one
+    # created by it, one accepted over a rejection
+    NameTag.create!(name: name, tag: tags(:masculine), status_int: accepted)
+           .update_column(:pre_cascade_status_int, NameTag::CREATED_BY_CASCADE)
+    NameTag.create!(name: name, tag: tags(:toponym), status_int: accepted)
+           .update_column(:pre_cascade_status_int, rejected)
+
+    decisions = TagEvaluationService.curator_decisions(name.reload)
+    assert_equal(%w[commemorative eponym], decisions['curator'])
+    assert_equal(%w[toponym], decisions['rejected'])
+    assert_empty(TagEvaluationService.gold_names(tag: 'masculine'))
+  end
+
   test 'evaluate propagates tagging errors' do
     raiser = ->(_name) { raise(TaggingService::Error, 'boom') }
     TaggingService.stub(:propose, raiser) do

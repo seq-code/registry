@@ -6,12 +6,13 @@ class TaggingService
   # Tag::CONFIDENCE_LEVELS }, expanded with implied tags (which also carry
   # 'implied_by' => [slugs]); see Tag.expand. Proposals based only on one of
   # their tag's excluded bases are dropped before expansion, so they don't
-  # imply other tags either. Gender tags are then decided from the name's
-  # own etymology whenever it declares a gender; see assign_gender
+  # imply other tags either. Gender and classical tags are then decided from
+  # the name's own etymology whenever it settles them; see assign_gender and
+  # assign_classical
   # Raises TaggingService::Error on unrecoverable failure
   def self.propose(name)
     proposals = drop_excluded_bases(backend.new.propose(name))
-    Tag.expand(assign_gender(name, proposals))
+    Tag.expand(assign_classical(name, assign_gender(name, proposals)))
   end
 
   # Gender tag slugs and the Name predicate declaring each gender
@@ -43,7 +44,8 @@ class TaggingService
 
     declared = declared_genders(name)
     if declared.size == 1
-      return others + declared_gender(declared.first, 'declared in etymology')
+      return others +
+             declared_proposal(declared.first, 'declared in etymology')
     end
 
     proposals.map do |proposal|
@@ -61,6 +63,38 @@ class TaggingService
     end.keys
   end
 
+  # Replace the classical proposals with a high-confidence one if the
+  # etymology of +name+ is a single Latin word identical to the name or
+  # epithet (see classical_word). Otherwise, the model's proposals are kept
+  def self.assign_classical(name, proposals)
+    word = classical_word(name) or return proposals
+
+    proposals.reject { |p| p['slug'] == 'classical' } +
+      declared_proposal('classical', "L. #{word}")
+  end
+
+  # The word of the only component of the structured etymology of +name+, if
+  # its language is "L." (not "N.L.") and it is identical to the name or
+  # epithet, ignoring case. Greek words are left to the model, as
+  # transliteration changes their form, and free-text etymologies are not
+  # parsed
+  def self.classical_word(name)
+    return if name.etymology_text?
+
+    components = Name.etymology_particles.select do |component|
+      Name.etymology_fields.any? do |field|
+        next if component == :xx && field == :particle # Always the epithet
+
+        name.etymology(component, field).present?
+      end
+    end
+    return unless components.size == 1 &&
+                  name.etymology(components.first, :lang) == 'L.'
+
+    word = name.etymology(components.first, :particle)
+    word if word.present? && word.casecmp?(name.last_epithet)
+  end
+
   # Whether +predicate+ holds for +name+, treating errors as false
   def self.declares_gender?(name, predicate)
     name.public_send(predicate) ? true : false
@@ -68,9 +102,9 @@ class TaggingService
     false
   end
 
-  # A high-confidence proposal of the gender tag +slug+ with +basis+, or none
-  # if the tag doesn't exist
-  def self.declared_gender(slug, basis)
+  # A high-confidence proposal of the tag +slug+ decided from the etymology,
+  # with +basis+, or none if the tag doesn't exist
+  def self.declared_proposal(slug, basis)
     return [] unless Tag.exists?(slug: slug)
 
     [{ 'slug' => slug, 'confidence' => 'high', 'basis' => basis }]
