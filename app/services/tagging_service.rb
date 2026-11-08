@@ -92,23 +92,29 @@ class TaggingService
     end.keys
   end
 
-  # Replace the classical proposals with a high-confidence one if the
-  # etymology of +name+ is a single Latin word identical to the name or
-  # epithet (see classical_word). Otherwise, the model's proposals are kept
+  # Replace the classical proposals with one decided from the etymology if
+  # it is a single Latin word identical to the name or epithet (see
+  # classical_component and classical_confidence). Otherwise, the model's
+  # proposals are kept
   def self.assign_classical(name, proposals)
-    word = classical_word(name) or return proposals
+    component = classical_component(name) or return proposals
 
+    word = name.etymology(component, :particle)
     proposals.reject { |p| p['slug'] == 'classical' } +
-      declared_proposal('classical', "L. #{word}")
+      declared_proposal(
+        'classical', "L. #{word}", classical_confidence(name, component)
+      )
   end
 
-  # The word of the only component of the structured etymology of +name+, if
-  # its language is "L." (not "N.L.") and it is identical to the name or
-  # epithet, ignoring case. Greek words are left to the model, as
-  # transliteration changes their form, and free-text etymologies are not
-  # parsed
-  def self.classical_word(name)
-    return if name.etymology_text?
+  # The only component of the structured etymology of +name+, if its
+  # language is "L." (not "N.L.") and its word is identical to the name or
+  # epithet, ignoring case. Only genus, species, and subspecies names are
+  # considered, as higher ranks carry rank suffixes. Greek words are left to
+  # the model, as transliteration changes their form, and free-text
+  # etymologies are not parsed
+  def self.classical_component(name)
+    return if name.etymology_text? ||
+              !Helpers::GENDER_RANKS.include?(name.rank)
 
     components = Name.etymology_particles.select do |component|
       Name.etymology_fields.any? do |field|
@@ -121,7 +127,20 @@ class TaggingService
                   name.etymology(components.first, :lang) == 'L.'
 
     word = name.etymology(components.first, :particle)
-    word if word.present? && word.casecmp?(name.last_epithet)
+    components.first if word.present? && word.casecmp?(name.last_epithet)
+  end
+
+  # High confidence if the classical +component+ of +name+ has a grammar
+  # field and its word contains no generic compound element (see
+  # Tag::GENERIC_BASES and Tag::LIVING_BASES), medium otherwise: the label
+  # "L." is sometimes given to compounds, but genuine Latin words can also
+  # contain those elements (e.g. agricola)
+  def self.classical_confidence(name, component)
+    word = name.etymology(component, :particle).downcase
+    generic = (Tag::GENERIC_BASES + Tag::LIVING_BASES).any? do |base|
+      word.include?(base)
+    end
+    name.etymology(component, :grammar).present? && !generic ? 'high' : 'medium'
   end
 
   # Whether +predicate+ holds for +name+, treating errors as false
@@ -131,12 +150,12 @@ class TaggingService
     false
   end
 
-  # A high-confidence proposal of the tag +slug+ decided from the etymology,
-  # with +basis+, or none if the tag doesn't exist
-  def self.declared_proposal(slug, basis)
+  # A proposal of the tag +slug+ decided from the etymology, with +basis+
+  # and +confidence+, or none if the tag doesn't exist
+  def self.declared_proposal(slug, basis, confidence = 'high')
     return [] unless Tag.exists?(slug: slug)
 
-    [{ 'slug' => slug, 'confidence' => 'high', 'basis' => basis }]
+    [{ 'slug' => slug, 'confidence' => confidence, 'basis' => basis }]
   end
 
   def self.backend

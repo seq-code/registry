@@ -215,12 +215,15 @@ class TaggingServiceTest < ActiveSupport::TestCase
     assert_equal('high', genders.first['confidence'])
   end
 
-  # Classical proposals of TaggingService.propose for Bacillus with the
-  # etymology +fields+ ({ [component, field] => value }) and a backend
-  # returning +proposals+
-  def classical_proposals_with(*proposals, fields)
+  # Classical proposals of TaggingService.propose for a genus called
+  # +genus+ with the etymology +fields+ ({ [component, field] => value }) and
+  # a backend returning +proposals+
+  def classical_proposals_with(*proposals, fields, genus: 'Rubidus',
+                               rank: 'genus')
     Tag.create!(name: 'classical', slug: 'classical', color: '#000000')
     name = Name.find(names(:bacillus).id) # Without fields from earlier calls
+    name.name = genus
+    name.rank = rank
     fields.each do |(component, field), value|
       name.set_etymology(component, field, value)
     end
@@ -228,35 +231,55 @@ class TaggingServiceTest < ActiveSupport::TestCase
       .select { |p| p['slug'] == 'classical' }
   end
 
+  def classical_confidence_with(fields, **options)
+    classical_proposals_with(fields, **options).map { |p| p['confidence'] }
+  end
+
   test 'propose assigns classical to a single Latin word' do
     classical = classical_proposals_with(
       proposal('classical', 'low'),
-      [:xx, :lang] => 'L.', [:xx, :grammar] => 'masc. n.'
+      { [:xx, :lang] => 'L.', [:xx, :grammar] => 'masc. adj.' }
     )
 
     assert_equal(
       [{ 'slug' => 'classical', 'confidence' => 'high',
-         'basis' => 'L. Bacillus', 'direct' => true }],
+         'basis' => 'L. Rubidus', 'direct' => true }],
       classical
     )
   end
 
   test 'propose assigns classical to a single Latin particle like the name' do
-    classical = classical_proposals_with(
-      [:p1, :lang] => 'L.', [:p1, :particle] => 'bacillus'
+    confidences = classical_confidence_with(
+      { [:p1, :lang] => 'L.', [:p1, :grammar] => 'masc. adj.',
+        [:p1, :particle] => 'rubidus' }
     )
 
-    assert_equal(['high'], classical.map { |p| p['confidence'] })
+    assert_equal(['high'], confidences)
+  end
+
+  test 'propose assigns classical at medium confidence without grammar' do
+    assert_equal(['medium'], classical_confidence_with({ [:xx, :lang] => 'L.' }))
+  end
+
+  test 'propose assigns classical at medium confidence to generic elements' do
+    fields = { [:xx, :lang] => 'L.', [:xx, :grammar] => 'masc. n.' }
+
+    %w[Agricola Bacillus Orphanbacterum Humivivens].each do |genus|
+      assert_equal(
+        ['medium'], classical_confidence_with(fields, genus: genus), genus
+      )
+      Tag.find_by(slug: 'classical').destroy!
+    end
   end
 
   test 'propose leaves classical to the model otherwise' do
     {
       'New Latin' => { [:xx, :lang] => 'N.L.' },
       'Greek' => { [:xx, :lang] => 'Gr.' },
-      'another word' => { [:p1, :lang] => 'L.', [:p1, :particle] => 'bacill-' },
+      'another word' => { [:p1, :lang] => 'L.', [:p1, :particle] => 'rubid-' },
       'several components' => {
         [:xx, :lang] => 'L.', [:p1, :lang] => 'L.',
-        [:p1, :particle] => 'bacillus'
+        [:p1, :particle] => 'rubidus'
       }
     }.each do |label, fields|
       classical = classical_proposals_with(proposal('classical', 'low'), fields)
@@ -265,14 +288,24 @@ class TaggingServiceTest < ActiveSupport::TestCase
     end
   end
 
+  test 'propose leaves classical to the model for higher ranks' do
+    classical = classical_proposals_with(
+      proposal('classical', 'low'),
+      { [:xx, :lang] => 'L.', [:xx, :grammar] => 'fem. pl. n.' },
+      genus: 'Rubidaceae', rank: 'family'
+    )
+
+    assert_equal(['low'], classical.map { |p| p['confidence'] })
+  end
+
   test 'propose leaves classical to the model for free-text etymologies' do
     name = names(:bacillus)
     name.etymology_text = 'L. masc. n. bacillus, a small rod'
     name.etymology_xx_lang = 'L.'
 
-    assert_nil(TaggingService.classical_word(name))
+    assert_nil(TaggingService.classical_component(name))
     name.etymology_text = nil
-    assert_equal('Bacillus', TaggingService.classical_word(name))
+    assert_equal(:xx, TaggingService.classical_component(name))
   end
 
   test 'genus gender prefers the accepted tag of the genus' do

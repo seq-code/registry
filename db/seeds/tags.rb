@@ -254,8 +254,8 @@ tag_seeds = [
 # Terms that never justify a tag on their own: proposals of the tag based
 # only on one of them are dropped (see TaggingService.propose). Tags not
 # listed here have no exclusions
-generic_bases = %w[bacter bacterium bacillus monas microbium archaeum]
-trait_bases = generic_bases + %w[cola vivens bios]
+generic_bases = Tag::GENERIC_BASES
+trait_bases = generic_bases + Tag::LIVING_BASES
 # Bare diminutive suffixes only (bases are matched whole, so a root with the
 # suffix, e.g. microbiellum, is kept)
 diminutive_bases = %w[
