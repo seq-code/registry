@@ -48,8 +48,8 @@ tag_seeds = [
   ['organonym', 'commemorative', '#b386c0',
    'Named after another organism or taxon',
    'The referenced entity must be another organism or taxon, not a ' \
-   'substrate or metabolic property — use `chemonym` and `phenonym` for ' \
-   'those. The name counts as an organonym even when phrased as \'from the ' \
+   'chemical substance or metabolic property — use `chemonym` or ' \
+   '`phenonym` for those. The name counts as an organonym even when phrased as \'from the ' \
    'land of X\' or \'from the X lands\', where X is an organism (e.g. ' \
    '*Bilamarchaeum*, *Burarchaeum*); any indirect place reference is ' \
    'secondary. However, when the etymology explicitly names a specific ' \
@@ -76,13 +76,15 @@ tag_seeds = [
    'Do not use for properties of the environment, the isolation source, or ' \
    'the circumstances of discovery.'],
   ['phenonym', 'trait', '#7fbf7f',
-   'Named after a phenotypic, physiological, or metabolic property of the ' \
-   'organism itself',
+   'Named after a phenotypic or physiological property of the organism ' \
+   'itself, including metabolism',
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
-   'etc. A metabolic capability (substrates used or degraded, compounds ' \
-   'produced, or processes such as nitrogen fixation or sulfur oxidation) ' \
-   'is also `chemonym`. Do NOT use for properties of the environment, the isolation ' \
-   'source, or the circumstances of discovery. Generic suffixes denoting a ' \
+   'and metabolism (substrates used or degraded, compounds produced, or ' \
+   'processes such as nitrogen fixation or fermentation). Independent of ' \
+   '`chemonym`: a metabolism naming a substance or particle (e.g. ' \
+   'sulfur-metabolizing, electron-eating) is both, and one naming none ' \
+   '(e.g. fermenting) is only `phenonym`. Do NOT use for properties of ' \
+   'the environment, the isolation source, or the circumstances of discovery. Generic suffixes denoting a ' \
    'microorganism in general (e.g. *-bacter*, *-bacterium*, *-bacillus*, ' \
    '*-monas*, *-microbium*, *-archaeum*) never justify this tag at any ' \
    'confidence level. Shape suffixes (e.g. *-coccus*, *-spirillum*, ' \
@@ -100,11 +102,14 @@ tag_seeds = [
    '*ubiqueversans*) are not organismal traits; do not assign this tag or ' \
    '`trait` for them.'],
   ['chemonym', 'trait', '#7fbf7f',
-   'Named after a chemical compound or element, or a metabolic capability ' \
-   'of the organism (substrates used or degraded, compounds produced, or ' \
-   'processes such as nitrogen fixation or sulfur oxidation)',
-   'The chemical or metabolic property must be of the organism itself, not ' \
-   'of its environment. A metabolic capability is also `phenonym`.'],
+   'Named after a chemical substance or particle (element, ion, compound, ' \
+   'functional group, chemical mixture such as oil or salt, or a particle ' \
+   'such as the electron)',
+   'Decide by what the root names, not by what it says about the ' \
+   'organism. Independent of `phenonym`: a substance in the habitat (e.g. ' \
+   'of oil sand, belonging to salt) is only `chemonym`, and a metabolism ' \
+   'naming a substance or particle (e.g. sulfur-metabolizing, ' \
+   'electron-eating) is both.'],
 
   ['formed', nil, '#a8551c',
    'Name whose construction is the defining feature',

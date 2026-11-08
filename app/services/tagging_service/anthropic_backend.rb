@@ -77,10 +77,18 @@ class TaggingService::AnthropicBackend
         low. Likewise, a root describing where or how the organism lives
         (e.g. vivens, living, in a habitat compound) is `econym`, not
         `phenonym`.
-      - Names referring to a metabolic capability of the organism
-        (substrates it uses or degrades, compounds it produces, or processes
-        such as nitrogen fixation or sulfur oxidation) get both `chemonym`
-        and `phenonym`, plus `trait`.
+      - `chemonym` and `phenonym` are independent of each other:
+        - `chemonym`: the name refers to a chemical substance or particle
+          (element, ion, compound, functional group, chemical mixture such
+          as oil or salt, or a particle such as the electron). Decide by
+          what the root names, not by what it says about the organism.
+        - `phenonym`: the name describes a phenotypic or physiological
+          property of the organism itself, including metabolism (substrates
+          used or degraded, compounds produced, or processes such as
+          nitrogen fixation or fermentation).
+        For example, "sulfur-metabolizing" and "electron-eating" get both,
+        "fermenting" gets only `phenonym`, and "of oil sand" or "belonging
+        to salt" (habitats) get only `chemonym`.
       - `classical` applies only to a name or epithet that is a single word
         from a dormant language, used largely unmodified. A compound or
         neologism is not `classical`, even when every root is classical
