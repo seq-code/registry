@@ -36,13 +36,33 @@ class TaggingService::AnthropicBackend
       ### Gender tags — assign ONLY for genus, species, or subspecies ranks
       Assign at most one of:
       - masculine, feminine, neuter, gender-uncertain
-      `gender-uncertain` applies when masc. and fem. forms are identical
-      (e.g. most participles) or when the protologue explicitly notes
-      uncertainty.
-      Endings shared between genders (e.g. -orum, -i, -um in masculine and
-      neuter second-declension forms) do not determine gender on their own.
-      Without an explicit statement in the etymology or the known gender of
-      the referenced noun, assign no gender tag.
+      For these ranks, always try to infer the gender of the name (the genus
+      name, or the epithet of a species or subspecies), even when the
+      etymology does not state it. Apply the first of these rules that
+      resolves it:
+      1. A gender stated in the etymology for the name itself is
+         authoritative. A statement of several genders (e.g. "masc. / fem.
+         adj.") only means the form is shared; apply the rules below.
+      2. An adjectival or participial epithet, including present participles
+         in -ans or -ens, takes the gender of the genus it is combined with
+         (see "Genus gender" below).
+      3. An epithet that is a noun in the genitive takes the gender of that
+         noun, not of the genus:
+         - If the etymology names the noun in the nominative (e.g. "of
+           Sargassum", "of the prawn genus Penaeus"), infer the gender from
+           that nominative, including plurals (e.g. Crinocheta, a neuter
+           plural).
+         - A bare second-declension genitive in -i is ambiguous between -us
+           (masculine) and -um (neuter); do not default to masculine.
+         - Genitives of personal names in -i or -ii are masculine, and in
+           -ae or -iae feminine.
+         - Otherwise, use the standard gender of the Latin or Greek noun
+           (e.g. abyssus is feminine, termes is masculine).
+      4. A noun in apposition takes its own gender.
+      Use gender-uncertain only when none of these rules resolves the gender
+      (e.g. an adjectival epithet whose genus gender is unknown, or a bare
+      genitive in -i whose nominative is not given). A gender not stated in
+      the etymology for the name itself takes at most medium confidence.
 
       ## Rules
       - Assign ALL tags that apply; they are not mutually exclusive
@@ -57,6 +77,15 @@ class TaggingService::AnthropicBackend
         low. Likewise, a root describing where or how the organism lives
         (e.g. vivens, living, in a habitat compound) is `econym`, not
         `phenonym`.
+      - Names referring to a metabolic capability of the organism
+        (substrates it uses or degrades, compounds it produces, or processes
+        such as nitrogen fixation or sulfur oxidation) get both `chemonym`
+        and `phenonym`, plus `trait`.
+      - `classical` applies only to a name or epithet that is a single word
+        from a dormant language, used largely unmodified. A compound or
+        neologism is not `classical`, even when every root is classical
+        (e.g. Elulimicrobium). If you propose `classical` for a compound at
+        all, use low confidence.
       - The etymology is authoritative: when it explicitly states a gender, a
         formation type (e.g. "arbitrary name"), or the source of a reference,
         follow it even if the word's form suggests otherwise.
@@ -67,18 +96,34 @@ class TaggingService::AnthropicBackend
         stated, or the name could plausibly fit other categories. When
         confidence would be low, prefer omitting the tag — a missed tag is
         less harmful than a wrong one, since proposals are reviewed by
-        curators.
+        curators. This does not apply to gender tags, which should always be
+        assigned for genus, species, and subspecies ranks (see above).
       - For every tag, set `basis` to the specific root, word, or name in the
         etymology on which the tag is based, written as it appears in the
         etymology (e.g. `Svalbard`, `telma`, `Vincent Gauci`, `ANSTO`). Use
-        the root or word itself, not its gloss or grammar. If a tag has no
+        the root or word itself, not its gloss or grammar. For a gender
+        taken from the genus, use the genus name. If any other tag has no
         specific basis in the etymology, do not propose it.
 
       ## Name to tag
       Name: #{name.name}
       Rank: #{name.rank}
       Etymology: #{etym}
+      #{genus_gender_line(name)}
     PROMPT
+  end
+
+  # Gender of the genus for species and subspecies (see the gender rules of
+  # the prompt), or nil for other ranks
+  def genus_gender_line(name)
+    return unless %w[species subspecies].include?(name.rank)
+
+    slug, source = genus_gender(name)
+    if slug
+      "Genus gender: #{slug} (#{source})"
+    else
+      'Genus gender: unknown'
+    end
   end
 
   # Tag definitions from the database, with sub-tags nested and marked under

@@ -119,17 +119,16 @@ class TaggingServiceTest < ActiveSupport::TestCase
     assert_equal('high', genders.first['confidence'])
   end
 
-  test 'propose assigns gender-uncertain for several declared genders' do
+  test 'propose caps gender proposals for several declared genders' do
+    # e.g. "masc. / fem. adj.": the form is shared, so the genus decides
     genders = gender_proposals_with(
       proposal('feminine', 'high'),
       rank: 'species', declared: %w[masculine feminine]
     )
 
-    assert_equal(['gender-uncertain'], genders.map { |p| p['slug'] })
-    assert_equal('high', genders.first['confidence'])
-    assert_equal(
-      'declared in etymology (multiple genders)', genders.first['basis']
-    )
+    assert_equal(['feminine'], genders.map { |p| p['slug'] })
+    assert_equal('medium', genders.first['confidence'])
+    assert_equal(true, genders.first['capped'])
   end
 
   test 'propose caps high gender proposals if no gender is declared' do
@@ -166,5 +165,25 @@ class TaggingServiceTest < ActiveSupport::TestCase
 
     assert_equal(['neuter'], genders.map { |p| p['slug'] })
     assert_equal('high', genders.first['confidence'])
+  end
+
+  test 'genus gender prefers the accepted tag of the genus' do
+    helpers = Object.new.extend(TaggingService::Helpers)
+    genus = names(:escherichia)
+    species = names(:escherichia_coli)
+    assert_nil(helpers.genus_gender(species))
+    assert_nil(helpers.genus_gender(genus))
+
+    genus.update_column(:etymology_xx_grammar, 'fem. n.')
+    assert_equal(
+      ['feminine', 'declared in the etymology of Escherichia'],
+      helpers.genus_gender(Name.find(species.id))
+    )
+
+    NameTag.create!(name: genus, tag: tags(:masculine), status_int: 1)
+    assert_equal(
+      ['masculine', 'accepted tag of Escherichia'],
+      helpers.genus_gender(Name.find(species.id))
+    )
   end
 end

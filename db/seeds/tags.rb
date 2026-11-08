@@ -48,7 +48,7 @@ tag_seeds = [
   ['organonym', 'commemorative', '#b386c0',
    'Named after another organism or taxon',
    'The referenced entity must be another organism or taxon, not a ' \
-   'substrate or metabolic property — use `phenonym` or `chemonym` for ' \
+   'substrate or metabolic property — use `chemonym` and `phenonym` for ' \
    'those. The name counts as an organonym even when phrased as \'from the ' \
    'land of X\' or \'from the X lands\', where X is an organism (e.g. ' \
    '*Bilamarchaeum*, *Burarchaeum*); any indirect place reference is ' \
@@ -76,10 +76,12 @@ tag_seeds = [
    'Do not use for properties of the environment, the isolation source, or ' \
    'the circumstances of discovery.'],
   ['phenonym', 'trait', '#7fbf7f',
-   'Named after a phenotypic or physiological property of the organism ' \
-   'itself',
+   'Named after a phenotypic, physiological, or metabolic property of the ' \
+   'organism itself',
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
-   'etc. Do NOT use for properties of the environment, the isolation ' \
+   'etc. A metabolic capability (substrates used or degraded, compounds ' \
+   'produced, or processes such as nitrogen fixation or sulfur oxidation) ' \
+   'is also `chemonym`. Do NOT use for properties of the environment, the isolation ' \
    'source, or the circumstances of discovery. Generic suffixes denoting a ' \
    'microorganism in general (e.g. *-bacter*, *-bacterium*, *-bacillus*, ' \
    '*-monas*, *-microbium*, *-archaeum*) never justify this tag at any ' \
@@ -98,9 +100,11 @@ tag_seeds = [
    '*ubiqueversans*) are not organismal traits; do not assign this tag or ' \
    '`trait` for them.'],
   ['chemonym', 'trait', '#7fbf7f',
-   'Named after a chemical compound, element, or metabolic property',
+   'Named after a chemical compound or element, or a metabolic capability ' \
+   'of the organism (substrates used or degraded, compounds produced, or ' \
+   'processes such as nitrogen fixation or sulfur oxidation)',
    'The chemical or metabolic property must be of the organism itself, not ' \
-   'of its environment.'],
+   'of its environment. A metabolic capability is also `phenonym`.'],
 
   ['formed', nil, '#a8551c',
    'Name whose construction is the defining feature',
@@ -162,23 +166,26 @@ tag_seeds = [
    'Norongarragal clan; Tiddalik). Can co-occur with `vernacular`, ' \
    '`ethnonym`, `mythonym`, and content tags.'],
   ['classical', nil, '#5d4037',
-   'Epithet is a direct word from a dormant scholarly language used ' \
-   'largely unmodified',
+   'Name or epithet is a single word from a dormant scholarly language, ' \
+   'used largely unmodified',
    'The word must appear in classical sources largely unmodified — not ' \
-   'merely constructed from classical roots. New Latin coinages built from ' \
-   'Latin or Greek components (e.g. *oxygeniifera*, *diazotrophica*, ' \
-   '*Methylomirabilis*) are NOT classical even if every root is Latin or ' \
-   'Greek. Typical markers of New Latin construction: compound roots joined ' \
+   'merely constructed from classical roots. Compounds and New Latin ' \
+   'coinages built from Latin or Greek components (e.g. *oxygeniifera*, ' \
+   '*diazotrophica*, *Methylomirabilis*, *Elulimicrobium*) are NOT ' \
+   'classical even if every root is Latin or Greek; if proposed for a ' \
+   'compound at all, use low confidence. Typical markers of New Latin construction: compound roots joined ' \
    'with connecting vowels, -fer/-vorus/-philus/-tropha suffixes on ' \
    'non-classical stems, or any term not found in dictionaries of ' \
    'classical Latin, Ancient Greek, Sanskrit, Akkadian, or other dormant ' \
    'languages.'],
   ['masculine', nil, '#6c757d',
    'Grammatically masculine',
-   'Assign only for genus, species, or subspecies ranks. Assign only when ' \
-   'the gender is explicitly stated in the grammar field, or unambiguously ' \
-   'determinable from the Latin/Greek declension of the referenced noun or ' \
-   'root. Never infer from context alone.'],
+   'Assign only for genus, species, or subspecies ranks. A gender stated ' \
+   'for the name itself is authoritative. Otherwise, adjectival and ' \
+   'participial epithets take the gender of the genus, genitive noun ' \
+   'epithets the gender of the noun in the genitive, and nouns in ' \
+   'apposition their own gender. A gender not stated for the name itself ' \
+   'takes at most medium confidence.'],
   ['feminine', nil, '#6c757d',
    'Grammatically feminine',
    'Same rules as `masculine`.'],
@@ -187,12 +194,13 @@ tag_seeds = [
    'Same rules as `masculine`.'],
   ['gender-uncertain', nil, '#adb5bd',
    'Gender ambiguous or explicitly uncertain',
-   'Use when masc. and fem. forms are identical (e.g. most participles) or ' \
-   'when the protologue explicitly notes uncertainty. Do not use when the ' \
-   'gender is determinable in principle but not from the etymology as ' \
-   'written — in that case assign no gender tag. Do not use when the ' \
-   'etymology explicitly states the gender; an explicit statement is ' \
-   'authoritative.']
+   'Use only when no gender rule resolves the gender (e.g. an adjectival ' \
+   'epithet whose genus gender is unknown, or a bare genitive in -i whose ' \
+   'nominative is not given), or when the protologue explicitly notes ' \
+   'uncertainty. Participles and adjectives with forms shared between ' \
+   'genders take the gender of the genus and are not gender-uncertain by ' \
+   'themselves. Do not use when the etymology states a single gender for ' \
+   'the name; an explicit statement is authoritative.']
 ]
 
 # Terms that never justify a tag on their own: proposals of the tag based

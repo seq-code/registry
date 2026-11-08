@@ -15,8 +15,7 @@ class TaggingService::AnthropicBackendTest < ActiveSupport::TestCase
     end
   end
 
-  def propose_with(body)
-    name = names(:bacillus)
+  def propose_with(body, name = names(:bacillus))
     name.etymology_xx_description = 'a small rod'
     requests = []
     backend = TaggingService::AnthropicBackend.new
@@ -83,5 +82,21 @@ class TaggingService::AnthropicBackendTest < ActiveSupport::TestCase
       propose_with(text_body({ 'tags' => [] }, stop_reason: 'max_tokens'))
     end
     assert_match('truncated', error.message)
+  end
+
+  test 'prompt passes the genus gender for species only' do
+    prompt = lambda do |name|
+      _, requests = propose_with(text_body({ 'tags' => [] }), name)
+      JSON.parse(requests.first.body).dig('messages', 0, 'content')
+    end
+
+    assert_no_match(/^Genus gender:/, prompt[names(:escherichia)])
+    assert_match(/^Genus gender: unknown$/, prompt[names(:escherichia_coli)])
+
+    names(:escherichia).update_column(:etymology_xx_grammar, 'fem. n.')
+    assert_match(
+      /^Genus gender: feminine \(declared in the etymology of Escherichia\)$/,
+      prompt[Name.find(names(:escherichia_coli).id)]
+    )
   end
 end
