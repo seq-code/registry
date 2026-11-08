@@ -604,6 +604,20 @@ ActiveRecord::Schema.define(version: 2026_11_06_110000) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "versions", force: :cascade do |t|
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.string "owner_type", null: false
+    t.bigint "owner_id", null: false
+    t.bigint "user_id"
+    t.string "operation", null: false
+    t.jsonb "changeset", null: false
+    t.datetime "created_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_versions_on_owner"
+    t.index ["record_type", "record_id"], name: "index_versions_on_record"
+    t.index ["user_id"], name: "index_versions_on_user_id"
+  end
+
   create_table "wikispecies_credentials", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.text "encrypted_access_token", null: false
@@ -656,5 +670,6 @@ ActiveRecord::Schema.define(version: 2026_11_06_110000) do
   add_foreign_key "tag_implications", "tags", column: "implied_tag_id"
   add_foreign_key "tags", "tags", column: "parent_id"
   add_foreign_key "tutorials", "users"
+  add_foreign_key "versions", "users"
   add_foreign_key "wikispecies_credentials", "users"
 end

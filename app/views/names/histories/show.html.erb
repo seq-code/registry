@@ -1,0 +1,64 @@
+<% provide(:title, "History of #{@name.abbr_name_raw}") %>
+
+<h1>History of <%= @name.name_html %></h1>
+<p><%= link_to('Back to name', @name) %></p>
+
+<% if @versions.empty? %>
+  <p class="text-muted">No history has been recorded for this name.</p>
+<% else %>
+  <div class="table-responsive">
+    <table class="table table-sm name-history-table">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">By</th>
+          <th scope="col">Attribute</th>
+          <th scope="col">Before</th>
+          <th scope="col">After</th>
+        </tr>
+      </thead>
+      <% @versions.each do |version| %>
+        <% changes = @history.changes_for(version) %>
+        <% record_type = history_record_type(version) %>
+        <% record_change = record_type != 'Name' %>
+        <tbody class="name-history-version" data-version-id="<%= version.id %>">
+          <% if record_change %>
+            <tr class="name-history-record">
+              <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size + 1 %>">
+                <time datetime="<%= version.created_at.iso8601 %>">
+                  <%= version.created_at.strftime('%F %H:%M %Z') %>
+                </time>
+              </th>
+              <td class="name-history-author" rowspan="<%= changes.size + 1 %>">
+                <%= render('names/histories/author', version: version) %>
+              </td>
+              <th colspan="3">
+                <%= history_record_heading(version) %>
+              </th>
+            </tr>
+          <% end %>
+          <% changes.each_with_index do |(attribute, values), index| %>
+            <% before, after = history_values(values, attribute: attribute, record_type: record_type) %>
+            <tr class="name-history-change">
+              <% if index.zero? && !record_change %>
+                <th class="name-history-date" scope="rowgroup" rowspan="<%= changes.size %>">
+                  <time datetime="<%= version.created_at.iso8601 %>">
+                    <%= version.created_at.strftime('%F %H:%M %Z') %>
+                  </time>
+                </th>
+                <td class="name-history-author" rowspan="<%= changes.size %>">
+                  <%= render('names/histories/author', version: version) %>
+                </td>
+              <% end %>
+              <th scope="row"><%= record_type.constantize.human_attribute_name(attribute) %></th>
+              <td class="name-history-before"><%= before %></td>
+              <td class="name-history-after"><%= after %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      <% end %>
+    </table>
+  </div>
+<% end %>
+
+<%= will_paginate(@versions) %>
