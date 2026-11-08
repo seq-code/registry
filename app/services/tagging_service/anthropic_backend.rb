@@ -118,9 +118,11 @@ class TaggingService::AnthropicBackend
     req.body = JSON.generate(
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      temperature: 0,
+      # temperature: 0, <- Not compatible with Sonnet 5.5
       messages: messages,
-      output_config: { format: { type: 'json_schema', schema: response_schema } }
+      output_config: {
+        format: { type: 'json_schema', schema: response_schema }
+      }
     )
 
     http = Net::HTTP.new(API_URI.host, API_URI.port)
