@@ -262,7 +262,19 @@ class TaggingServiceTest < ActiveSupport::TestCase
     end
   end
 
-  test 'propose ignores gender markers not ending the basis' do
+  test 'propose takes the last gender marker before trailing text' do
+    {
+      'grumulus, -i, m. (genitive noun)' => 'masculine',
+      'Penaeus, -i, m., the prawn genus' => 'masculine',
+      'sedimen, -inis, n. (of sediment, f. sense)' => 'neuter'
+    }.each do |basis, gender|
+      genders = epithet_genders_with(proposal('feminine', 'medium', basis))
+
+      assert_equal([[gender, 'medium']], genders, basis)
+    end
+  end
+
+  test 'propose ignores gender markers not following a comma' do
     genders = epithet_genders_with(proposal('masculine', 'low', 'abyssi'))
     assert_equal([%w[masculine low]], genders)
 
