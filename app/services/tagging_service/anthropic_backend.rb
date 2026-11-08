@@ -57,6 +57,11 @@ class TaggingService::AnthropicBackend
            plural).
          - A bare second-declension genitive in -i is ambiguous between -us
            (masculine) and -um (neuter); do not default to masculine.
+         - Genitive plural endings do not indicate the noun's gender by
+           themselves: third-declension -um can be any gender (e.g.
+           termitum, from termes, -itis, m.), -orum is masculine or neuter,
+           and -arum is usually feminine. Infer the gender from the
+           nominative (stated or known), not from the ending.
          - Genitives of personal names in -i or -ii are masculine, and in
            -ae or -iae feminine.
          - Otherwise, use the standard gender of the Latin or Greek noun
