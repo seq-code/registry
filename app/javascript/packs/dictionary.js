@@ -1,4 +1,26 @@
 const perseus = "https://www.perseus.tufts.edu/hopper/";
+// Perseus doesn't allow cross-origin requests, so lookups go through the
+// Registry (see DictionaryController)
+const proxy = "/dictionary/";
+
+// Word to look up for an etymology particle (without hyphens marking
+// prefixes or suffixes), or null if it isn't a single word
+function dictionary_word(part) {
+  var word = (part || "").trim().replace(/^-+|-+$/g, "");
+  return /^[\p{L}]{1,40}$/u.test(word) ? word : null;
+}
+
+// Error message of a failed lookup, as reported by the Registry
+function dictionary_error(xhr) {
+  var json = xhr.responseJSON;
+  if (json && json.error) return json.error;
+  if (xhr.status == 429) return "Too many lookups, please wait a minute";
+  return "The dictionary service is unavailable";
+}
+
+function dictionary_error_html(message) {
+  return $('<span class="text-danger ml-4"></span>').text(message);
+}
 
 function flash_modal(dict_id, target) {
   var modal = $("#" + dict_id);
@@ -41,14 +63,26 @@ function dictionary_search(dict_id, comp) {
 
 function dictionary_search_grammar(dict_id, comp, modal_body) {
   var select = "[data-behavior='dictionary'][data-id='" + dict_id + "']";
-  var part = $(select + " #name_etymology_" + comp + "_particle").val();
+  var part = dictionary_word(
+    $(select + " #name_etymology_" + comp + "_particle").val()
+  );
+  var title = '<h2>Grammatical analyses</h2>';
+  if (!part) {
+    var message = "Only single words can be looked up";
+    modal_body.children('.analyses').html(title)
+      .append(dictionary_error_html(message));
+    modal_body.children('.definition').html('<h2>Definition</h2>')
+      .append(dictionary_error_html(message));
+    return;
+  }
 
   // Grammatical options (analysis)
   $.ajax({
-    url: perseus + "xmlmorph",
+    url: proxy + "xmlmorph",
     data: { lang: 'la', lookup: part },
-    dataType: 'xml'
-  }).done(function(data) {
+    dataType: 'text'
+  }).done(function(text) {
+    var data = $.parseXML(text);
     var list = $('<ul></ul>');
     var lemmata = [];
     var texts = [];
@@ -111,10 +145,11 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
     modal_body.children('.analyses').append(list);
     if (!lemmata.includes(part)) lemmata.push(part);
     dictionary_search_definition(dict_id, comp, modal_body, lemmata[0], 1);
-  }).fail(function() {
-    modal_body.children('.analyses')
-      .html('<h2>Grammatical analyses</h2>' +
-            '<span class="text-danger ml-4">Term not found</span>');
+  }).fail(function(xhr) {
+    // Report the failure, and look up the definition of the word itself
+    modal_body.children('.analyses').html(title)
+      .append(dictionary_error_html(dictionary_error(xhr)));
+    dictionary_search_definition(dict_id, comp, modal_body, part, 1);
   });
 }
 
@@ -163,11 +198,12 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
 
   // Definition
   $.ajax({
-    url: perseus + "loadquery",
-    data: { doc: dicts[src] + ':entry=' + part }
+    url: proxy + "loadquery",
+    data: { doc: dicts[src] + ':entry=' + part },
+    dataType: 'text'
   }).done(function(data) {
-    // Fix result for embedding
-    var result = $(data);
+    // Fix result for embedding (parseHTML drops any scripts)
+    var result = $('<div></div>').append($.parseHTML(data));
     result.find("a").each(function() {
       var href = $(this).attr("href");
       $(this).attr("href", perseus + href);
@@ -201,10 +237,10 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
     );
     def.append(result);
     cont.append(def);
-  }).fail(function() {
+  }).fail(function(xhr) {
     var cont = modal_body.children('.definition')
     cont.html(title);
-    cont.append('<span class="text-danger ml-4">Term not found</span>');
+    cont.append(dictionary_error_html(dictionary_error(xhr)));
   });
 }
 

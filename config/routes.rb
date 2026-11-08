@@ -6,6 +6,11 @@ Rails.application.routes.draw do
     get 'dev/autocomplete', to: 'dev#autocomplete'
   end
 
+  # Dictionary lookups (proxy to the Perseus Digital Library)
+  get(
+    'dictionary/:service' => 'dictionary#show', as: :dictionary,
+    constraints: { service: /xmlmorph|loadquery/ }
+  )
   resources :tags do
     get :curator, on: :member
   end
