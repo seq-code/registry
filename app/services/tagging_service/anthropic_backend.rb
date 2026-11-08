@@ -45,7 +45,10 @@ class TaggingService::AnthropicBackend
          adj.") only means the form is shared; apply the rules below.
       2. An adjectival or participial epithet, including present participles
          in -ans or -ens, takes the gender of the genus it is combined with
-         (see "Genus gender" below).
+         (see "Genus gender" below). When the genus gender is not recorded,
+         infer it from the genus name itself (e.g. -coccus, -bacter, and
+         -bacillus are masculine; -monas and -ella are feminine; -bacterium
+         is neuter) rather than treating it as unknown.
       3. An epithet that is a noun in the genitive takes the gender of that
          noun, not of the genus:
          - If the etymology names the noun in the nominative (e.g. "of
@@ -62,8 +65,8 @@ class TaggingService::AnthropicBackend
       In New Latin etymologies, salt names in -as, -atis (e.g. phosphas,
       nitras, sulfas) are masculine.
       Use gender-uncertain only when none of these rules resolves the gender
-      (e.g. an adjectival epithet whose genus gender is unknown, or a bare
-      genitive in -i whose nominative is not given). A gender not stated in
+      (e.g. an adjectival epithet whose genus name does not reveal its
+      gender, or a bare genitive in -i whose nominative is not given). A gender not stated in
       the etymology for the name itself takes at most medium confidence.
 
       ## Rules
@@ -72,6 +75,18 @@ class TaggingService::AnthropicBackend
         other context that the etymology mentions only to explain the name
         (e.g. Bilamarchaeum means "turtle lands"; the study site mentioned
         is context, not a `toponym`).
+      - Hosts and habitats:
+        - A named body part or organ used as habitat (e.g. gut, rumen,
+          liver) is `econym`.
+        - A host taxon (e.g. a coral or sponge genus in -cola names) is
+          `organonym`, not `econym`.
+        - A name referring to both gets both (e.g. hominiciens, "in the
+          human gut").
+        - Mere position relative to a host (e.g. endo-, ecto-, "inside",
+          "outside") is neither.
+        - Words describing the habitat are `econym`, not `phenonym`, even
+          when formed from a verb or participle (e.g. mesodigestus,
+          "referring to a mesophilic digester").
       - Umbrella terms can be assigned even if no children terms are
       - Assign an umbrella without any of its sub-tags only when the name
         clearly fits the umbrella but none of its sub-tags applies. For
@@ -101,6 +116,8 @@ class TaggingService::AnthropicBackend
         minutus) get both `phenonym` (with `trait`) and `dimensional`.
         Assign `dimensional` on its own, without any of its sub-tags. The
         generic suffix -microbium is not a size reference.
+      - Diminutive suffixes (e.g. -ellum, -ella, -ula) are generic: they
+        never justify `phenonym` or `dimensional`.
       - `classical` applies only to a name or epithet that is a single word
         from a dormant language, used largely unmodified. A compound or
         neologism is not `classical`, even when every root is classical
@@ -142,7 +159,8 @@ class TaggingService::AnthropicBackend
     if slug
       "Genus gender: #{slug} (#{source})"
     else
-      'Genus gender: unknown'
+      genus = name.genus&.name || name.name.sub(/\ACandidatus /, '').split.first
+      "Genus gender: not recorded; infer it from the genus name #{genus}"
     end
   end
 

@@ -36,8 +36,9 @@ class TaggingService
   # +name+ itself, proposed at high confidence. Otherwise (no gender or
   # several genders declared, as in "masc. / fem. adj.", where the genus
   # decides), the model's gender proposals are kept but capped at medium
-  # confidence (carrying 'capped' => true). Ranks without grammatical gender
-  # get no gender tags at all
+  # confidence (carrying 'capped' => true), and reduced to one (see
+  # single_gender). Ranks without grammatical gender get no gender tags at
+  # all
   def self.assign_gender(name, proposals)
     others = proposals.reject { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
     return others unless Helpers::GENDER_RANKS.include?(name.rank)
@@ -48,12 +49,39 @@ class TaggingService
              declared_proposal(declared.first, 'declared in etymology')
     end
 
-    proposals.map do |proposal|
-      next proposal unless Tag::GENDER_SLUGS.include?(proposal['slug']) &&
-                           proposal['confidence'] == 'high'
+    single_gender(
+      proposals.map do |proposal|
+        next proposal unless Tag::GENDER_SLUGS.include?(proposal['slug']) &&
+                             proposal['confidence'] == 'high'
 
-      proposal.merge('confidence' => 'medium', 'capped' => true)
-    end
+        proposal.merge('confidence' => 'medium', 'capped' => true)
+      end
+    )
+  end
+
+  # Keep only the gender proposal of highest confidence, as gender tags are
+  # mutually exclusive. If several genders tie at that confidence, keep
+  # gender-uncertain instead (or no gender, if that tag doesn't exist)
+  def self.single_gender(proposals)
+    genders, others =
+      proposals.partition { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
+    return proposals if genders.map { |p| p['slug'] }.uniq.size < 2
+
+    rank = ->(p) { Tag::CONFIDENCE_LEVELS.index(p['confidence']).to_i }
+    top = genders.map(&rank).max
+    tied = genders.select { |p| rank[p] == top }
+    slugs = tied.map { |p| p['slug'] }.uniq
+    return others + [tied.first] if slugs.size == 1
+
+    uncertain = tied.find { |p| p['slug'] == 'gender-uncertain' }
+    uncertain ||= {
+      'slug' => 'gender-uncertain',
+      'confidence' => Tag::CONFIDENCE_LEVELS[top],
+      'basis' => "tie between #{slugs.join(' and ')}"
+    }.merge(tied.any? { |p| p['capped'] } ? { 'capped' => true } : {})
+    return others unless Tag.exists?(slug: 'gender-uncertain')
+
+    others + [uncertain]
   end
 
   # Gender tag slugs declared in the grammar of +name+

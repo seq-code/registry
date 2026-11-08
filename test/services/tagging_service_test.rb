@@ -148,6 +148,40 @@ class TaggingServiceTest < ActiveSupport::TestCase
     assert_nil(genders.first['capped'])
   end
 
+  test 'propose keeps only the gender proposal of highest confidence' do
+    genders = gender_proposals_with(
+      proposal('masculine', 'low'), proposal('feminine', 'medium'),
+      rank: 'species'
+    )
+
+    assert_equal(['feminine'], genders.map { |p| p['slug'] })
+  end
+
+  test 'propose replaces tied gender proposals with gender-uncertain' do
+    # Both capped to medium, so they tie
+    genders = gender_proposals_with(
+      proposal('masculine', 'high'), proposal('feminine', 'high'),
+      proposal('neuter', 'low'), rank: 'species'
+    )
+
+    assert_equal(
+      [{ 'slug' => 'gender-uncertain', 'confidence' => 'medium',
+         'basis' => 'tie between masculine and feminine', 'capped' => true,
+         'direct' => true }],
+      genders
+    )
+  end
+
+  test 'propose keeps a tied gender-uncertain proposal' do
+    genders = gender_proposals_with(
+      proposal('masculine', 'medium'),
+      proposal('gender-uncertain', 'medium', 'ciens'), rank: 'species'
+    )
+
+    assert_equal([['gender-uncertain', 'ciens']],
+                 genders.map { |p| p.values_at('slug', 'basis') })
+  end
+
   test 'propose drops gender proposals for ranks without gender' do
     genders = gender_proposals_with(
       proposal('feminine', 'high'), rank: 'family', declared: %w[feminine]

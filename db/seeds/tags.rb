@@ -33,10 +33,14 @@ tag_seeds = [
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
    '<i>lacustris</i>, <i>thermophilus</i>)',
-   'Include names that include part of an organism that define their habitat ' \
-   '(e.g., <i>Ruminimicrobium</i>). Exclude host names or taxa as ' \
-   'environments (e.g., <i>hominiciens</i>), and use instead `organonym` if ' \
-   'the name of the host is explicitly included.'],
+   'Includes a named body part or organ used as habitat (e.g. gut, rumen, ' \
+   'liver; <i>Ruminimicrobium</i>), and words describing the habitat even ' \
+   'when formed from a verb or participle (e.g. <i>mesodigestus</i>, ' \
+   'referring to a mesophilic digester), which are not `phenonym`. A host ' \
+   'taxon (e.g. a coral or sponge genus in -cola names) is `organonym`, ' \
+   'not `econym`; a name referring to both gets both (e.g. ' \
+   '<i>hominiciens</i>, in the human gut). Mere position relative to a ' \
+   'host (e.g. endo-, ecto-, inside, outside) is neither.'],
   ['fictional-place', 'geographic', '#5fa8c4',
    'Named after a fictional or mythological place',
    nil],
@@ -59,7 +63,11 @@ tag_seeds = [
    'place (e.g. a reserve, park, or site) as the basis of the name, assign ' \
    '`toponym` with high confidence and not `organonym`, even if that place ' \
    'is itself named after an organism (e.g. *Pristimantibacillus*, from ' \
-   'the Pristimantis natural reserve).'],
+   'the Pristimantis natural reserve). A host taxon (e.g. a coral or ' \
+   'sponge genus in *-cola* names) is `organonym`, not `econym`; a named ' \
+   'body part or organ of the host used as habitat is also `econym` (e.g. ' \
+   '*hominiciens*, in the human gut). Mere position relative to a host ' \
+   '(e.g. *endo-*, *ecto-*, inside, outside) is neither.'],
   ['institutonym', 'commemorative', '#b386c0',
    'Named after an institution, project, or organization',
    'When the institution is referenced through its acronym (e.g. ANSTO, ' \
@@ -93,14 +101,17 @@ tag_seeds = [
    'the environment, the isolation source, or the circumstances of discovery. Generic suffixes denoting a ' \
    'microorganism in general (e.g. *-bacter*, *-bacterium*, *-bacillus*, ' \
    '*-monas*, *-microbium*, *-archaeum*) never justify this tag at any ' \
-   'confidence level. Shape suffixes (e.g. *-coccus*, *-spirillum*, ' \
+   'confidence level, and neither do diminutive suffixes (e.g. *-ellum*, ' \
+   '*-ella*, *-ula*). Shape suffixes (e.g. *-coccus*, *-spirillum*, ' \
    '*-vibrio*) justify it only with medium confidence when they stand ' \
    'alone. A shape term ' \
    'modified by a descriptive element, or a specific morphological term ' \
    'such as *-thrix*, justifies it normally. Similarly, do not assign for ' \
    'terms that describe the organism\'s environment or ecological role ' \
    'rather than its own properties (e.g. *pelagicus* = of the open sea is ' \
-   '`econym`, not `phenonym`). Do not assign for metaphorical or poetic ' \
+   '`econym`, not `phenonym`), even when formed from a verb or participle ' \
+   '(e.g. *mesodigestus*, referring to a mesophilic digester). Do not ' \
+   'assign for metaphorical or poetic ' \
    'epithets that describe the circumstances of discovery or a narrative ' \
    'about the organism rather than its measurable properties (e.g. ' \
    '*audaxviator* = bold traveler). Terms describing abundance, dominance, ' \
@@ -124,7 +135,9 @@ tag_seeds = [
    'of the organism',
    'Assign alone, without any sub-tag, for names referring to the size of ' \
    'the organism (e.g. *nano-*, *micro-*, *minutus*), together with ' \
-   '`phenonym`. The generic suffix *-microbium* is not a size reference.'],
+   '`phenonym`. The generic suffix *-microbium* is not a size reference, ' \
+   'and diminutive suffixes (e.g. *-ellum*, *-ella*, *-ula*) are generic ' \
+   'and do not justify this tag.'],
   ['chrononym', 'dimensional', '#7986cb',
    'Named after a time, period, season, or calendar unit',
    'Includes geological eras, seasons, times of day, and calendar-specific ' \
@@ -197,7 +210,8 @@ tag_seeds = [
    'Grammatically masculine',
    'Assign only for genus, species, or subspecies ranks. A gender stated ' \
    'for the name itself is authoritative. Otherwise, adjectival and ' \
-   'participial epithets take the gender of the genus, genitive noun ' \
+   'participial epithets take the gender of the genus (inferred from the ' \
+   'genus name if not recorded), genitive noun ' \
    'epithets the gender of the noun in the genitive, and nouns in ' \
    'apposition their own gender. A gender not stated for the name itself ' \
    'takes at most medium confidence. In New Latin, salt names in -as, ' \
@@ -211,7 +225,8 @@ tag_seeds = [
   ['gender-uncertain', nil, '#adb5bd',
    'Gender ambiguous or explicitly uncertain',
    'Use only when no gender rule resolves the gender (e.g. an adjectival ' \
-   'epithet whose genus gender is unknown, or a bare genitive in -i whose ' \
+   'epithet whose genus name does not reveal its gender, or a bare ' \
+   'genitive in -i whose ' \
    'nominative is not given), or when the protologue explicitly notes ' \
    'uncertainty. Participles and adjectives with forms shared between ' \
    'genders take the gender of the genus and are not gender-uncertain by ' \

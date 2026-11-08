@@ -91,7 +91,10 @@ class TaggingService::AnthropicBackendTest < ActiveSupport::TestCase
     end
 
     assert_no_match(/^Genus gender:/, prompt[names(:escherichia)])
-    assert_match(/^Genus gender: unknown$/, prompt[names(:escherichia_coli)])
+    assert_match(
+      /^Genus gender: not recorded; infer it from the genus name Escherichia$/,
+      prompt[names(:escherichia_coli)]
+    )
 
     names(:escherichia).update_column(:etymology_xx_grammar, 'fem. n.')
     assert_match(

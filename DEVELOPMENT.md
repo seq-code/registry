@@ -87,3 +87,20 @@ Name.where(id: with['trait']).where(id: with['chemonym'])
       puts "#{name.name}\t/names/#{name.id}\ttrait accepted #{how}"
     end
 ```
+
+### Review names with several gender tags
+
+Gender tags are mutually exclusive: accepting one removes the other gender
+tags on the name, but records created before that rule may still overlap. To
+list the names with more than one gender tag (of any status), run in
+`bin/rails console`:
+
+```ruby
+genders = NameTag.joins(:tag).where(tags: { slug: Tag::GENDER_SLUGS })
+ids = genders.group(:name_id).having('COUNT(*) > 1').select(:name_id)
+Name.where(id: ids).includes(name_tags: :tag).order(:name).each do |name|
+  tags = name.name_tags.select { |nt| nt.tag.gender? }
+                       .map { |nt| "#{nt.tag.slug} (#{nt.status})" }
+  puts "#{name.name}\t/names/#{name.id}\t#{tags.join(', ')}"
+end
+```

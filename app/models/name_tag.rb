@@ -32,6 +32,17 @@ class NameTag < ApplicationRecord
     unless: -> { cascading || skip_implication_cascade }
   )
 
+  # Rejecting an umbrella tag rejects its sub-tags proposed or accepted on
+  # the same name (the converse of accepting a sub-tag)
+  after_save(:cascade_rejection, if: :became_rejected?, unless: :cascading)
+
+  # Gender tags are mutually exclusive: accepting one removes the other
+  # gender tags on the name, and adding one as proposed removes the other
+  # proposed ones (leaving curator decisions in place)
+  after_save(
+    :remove_other_genders, if: :gender_added_or_accepted?, unless: :cascading
+  )
+
   class << self
     def status
       %i[proposed accepted rejected]
@@ -94,6 +105,14 @@ class NameTag < ApplicationRecord
 
   def became_accepted?
     saved_change_to_status_int? && accepted?
+  end
+
+  def became_rejected?
+    saved_change_to_status_int? && rejected?
+  end
+
+  def gender_added_or_accepted?
+    tag.gender? && (previously_new_record? || became_accepted?)
   end
 
   def stopped_being_accepted?
@@ -163,6 +182,30 @@ class NameTag < ApplicationRecord
     end
   end
 
+  # Reject the sub-tags of this tag proposed or accepted on the name, and
+  # revert the tags auto-accepted through those that were accepted
+  def cascade_rejection
+    slug = tag.slug
+    name_tags_for(tag.children.select(:id))
+      .where(status_int: [0, 1]).each do |record|
+      was_accepted = record.accepted?
+      record.cascade_change!(2, nil, "rejected via #{slug}")
+      record.cascade_undo if was_accepted
+    end
+  end
+
+  def remove_other_genders
+    others =
+      NameTag.where(name_id: name_id)
+             .where(tag_id: Tag.where(slug: Tag::GENDER_SLUGS).select(:id))
+             .where.not(id: id)
+    others = others.where(status_int: 0) unless accepted?
+    others.each do |record|
+      record.cascading = true
+      record.destroy!
+    end
+  end
+
   def cascade_proposal
     slug = tag.slug
     ids = implied_tag_ids
@@ -174,4 +217,7 @@ class NameTag < ApplicationRecord
       )
     end
   end
+
+  # Also called on the sub-tags rejected by cascade_rejection
+  protected(:cascade_undo)
 end
