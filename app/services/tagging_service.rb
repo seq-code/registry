@@ -134,7 +134,7 @@ class TaggingService
   # it (e.g. "grumulus, -i, m. (genitive noun)"), or none
   def self.marked_genders(basis)
     marker = /(?:masc|fem|neut|m|f|n)\./i
-    markers = basis.gsub(/\([^)]*\)/, '')
+    markers = basis.gsub(/\([^()]*\)/, '')
                    .scan(%r{,\s*(#{marker}(?:\s*(?:/|or|and)\s*#{marker})*)}i)
                    .last&.first
     return [] unless markers
