@@ -60,8 +60,10 @@ class TaggingService
   end
 
   # Keep only the gender proposal of highest confidence, as gender tags are
-  # mutually exclusive. If several genders tie at that confidence, keep
-  # gender-uncertain instead (or no gender, if that tag doesn't exist)
+  # mutually exclusive. If several genders tie at that confidence, keep the
+  # model's gender-uncertain proposal among them or, failing that, propose
+  # gender-uncertain at low confidence, as the tie means the model is unsure
+  # (or no gender, if that tag doesn't exist)
   def self.single_gender(proposals)
     genders, others =
       proposals.partition { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
@@ -75,10 +77,9 @@ class TaggingService
 
     uncertain = tied.find { |p| p['slug'] == 'gender-uncertain' }
     uncertain ||= {
-      'slug' => 'gender-uncertain',
-      'confidence' => Tag::CONFIDENCE_LEVELS[top],
+      'slug' => 'gender-uncertain', 'confidence' => 'low',
       'basis' => "tie between #{slugs.join(' and ')}"
-    }.merge(tied.any? { |p| p['capped'] } ? { 'capped' => true } : {})
+    }
     return others unless Tag.exists?(slug: 'gender-uncertain')
 
     others + [uncertain]

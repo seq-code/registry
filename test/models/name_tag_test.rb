@@ -282,6 +282,44 @@ class NameTagTest < ActiveSupport::TestCase
     assert_predicate(name_tag('eponym'), :rejected?)
   end
 
+  test 'rejecting a tag rejects the tags implying it' do
+    tag_name('mythonym', 1) # Also accepts commemorative and mythological
+
+    name_tag('mythological').update!(status_int: 2)
+
+    assert_predicate(name_tag('mythonym'), :rejected?)
+    assert_match('rejected via mythological', name_tag('mythonym').notes)
+    # Created through mythonym only, so it is reverted
+    assert_nil(name_tag('commemorative'))
+  end
+
+  test 'rejecting a tag rejects the tags implying it through a chain' do
+    Tag.find_by!(slug: 'mythological').implied_tags << tags(:toponym)
+    tag_name('mythonym', 1) # Also accepts mythological, toponym, and more
+    tag_name('eponym', 1)
+    assert_predicate(name_tag('toponym'), :accepted?)
+
+    name_tag('toponym').update!(status_int: 2)
+
+    %w[mythonym mythological].each do |slug|
+      assert_predicate(name_tag(slug), :rejected?, slug)
+      assert_match('rejected via toponym', name_tag(slug).notes)
+    end
+    # Still implied by the accepted eponym
+    assert_predicate(name_tag('commemorative'), :accepted?)
+    assert_predicate(name_tag('eponym'), :accepted?)
+    assert_nil(name_tag('geographic'))
+  end
+
+  test 'rejecting a tag leaves rejected tags implying it unchanged' do
+    tag_name('mythonym', 2)
+    tag_name('mythological', 1)
+
+    name_tag('mythological').update!(status_int: 2)
+
+    assert_nil(name_tag('mythonym').notes)
+  end
+
   test 'accepting a gender tag removes the other gender tags' do
     create_gender_tags
     tag_name('masculine', 0)

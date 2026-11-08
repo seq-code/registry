@@ -99,6 +99,21 @@ class TaggingServiceTest < ActiveSupport::TestCase
     assert_equal(%w[chemonym], slugs)
   end
 
+  test 'propose drops seeded diminutive suffixes only as bare bases' do
+    capture_io { load(Rails.root.join('db', 'seeds', 'tags.rb')) }
+
+    assert_empty(propose_with(proposal('phenonym', 'high', '-ella')))
+    assert_empty(propose_with(proposal('dimensional', 'high', 'ulum')))
+    assert_equal(
+      %w[phenonym trait],
+      propose_with(proposal('phenonym', 'high', 'microbiellum'))
+    )
+    assert_equal(
+      %w[lifestyle trait],
+      propose_with(proposal('lifestyle', 'high', 'socius'))
+    )
+  end
+
   test 'propose replaces gender proposals with the declared gender' do
     genders = gender_proposals_with(
       proposal('masculine', 'high'), rank: 'species', declared: %w[neuter]
@@ -164,10 +179,10 @@ class TaggingServiceTest < ActiveSupport::TestCase
       proposal('neuter', 'low'), rank: 'species'
     )
 
+    # Low confidence: the tie means the model is unsure
     assert_equal(
-      [{ 'slug' => 'gender-uncertain', 'confidence' => 'medium',
-         'basis' => 'tie between masculine and feminine', 'capped' => true,
-         'direct' => true }],
+      [{ 'slug' => 'gender-uncertain', 'confidence' => 'low',
+         'basis' => 'tie between masculine and feminine', 'direct' => true }],
       genders
     )
   end

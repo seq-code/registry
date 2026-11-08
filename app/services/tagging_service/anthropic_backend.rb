@@ -110,6 +110,18 @@ class TaggingService::AnthropicBackend
         For example, "sulfur-metabolizing" and "electron-eating" get both,
         "fermenting" gets only `phenonym`, and "of oil sand" or "belonging
         to salt" (habitats) get only `chemonym`.
+      - `lifestyle` (under `trait`): the name refers to the organism's
+        lifestyle or ecological interaction with other organisms:
+        symbiotic, parasitic, predatory, epibiotic, commensal, or
+        host-dependent living (e.g. symbiosum, "living together with";
+        Nanoclepta, "steals from its host"; archaeovorus,
+        "archaea-devouring"; -socius genera such as Spongiisocius,
+        "companion"). Eating or degrading other organisms is `lifestyle`;
+        eating or transforming chemical substances is `phenonym` (with
+        `chemonym` when a substance is named). The lifestyle itself does not
+        justify `phenonym`, but the name can still get `phenonym` for other
+        properties (e.g. the size in Nanoclepta) and `organonym` when the
+        host or prey is named.
       - A mythological or fictional character is a `mythonym`, not an
         `organonym`, even when the character is an animal.
       - Names referring to the organism's size (e.g. nano-, micro-,

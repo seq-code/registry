@@ -32,8 +32,10 @@ class NameTag < ApplicationRecord
     unless: -> { cascading || skip_implication_cascade }
   )
 
-  # Rejecting an umbrella tag rejects its sub-tags proposed or accepted on
-  # the same name (the converse of accepting a sub-tag)
+  # Rejecting a tag rejects the tags proposed or accepted on the same name
+  # that imply it, directly or through a chain (see Tag.implied_closure),
+  # such as the sub-tags of an umbrella: the converse of the acceptance
+  # cascade
   after_save(:cascade_rejection, if: :became_rejected?, unless: :cascading)
 
   # Gender tags are mutually exclusive: accepting one removes the other
@@ -182,16 +184,19 @@ class NameTag < ApplicationRecord
     end
   end
 
-  # Reject the sub-tags of this tag proposed or accepted on the name, and
-  # revert the tags auto-accepted through those that were accepted
+  # Reject the tags implying this one that are proposed or accepted on the
+  # name, and revert the tags auto-accepted through those that were accepted
   def cascade_rejection
     slug = tag.slug
-    name_tags_for(tag.children.select(:id))
-      .where(status_int: [0, 1]).each do |record|
-      was_accepted = record.accepted?
+    candidates = NameTag.where(name_id: name_id, status_int: [0, 1]).to_a
+    implying = Tag.implied_closure(candidates.map(&:tag_id))[tag_id] || []
+    rejected = candidates.select { |record| implying.include?(record.tag_id) }
+    accepted = rejected.select(&:accepted?)
+    # Reject them all before reverting, so the reverts don't touch them
+    rejected.each do |record|
       record.cascade_change!(2, nil, "rejected via #{slug}")
-      record.cascade_undo if was_accepted
     end
+    accepted.each { |record| record.cascade_undo }
   end
 
   def remove_other_genders
@@ -218,6 +223,6 @@ class NameTag < ApplicationRecord
     end
   end
 
-  # Also called on the sub-tags rejected by cascade_rejection
+  # Also called on the tags rejected by cascade_rejection
   protected(:cascade_undo)
 end

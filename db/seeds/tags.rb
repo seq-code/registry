@@ -67,7 +67,9 @@ tag_seeds = [
    'sponge genus in *-cola* names) is `organonym`, not `econym`; a named ' \
    'body part or organ of the host used as habitat is also `econym` (e.g. ' \
    '*hominiciens*, in the human gut). Mere position relative to a host ' \
-   '(e.g. *endo-*, *ecto-*, inside, outside) is neither.'],
+   '(e.g. *endo-*, *ecto-*, inside, outside) is neither. A named host or ' \
+   'prey co-occurs with `lifestyle` when the name describes the ' \
+   'interaction (e.g. *archaeovorus*).'],
   ['institutonym', 'commemorative', '#b386c0',
    'Named after an institution, project, or organization',
    'When the institution is referenced through its acronym (e.g. ANSTO, ' \
@@ -84,12 +86,12 @@ tag_seeds = [
 
   ['trait', nil, '#2e7d32',
    'Name describes a phenotypic, physiological, or metabolic property of ' \
-   'the organism itself',
+   'the organism itself, or its lifestyle',
    'Do not use for properties of the environment, the isolation source, or ' \
    'the circumstances of discovery.'],
   ['phenonym', 'trait', '#7fbf7f',
    'Named after a phenotypic or physiological property of the organism ' \
-   'itself, including metabolism',
+   'itself, including metabolism but not lifestyle (see `lifestyle`)',
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
    'and metabolism (substrates used or degraded, compounds produced, or ' \
    'processes such as nitrogen fixation or fermentation). Independent of ' \
@@ -117,7 +119,22 @@ tag_seeds = [
    '*audaxviator* = bold traveler). Terms describing abundance, dominance, ' \
    'commonness, or distribution (e.g. *commune*, *subdominans*, ' \
    '*ubiqueversans*) are not organismal traits; do not assign this tag or ' \
-   '`trait` for them.'],
+   '`trait` for them. The lifestyle of the organism or its interactions ' \
+   'with other organisms (e.g. symbiotic, parasitic, predatory, or ' \
+   'eating other organisms) are `lifestyle`, not this tag; other ' \
+   'properties of such names can still be (e.g. the size in ' \
+   '*Nanoclepta*).'],
+  ['lifestyle', 'trait', '#7fbf7f',
+   'Named after the lifestyle of the organism or its ecological ' \
+   'interaction with other organisms: symbiotic, parasitic, predatory, ' \
+   'epibiotic, commensal, or host-dependent living',
+   'E.g. *symbiosum* (living together with), *Nanoclepta* (steals from its ' \
+   'host), *archaeovorus* (archaea-devouring), and the *-socius* genera ' \
+   '(e.g. *Spongiisocius*, *Poriferisocius*, companion). Eating or ' \
+   'degrading other organisms is `lifestyle`; eating or transforming ' \
+   'chemical substances is `phenonym` (and `chemonym`). The lifestyle ' \
+   'itself does not justify `phenonym`. Co-tag with `organonym` when the ' \
+   'host or prey is named.'],
 
   ['formed', nil, '#a8551c',
    'Name whose construction is the defining feature',
@@ -239,9 +256,17 @@ tag_seeds = [
 # listed here have no exclusions
 generic_bases = %w[bacter bacterium bacillus monas microbium archaeum]
 trait_bases = generic_bases + %w[cola vivens bios]
+# Bare diminutive suffixes only (bases are matched whole, so a root with the
+# suffix, e.g. microbiellum, is kept)
+diminutive_bases = %w[
+  ulus ula ulum culus cula culum olus ola olum
+  ellus ella ellum illus illa illum
+]
 tag_excluded_bases = {
-  'phenonym' => trait_bases,
-  'trait' => trait_bases,
+  'phenonym' => trait_bases + diminutive_bases,
+  'lifestyle' => trait_bases,
+  'trait' => trait_bases + diminutive_bases,
+  'dimensional' => diminutive_bases,
   'classical' => generic_bases
 }
 
