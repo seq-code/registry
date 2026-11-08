@@ -13,7 +13,14 @@ tag_seeds = [
   ['geographic', nil, '#1f6f8b',
    'Name references a place or environment',
    'Assign alone, without any sub-tag, for broad regions defined by ' \
-   'position, such as the poles or a hemisphere.'],
+   'position, such as the poles or a hemisphere, and for names describing ' \
+   'a broad or cosmopolitan distribution (everywhere, many places, many ' \
+   'environments; e.g. *ubiqueversans*), without `econym` or `toponym`. ' \
+   'When such a name also expresses a vague quantity (e.g. *pluralis*, ' \
+   '*multi-*, *multiplex*), add `dimensional` alone as well (e.g. ' \
+   '*Pluralincolimonas*, *Multiplicimicrobium*). Habitat details that ' \
+   'appear only in the explanation (e.g. occurring in the subsurface) do ' \
+   'not justify this tag unless the name itself refers to them.'],
   ['toponym', 'geographic', '#5fa8c4',
    'Named after a real geographic place (country, region, city, river, ' \
    'lake, ocean, mountain, etc.)',
@@ -29,18 +36,26 @@ tag_seeds = [
    '*allenii*, named for Eugene T. Allen for his work on the geochemistry ' \
    'of Yellowstone National Park) is `eponym` only, not `toponym`. ' \
    'Likewise, a study site mentioned only as context is not `toponym` ' \
-   '(e.g. *Bilamarchaeum*, \'turtle lands\').'],
+   '(e.g. *Bilamarchaeum*, \'turtle lands\'). A word derived from a place ' \
+   'name but used generically (e.g. *geysiri*, of a geyser, from Icelandic ' \
+   'Geysir) is `econym`, not `toponym`.'],
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
    '<i>lacustris</i>, <i>thermophilus</i>)',
    'Includes a named body part or organ used as habitat (e.g. gut, rumen, ' \
    'liver; <i>Ruminimicrobium</i>), and words describing the habitat even ' \
    'when formed from a verb or participle (e.g. <i>mesodigestus</i>, ' \
-   'referring to a mesophilic digester), which are not `phenonym`. A host ' \
-   'taxon (e.g. a coral or sponge genus in -cola names) is `organonym`, ' \
-   'not `econym`; a name referring to both gets both (e.g. ' \
+   'referring to a mesophilic digester), which are not `phenonym`, and ' \
+   'words derived from a place name but used generically (e.g. ' \
+   '<i>geysiri</i>, of a geyser), which are not `toponym`. A host taxon ' \
+   '(e.g. a coral or sponge genus in -cola names, or a host in the ' \
+   'genitive such as <i>termitum</i>, of termites) is `organonym`, not ' \
+   '`econym`; a name referring to both gets both (e.g. ' \
    '<i>hominiciens</i>, in the human gut). Mere position relative to a ' \
-   'host (e.g. endo-, ecto-, inside, outside) is neither.'],
+   'host (e.g. endo-, ecto-, inside, outside) is neither. Habitat details ' \
+   'that appear only in the explanation (e.g. occurring in the ' \
+   'subsurface, presence in brackish water, living in darkness) do not ' \
+   'justify this tag unless the name itself refers to them.'],
   ['fictional-place', 'geographic', '#5fa8c4',
    'Named after a fictional or mythological place',
    nil],
@@ -65,13 +80,17 @@ tag_seeds = [
    'place (e.g. a reserve, park, or site) as the basis of the name, assign ' \
    '`toponym` with high confidence and not `organonym`, even if that place ' \
    'is itself named after an organism (e.g. *Pristimantibacillus*, from ' \
-   'the Pristimantis natural reserve). A host taxon (e.g. a coral or ' \
-   'sponge genus in *-cola* names) is `organonym`, not `econym`; a named ' \
+   'the Pristimantis natural reserve). Collective terms for organisms ' \
+   'that are not taxa (e.g. plankton, biofilm, microbiota) are not ' \
+   '`organonym`. A host taxon (e.g. a coral or sponge genus in *-cola* ' \
+   'names, or a host in the genitive such as *termitum*, of termites) is ' \
+   '`organonym`, not `econym`; a named ' \
    'body part or organ of the host used as habitat is also `econym` (e.g. ' \
    '*hominiciens*, in the human gut). Mere position relative to a host ' \
    '(e.g. *endo-*, *ecto-*, inside, outside) is neither. Merely living in ' \
-   'or on a host (e.g. *-cola* names on a host taxon, ' \
-   '*Doriopsillibacter*) is `organonym` only, not `lifestyle`; a named ' \
+   'or on a host, or being associated with one (e.g. *-cola* names on a ' \
+   'host taxon, *Doriopsillibacter*, *Tyloplasma*) is `organonym` only, ' \
+   'not `lifestyle`; a named ' \
    'host or prey co-occurs with `lifestyle` only when the name describes ' \
    'the nature of the relationship (e.g. *archaeovorus*).'],
   ['institutonym', 'commemorative', '#b386c0',
@@ -124,7 +143,13 @@ tag_seeds = [
    '*audaxviator* = bold traveler). Terms describing abundance, dominance, ' \
    'commonness, or distribution (e.g. *commune*, *subdominans*, ' \
    '*ubiqueversans*) are not organismal traits; do not assign this tag or ' \
-   '`trait` for them. Interactions with other living organisms ' \
+   '`trait` for them. Abundance, dominance, and commonness, including ' \
+   'relative abundance (e.g. *abundans*, *subdominans*, *regnum*, ' \
+   '*commune*, *vulgaris*), are `dimensional`, and a broad distribution ' \
+   'is `geographic`; a word taken from a host\'s name (e.g. *Hepatoplasma ' \
+   'vulgare*, after *Armadillidium vulgare*) is `organonym` only. Other ' \
+   'properties in the same name can still be this tag (e.g. ' \
+   '*Regnicoccus* for *-coccus*). Interactions with other living organisms ' \
    '(predation, parasitism, pathogenesis, symbiosis, commensalism, or ' \
    'epibiosis) are `lifestyle`, not this tag; other properties of such ' \
    'names can still be (e.g. the size in *Nanoclepta*). Degrading or ' \
@@ -141,9 +166,10 @@ tag_seeds = [
    '*Spongiisocius* and *Poriferisocius*, companion). Degrading or ' \
    'consuming organism-derived material as a substrate (e.g. plant ' \
    'biomass, lignocellulose, chitin, dead cells; *phytovorans*) is ' \
-   '`phenonym`, not `lifestyle`. Merely living in or on a host (e.g. ' \
-   '*-cola* names on a host taxon, or inhabiting a host, as in ' \
-   '*Doriopsillibacter*) is `organonym` only, not `lifestyle`. The ' \
+   '`phenonym`, not `lifestyle`. Merely living in or on a host, or being ' \
+   'associated with one (e.g. *-cola* names on a host taxon; inhabiting a ' \
+   'host, as in *Doriopsillibacter*; associated with the host Tylos, as ' \
+   'in *Tyloplasma*) is `organonym` only, not `lifestyle`. The ' \
    'relationship itself does not justify `phenonym`. Co-tag with ' \
    '`organonym` when the host or prey is named.'],
 
@@ -159,13 +185,23 @@ tag_seeds = [
    '(e.g. `chemonym`).'],
 
   ['dimensional', nil, '#3949ab',
-   'Name references a time, number, order, physical measure, or the size ' \
-   'of the organism',
-   'Assign alone, without any sub-tag, for names referring to the size of ' \
-   'the organism (e.g. *nano-*, *micro-*, *minutus*), together with ' \
-   '`phenonym`. The generic suffix *-microbium* is not a size reference, ' \
-   'and diminutive suffixes (e.g. *-ellum*, *-ella*, *-ula*) are generic ' \
-   'and do not justify this tag.'],
+   'Name references a time, number, order, quantity, physical measure, ' \
+   'abundance, or the size of the organism',
+   'Assign alone, without any sub-tag, for names referring to: the size ' \
+   'of the organism (e.g. *nano-*, *micro-*, *minutus*), together with ' \
+   '`phenonym`; vague quantities (many, multiple; e.g. *multihospitum*), ' \
+   'instead of `numeronym`; abundance, dominance, or commonness, ' \
+   'including relative abundance (e.g. *abundans*, *subdominans*, ' \
+   '*regnum*, *commune*, *vulgaris*), instead of `phenonym`; or a vague ' \
+   'quantity in a name describing a broad distribution, together with ' \
+   '`geographic` (e.g. *Pluralincolimonas*, *Multiplicimicrobium*). Add ' \
+   '`geographic` to commonness when the etymology explicitly describes a ' \
+   'wide distribution (widespread, found everywhere). A word taken from a ' \
+   'host\'s name describes the host, so the name is `organonym` only (e.g. ' \
+   '*Hepatoplasma vulgare*, after *Armadillidium vulgare*). The generic ' \
+   'suffix *-microbium* is not a size reference, and diminutive suffixes ' \
+   '(e.g. *-ellum*, *-ella*, *-ula*) are generic and do not justify this ' \
+   'tag.'],
   ['chrononym', 'dimensional', '#7986cb',
    'Named after a time, period, season, or calendar unit',
    'Includes geological eras, seasons, times of day, and calendar-specific ' \
@@ -173,10 +209,12 @@ tag_seeds = [
    'biological activity pattern of the organism. Co-tag with `econym` and ' \
    '`geographic` when it describes a seasonal environmental context.'],
   ['numeronym', 'dimensional', '#7986cb',
-   'Named after a number, quantity, or order',
+   'Named after a specific number or order',
    'Includes ordinal/sequential use such as order of discovery (e.g. ' \
    '*primus*). Co-tag with `trait` when the number describes a property of ' \
-   'the organism (e.g. *triflagellatus*).'],
+   'the organism (e.g. *triflagellatus*). Vague quantities (many, ' \
+   'multiple; e.g. *multihospitum*) are `dimensional` alone, not this ' \
+   'tag.'],
   ['metronym', 'dimensional', '#7986cb',
    'Named after a measurement, coordinate, or physical parameter (depth, ' \
    'elevation, etc.)',
@@ -220,7 +258,8 @@ tag_seeds = [
    'Covers vocabulary, clan or group names, and mythological figures from ' \
    'Indigenous languages and cultures (e.g. Dharawal *buru*; the ' \
    'Norongarragal clan; Tiddalik). Can co-occur with `vernacular`, ' \
-   '`ethnonym`, `mythonym`, and content tags.'],
+   '`ethnonym`, `mythonym`, and content tags. Only for Indigenous ' \
+   'languages and cultures: e.g. Icelandic (as in *geysiri*) is not one.'],
   ['classical', nil, '#5d4037',
    'Name or epithet is a single word from a dormant scholarly language, ' \
    'used largely unmodified',
@@ -239,8 +278,10 @@ tag_seeds = [
    'Assign only for genus, species, or subspecies ranks. A gender stated ' \
    'for the name itself is authoritative. Otherwise, adjectival and ' \
    'participial epithets take the gender of the genus (inferred from the ' \
-   'genus name if not recorded), genitive noun ' \
-   'epithets the gender of the noun in the genitive, and nouns in ' \
+   'genus name if not recorded), genitive noun epithets the gender of ' \
+   'the noun in the genitive (decided from its nominative, with the ' \
+   'nominative, genitive, and gender as basis, e.g. *sedimen, -inis, n.*), ' \
+   'and nouns in ' \
    'apposition their own gender. A gender not stated for the name itself ' \
    'takes at most medium confidence. In New Latin, salt names in -as, ' \
    '-atis (e.g. *phosphas*, *nitras*, *sulfas*) are masculine.'],
@@ -253,9 +294,8 @@ tag_seeds = [
   ['gender-uncertain', nil, '#adb5bd',
    'Gender ambiguous or explicitly uncertain',
    'Use only when no gender rule resolves the gender (e.g. an adjectival ' \
-   'epithet whose genus name does not reveal its gender, or a bare ' \
-   'genitive in -i whose ' \
-   'nominative is not given), or when the protologue explicitly notes ' \
+   'epithet whose genus name does not reveal its gender, or a genitive ' \
+   'noun whose nominative cannot be determined), or when the protologue explicitly notes ' \
    'uncertainty. Participles and adjectives with forms shared between ' \
    'genders take the gender of the genus and are not gender-uncertain by ' \
    'themselves. Do not use when the etymology states a single gender for ' \

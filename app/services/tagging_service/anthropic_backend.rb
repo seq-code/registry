@@ -50,7 +50,12 @@ class TaggingService::AnthropicBackend
          -bacillus are masculine; -monas and -ella are feminine; -bacterium
          is neuter) rather than treating it as unknown.
       3. An epithet that is a noun in the genitive takes the gender of that
-         noun, not of the genus:
+         noun, not of the genus. When the etymology does not declare that
+         gender, decide it from the noun's nominative, not from the
+         genitive ending, and set `basis` to the nominative, genitive, and
+         gender of the noun (e.g. "sedimen, -inis, n.", "tellus, -uris,
+         f.", "abyssus, -i, f.", "mare, -is, n."). If the nominative cannot
+         be determined, use gender-uncertain:
          - If the etymology names the noun in the nominative (e.g. "of
            Sargassum", "of the prawn genus Penaeus"), infer the gender from
            that nominative, including plurals (e.g. Crinocheta, a neuter
@@ -71,20 +76,31 @@ class TaggingService::AnthropicBackend
       nitras, sulfas) are masculine.
       Use gender-uncertain only when none of these rules resolves the gender
       (e.g. an adjectival epithet whose genus name does not reveal its
-      gender, or a bare genitive in -i whose nominative is not given). A gender not stated in
-      the etymology for the name itself takes at most medium confidence.
+      gender, or a genitive noun whose nominative cannot be determined). A
+      gender not stated in the etymology for the name itself takes at most
+      medium confidence.
 
       ## Rules
       - Assign ALL tags that apply; they are not mutually exclusive
       - Tag what the name itself refers to, not places, institutions, or
         other context that the etymology mentions only to explain the name
         (e.g. Bilamarchaeum means "turtle lands"; the study site mentioned
-        is context, not a `toponym`).
+        is context, not a `toponym`). Likewise, habitat details that appear
+        only in the explanation (e.g. "occur in the subsurface", "presence
+        in brackish water", "living in darkness") do not justify `econym`
+        or `geographic` unless the name itself refers to them.
+      - A word derived from a place name but used generically (e.g.
+        geysiri, "of a geyser", from Icelandic Geysir) is `econym`, not
+        `toponym`. `indigenous` is only for Indigenous languages and
+        cultures (Icelandic is not one).
       - Hosts and habitats:
         - A named body part or organ used as habitat (e.g. gut, rumen,
           liver) is `econym`.
-        - A host taxon (e.g. a coral or sponge genus in -cola names) is
+        - A host taxon (e.g. a coral or sponge genus in -cola names, or a
+          host in the genitive such as termitum, "of termites") is
           `organonym`, not `econym`.
+        - Collective terms for organisms that are not taxa (e.g. plankton,
+          biofilm, microbiota) are not `organonym`.
         - A name referring to both gets both (e.g. hominiciens, "in the
           human gut").
         - Mere position relative to a host (e.g. endo-, ecto-, "inside",
@@ -127,9 +143,10 @@ class TaggingService::AnthropicBackend
           `phenonym`, not `lifestyle`, and the source organism is not an
           `organonym` (e.g. phytovorans, "plant-devouring" in the sense of
           degrading plant material, is only `phenonym`).
-        - Merely living in or on a host (e.g. -cola names on a host taxon,
-          or "inhabiting host X", as in Doriopsillibacter) is `organonym`
-          only, not `lifestyle`.
+        - Merely living in or on a host, or being associated with one (e.g.
+          -cola names on a host taxon; "inhabiting host X", as in
+          Doriopsillibacter; "associated with the host Tylos", as in
+          Tyloplasma) is `organonym` only, not `lifestyle`.
         - Eating or transforming chemical substances is `phenonym` (with
           `chemonym` when a substance is named).
         - The relationship itself does not justify `phenonym`, but the name
@@ -143,6 +160,26 @@ class TaggingService::AnthropicBackend
         generic suffix -microbium is not a size reference.
       - Diminutive suffixes (e.g. -ellum, -ella, -ula) are generic: they
         never justify `phenonym` or `dimensional`.
+      - `numeronym` is for specific numbers and orders (e.g. primus,
+        triflagellatus). Vague quantities ("many", "multiple", e.g.
+        multihospitum) get `dimensional` on its own, not `numeronym`.
+      - Names referring to abundance or dominance, including relative
+        abundance (e.g. abundans, subdominans, regnum "dominion"), get
+        `dimensional` on its own, not `phenonym`. Other properties in the
+        same name can still get `phenonym` (e.g. Regnicoccus for -coccus).
+      - Commonness ("common", e.g. commune, vulgaris) also gets
+        `dimensional` on its own, not `phenonym`. If the etymology
+        explicitly describes a wide distribution ("widespread", "found
+        everywhere"), add `geographic` as well. Exception: a word taken from
+        a host's name describes the host, so the name gets `organonym` only
+        (e.g. Hepatoplasma vulgare, after Armadillidium vulgare).
+      - Names describing a broad or cosmopolitan distribution
+        ("everywhere", "many places", "many environments") get `geographic`
+        on its own, without `econym` or `toponym`. When the name also
+        expresses a vague quantity (e.g. pluralis, multi-, multiplex), add
+        `dimensional` on its own as well (e.g. Pluralincolimonas,
+        Multiplicimicrobium; but ubiqueversans, "everywhere", is
+        `geographic` only).
       - `classical` applies only to a name or epithet that is a single word
         from a dormant language, used largely unmodified. A compound or
         neologism is not `classical`, even when every root is classical
@@ -164,8 +201,10 @@ class TaggingService::AnthropicBackend
         etymology on which the tag is based, written as it appears in the
         etymology (e.g. `Svalbard`, `telma`, `Vincent Gauci`, `ANSTO`). Use
         the root or word itself, not its gloss or grammar. For a gender
-        taken from the genus, use the genus name. If any other tag has no
-        specific basis in the etymology, do not propose it.
+        taken from the genus, use the genus name, and for the gender of a
+        genitive noun, its nominative, genitive, and gender (see above). If
+        any other tag has no specific basis in the etymology, do not propose
+        it.
 
       ## Name to tag
       Name: #{name.name}
