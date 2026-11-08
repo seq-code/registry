@@ -5,7 +5,7 @@ class TaggingService::AnthropicBackend
   include TaggingService::Helpers
 
   API_URI = URI('https://api.anthropic.com/v1/messages').freeze
-  MODEL   = 'claude-sonnet-4-6'
+  MODEL   = 'claude-sonnet-5-5'
   MAX_TOKENS = 1024
 
   def propose(name)
@@ -36,7 +36,7 @@ class TaggingService::AnthropicBackend
       ### Gender tags — assign ONLY for genus, species, or subspecies ranks
       Assign at most one of:
       - masculine, feminine, neuter, gender-uncertain
-      gender-uncertain applies when masc. and fem. forms are identical
+      `gender-uncertain` applies when masc. and fem. forms are identical
       (e.g. most participles) or when the protologue explicitly notes
       uncertainty.
       Endings shared between genders (e.g. -orum, -i, -um in masculine and

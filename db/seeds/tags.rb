@@ -31,7 +31,10 @@ tag_seeds = [
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
    '<i>lacustris</i>, <i>thermophilus</i>)',
-   nil],
+   'Include names that include part of an organism that define their habitat ' \
+   '(e.g., <i>Ruminimicrobium</i>). Exclude host names or taxa as ' \
+   'environments (e.g., <i>hominiciens</i>), and use instead `organonym` if ' \
+   'the name of the host is explicitly included.'],
   ['fictional-place', 'geographic', '#5fa8c4',
    'Named after a fictional or mythological place',
    nil],
