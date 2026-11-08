@@ -58,6 +58,12 @@ namespace :tags do
     puts "Processing #{total} names#{ " (dry run)" if dry_run }..."
     puts "Backend: #{Rails.configuration.tagging_backend}"
     puts
+    TaggingService.reset_usage
+    # The etymology as sent to the backend, printed under each name
+    helpers = Object.new.extend(TaggingService::Helpers)
+    etymology = lambda do |name|
+      "    Etymology: #{helpers.etymology_text(name) || '(none)'}"
+    end
 
     Name.where(id: ids).find_each do |name|
       proposals =
@@ -67,6 +73,7 @@ namespace :tags do
 
       if proposals.empty?
         puts "  #{name.name} (#{name.rank}): no tags proposed"
+        puts etymology[name]
         skipped += 1
         next
       end
@@ -85,6 +92,7 @@ namespace :tags do
           end
           .join(', ')
       puts "  #{name.name} (#{name.rank}): #{slugs}"
+      puts etymology[name]
 
       unless dry_run
         proposals.each do |proposal|
@@ -112,11 +120,13 @@ namespace :tags do
       proposed += 1
     rescue TaggingService::Error => e
       $stderr.puts "  ERROR #{name.name}: #{e.message}" # +warn+ is muted by -W0
+      $stderr.puts etymology[name]
       failed += 1
     end
 
     puts
     puts "Done. Proposed: #{proposed}, skipped: #{skipped}, failed: #{failed}"
+    puts TaggingService.usage_summary
   end
 end
 

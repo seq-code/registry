@@ -32,6 +32,19 @@ class NameTag < ApplicationRecord
     unless: -> { cascading || skip_implication_cascade }
   )
 
+  # Rejecting a tag rejects the tags proposed or accepted on the same name
+  # that imply it, directly or through a chain (see Tag.implied_closure),
+  # such as the sub-tags of an umbrella: the converse of the acceptance
+  # cascade
+  after_save(:cascade_rejection, if: :became_rejected?, unless: :cascading)
+
+  # Gender tags are mutually exclusive: accepting one removes the other
+  # gender tags on the name, and adding one as proposed removes the other
+  # proposed ones (leaving curator decisions in place)
+  after_save(
+    :remove_other_genders, if: :gender_added_or_accepted?, unless: :cascading
+  )
+
   class << self
     def status
       %i[proposed accepted rejected]
@@ -94,6 +107,14 @@ class NameTag < ApplicationRecord
 
   def became_accepted?
     saved_change_to_status_int? && accepted?
+  end
+
+  def became_rejected?
+    saved_change_to_status_int? && rejected?
+  end
+
+  def gender_added_or_accepted?
+    tag.gender? && (previously_new_record? || became_accepted?)
   end
 
   def stopped_being_accepted?
@@ -163,6 +184,33 @@ class NameTag < ApplicationRecord
     end
   end
 
+  # Reject the tags implying this one that are proposed or accepted on the
+  # name, and revert the tags auto-accepted through those that were accepted
+  def cascade_rejection
+    slug = tag.slug
+    candidates = NameTag.where(name_id: name_id, status_int: [0, 1]).to_a
+    implying = Tag.implied_closure(candidates.map(&:tag_id))[tag_id] || []
+    rejected = candidates.select { |record| implying.include?(record.tag_id) }
+    accepted = rejected.select(&:accepted?)
+    # Reject them all before reverting, so the reverts don't touch them
+    rejected.each do |record|
+      record.cascade_change!(2, nil, "rejected via #{slug}")
+    end
+    accepted.each { |record| record.cascade_undo }
+  end
+
+  def remove_other_genders
+    others =
+      NameTag.where(name_id: name_id)
+             .where(tag_id: Tag.where(slug: Tag::GENDER_SLUGS).select(:id))
+             .where.not(id: id)
+    others = others.where(status_int: 0) unless accepted?
+    others.each do |record|
+      record.cascading = true
+      record.destroy!
+    end
+  end
+
   def cascade_proposal
     slug = tag.slug
     ids = implied_tag_ids
@@ -174,4 +222,7 @@ class NameTag < ApplicationRecord
       )
     end
   end
+
+  # Also called on the tags rejected by cascade_rejection
+  protected(:cascade_undo)
 end

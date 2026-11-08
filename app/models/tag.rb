@@ -5,6 +5,15 @@ class Tag < ApplicationRecord
   # Stand-alone tags for grammatical gender
   GENDER_SLUGS = %w[masculine feminine neuter gender-uncertain].freeze
 
+  # Generic compound elements of prokaryotic names: suffixes denoting a
+  # microorganism in general, and roots denoting living or dwelling. The
+  # seeds use them as excluded bases (see Tag#excluded_bases_list), and
+  # TaggingService.assign_classical to spot compounds
+  GENERIC_BASES = %w[
+    bacter bacterium bacillus baculum monas microbium archaeum
+  ].freeze
+  LIVING_BASES = %w[cola vivens bios].freeze
+
   has_rich_text(:description)
 
   # Self-referential parent/children

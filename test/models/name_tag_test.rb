@@ -239,6 +239,138 @@ class NameTagTest < ActiveSupport::TestCase
     assert_equal('medium', name_tag.confidence)
   end
 
+  test 'rejecting an umbrella rejects its proposed and accepted sub-tags' do
+    tag_name('eponym', 1) # Also accepts commemorative
+    tag_name('institutonym', 0)
+    tag_name('toponym', 1) # Under another umbrella
+
+    name_tag('commemorative').update!(status_int: 2)
+
+    %w[eponym institutonym].each do |slug|
+      assert_predicate(name_tag(slug), :rejected?, slug)
+      assert_match('rejected via commemorative', name_tag(slug).notes)
+      assert_nil(name_tag(slug).pre_cascade_status_int)
+    end
+    assert_predicate(name_tag('toponym'), :accepted?)
+    assert_nil(name_tag('mythonym'))
+  end
+
+  test 'rejecting a sub-tag leaves its umbrella and siblings unchanged' do
+    tag_name('eponym', 1)
+    tag_name('institutonym', 1)
+
+    name_tag('eponym').update!(status_int: 2)
+
+    assert_predicate(name_tag('commemorative'), :accepted?)
+    assert_predicate(name_tag('institutonym'), :accepted?)
+  end
+
+  test 'rejecting an umbrella reverts tags accepted through its sub-tags' do
+    tag_name('mythonym', 1) # Also accepts commemorative and mythological
+
+    name_tag('commemorative').update!(status_int: 2)
+
+    assert_predicate(name_tag('mythonym'), :rejected?)
+    assert_nil(name_tag('mythological'))
+  end
+
+  test 'creating a rejected umbrella rejects its sub-tags' do
+    tag_name('eponym', 0, skip_implication_cascade: true)
+
+    tag_name('commemorative', 2)
+
+    assert_predicate(name_tag('eponym'), :rejected?)
+  end
+
+  test 'rejecting a tag rejects the tags implying it' do
+    tag_name('mythonym', 1) # Also accepts commemorative and mythological
+
+    name_tag('mythological').update!(status_int: 2)
+
+    assert_predicate(name_tag('mythonym'), :rejected?)
+    assert_match('rejected via mythological', name_tag('mythonym').notes)
+    # Created through mythonym only, so it is reverted
+    assert_nil(name_tag('commemorative'))
+  end
+
+  test 'rejecting a tag rejects the tags implying it through a chain' do
+    Tag.find_by!(slug: 'mythological').implied_tags << tags(:toponym)
+    tag_name('mythonym', 1) # Also accepts mythological, toponym, and more
+    tag_name('eponym', 1)
+    assert_predicate(name_tag('toponym'), :accepted?)
+
+    name_tag('toponym').update!(status_int: 2)
+
+    %w[mythonym mythological].each do |slug|
+      assert_predicate(name_tag(slug), :rejected?, slug)
+      assert_match('rejected via toponym', name_tag(slug).notes)
+    end
+    # Still implied by the accepted eponym
+    assert_predicate(name_tag('commemorative'), :accepted?)
+    assert_predicate(name_tag('eponym'), :accepted?)
+    assert_nil(name_tag('geographic'))
+  end
+
+  test 'rejecting a tag leaves rejected tags implying it unchanged' do
+    tag_name('mythonym', 2)
+    tag_name('mythological', 1)
+
+    name_tag('mythological').update!(status_int: 2)
+
+    assert_nil(name_tag('mythonym').notes)
+  end
+
+  test 'accepting a gender tag removes the other gender tags' do
+    create_gender_tags
+    tag_name('masculine', 0)
+    tag_name('neuter', 2)
+
+    tag_name('feminine', 1)
+
+    assert_nil(name_tag('masculine'))
+    assert_nil(name_tag('neuter'))
+    assert_predicate(name_tag('feminine'), :accepted?)
+  end
+
+  test 'accepting a proposed gender tag removes the other gender tags' do
+    create_gender_tags
+    tag_name('masculine', 2)
+    tag_name('feminine', 0)
+    assert_predicate(name_tag('masculine'), :rejected?)
+
+    name_tag('feminine').update!(status_int: 1)
+
+    assert_nil(name_tag('masculine'))
+  end
+
+  test 'proposing a gender tag only removes other proposed gender tags' do
+    create_gender_tags
+    tag_name('masculine', 1)
+    tag_name('feminine', 0)
+    assert_predicate(name_tag('masculine'), :accepted?)
+
+    tag_name('neuter', 0)
+
+    assert_nil(name_tag('feminine'))
+    assert_predicate(name_tag('masculine'), :accepted?)
+    assert_predicate(name_tag('neuter'), :proposed?)
+  end
+
+  test 'gender tags do not affect other tags' do
+    create_gender_tags
+    tag_name('eponym', 0, skip_implication_cascade: true)
+
+    tag_name('feminine', 1)
+
+    assert_predicate(name_tag('eponym'), :proposed?)
+  end
+
+  def create_gender_tags
+    %w[feminine neuter gender-uncertain].each do |slug|
+      Tag.create!(name: slug.tr('-', ' '), slug: slug, color: '#000000')
+    end
+  end
+
   test 'destroying a name removes its name tags' do
     assert_difference('NameTag.count', -1) do
       names(:bacteria).destroy
