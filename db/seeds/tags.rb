@@ -53,10 +53,12 @@ tag_seeds = [
    nil],
   ['organonym', 'commemorative', '#b386c0',
    'Named after another organism or taxon',
-   'The referenced entity must be another organism or taxon, not a ' \
-   'chemical substance or metabolic property — use `chemonym` or ' \
-   '`phenonym` for those — nor a mythological or fictional character, ' \
-   'even an animal — use `mythonym`. The name counts as an organonym even when phrased as \'from the ' \
+   'The referenced entity must be another organism or taxon. Chemical ' \
+   'substances and metabolic properties are `chemonym` or `phenonym`; ' \
+   'organism-derived material degraded or consumed as a substrate (e.g. ' \
+   '*phytovorans*, degrading plant material) is `phenonym`; and a ' \
+   'mythological or fictional character, even an animal, is `mythonym`. ' \
+   'The name counts as an organonym even when phrased as \'from the ' \
    'land of X\' or \'from the X lands\', where X is an organism (e.g. ' \
    '*Bilamarchaeum*, *Burarchaeum*); any indirect place reference is ' \
    'secondary. However, when the etymology explicitly names a specific ' \
@@ -67,9 +69,11 @@ tag_seeds = [
    'sponge genus in *-cola* names) is `organonym`, not `econym`; a named ' \
    'body part or organ of the host used as habitat is also `econym` (e.g. ' \
    '*hominiciens*, in the human gut). Mere position relative to a host ' \
-   '(e.g. *endo-*, *ecto-*, inside, outside) is neither. A named host or ' \
-   'prey co-occurs with `lifestyle` when the name describes the ' \
-   'interaction (e.g. *archaeovorus*).'],
+   '(e.g. *endo-*, *ecto-*, inside, outside) is neither. Merely living in ' \
+   'or on a host (e.g. *-cola* names on a host taxon, ' \
+   '*Doriopsillibacter*) is `organonym` only, not `lifestyle`; a named ' \
+   'host or prey co-occurs with `lifestyle` only when the name describes ' \
+   'the nature of the relationship (e.g. *archaeovorus*).'],
   ['institutonym', 'commemorative', '#b386c0',
    'Named after an institution, project, or organization',
    'When the institution is referenced through its acronym (e.g. ANSTO, ' \
@@ -91,7 +95,8 @@ tag_seeds = [
    'the circumstances of discovery.'],
   ['phenonym', 'trait', '#7fbf7f',
    'Named after a phenotypic or physiological property of the organism ' \
-   'itself, including metabolism but not lifestyle (see `lifestyle`)',
+   'itself, including metabolism (also of organism-derived substrates) ' \
+   'but not interactions with living organisms (see `lifestyle`)',
    'Covers morphology, pigmentation, motility, growth form, physiology, ' \
    'and metabolism (substrates used or degraded, compounds produced, or ' \
    'processes such as nitrogen fixation or fermentation). Independent of ' \
@@ -119,22 +124,28 @@ tag_seeds = [
    '*audaxviator* = bold traveler). Terms describing abundance, dominance, ' \
    'commonness, or distribution (e.g. *commune*, *subdominans*, ' \
    '*ubiqueversans*) are not organismal traits; do not assign this tag or ' \
-   '`trait` for them. The lifestyle of the organism or its interactions ' \
-   'with other organisms (e.g. symbiotic, parasitic, predatory, or ' \
-   'eating other organisms) are `lifestyle`, not this tag; other ' \
-   'properties of such names can still be (e.g. the size in ' \
-   '*Nanoclepta*).'],
+   '`trait` for them. Interactions with other living organisms ' \
+   '(predation, parasitism, pathogenesis, symbiosis, commensalism, or ' \
+   'epibiosis) are `lifestyle`, not this tag; other properties of such ' \
+   'names can still be (e.g. the size in *Nanoclepta*). Degrading or ' \
+   'consuming organism-derived material as a substrate (e.g. plant ' \
+   'biomass, lignocellulose, chitin, dead cells; *phytovorans*) is this ' \
+   'tag, not `lifestyle`.'],
   ['lifestyle', 'trait', '#7fbf7f',
-   'Named after the lifestyle of the organism or its ecological ' \
-   'interaction with other organisms: symbiotic, parasitic, predatory, ' \
-   'epibiotic, commensal, or host-dependent living',
-   'E.g. *symbiosum* (living together with), *Nanoclepta* (steals from its ' \
-   'host), *archaeovorus* (archaea-devouring), and the *-socius* genera ' \
-   '(e.g. *Spongiisocius*, *Poriferisocius*, companion). Eating or ' \
-   'degrading other organisms is `lifestyle`; eating or transforming ' \
-   'chemical substances is `phenonym` (and `chemonym`). The lifestyle ' \
-   'itself does not justify `phenonym`. Co-tag with `organonym` when the ' \
-   'host or prey is named.'],
+   'Named after the interaction of the organism with other living ' \
+   'organisms: predation, parasitism, pathogenesis, symbiosis, ' \
+   'commensalism, or epibiosis',
+   'Use only when the name describes the nature of the relationship (e.g. ' \
+   '*symbiosum*, living together with; *Nanoclepta*, steals from its ' \
+   'host; *archaeovorus*, archaea-devouring; the *-socius* genera such as ' \
+   '*Spongiisocius* and *Poriferisocius*, companion). Degrading or ' \
+   'consuming organism-derived material as a substrate (e.g. plant ' \
+   'biomass, lignocellulose, chitin, dead cells; *phytovorans*) is ' \
+   '`phenonym`, not `lifestyle`. Merely living in or on a host (e.g. ' \
+   '*-cola* names on a host taxon, or inhabiting a host, as in ' \
+   '*Doriopsillibacter*) is `organonym` only, not `lifestyle`. The ' \
+   'relationship itself does not justify `phenonym`. Co-tag with ' \
+   '`organonym` when the host or prey is named.'],
 
   ['formed', nil, '#a8551c',
    'Name whose construction is the defining feature',

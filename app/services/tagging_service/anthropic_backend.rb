@@ -110,18 +110,26 @@ class TaggingService::AnthropicBackend
         For example, "sulfur-metabolizing" and "electron-eating" get both,
         "fermenting" gets only `phenonym`, and "of oil sand" or "belonging
         to salt" (habitats) get only `chemonym`.
-      - `lifestyle` (under `trait`): the name refers to the organism's
-        lifestyle or ecological interaction with other organisms:
-        symbiotic, parasitic, predatory, epibiotic, commensal, or
-        host-dependent living (e.g. symbiosum, "living together with";
-        Nanoclepta, "steals from its host"; archaeovorus,
-        "archaea-devouring"; -socius genera such as Spongiisocius,
-        "companion"). Eating or degrading other organisms is `lifestyle`;
-        eating or transforming chemical substances is `phenonym` (with
-        `chemonym` when a substance is named). The lifestyle itself does not
-        justify `phenonym`, but the name can still get `phenonym` for other
-        properties (e.g. the size in Nanoclepta) and `organonym` when the
-        host or prey is named.
+      - `lifestyle` (under `trait`): the name describes the nature of the
+        organism's interaction with other living organisms: predation,
+        parasitism, pathogenesis, symbiosis, commensalism, or epibiosis
+        (e.g. symbiosum, "living together with"; Nanoclepta, "steals from
+        its host"; archaeovorus, "archaea-devouring"; -socius genera such as
+        Spongiisocius, "companion"). Use it only when the name describes the
+        relationship itself.
+        - Degrading or consuming organism-derived material as a substrate
+          (e.g. plant biomass, lignocellulose, chitin, dead cells) is
+          `phenonym`, not `lifestyle`, and the source organism is not an
+          `organonym` (e.g. phytovorans, "plant-devouring" in the sense of
+          degrading plant material, is only `phenonym`).
+        - Merely living in or on a host (e.g. -cola names on a host taxon,
+          or "inhabiting host X", as in Doriopsillibacter) is `organonym`
+          only, not `lifestyle`.
+        - Eating or transforming chemical substances is `phenonym` (with
+          `chemonym` when a substance is named).
+        - The relationship itself does not justify `phenonym`, but the name
+          can still get `phenonym` for other properties (e.g. the size in
+          Nanoclepta) and `organonym` when the host or prey is named.
       - A mythological or fictional character is a `mythonym`, not an
         `organonym`, even when the character is an animal.
       - Names referring to the organism's size (e.g. nano-, micro-,
