@@ -197,6 +197,88 @@ class TaggingServiceTest < ActiveSupport::TestCase
                  genders.map { |p| p.values_at('slug', 'basis') })
   end
 
+  # Gender proposals of TaggingService.propose for Bacillus subtilis with
+  # the epithet +grammar+ and a backend returning +proposals+
+  def epithet_genders_with(*proposals, grammar: 'gen. n.')
+    name = Name.find(names(:bacillus_subtilis).id)
+    name.etymology_xx_lang = 'L.'
+    name.etymology_xx_grammar = grammar
+    proposals_with(*proposals, name: name)
+      .select { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
+      .map { |p| p.values_at('slug', 'confidence') }
+  end
+
+  test 'propose takes the gender marked in the basis' do
+    genders = epithet_genders_with(
+      proposal('masculine', 'high', 'sedimen, -inis, n.')
+    )
+
+    # Still capped, as the gender is not declared
+    assert_equal([%w[neuter medium]], genders)
+  end
+
+  test 'propose keeps a gender matching the basis' do
+    genders = epithet_genders_with(
+      proposal('feminine', 'medium', 'tellus, -uris, f.')
+    )
+
+    assert_equal([%w[feminine medium]], genders)
+  end
+
+  test 'propose gives gender-uncertain for several genders in the basis' do
+    %w[m./f. m.\ or\ f. masc./neut.].each do |markers|
+      genders = epithet_genders_with(
+        proposal('masculine', 'medium', "civis, -is, #{markers}")
+      )
+
+      assert_equal([%w[gender-uncertain low]], genders, markers)
+    end
+  end
+
+  test 'propose ignores gender markers not ending the basis' do
+    genders = epithet_genders_with(proposal('masculine', 'low', 'abyssi'))
+    assert_equal([%w[masculine low]], genders)
+
+    # "n." means noun in the grammar, so it is not a marker without a comma
+    genders = epithet_genders_with(
+      proposal('masculine', 'low', 'L. gen. n. abyssi')
+    )
+    assert_equal([%w[masculine low]], genders)
+  end
+
+  test 'propose ignores gender markers for adjectival epithets' do
+    # The genus decides, not the gender of a root in the basis
+    %w[part.\ adj. adj.].each do |grammar|
+      genders = epithet_genders_with(
+        proposal('masculine', 'medium', 'rumen, -inis, n.'), grammar: grammar
+      )
+
+      assert_equal([%w[masculine medium]], genders, grammar)
+    end
+  end
+
+  test 'propose applies gender markers to epithets without grammar' do
+    genders = epithet_genders_with(
+      proposal('masculine', 'medium', 'rumen, -inis, n.'), grammar: nil
+    )
+
+    assert_equal([%w[neuter medium]], genders)
+  end
+
+  test 'propose drops genus agreement for genitive nouns' do
+    genders = epithet_genders_with(proposal('masculine', 'high', 'Bacillus'))
+
+    assert_empty(genders)
+  end
+
+  test 'propose keeps genus agreement for adjectival epithets' do
+    genders = epithet_genders_with(
+      proposal('masculine', 'high', 'Bacillus'), grammar: 'part. adj.'
+    )
+
+    assert_equal([%w[masculine medium]], genders)
+  end
+
   test 'propose drops gender proposals for ranks without gender' do
     genders = gender_proposals_with(
       proposal('feminine', 'high'), rank: 'family', declared: %w[feminine]

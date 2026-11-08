@@ -218,6 +218,8 @@ tag_seeds = [
   ['metronym', 'dimensional', '#7986cb',
    'Named after a measurement, coordinate, or physical parameter (depth, ' \
    'elevation, etc.)',
+   'Only for explicit measurements or values (e.g. depth, temperature, or ' \
+   'altitude figures), not qualitative adjectives such as deep or cold. ' \
    'Co-tag with `geographic` (and usually `econym`) when the measure is ' \
    'locational (e.g. hadal depth in *Hadalarchaeum*). Co-tag with `trait` ' \
    'when the parameter is a physiological or ecological property of the ' \

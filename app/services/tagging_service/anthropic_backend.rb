@@ -38,8 +38,9 @@ class TaggingService::AnthropicBackend
       - masculine, feminine, neuter, gender-uncertain
       For these ranks, always try to infer the gender of the name (the genus
       name, or the epithet of a species or subspecies), even when the
-      etymology does not state it. Apply the first of these rules that
-      resolves it:
+      etymology does not state it. In etymologies, "n." means noun and
+      "neut." means neuter (e.g. "L. gen. n. abyssi" says nothing about
+      gender). Apply the first of these rules that resolves it:
       1. A gender stated in the etymology for the name itself is
          authoritative. A statement of several genders (e.g. "masc. / fem.
          adj.") only means the form is shared; apply the rules below.
@@ -48,7 +49,9 @@ class TaggingService::AnthropicBackend
          (see "Genus gender" below). When the genus gender is not recorded,
          infer it from the genus name itself (e.g. -coccus, -bacter, and
          -bacillus are masculine; -monas and -ella are feminine; -bacterium
-         is neuter) rather than treating it as unknown.
+         is neuter) rather than treating it as unknown. Genus agreement
+         applies only to adjectival and participial epithets, never to
+         genitive nouns.
       3. An epithet that is a noun in the genitive takes the gender of that
          noun, not of the genus. When the etymology does not declare that
          gender, decide it from the noun's nominative, not from the
@@ -173,6 +176,13 @@ class TaggingService::AnthropicBackend
         everywhere"), add `geographic` as well. Exception: a word taken from
         a host's name describes the host, so the name gets `organonym` only
         (e.g. Hepatoplasma vulgare, after Armadillidium vulgare).
+      - The abundance and commonness rules apply only when the name itself
+        refers to abundance or commonness, not when only the explanation
+        mentions it (e.g. hibericus, "Spanish, referring to a high
+        abundance in Spanish reservoirs", is `toponym` only).
+      - `metronym` is for explicit measurements or values (e.g. depth,
+        temperature, or altitude figures), not qualitative adjectives such
+        as "deep" or "cold".
       - Names describing a broad or cosmopolitan distribution
         ("everywhere", "many places", "many environments") get `geographic`
         on its own, without `econym` or `toponym`. When the name also
@@ -223,8 +233,8 @@ class TaggingService::AnthropicBackend
     if slug
       "Genus gender: #{slug} (#{source})"
     else
-      genus = name.genus&.name || name.name.sub(/\ACandidatus /, '').split.first
-      "Genus gender: not recorded; infer it from the genus name #{genus}"
+      "Genus gender: not recorded; infer it from the genus name " \
+        "#{TaggingService.genus_name(name)}"
     end
   end
 

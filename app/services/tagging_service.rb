@@ -49,14 +49,76 @@ class TaggingService
              declared_proposal(declared.first, 'declared in etymology')
     end
 
-    single_gender(
-      proposals.map do |proposal|
-        next proposal unless Tag::GENDER_SLUGS.include?(proposal['slug']) &&
-                             proposal['confidence'] == 'high'
+    capped = proposals.map do |proposal|
+      next proposal unless Tag::GENDER_SLUGS.include?(proposal['slug']) &&
+                           proposal['confidence'] == 'high'
 
-        proposal.merge('confidence' => 'medium', 'capped' => true)
+      proposal.merge('confidence' => 'medium', 'capped' => true)
+    end
+    single_gender(check_gender_basis(name, capped))
+  end
+
+  # Gender markers ending the basis of the gender of a genitive noun (e.g.
+  # "sedimen, -inis, n."), mapped to their tags
+  GENDER_MARKERS = {
+    'm' => 'masculine', 'masc' => 'masculine',
+    'f' => 'feminine', 'fem' => 'feminine',
+    'n' => 'neuter', 'neut' => 'neuter'
+  }.freeze
+
+  # Make the gender proposals consistent with their basis. A basis ending
+  # with a gender marker (e.g. "sedimen, -inis, n.") decides the gender, or
+  # gives gender-uncertain at low confidence if it has several markers (e.g.
+  # "m./f."), unless the epithet is adjectival or participial: those take
+  # the gender of the genus, not of a root in the basis (e.g. ruminiciens,
+  # "rumen, -inis, n."). A basis that is the genus name means genus
+  # agreement, so the proposal is dropped if the epithet is a genitive
+  # noun, to which genus agreement never applies
+  def self.check_gender_basis(name, proposals)
+    genitive = epithet_grammar?(name, /gen(\.|itive)/)
+    adjectival = epithet_grammar?(name, /(adj|part)(\.|ective|iciple)/)
+    candidatus = /\ACandidatus /
+    genus = genus_name(name).to_s.sub(candidatus, '')
+    proposals.filter_map do |proposal|
+      next proposal unless Tag::GENDER_SLUGS.include?(proposal['slug'])
+
+      basis = proposal['basis'].to_s.strip
+      next if genitive && basis.sub(candidatus, '').casecmp?(genus)
+
+      marked = adjectival ? [] : marked_genders(basis)
+      case marked.size
+      when 0 then proposal
+      when 1 then proposal.merge('slug' => marked.first)
+      else
+        proposal.merge('slug' => 'gender-uncertain', 'confidence' => 'low')
       end
-    )
+    end
+  end
+
+  # Gender tags marked at the end of +basis+, after a comma (e.g. ", f." or
+  # ", m./f."), or none
+  def self.marked_genders(basis)
+    marker = /(?:masc|fem|neut|m|f|n)\./i
+    markers = basis[%r{,\s*(#{marker}(?:\s*(?:/|or|and)\s*#{marker})*)\s*\z}i, 1]
+    return [] unless markers
+
+    markers.scan(/(masc|fem|neut|m|f|n)\./i).flatten
+           .map { |m| GENDER_MARKERS[m.downcase] }.uniq
+  end
+
+  # Whether the grammar of +name+ (a species or subspecies) has a term
+  # matching +regex+, treating errors (and missing grammar) as false
+  def self.epithet_grammar?(name, regex)
+    return false unless %w[species subspecies].include?(name.rank)
+
+    name.grammar_has?(regex) ? true : false
+  rescue StandardError
+    false
+  end
+
+  # Name of the genus of +name+, from its lineage or the name itself
+  def self.genus_name(name)
+    name.genus&.name || name.name.sub(/\ACandidatus /, '').split.first
   end
 
   # Keep only the gender proposal of highest confidence, as gender tags are
