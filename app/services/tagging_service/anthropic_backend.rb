@@ -13,16 +13,28 @@ class TaggingService::AnthropicBackend
     raise TaggingService::Error, "No etymology for #{name.name}" if etym.blank?
 
     response = call_api(build_messages(name, etym))
+    TaggingService.record_usage(response['usage'])
     parse_response(response)
+  end
+
+  # The static part of the prompt, as a system block marked for caching.
+  # It must not depend on the name (or anything else that varies between
+  # requests), so the cached prefix is reused across names
+  def system_blocks
+    [
+      { type: 'text', text: system_prompt,
+        cache_control: { type: 'ephemeral' } }
+    ]
   end
 
   private
 
   def build_messages(name, etym)
-    [{ role: 'user', content: build_prompt(name, etym) }]
+    [{ role: 'user', content: name_prompt(name, etym) }]
   end
 
-  def build_prompt(name, etym)
+  # Rules and tag definitions (see system_blocks)
+  def system_prompt
     <<~PROMPT
       You are a taxonomic nomenclature assistant. Given the etymology of a
       prokaryotic name, assign zero or more tags from the closed list below.
@@ -46,7 +58,7 @@ class TaggingService::AnthropicBackend
          (e.g. "masc. / fem. adj.") is gender-uncertain.
       2. An adjectival or participial epithet, including present participles
          in -ans or -ens, takes the gender of the genus it is combined with
-         (see "Genus gender" below). When the genus gender is not recorded,
+         (see "Genus gender" with the name to tag). When the genus gender is not recorded,
          infer it from the genus name itself (e.g. -coccus, -bacter, and
          -bacillus are masculine; -monas and -ella are feminine; -bacterium
          is neuter) rather than treating it as unknown. Genus agreement
@@ -63,6 +75,10 @@ class TaggingService::AnthropicBackend
            Sargassum", "of the prawn genus Penaeus"), infer the gender from
            that nominative, including plurals (e.g. Crinocheta, a neuter
            plural).
+         - When the epithet refers to a host genus, a compound genus name
+           takes the gender of its final element (e.g. Glyptotermes,
+           Reticulitermes, Porotermes, and Labiotermes are masculine, like
+           termes; genera in -monas are feminine).
          - A bare second-declension genitive in -i is ambiguous between -us
            (masculine) and -um (neuter); do not default to masculine.
          - Genitive plural endings do not indicate the noun's gender by
@@ -242,6 +258,13 @@ class TaggingService::AnthropicBackend
         any other tag has no specific basis in the etymology, do not propose
         it.
 
+    PROMPT
+  end
+
+  # The name to tag, with its etymology and genus gender (sent as the user
+  # message, after the cached system prompt)
+  def name_prompt(name, etym)
+    <<~PROMPT
       ## Name to tag
       Name: #{name.name}
       Rank: #{name.rank}
@@ -265,9 +288,10 @@ class TaggingService::AnthropicBackend
   end
 
   # Tag definitions from the database, with sub-tags nested and marked under
-  # their umbrella tag and curation rules appended from +prompt_notes+
+  # their umbrella tag and curation rules appended from +prompt_notes+,
+  # ordered by slug so the cached prompt is stable
   def tag_definitions
-    tags = Tag.with_rich_text_description.order(:name).to_a
+    tags = Tag.with_rich_text_description.order(:slug).to_a
     children = tags.group_by(&:parent_id)
     children[nil].to_a.flat_map do |tag|
       [tag_definition(tag)] +
@@ -302,6 +326,7 @@ class TaggingService::AnthropicBackend
       model: MODEL,
       max_tokens: MAX_TOKENS,
       # temperature: 0, <- Not compatible with Sonnet 5.5
+      system: system_blocks,
       messages: messages,
       output_config: {
         format: { type: 'json_schema', schema: response_schema }

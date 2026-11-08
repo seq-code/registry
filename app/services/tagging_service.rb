@@ -15,6 +15,37 @@ class TaggingService
     Tag.expand(assign_classical(name, assign_gender(name, proposals)))
   end
 
+  # Token usage fields reported by the backend, totalled across requests
+  USAGE_FIELDS = %w[
+    input_tokens cache_creation_input_tokens cache_read_input_tokens
+    output_tokens
+  ].freeze
+
+  # Totals of USAGE_FIELDS (and 'requests') since the last reset_usage
+  def self.usage
+    @usage ||= reset_usage
+  end
+
+  def self.reset_usage
+    @usage = (['requests'] + USAGE_FIELDS).index_with(0)
+  end
+
+  # Add the +usage+ of a backend response (a Hash with String keys) to the
+  # totals, and log it at debug level
+  def self.record_usage(usage)
+    return if usage.blank?
+
+    Rails.logger.debug("TaggingService usage: #{usage.slice(*USAGE_FIELDS)}")
+    self.usage['requests'] += 1
+    USAGE_FIELDS.each { |field| self.usage[field] += usage[field].to_i }
+  end
+
+  # One line with the usage totals, for the tagging tasks
+  def self.usage_summary
+    "Token usage over #{usage['requests']} requests: " +
+      USAGE_FIELDS.map { |field| "#{field} #{usage[field]}" }.join(', ')
+  end
+
   # Gender tag slugs and the Name predicate declaring each gender
   GENDER_PREDICATES = {
     'masculine' => :masculine?,
@@ -98,11 +129,14 @@ class TaggingService
     end
   end
 
-  # Gender tags marked at the end of +basis+, after a comma (e.g. ", f." or
-  # ", m./f."), or none
+  # Gender tags of the last marker directly following a comma in +basis+
+  # (e.g. ", f." or ", m./f."), ignoring parentheticals and any text after
+  # it (e.g. "grumulus, -i, m. (genitive noun)"), or none
   def self.marked_genders(basis)
     marker = /(?:masc|fem|neut|m|f|n)\./i
-    markers = basis[%r{,\s*(#{marker}(?:\s*(?:/|or|and)\s*#{marker})*)\s*\z}i, 1]
+    markers = basis.gsub(/\([^)]*\)/, '')
+                   .scan(%r{,\s*(#{marker}(?:\s*(?:/|or|and)\s*#{marker})*)}i)
+                   .last&.first
     return [] unless markers
 
     markers.scan(/(masc|fem|neut|m|f|n)\./i).flatten

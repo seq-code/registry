@@ -58,6 +58,7 @@ namespace :tags do
     puts "Processing #{total} names#{ " (dry run)" if dry_run }..."
     puts "Backend: #{Rails.configuration.tagging_backend}"
     puts
+    TaggingService.reset_usage
     # The etymology as sent to the backend, printed under each name
     helpers = Object.new.extend(TaggingService::Helpers)
     etymology = lambda do |name|
@@ -125,6 +126,7 @@ namespace :tags do
 
     puts
     puts "Done. Proposed: #{proposed}, skipped: #{skipped}, failed: #{failed}"
+    puts TaggingService.usage_summary
   end
 end
 

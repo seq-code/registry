@@ -30,9 +30,10 @@ class TaggingService::AnthropicBackendTest < ActiveSupport::TestCase
     [result, requests]
   end
 
-  def text_body(json, stop_reason: 'end_turn')
+  def text_body(json, stop_reason: 'end_turn', usage: nil)
     { 'stop_reason' => stop_reason,
-      'content' => [{ 'type' => 'text', 'text' => JSON.generate(json) }] }
+      'content' => [{ 'type' => 'text', 'text' => JSON.generate(json) }],
+      'usage' => usage }.compact
   end
 
   test 'propose makes no request when external APIs are bypassed' do
@@ -100,6 +101,42 @@ class TaggingService::AnthropicBackendTest < ActiveSupport::TestCase
     assert_match(
       /^Genus gender: feminine \(declared in the etymology of Escherichia\)$/,
       prompt[Name.find(names(:escherichia_coli).id)]
+    )
+  end
+
+  test 'system prompt is identical for different names and cached' do
+    requests = [names(:escherichia), names(:escherichia_coli)].map do |name|
+      _, sent = propose_with(text_body({ 'tags' => [] }), name)
+      JSON.parse(sent.first.body)
+    end
+
+    systems = requests.map { |body| body['system'] }
+    assert_equal(systems.first, systems.last)
+    assert_equal({ 'type' => 'ephemeral' }, systems.first.last['cache_control'])
+    system_text = systems.first.map { |block| block['text'] }.join
+    assert_no_match(/Escherichia|Etymology:/, system_text)
+
+    contents = requests.map { |body| body.dig('messages', 0, 'content') }
+    assert_match(/^Name: Escherichia$/, contents.first)
+    assert_match(/^Name: Escherichia coli$/, contents.last)
+  end
+
+  test 'propose totals the token usage' do
+    TaggingService.reset_usage
+    usage = {
+      'input_tokens' => 30, 'cache_creation_input_tokens' => 0,
+      'cache_read_input_tokens' => 2000, 'output_tokens' => 50
+    }
+    2.times { propose_with(text_body({ 'tags' => [] }, usage: usage)) }
+
+    assert_equal(
+      { 'requests' => 2, 'input_tokens' => 60,
+        'cache_creation_input_tokens' => 0,
+        'cache_read_input_tokens' => 4000, 'output_tokens' => 100 },
+      TaggingService.usage
+    )
+    assert_match(
+      'cache_read_input_tokens 4000', TaggingService.usage_summary
     )
   end
 end

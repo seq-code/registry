@@ -44,6 +44,7 @@ namespace :tags do
     failures = []
 
     puts "Evaluating #{names.size} names, #{runs} run(s) each..."
+    TaggingService.reset_usage
     puts
     ActiveRecord::Base.while_preventing_writes do
       names.each do |name|
@@ -61,12 +62,15 @@ namespace :tags do
 
     header['Failures'] = failures.size
     puts TagEvaluationService.summary_report(results, header)
+    puts
+    puts TaggingService.usage_summary
 
     if ENV['OUTPUT'].present?
       File.write(
         ENV['OUTPUT'],
         JSON.pretty_generate(
-          'meta' => header, 'results' => results, 'failures' => failures
+          'meta' => header, 'usage' => TaggingService.usage,
+          'results' => results, 'failures' => failures
         )
       )
       puts
