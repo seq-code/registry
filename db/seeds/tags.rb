@@ -23,7 +23,7 @@ tag_seeds = [
    'not justify this tag unless the name itself refers to them.'],
   ['toponym', 'geographic', '#5fa8c4',
    'Named after a real geographic place (country, region, city, river, ' \
-   'lake, ocean, mountain, etc.)',
+   'lake, ocean, mountain, etc.), including extraterrestrial places',
    'Assign only when the name itself is derived from the place. Do not ' \
    'assign when the etymology mentions a place merely as context — e.g. ' \
    'the range of a referenced organism (\'a bird endemic to Australia\'), ' \
@@ -32,7 +32,8 @@ tag_seeds = [
    'hemisphere (e.g. *polaris*, *meridionalis*), are `geographic` but not ' \
    '`toponym`. A habitat type (e.g. a mine, a swamp) is `econym`, not ' \
    '`toponym`. Named regions such as Antarctica (e.g. *antarcticus*) ' \
-   'remain `toponym`. A person honoured for work in or on a place (e.g. ' \
+   'and extraterrestrial places (e.g. Titan, Saturn\'s moon) remain ' \
+   '`toponym`. A person honoured for work in or on a place (e.g. ' \
    '*allenii*, named for Eugene T. Allen for his work on the geochemistry ' \
    'of Yellowstone National Park) is `eponym` only, not `toponym`. ' \
    'Likewise, a study site mentioned only as context is not `toponym` ' \
@@ -41,7 +42,7 @@ tag_seeds = [
    'Geysir) is `econym`, not `toponym`.'],
   ['econym', 'geographic', '#5fa8c4',
    'Named after a habitat or environmental feature (e.g. <i>marinus</i>, ' \
-   '<i>lacustris</i>, <i>thermophilus</i>)',
+   '<i>lacustris</i>, <i>hydrothermalis</i>)',
    'Includes a named body part or organ used as habitat (e.g. gut, rumen, ' \
    'liver; <i>Ruminimicrobium</i>), and words describing the habitat even ' \
    'when formed from a verb or participle (e.g. <i>mesodigestus</i>, ' \
@@ -52,13 +53,24 @@ tag_seeds = [
    'genitive such as <i>termitum</i>, of termites) is `organonym`, not ' \
    '`econym`; a name referring to both gets both (e.g. ' \
    '<i>hominiciens</i>, in the human gut). Mere position relative to a ' \
-   'host (e.g. endo-, ecto-, inside, outside) is neither. Habitat details ' \
+   'host (e.g. endo-, ecto-, inside, outside) is neither. A compartment ' \
+   'that exists only inside a living host cell (e.g. nucleus, cytoplasm, ' \
+   'vacuole, the periplasm of a host) is this tag and also `lifestyle`, ' \
+   'as it implies an intracellular symbiosis (e.g. <i>Nucleicultrix</i>, ' \
+   'inhabitant of the nucleus). Habitat details ' \
    'that appear only in the explanation (e.g. occurring in the ' \
    'subsurface, presence in brackish water, living in darkness) do not ' \
-   'justify this tag unless the name itself refers to them.'],
+   'justify this tag unless the name itself refers to them. A ' \
+   'temperature word qualifying a habitat noun (e.g. <i>Hydrothermus</i>, ' \
+   'living in hot water; a hot spring) is this tag and does not add ' \
+   '`phenonym`, but one describing the organism itself (e.g. ' \
+   '<i>Caldarchaeum</i>, a warm archaeon; <i>thermophilum</i>) is ' \
+   '`phenonym`, not this tag.'],
   ['fictional-place', 'geographic', '#5fa8c4',
    'Named after a fictional or mythological place',
-   nil],
+   'E.g. *Acheron*, the underworld river, or Hades as the underworld. A ' \
+   'mythological place is this tag, not `mythonym`, which is only for ' \
+   'figures and deities.'],
 
   ['commemorative', nil, '#7b3f8c',
    'Name references a named entity',
@@ -82,7 +94,10 @@ tag_seeds = [
    'is itself named after an organism (e.g. *Pristimantibacillus*, from ' \
    'the Pristimantis natural reserve). Collective terms for organisms ' \
    'that are not taxa (e.g. plankton, biofilm, microbiota) are not ' \
-   '`organonym`. A host taxon (e.g. a coral or sponge genus in *-cola* ' \
+   '`organonym`, and neither is a domain or other very broad group implied ' \
+   'by a generic suffix (e.g. within Archaea, for *-archaeum*). An ' \
+   'affinity term (e.g. *-philus*, *-phila*) combined with a host ' \
+   'organism is `organonym` and `lifestyle` (e.g. *amoebiphila*). A host taxon (e.g. a coral or sponge genus in *-cola* ' \
    'names, or a host in the genitive such as *termitum*, of termites) is ' \
    '`organonym`, not `econym`; a named ' \
    'body part or organ of the host used as habitat is also `econym` (e.g. ' \
@@ -101,7 +116,9 @@ tag_seeds = [
    'Named after a deity, mythological figure, or fictional person or ' \
    'character',
    'Includes mythological or fictional animals, which are `mythonym` and ' \
-   'not `organonym`.'],
+   'not `organonym`. Only for figures and deities: a mythological or ' \
+   'fictional place (e.g. *Acheron*; Hades as the underworld) is ' \
+   '`fictional-place`.'],
   ['ethnonym', 'commemorative', '#b386c0',
    'Named after a people, ethnic group, clan, or community',
    'Not for individual persons (use `eponym`). A place mentioned only as ' \
@@ -116,8 +133,11 @@ tag_seeds = [
    'Named after a phenotypic or physiological property of the organism ' \
    'itself, including metabolism (also of organism-derived substrates) ' \
    'but not interactions with living organisms (see `lifestyle`)',
-   'Covers morphology, pigmentation, motility, growth form, physiology, ' \
-   'and metabolism (substrates used or degraded, compounds produced, or ' \
+   'Covers morphology, pigmentation, motility, growth form, physiology ' \
+   '(including temperature preference, when a temperature word describes ' \
+   'the organism itself, e.g. *Caldarchaeum*, a warm archaeon; ' \
+   '*Thermobaculum*, hot small rod; *thermophilum*), and metabolism ' \
+   '(substrates used or degraded, compounds produced, or ' \
    'processes such as nitrogen fixation or fermentation). Independent of ' \
    '`chemonym`: a metabolism naming a substance or particle (e.g. ' \
    'sulfur-metabolizing, electron-eating) is both, and one naming none ' \
@@ -126,7 +146,7 @@ tag_seeds = [
    'sub-tag. Do NOT use for properties of ' \
    'the environment, the isolation source, or the circumstances of discovery. Generic suffixes denoting a ' \
    'microorganism in general (e.g. *-bacter*, *-bacterium*, *-bacillus*, ' \
-   '*-monas*, *-microbium*, *-archaeum*) never justify this tag at any ' \
+   '*-baculum*, *-monas*, *-microbium*, *-archaeum*) never justify this tag at any ' \
    'confidence level, and neither do diminutive suffixes (e.g. *-ellum*, ' \
    '*-ella*, *-ula*). Shape suffixes (e.g. *-coccus*, *-spirillum*, ' \
    '*-vibrio*) justify it only with medium confidence when they stand ' \
@@ -171,7 +191,16 @@ tag_seeds = [
    'host, as in *Doriopsillibacter*; associated with the host Tylos, as ' \
    'in *Tyloplasma*) is `organonym` only, not `lifestyle`. The ' \
    'relationship itself does not justify `phenonym`. Co-tag with ' \
-   '`organonym` when the host or prey is named.'],
+   '`organonym` when the host or prey is named. An affinity term (e.g. ' \
+   '*-philus*, *-phila*) combined with a host organism describes the ' \
+   'relationship (e.g. *amoebiphila*, amoeba-loving), unlike *-cola* or ' \
+   'inhabiting a host, which are `organonym` only. Exception: a habitat ' \
+   'that exists only inside a living host cell (e.g. nucleus, cytoplasm, ' \
+   'vacuole, the periplasm of a host) implies an intracellular symbiosis, ' \
+   'so it is this tag and `econym` even though the name does not describe ' \
+   'the relationship (e.g. *Nucleicultrix*, inhabitant of the nucleus). ' \
+   'Body parts and organs (e.g. gut, rumen, liver) are `econym` only, and ' \
+   'mere position (e.g. inside, endo-) is neither.'],
 
   ['formed', nil, '#a8551c',
    'Name whose construction is the defining feature',
@@ -189,8 +218,9 @@ tag_seeds = [
    'abundance, or the size of the organism',
    'Assign alone, without any sub-tag, for names referring to: the size ' \
    'of the organism (e.g. *nano-*, *micro-*, *minutus*), together with ' \
-   '`phenonym`; vague quantities (many, multiple; e.g. *multihospitum*), ' \
-   'instead of `numeronym`; abundance, dominance, or commonness, ' \
+   '`phenonym`; vague quantities (many, multiple; e.g. *multihospitum*) ' \
+   'or solitude and singularity (alone, sole, single; e.g. *deserta*, ' \
+   '*singularis*), instead of `numeronym`; abundance, dominance, or commonness, ' \
    'including relative abundance (e.g. *abundans*, *subdominans*, ' \
    '*regnum*, *commune*, *vulgaris*), instead of `phenonym`; or a vague ' \
    'quantity in a name describing a broad distribution, together with ' \
@@ -213,8 +243,9 @@ tag_seeds = [
    'Includes ordinal/sequential use such as order of discovery (e.g. ' \
    '*primus*). Co-tag with `trait` when the number describes a property of ' \
    'the organism (e.g. *triflagellatus*). Vague quantities (many, ' \
-   'multiple; e.g. *multihospitum*) are `dimensional` alone, not this ' \
-   'tag.'],
+   'multiple; e.g. *multihospitum*) and solitude or singularity (alone, ' \
+   'sole, single; e.g. *deserta*, *singularis*) are `dimensional` alone, ' \
+   'not this tag.'],
   ['metronym', 'dimensional', '#7986cb',
    'Named after a measurement, coordinate, or physical parameter (depth, ' \
    'elevation, etc.)',

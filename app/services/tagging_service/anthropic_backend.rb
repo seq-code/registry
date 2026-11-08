@@ -103,7 +103,9 @@ class TaggingService::AnthropicBackend
           host in the genitive such as termitum, "of termites") is
           `organonym`, not `econym`.
         - Collective terms for organisms that are not taxa (e.g. plankton,
-          biofilm, microbiota) are not `organonym`.
+          biofilm, microbiota) are not `organonym`, and neither is a domain
+          or other very broad group implied by a generic suffix (e.g.
+          "within Archaea" for -archaeum).
         - A name referring to both gets both (e.g. hominiciens, "in the
           human gut").
         - Mere position relative to a host (e.g. endo-, ecto-, "inside",
@@ -111,13 +113,20 @@ class TaggingService::AnthropicBackend
         - Words describing the habitat are `econym`, not `phenonym`, even
           when formed from a verb or participle (e.g. mesodigestus,
           "referring to a mesophilic digester").
+        - A temperature word describing the organism itself (e.g.
+          Caldarchaeum, "a warm archaeon"; Calditenuis; Thermobaculum, "hot
+          small rod"; thermophilum) is `phenonym` (temperature preference),
+          not `econym`. When it qualifies a habitat noun (e.g. Hydrothermus,
+          "living in hot water"; a hot spring), the name is `econym` and the
+          temperature word does not add `phenonym`.
       - Umbrella terms can be assigned even if no children terms are
       - Assign an umbrella without any of its sub-tags only when the name
         clearly fits the umbrella but none of its sub-tags applies. For
         example, do not assign `commemorative` unless the name honours a
         person, organism, institution, or mythological or fictional figure.
       - Generic suffixes that denote a microorganism in general (e.g.
-        -bacter, -bacterium, -monas, -microbium, -archaeum) never justify
+        -bacter, -bacterium, -bacillus, -baculum, -monas, -microbium,
+        -archaeum) never justify
         `phenonym` or `trait`, at any confidence level — not even medium or
         low. Likewise, a root describing where or how the organism lives
         (e.g. vivens, living, in a habitat compound) is `econym`, not
@@ -150,13 +159,28 @@ class TaggingService::AnthropicBackend
           -cola names on a host taxon; "inhabiting host X", as in
           Doriopsillibacter; "associated with the host Tylos", as in
           Tyloplasma) is `organonym` only, not `lifestyle`.
+        - An affinity term (e.g. -philus, -phila) combined with a host
+          organism describes the relationship, so it gets `lifestyle` and
+          `organonym` (e.g. amoebiphila, "amoeba-loving").
+        - Exception: a habitat that exists only inside a living host cell
+          (e.g. nucleus, cytoplasm, vacuole, the periplasm of a host) gets
+          both `econym` (the compartment as habitat) and `lifestyle` (it
+          implies an intracellular symbiosis), even though the name does not
+          describe the relationship itself (e.g. Nucleicultrix, "inhabitant
+          of the nucleus"). Body parts and organs (e.g. gut, rumen, liver)
+          remain `econym` only, and mere position (e.g. "inside", endo-)
+          remains neither.
         - Eating or transforming chemical substances is `phenonym` (with
           `chemonym` when a substance is named).
         - The relationship itself does not justify `phenonym`, but the name
           can still get `phenonym` for other properties (e.g. the size in
           Nanoclepta) and `organonym` when the host or prey is named.
       - A mythological or fictional character is a `mythonym`, not an
-        `organonym`, even when the character is an animal.
+        `organonym`, even when the character is an animal. A mythological
+        or fictional place (e.g. Acheron, the underworld river; Hades as
+        "the underworld") is `fictional-place`, not `mythonym`; use
+        `mythonym` only for a figure or deity.
+      - Extraterrestrial places (e.g. Titan, Saturn's moon) are `toponym`.
       - Names referring to the organism's size (e.g. nano-, micro-,
         minutus) get both `phenonym` (with `trait`) and `dimensional`.
         Assign `dimensional` on its own, without any of its sub-tags. The
@@ -165,7 +189,9 @@ class TaggingService::AnthropicBackend
         never justify `phenonym` or `dimensional`.
       - `numeronym` is for specific numbers and orders (e.g. primus,
         triflagellatus). Vague quantities ("many", "multiple", e.g.
-        multihospitum) get `dimensional` on its own, not `numeronym`.
+        multihospitum) and words expressing solitude or singularity
+        ("alone", "sole", "single", e.g. deserta, singularis) get
+        `dimensional` on its own, not `numeronym`.
       - Names referring to abundance or dominance, including relative
         abundance (e.g. abundans, subdominans, regnum "dominion"), get
         `dimensional` on its own, not `phenonym`. Other properties in the

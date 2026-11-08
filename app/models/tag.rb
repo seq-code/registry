@@ -9,7 +9,9 @@ class Tag < ApplicationRecord
   # microorganism in general, and roots denoting living or dwelling. The
   # seeds use them as excluded bases (see Tag#excluded_bases_list), and
   # TaggingService.assign_classical to spot compounds
-  GENERIC_BASES = %w[bacter bacterium bacillus monas microbium archaeum].freeze
+  GENERIC_BASES = %w[
+    bacter bacterium bacillus baculum monas microbium archaeum
+  ].freeze
   LIVING_BASES = %w[cola vivens bios].freeze
 
   has_rich_text(:description)
