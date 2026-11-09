@@ -14,6 +14,9 @@ end
 every 1.day do
   rake 'works:update names:find parents:infer'
   rake 'wikidata:push'
+  # Sends up to ReminderMail::DAILY_LIMIT reminders a day, each user at most
+  # once a month, to stay within the SMTP provider's daily quota
+  runner 'ReminderMail.register_reminder'
 end
 
 every 1.week do
@@ -21,7 +24,6 @@ every 1.week do
 end
 
 every 1.month do
-  runner 'ReminderMail.register_reminder'
   rake 'genomes:clean'
   rake 'strains:clean'
 end
