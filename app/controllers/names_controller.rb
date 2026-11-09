@@ -334,7 +334,17 @@ class NamesController < ApplicationController
         format.html { redirect_to(params[:return_to] || @name, notice: 'Name was successfully updated') }
         format.json { render(:show, status: :ok, location: @name) }
       else
-        format.html { render(name_params[:name] ? :edit : :edit_etymology) }
+        format.html do
+          render(
+            if name_params[:name]
+              :edit
+            elsif name_params.key?(:nomenclatural_type_type)
+              :edit_type
+            else
+              :edit_etymology
+            end
+          )
+        end
         format.json { render(json: @name.errors, status: :unprocessable_entity) }
       end
     end

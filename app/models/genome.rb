@@ -7,6 +7,7 @@ class Genome < ApplicationRecord
   has_many(:genome_sequencing_experiments, dependent: :destroy)
   has_many(:sequencing_experiments, through: :genome_sequencing_experiments)
 
+  before_validation(:standardize_accession)
   before_validation(:standardize_source)
   # after_commit (not after_save): this runs the external metadata refresh
   # synchronously (see monitor_source_changes), so it must not happen inside
@@ -25,6 +26,35 @@ class Genome < ApplicationRecord
   validates(:source_accession, presence: true, if: :source?)
   validates(:source_database, presence: true, if: :source?)
   validates(:accession, uniqueness: { scope: :database })
+  validates(
+    :source_database,
+    inclusion: { in: ->(_) { Genome.source_databases.keys.map(&:to_s) } },
+    allow_blank: true, if: :will_save_change_to_source_database?
+  )
+  validate(:validate_accession_formats)
+
+  ##
+  # Expected accession format per (source) database: +pattern+ matches a
+  # single accession, and lists must be comma-separated. Databases without an
+  # entry (e.g., +pending+) are not checked
+  ACCESSION_FORMATS = {
+    assembly: { pattern: /GC[AF]_\d{9}(?:\.\d+)?/, example: 'GCA_000175575.2' },
+    # INSDC (1, 2, 4, or 6 letters) or RefSeq (two letters and underscore)
+    # nucleotide records. Three-letter prefixes are excluded: in INSDC those
+    # are proteins, and SRA runs or samples (e.g., SRR, ERS) are not sequences.
+    # BioSamples (SAMN, SAMD) are excluded explicitly, since they otherwise
+    # look like four-letter WGS accessions (e.g., SAMN48198398, AUEK00000000)
+    nuccore: {
+      pattern: /
+        (?!SAM[NED])
+        (?:[A-Z]{2}_(?:[A-Z]{2}|[A-Z]{4}|[A-Z]{6})?|[A-Z]{1,2}|[A-Z]{4}|[A-Z]{6})
+        \d{5,}(?:\.\d+)?
+      /x,
+      example: 'CP036432.1'
+    },
+    biosample: { pattern: /SAM(?:N|EA|D)\d+/, example: 'SAMN10878311' },
+    sra: { pattern: /[SED]RX\d+/, example: 'SRX1234567' }
+  }.freeze
 
   has_rich_text(:submitter_comments)
 
@@ -80,6 +110,14 @@ class Genome < ApplicationRecord
 
     def source_databases_opt
       source_databases.map { |k, v| [v[:name], k] }
+    end
+
+    ##
+    # Regexp matching a full (comma-separated) list of accessions for the
+    # (source) database +db+, or +nil+ if the database has no expected format
+    def accession_list_regexp(db)
+      re = ACCESSION_FORMATS.dig(db.to_s.to_sym, :pattern) or return
+      /\A#{re}(?: *, *#{re})*\z/
     end
 
     def required
@@ -171,6 +209,25 @@ class Genome < ApplicationRecord
 
   def source_accessions
     source_accession.try(:split, /, */)
+  end
+
+  ##
+  # Check that the accession and source accession (if they are changing) have
+  # the expected format for their databases. Runs as a validation, but it can
+  # also be called directly on records that are not validated as a whole
+  def validate_accession_formats
+    if will_save_change_to_accession? || will_save_change_to_database?
+      check_accession_format(:accession, database, self.class.db_names)
+    end
+
+    if source_accession.present? &&
+         (will_save_change_to_source_accession? ||
+          will_save_change_to_source_database?)
+      check_accession_format(
+        :source_accession, source_database,
+        self.class.source_databases.transform_values { |v| v[:name] }
+      )
+    end
   end
 
   def rrnas_or_trnas?
@@ -452,6 +509,29 @@ class Genome < ApplicationRecord
     return { NCBI: ncbi_url } if acc =~ REFSEQ_ACCESSION
 
     { NCBI: ncbi_url, EMBL: 'https://www.ebi.ac.uk/ena/browser/view/%s' % acc }
+  end
+
+  def standardize_accession
+    self.accession = accession.strip if accession.present?
+  end
+
+  ##
+  # Add an error to +attr+ unless its value matches the expected format for
+  # +db+, with a hint if it matches another of the databases in +names+
+  # (a Hash of database keys to display names)
+  def check_accession_format(attr, db, names)
+    re = self.class.accession_list_regexp(db) or return
+    value = send(attr).to_s
+    return if value =~ re
+
+    msg = "is not a valid #{names[db.to_s.to_sym]} accession " \
+          "(e.g., #{ACCESSION_FORMATS[db.to_s.to_sym][:example]}); " \
+          'separate multiple accessions with commas'
+    other = names.keys.find do |k|
+      k.to_s != db.to_s && value =~ self.class.accession_list_regexp(k)
+    end
+    msg += "; it looks like an #{names[other]} accession instead" if other
+    errors.add(attr, :invalid_format, message: msg)
   end
 
   def standardize_source

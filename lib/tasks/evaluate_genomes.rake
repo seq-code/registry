@@ -133,4 +133,65 @@ namespace :genomes do
       genome.update(new_data.merge(auto_check: true))
     end
   end
+
+  desc 'Move genome accessions stored under the wrong database and requeue ' \
+       'failed downloads (dry run unless APPLY=1)'
+  task fix_accessions: :environment do
+    apply = ENV['APPLY'] == '1'
+    $stderr.puts(
+      apply ? 'Fixing genome accessions' :
+              'Fixing genome accessions (dry run, set APPLY=1 to apply)'
+    )
+    counts = Hash.new(0)
+    review = []
+
+    Genome.where(database: %w[assembly nuccore]).find_each do |genome|
+      # Orphan genomes (no linked names) are purged separately
+      next if genome.names.empty?
+
+      db = genome.database
+      other = db == 'assembly' ? 'nuccore' : 'assembly'
+      label = "#{genome.miga_name} (#{genome.names.first.name})"
+      failed = genome.auto_failed.to_s.start_with?('Cannot find ncbi:')
+      move = nil
+
+      if genome.accession =~ Genome.accession_list_regexp(db)
+        next unless failed
+      elsif genome.accession =~ Genome.accession_list_regexp(other)
+        twin = Genome.find_by(database: other, accession: genome.accession)
+        if twin
+          review << "#{label}: #{db}:#{genome.accession} also exists as " \
+                    "#{other} in #{twin.miga_name}"
+          counts[:conflict] += 1
+          next
+        end
+        move = other
+      else
+        review << "#{label}: #{db}:#{genome.accession} is malformed"
+        counts[:malformed] += 1
+        next
+      end
+
+      $stderr.puts "o #{label}: #{db}:#{genome.accession}" \
+                   "#{" -> #{move}" if move}#{' (requeued)' if failed}"
+      counts[:moved] += 1 if move
+      counts[:requeued] += 1 if failed
+      next unless apply
+
+      if move && !genome.update(database: move)
+        review << "#{label}: could not move to #{move}: " \
+                  "#{genome.errors.full_messages.to_sentence}"
+        next
+      end
+      genome.recalculate_miga! if failed
+    end
+
+    unless review.empty?
+      $stderr.puts '', 'Needs manual review:'
+      review.each { |i| $stderr.puts "? #{i}" }
+    end
+    $stderr.puts '', "#{apply ? 'Done' : 'Would do'}: " \
+                 "#{counts[:moved]} moved, #{counts[:requeued]} requeued, " \
+                 "#{counts[:conflict]} conflicts, #{counts[:malformed]} malformed"
+  end
 end

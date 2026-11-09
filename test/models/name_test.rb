@@ -59,4 +59,28 @@ class NameTest < ActiveSupport::TestCase
       '<i>incertae sedis</i> (Bacteria)', name.incertae_sedis_html
     )
   end
+
+  test 'reports invalid type genome accessions on the type entry field' do
+    name = names(:draft_by_contributor)
+    name.nomenclatural_type_type = 'nuccore'
+    name.nomenclatural_type_entry = 'GCA_039803745.1'
+
+    assert_not name.valid?
+    assert_match(
+      /looks like an NCBI Assembly accession/,
+      name.errors[:nomenclatural_type_entry].first
+    )
+    assert_empty name.errors[:nomenclatural_type_id]
+    assert_not Genome.exists?(database: 'nuccore', accession: 'GCA_039803745.1')
+  end
+
+  test 'accepts valid type genome accessions from the type entry field' do
+    name = names(:draft_by_contributor)
+    name.update!(
+      nomenclatural_type_type: 'assembly',
+      nomenclatural_type_entry: ' GCA_039803745.1 '
+    )
+
+    assert_equal 'GCA_039803745.1', name.reload.nomenclatural_type.accession
+  end
 end
