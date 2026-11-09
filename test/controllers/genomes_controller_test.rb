@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class GenomesControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
   setup do
     @genome = genomes(:one)
     @genome_with_locations = genomes(:with_locations)
@@ -30,5 +32,27 @@ class GenomesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'div#map', count: 0
     assert_select '.alert', text: /no available samples/
+  end
+
+  test 'anonymous visitors cannot edit or update genomes without names' do
+    assert_empty @genome.names
+    @genome.update_columns(source_database: 'biosample', source_accession: 'SAMN00000001')
+
+    get edit_genome_path(@genome)
+    assert_redirected_to root_path
+
+    patch genome_path(@genome), params: {
+      genome: { source_database: "sra0'XOR(if(now()=sysdate(),sleep(15),0))XOR'Z" }
+    }
+    assert_redirected_to root_path
+    assert_equal 'biosample', @genome.reload.source_database
+  end
+
+  test 'signed-in users can still update genomes without names' do
+    sign_in(users(:contributor))
+
+    patch genome_path(@genome), params: { genome: { gc_content: 55.5 } }
+    assert_equal 55.5, @genome.reload.gc_content
+    assert_equal users(:contributor), @genome.updated_by
   end
 end

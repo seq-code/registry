@@ -111,4 +111,12 @@ class GenomeTest < ActiveSupport::TestCase
     assert_not genome.source_hash[:samples].key?(:SAMN1)
     assert genome.source_hash[:samples].key?(:SAMN2)
   end
+
+  test 'anonymous users cannot edit genomes without names' do
+    genome = genomes(:one)
+    assert_empty genome.names
+
+    assert_not genome.can_edit?(nil)
+    assert genome.can_edit?(users(:contributor))
+  end
 end

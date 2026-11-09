@@ -357,8 +357,11 @@ class Genome < ApplicationRecord
   end
 
   def can_edit?(user)
-    (names.empty? && user.present?) ||
-      names.all? { |name| name.can_edit?(user) }
+    # Check the user first: for genomes without names, +names.all?+ is
+    # vacuously true and would otherwise let anonymous visitors edit them
+    return false unless user.present?
+
+    names.empty? || names.all? { |name| name.can_edit?(user) }
   end
 
   def can_view?(user, token = nil)
