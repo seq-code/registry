@@ -6,9 +6,10 @@ namespace :wikidata do
     csrf_token = client.fetch_csrf_token
     names = 0
 
-    Name.all_valid.where(wikidata_item: nil).each do |name|
+    Name.all_valid.where(wikidata_item: nil).find_each do |name|
       # Ignore taxa without wikidata item
       entity_id = client.find_taxon_entity(name.name, name.rank)
+      sleep 1 # WDQS rate limit applies to every query, not just pushes
       next if entity_id.nil?
 
       puts "~ #{name.name}"

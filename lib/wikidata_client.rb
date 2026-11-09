@@ -159,10 +159,22 @@ class WikidataClient
     encoded_query = URI.encode_www_form_component(query)
     url = "https://query.wikidata.org/sparql?query=#{encoded_query}"
 
-    res = HTTParty.get(url, headers: {
-      'Accept'     => 'application/sparql-results+json',
-      'User-Agent' => user_agent
-    })
+    res = nil
+    3.times do |attempt|
+      res = HTTParty.get(url, headers: {
+        'Accept'     => 'application/sparql-results+json',
+        'User-Agent' => user_agent
+      })
+      break unless [429, 500, 502, 503, 504].include?(res.code)
+
+      # Throttled or temporarily unavailable: honor Retry-After if given
+      retry_after = res.headers['retry-after'].to_s
+      sleep(retry_after =~ /\A\d+\z/ ? retry_after.to_i : 30 * (attempt + 1))
+    end
+
+    unless res.success?
+      raise "SPARQL query failed (HTTP #{res.code}): #{res.body.to_s[0, 300]}"
+    end
 
     begin
       json = JSON.parse(res.body)
