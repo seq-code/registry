@@ -5,12 +5,19 @@ namespace :wikidata do
     client.login
     csrf_token = client.fetch_csrf_token
     names = 0
+    recheck_after = 1.month # Taxa without an item are looked up again after this
 
-    Name.all_valid.where(wikidata_item: nil).find_each do |name|
-      # Ignore taxa without wikidata item
+    Name.all_valid.where(wikidata_item: nil)
+        .where('wikidata_at IS NULL OR wikidata_at < ?', recheck_after.ago)
+        .find_each do |name|
       entity_id = client.find_taxon_entity(name.name, name.rank)
       sleep 1 # WDQS rate limit applies to every query, not just pushes
-      next if entity_id.nil?
+
+      # Ignore taxa without wikidata item, but remember we checked
+      if entity_id.nil?
+        name.update_column(:wikidata_at, Time.current)
+        next
+      end
 
       puts "~ #{name.name}"
 

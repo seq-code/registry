@@ -1477,6 +1477,7 @@ class Name < ApplicationRecord
     self.col_at = nil
     self.gbif_json = nil
     self.gbif_at = nil
+    self.wikidata_at = nil
 
     self.name.strip!
     self.name.gsub!(/\s+/, ' ')

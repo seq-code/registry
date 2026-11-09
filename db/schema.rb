@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_11_06_110000) do
+ActiveRecord::Schema.define(version: 2026_11_09_120000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -287,6 +287,7 @@ ActiveRecord::Schema.define(version: 2026_11_06_110000) do
     t.integer "basonym_id"
     t.string "wikispecies_entry"
     t.datetime "wikispecies_at"
+    t.datetime "wikidata_at"
     t.index ["created_by_id"], name: "index_names_on_created_by_id"
     t.index ["genome_id"], name: "index_names_on_genome_id"
     t.index ["name"], name: "index_names_on_name", unique: true

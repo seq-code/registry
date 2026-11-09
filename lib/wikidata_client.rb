@@ -98,7 +98,7 @@ class WikidataClient
   def add_seqcode_claim(entity_id, seqcode_accession, csrf_token)
     if claim_exists?(entity_id, @accession_property, seqcode_accession)
       puts "SeqCode #{seqcode_accession} already exists for #{entity_id}"
-      return
+      return true # Claim is in place, so the item can be recorded
     end
 
     body = {
