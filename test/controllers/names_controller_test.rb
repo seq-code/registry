@@ -150,4 +150,23 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     def autocomplete_values
       JSON.parse(response.body).pluck('value')
     end
+
+  test 'shows genome accession errors on the type form' do
+    name = names(:draft_by_contributor)
+    name.update_column(:rank, 'species')
+
+    assert_no_difference('Genome.count') do
+      patch name_url(name), params: {
+        name: {
+          nomenclatural_type_type: 'nuccore',
+          nomenclatural_type_entry: 'GCA_039803745.1'
+        }
+      }
+    end
+
+    assert_response :success
+    assert_select 'h1', /Type of/
+    assert_includes @response.body, 'looks like an NCBI Assembly accession'
+    assert_nil name.reload.nomenclatural_type
+  end
 end

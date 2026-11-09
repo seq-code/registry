@@ -148,6 +148,7 @@ class Name < ApplicationRecord
     :nomenclatural_type_id,
     presence: { if: :nomenclatural_type_type? }
   )
+  validate(:nomenclatural_type_genome_is_valid)
 
   include HasObservers
   include HasExternalResources
@@ -1487,6 +1488,21 @@ class Name < ApplicationRecord
     return if nomenclatural_type_entry.nil?
 
     self.nomenclatural_type = nomenclatural_type_from_entry
+  end
+
+  ##
+  # When the type genome could not be created from the entered accession
+  # (e.g., the accession doesn't match the selected database), report the
+  # genome's own errors on the entry field instead of a missing type
+  def nomenclatural_type_genome_is_valid
+    genome = nomenclatural_type
+    return unless genome.is_a?(Genome) && genome.new_record?
+    return if genome.valid?
+
+    errors.delete(:nomenclatural_type_id)
+    genome.errors.each do |error|
+      errors.add(:nomenclatural_type_entry, error.message)
+    end
   end
 
   def observe_genome_strain
