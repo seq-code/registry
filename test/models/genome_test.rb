@@ -287,4 +287,11 @@ class GenomeTest < ActiveSupport::TestCase
     assert_nil genome.auto_failed
     assert_nil genome.auto_scheduled_at
   end
+
+  test 'orphan genomes are removed six months after their last update' do
+    genome = genomes(:one)
+    genome.update_column(:updated_at, Time.utc(2026, 11, 10, 12))
+
+    assert_equal Date.new(2027, 5, 10), genome.orphan_removal_date
+  end
 end

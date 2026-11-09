@@ -3,7 +3,7 @@ namespace :strains do
   desc 'Find and remove strains that are not associated to any name'
   task :clean => :environment do |t, args|
     Strain.includes(:typified_names)
-          .where('strains.updated_at < ?', 6.months.ago)
+          .where('strains.updated_at < ?', Strain::ORPHAN_RETENTION.ago)
           .where.missing(:typified_names)
           .each do |strain|
       next if strain.genomes.any? { |g| g.typified_names.present? }

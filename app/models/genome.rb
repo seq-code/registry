@@ -33,6 +33,10 @@ class Genome < ApplicationRecord
   )
   validate(:validate_accession_formats)
 
+  # Genomes not linked to any name are removed by +genomes:clean+ once they
+  # have gone this long without updates
+  ORPHAN_RETENTION = 6.months
+
   ##
   # Expected accession format per (source) database: +pattern+ matches a
   # single accession, and lists must be comma-separated. Databases without an
@@ -433,6 +437,13 @@ class Genome < ApplicationRecord
 
   def miga_name
     "genome_#{id}"
+  end
+
+  ##
+  # Date after which the genome is removed if it is still not linked to any
+  # name (see +ORPHAN_RETENTION+)
+  def orphan_removal_date
+    (updated_at + ORPHAN_RETENTION).to_date
   end
 
   def miga_url(result = nil)

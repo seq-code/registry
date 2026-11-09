@@ -3,7 +3,7 @@ namespace :genomes do
   desc 'Find and remove genomes that are not associated to any name'
   task :clean => :environment do |t, args|
     Genome.includes(:typified_names)
-          .where('genomes.updated_at < ?', 6.months.ago)
+          .where('genomes.updated_at < ?', Genome::ORPHAN_RETENTION.ago)
           .where.missing(:typified_names)
           .each do |genome|
       next if genome.strain.try(:typified_names).present?

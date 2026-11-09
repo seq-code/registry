@@ -5,6 +5,10 @@ class Strain < ApplicationRecord
 
   validates(:numbers_string, presence: true)
 
+  # Strains not linked to any name are removed by +strains:clean+ once they
+  # have gone this long without updates
+  ORPHAN_RETENTION = 6.months
+
   before_save(:clean_numbers)
 
   include HasExternalResources
@@ -15,6 +19,13 @@ class Strain < ApplicationRecord
     def all_public
       where(typified_names: Name.all_public)
     end
+  end
+
+  ##
+  # Date after which the strain is removed if it is still not linked to any
+  # name (see +ORPHAN_RETENTION+)
+  def orphan_removal_date
+    (updated_at + ORPHAN_RETENTION).to_date
   end
 
   def numbers

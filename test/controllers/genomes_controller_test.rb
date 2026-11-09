@@ -55,4 +55,14 @@ class GenomesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 55.5, @genome.reload.gc_content
     assert_equal users(:contributor), @genome.updated_by
   end
+
+  test 'orphan genomes show when they will be removed' do
+    genome = Genome.create!(database: 'assembly', accession: 'GCA_000175575.2')
+    genome.update_column(:updated_at, Time.utc(2026, 11, 10, 12))
+
+    get genome_path(genome)
+
+    assert_response :success
+    assert_select '.alert-warning', /removed from the database after\s+May 10, 2027\s+\(6 months after its last update\)/
+  end
 end

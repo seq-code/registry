@@ -2,8 +2,10 @@
   <div class="alert alert-warning">
     <h4>Marked for deletion</h4>
     This strain is currently not registered as the nomenclatural type or the
-    reference strain of any names in the Registry, and it will be purged from
-    the database soon unless it is linked to a name
+    reference strain of any names in the Registry. Unless it is linked to a
+    name, it will be removed from the database after
+    <strong><%= l(@strain.orphan_removal_date, format: :long) %></strong>
+    (<%= Strain::ORPHAN_RETENTION.inspect %> after its last update)
   </div>
 <% end %>
 
