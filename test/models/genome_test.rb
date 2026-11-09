@@ -1,4 +1,7 @@
 require 'test_helper'
+require 'minitest/mock'
+require 'miga'
+require 'miga/cli'
 
 class GenomeTest < ActiveSupport::TestCase
   test 'type_of_type identifies the record as a Genome, not its source database' do
@@ -247,5 +250,41 @@ class GenomeTest < ActiveSupport::TestCase
     genome = Genome.new(database: 'nuccore', accession: 'GCA_039803745.1')
     genome.validate_accession_formats
     assert_not_empty(genome.errors[:accession])
+  end
+
+  test 'remove_miga! skips genomes without a MiGA dataset' do
+    genome = genomes(:one)
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(File.join(dir, 'metadata'))
+      called = false
+      Genome.stub(:miga_project_path, dir) do
+        cli = Object.new.tap { |o| o.define_singleton_method(:launch) { |*_| nil } }
+        MiGA::Cli.stub(:new, ->(*_) { called = true; cli }) do
+          assert_nil genome.remove_miga!
+          assert_not called, 'MiGA should not be called without a dataset'
+
+          File.write(File.join(dir, 'metadata', "#{genome.miga_name}.json"), '{}')
+          genome.remove_miga!
+          assert called, 'MiGA should be called when the dataset exists'
+        end
+      end
+    end
+  end
+
+  test 'recalculate_miga! requeues genomes without a MiGA dataset' do
+    genome = genomes(:one)
+    genome.update_columns(
+      auto_failed: 'Cannot find ncbi:assembly:GCA_000175575',
+      auto_scheduled_at: 1.day.ago
+    )
+    Dir.mktmpdir do |dir|
+      Genome.stub(:miga_project_path, dir) do
+        _out, err = capture_io { genome.recalculate_miga! }
+        assert_empty err
+      end
+    end
+    genome.reload
+    assert_nil genome.auto_failed
+    assert_nil genome.auto_scheduled_at
   end
 end

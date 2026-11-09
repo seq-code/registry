@@ -445,6 +445,13 @@ class Genome < ApplicationRecord
   end
 
   def remove_miga!
+    # Genomes that never downloaded have no dataset, and MiGA would only print
+    # a "Cannot load dataset" exception (with backtrace) for them
+    metadata = File.join(
+      self.class.miga_project_path, 'metadata', "#{miga_name}.json"
+    )
+    return unless File.exist?(metadata)
+
     require 'miga'
     require 'miga/cli'
 
