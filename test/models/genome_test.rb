@@ -163,7 +163,8 @@ class GenomeTest < ActiveSupport::TestCase
   test 'rejects non-nucleotide or space-separated nuccore accessions' do
     [
       'CP036432 CP036433', 'SRR37301126', 'DRR905474', 'ERS3208922',
-      'PRJEB100972', 'GWHHOSX00000000.1', 'not yet available', 'cp036432'
+      'PRJEB100972', 'GWHHOSX00000000.1', 'not yet available', 'cp036432',
+      'SAMN48198398', 'SAMD00093579', 'SAMN48697936, JBPYXL000000000'
     ].each do |acc|
       errors = accession_errors(database: 'nuccore', accession: acc)
       assert_not_empty(errors[:accession], "expected #{acc.inspect} to be invalid")

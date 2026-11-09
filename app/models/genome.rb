@@ -41,9 +41,12 @@ class Genome < ApplicationRecord
     assembly: { pattern: /GC[AF]_\d{9}(?:\.\d+)?/, example: 'GCA_000175575.2' },
     # INSDC (1, 2, 4, or 6 letters) or RefSeq (two letters and underscore)
     # nucleotide records. Three-letter prefixes are excluded: in INSDC those
-    # are proteins, and SRA runs or samples (e.g., SRR, ERS) are not sequences
+    # are proteins, and SRA runs or samples (e.g., SRR, ERS) are not sequences.
+    # BioSamples (SAMN, SAMD) are excluded explicitly, since they otherwise
+    # look like four-letter WGS accessions (e.g., SAMN48198398, AUEK00000000)
     nuccore: {
       pattern: /
+        (?!SAM[NED])
         (?:[A-Z]{2}_(?:[A-Z]{2}|[A-Z]{4}|[A-Z]{6})?|[A-Z]{1,2}|[A-Z]{4}|[A-Z]{6})
         \d{5,}(?:\.\d+)?
       /x,
