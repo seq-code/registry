@@ -204,7 +204,10 @@ class GenomeTest < ActiveSupport::TestCase
 
   test 'accepts BioSample and SRA Experiment sources, comma-separated' do
     {
-      biosample: ['SAMN10878311', 'SAMEA6956417, SAMEA6939414', 'SAMD00093579'],
+      biosample: [
+        'SAMN10878311', 'SAMEA6956417, SAMEA6939414', 'SAMD00093579',
+        'SRS31202089', 'ERS861224', 'DRS000001', 'SAMN15855652, SRS9415155'
+      ],
       sra: ['SRX1234567', 'ERX123456, DRX123456']
     }.each do |db, list|
       list.each do |acc|
@@ -219,7 +222,9 @@ class GenomeTest < ActiveSupport::TestCase
 
   test 'rejects sources that are not BioSamples or SRA Experiments' do
     {
-      biosample: ['ERS861224', 'SRS9415155', 'PRJNA384792', 'SAMN15855652 SAMN15855653'],
+      biosample: [
+        'SRR12620258', 'SRX1234567', 'PRJNA384792', 'SAMN15855652 SAMN15855653'
+      ],
       sra: ['SRR12620258', 'SRS18309842', 'SAMN10878311', 'SRP119423']
     }.each do |db, list|
       list.each do |acc|
