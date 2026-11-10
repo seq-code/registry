@@ -56,7 +56,10 @@ class Genome < ApplicationRecord
       /x,
       example: 'CP036432.1'
     },
-    biosample: { pattern: /SAM(?:N|EA|D)\d+/, example: 'SAMN10878311' },
+    # BioSamples, or their SRA sample equivalents (SRS, ERS, DRS)
+    biosample: {
+      pattern: /(?:SAM(?:N|EA|D)|[SED]RS)\d+/, example: 'SAMN10878311'
+    },
     sra: { pattern: /[SED]RX\d+/, example: 'SRX1234567' }
   }.freeze
 
