@@ -159,6 +159,18 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     assert_select '.crumbs span.active', text: 'Curator'
   end
 
+  test 'curator page shows the etymology of pending proposals' do
+    name_tags(:escherichia_coli_toponym).name.update_columns(
+      etymology_xx_description: 'named after Theodor Escherich'
+    )
+    sign_in(users(:curator))
+    get curator_tag_url(@tag)
+
+    assert_response :success
+    assert_select 'th', text: 'Etymology'
+    assert_select 'td', text: /named after Theodor Escherich/
+  end
+
   test 'curator page requires a curator' do
     get curator_tag_url(@tag)
     assert_response :redirect

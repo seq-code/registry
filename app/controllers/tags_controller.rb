@@ -38,7 +38,8 @@ class TagsController < ApplicationController
     @crumbs << [@tag.parent.name, @tag.parent] if @tag.parent
     @crumbs << [@tag.name, @tag] << 'Curator'
     @proposed_names = @tag.name_tags.where(status_int: 0)
-                          .includes(:name).order('names.name')
+                          .includes(name: :rich_text_etymology_text)
+                          .order('names.name')
     @rejected_names = @tag.name_tags.where(status_int: 2)
                           .includes(:name).order('names.name')
   end
