@@ -49,6 +49,33 @@ class Name::VersionedTest < ActiveSupport::TestCase
     end
   end
 
+  test 'updating only external service data does not add a version' do
+    @name.save!
+
+    assert_no_difference -> { @name.versions.count } do
+      @name.update!(gbif_json: '{"results":[]}', gbif_at: Time.current)
+    end
+  end
+
+  test 'updating omits timestamps and external service data from the changeset' do
+    @name.save!
+
+    @name.update!(syllabication: 'co.li', gbif_json: '{"results":[]}', gbif_at: Time.current)
+
+    assert_equal %w[syllabication], @name.versions.last.changeset.keys
+  end
+
+  test 'updating a workflow timestamp adds a version' do
+    @name.save!
+    validated_at = Time.current
+
+    assert_difference -> { @name.versions.count } do
+      @name.update!(validated_at: validated_at)
+    end
+
+    assert_equal %w[validated_at], @name.versions.last.changeset.keys
+  end
+
   test 'changing an etymology description snapshots valued etymology attributes' do
     @name.assign_attributes(
       etymology_xx_lang: 'N.L.', etymology_xx_description: 'of the colon'
