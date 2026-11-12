@@ -44,19 +44,15 @@ class Name::PublicHistory
 
   private
 
-  # Group etymology and nomenclatural type attributes before removing unchanged
-  # companions, so each side retains the context needed to render it.
+  # Group etymology and polymorphic reference attributes before removing
+  # unchanged companions, so each side retains the context needed to render it.
   def name_changes_for(version)
     return {} unless version.operation == 'update'
 
-    changes = version.changeset.slice(*NAME_KEYS)
+    changes = polymorphic_references(Name, version.changeset.slice(*NAME_KEYS))
     etymology = changes.extract!(*Name::ETYMOLOGY_COLUMNS)
     if etymology.any?
       changes['etymology'] = etymology_snapshots(etymology, changes['name'])
-    end
-    nomenclatural_type = changes.extract!('nomenclatural_type_type', 'nomenclatural_type_id')
-    if nomenclatural_type.any?
-      changes['nomenclatural_type'] = nomenclatural_type_references(nomenclatural_type)
     end
     # versioned_together records unchanged companion values too.
     changes.reject! { |_, values| values.first == values.last }
@@ -90,16 +86,23 @@ class Name::PublicHistory
     case version.operation
     when 'create' then { 'linked' => [false, true] }
     when 'delete' then { 'linked' => [true, false] }
-    else version.changeset.slice(*keys)
+    else polymorphic_references(version.record_type.constantize, version.changeset.slice(*keys))
     end
   end
 
-  # Pair the type and ID on each side:
-  #   [['Strain', 1], ['Genome', 2]]
-  def nomenclatural_type_references(nomenclatural_type)
-    types = nomenclatural_type.fetch('nomenclatural_type_type', [nil, nil])
-    ids = nomenclatural_type.fetch('nomenclatural_type_id', [nil, nil])
-    types.zip(ids)
+  # Replace each polymorphic association's type and ID columns with a single
+  # entry under the association's name, pairing the type and ID on each side:
+  #   { 'nomenclatural_type' => [['Strain', 1], ['Genome', 2]] }
+  def polymorphic_references(model, changes)
+    model.reflect_on_all_associations(:belongs_to).select(&:polymorphic?).each do |association|
+      reference = changes.extract!(association.foreign_type, association.foreign_key)
+      next if reference.empty?
+
+      types = reference.fetch(association.foreign_type, [nil, nil])
+      ids = reference.fetch(association.foreign_key, [nil, nil])
+      changes[association.name.to_s] = types.zip(ids)
+    end
+    changes
   end
 
   # Include the name because full_etymology derives the :xx particle from its
