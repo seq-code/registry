@@ -40,8 +40,9 @@ module Names::HistoriesHelper
   end
 
   # Label a link's changes with what it links to. Publication links identify
-  # their publication, even once deleted. Placement headings stay neutral
-  # because a placement's current parent may differ from earlier edits.
+  # their publication and paratypes their strain, even once deleted. Placement
+  # headings stay neutral because a placement's current parent may differ from
+  # earlier edits.
   def history_record_heading(version)
     case version.record_type
     when 'Placement'
@@ -49,6 +50,9 @@ module Names::HistoriesHelper
     when 'PublicationName'
       publication_id = version.changeset['publication_id'].compact.first
       safe_join(['Publication: ', history_record_reference(Publication, publication_id)])
+    when 'NameParatype'
+      strain_id = version.changeset['nomenclatural_type_id'].compact.first
+      safe_join(['Paratype: ', history_paratype_reference(strain_id)])
     else
       raise ArgumentError, "Unsupported history record heading: #{version.record_type}"
     end
@@ -73,6 +77,12 @@ module Names::HistoriesHelper
     else
       changes.map { |value| { true => 'Yes', false => 'No' }.fetch(value, value) }
     end
+  end
+
+  # Paratypes are always strains, linked by their title as on the name page.
+  def history_paratype_reference(strain_id)
+    strain = Strain.find_by(id: strain_id)
+    strain ? link_to(strain.title(sup: false), strain) : "Strain ##{strain_id} (deleted)"
   end
 
   def history_polymorphic_reference(type, id)

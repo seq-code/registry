@@ -120,6 +120,31 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
     assert_equal({ 'linked' => [true, false] }, latest_change)
   end
 
+  test 'shows linking a paratype' do
+    NameParatype.create!(name: @name, nomenclatural_type: strains(:two), publication: publications(:one))
+
+    assert_equal({ 'linked' => [false, true] }, latest_paratype_change)
+  end
+
+  test 'shows changing a paratype publication without its unchanged strain' do
+    paratype = NameParatype.create!(
+      name: @name, nomenclatural_type: strains(:two), publication: publications(:one)
+    )
+    paratype.update!(publication: publications(:two))
+
+    assert_equal({ 'publication_id' => [publications(:one).id, publications(:two).id] },
+                 latest_paratype_change)
+  end
+
+  test 'shows unlinking a paratype' do
+    paratype = NameParatype.create!(
+      name: @name, nomenclatural_type: strains(:two), publication: publications(:one)
+    )
+    paratype.destroy!
+
+    assert_equal({ 'linked' => [true, false] }, latest_paratype_change)
+  end
+
   test 'lists name and relationship changes together newest first' do
     PublicationName.create!(name: @name, publication: publications(:one))
     @name.update!(authority: 'Castellani and Chalmers 1919')
@@ -142,5 +167,11 @@ class Name::PublicHistoryTest < ActiveSupport::TestCase
 
   def latest_change
     @history.changes_for(@history.versions(page: 1).first)
+  end
+
+  # Creating a paratype also links its publication, which adds its own version.
+  def latest_paratype_change
+    version = @history.versions(page: 1).find { |v| v.record_type == 'NameParatype' }
+    @history.changes_for(version)
   end
 end

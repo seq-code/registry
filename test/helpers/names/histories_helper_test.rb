@@ -95,4 +95,23 @@ class Names::HistoriesHelperTest < ActionView::TestCase
       assert_equal heading, history_record_heading(version), version.operation
     end
   end
+
+  test 'labels each version of a deleted paratype with its strain' do
+    strain = strains(:two)
+    paratype = NameParatype.create!(
+      name: names(:escherichia_coli), nomenclatural_type: strain, publication: publications(:one)
+    )
+    paratype.update!(publication: publications(:two))
+    paratype.destroy!
+
+    heading = "Paratype: #{link_to(strain.title(sup: false), strain)}"
+    Version.where(record: paratype).each do |version|
+      assert_equal heading, history_record_heading(version), version.operation
+    end
+
+    strain.destroy!
+
+    assert_equal "Paratype: Strain ##{strain.id} (deleted)",
+                 history_record_heading(Version.where(record: paratype).last)
+  end
 end

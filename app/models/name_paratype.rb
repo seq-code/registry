@@ -1,4 +1,8 @@
 class NameParatype < ApplicationRecord
+  include Versioned
+  versioned_owner(:name)
+  always_versioned(:nomenclatural_type_type, :nomenclatural_type_id)
+
   belongs_to(:name)
   belongs_to(:publication)
   belongs_to(:nomenclatural_type, polymorphic: true)

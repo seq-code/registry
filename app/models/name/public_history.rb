@@ -13,6 +13,7 @@ class Name::PublicHistory
   # Only these rich texts of the name appear in the public history.
   RICH_TEXT_NAMES = %w[description etymology_text].freeze
   PLACEMENT_KEYS = %w[parent_id incertae_sedis publication_id preferred].freeze
+  PARATYPE_KEYS = %w[nomenclatural_type_type nomenclatural_type_id publication_id].freeze
 
   def initialize(name)
     @name = name
@@ -35,6 +36,8 @@ class Name::PublicHistory
       publication_changes_for(version)
     when 'Placement'
       placement_changes_for(version)
+    when 'NameParatype'
+      paratype_changes_for(version)
     when 'ActionText::RichText'
       rich_text_changes_for(version)
     else
@@ -78,15 +81,23 @@ class Name::PublicHistory
     link_record_changes(version, PLACEMENT_KEYS)
   end
 
+  def paratype_changes_for(version)
+    link_record_changes(version, PARATYPE_KEYS)
+  end
+
   # Creating and deleting a link are shown only as a change of 'linked':
   #   { 'linked' => [false, true] }
-  # Updates show the changed attributes:
+  # Updates show the changed attributes, omitting always versioned ones that
+  # did not change:
   #   { 'emends' => [true, false] }
   def link_record_changes(version, keys)
     case version.operation
     when 'create' then { 'linked' => [false, true] }
     when 'delete' then { 'linked' => [true, false] }
-    else polymorphic_references(version.record_type.constantize, version.changeset.slice(*keys))
+    else
+      model = version.record_type.constantize
+      polymorphic_references(model, version.changeset.slice(*keys))
+        .reject { |_, values| values.first == values.last }
     end
   end
 
