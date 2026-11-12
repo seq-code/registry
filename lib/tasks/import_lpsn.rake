@@ -13,6 +13,7 @@ namespace :lpsn do
     # First pass, saving or retrieving all names
     $stderr.puts "Parsing CSV: #{args[:csv]}"
     parsed_names = {}
+    bypassed_names = {} # record_no => id of the name to link to instead
     CSV.foreach(args[:csv], headers: true).each_with_index do |row, k|
       $stderr.print "- #{k} \r"
       # Define full name and rank
@@ -52,14 +53,17 @@ namespace :lpsn do
       name = Name.find_or_create_by(name: pars[:name])
       if name.status > 5 && name.status < 20
         warn "- Name in SeqCode, bypassing: #{name.name}"
+        bypassed_names[row['record_no']] = name.id
         next
       end
       if name.status > 20
         warn "- Name in a different code, bypassing: #{name.name}"
+        bypassed_names[row['record_no']] = name.id
         next
       end
       if name.redirect_id.present?
         warn "- Name is deprecated, bypassing: #{name.name}"
+        bypassed_names[row['record_no']] = name.redirect_id
         next
       end
       name.protect_from_lpsn.to_s.split(',').each do |i|
@@ -79,6 +83,9 @@ namespace :lpsn do
 
     # Second pass, linking all names
     $stderr.puts 'Linking names'
+    linked_id = lambda do |record_no|
+      parsed_names[record_no]&.dig(:name_id) || bypassed_names[record_no]
+    end
     parsed_names.each_value.each_with_index do |entry, k|
       $stderr.print "- #{k} \r"
       # parent, correct_name, type_name
@@ -87,13 +94,17 @@ namespace :lpsn do
         pars[:parent_id] = Name.find_by(entry[:parent])&.id
       end
       if entry[:correct_name].present?
-        pars[:correct_name_id] = parsed_names[entry[:correct_name]][:name_id]
+        if (id = linked_id.(entry[:correct_name]))
+          pars[:correct_name_id] = id
+        else
+          warn "- Correct name not in parsed names: #{entry[:name_id]} " \
+               "(#{entry[:correct_name]})"
+        end
       end
       if entry[:type_name].present?
-        if parsed_names[entry[:type_name]].present?
+        if (id = linked_id.(entry[:type_name]))
           pars[:nomenclatural_type_type] = 'Name'
-          pars[:nomenclatural_type_id] =
-            parsed_names[entry[:type_name]][:name_id]
+          pars[:nomenclatural_type_id] = id
         else
           warn "- Type name not in parsed names: #{entry[:name_id]} " + 
                "(#{entry[:type_name]})"
