@@ -6,6 +6,7 @@ module Versioned
     class_attribute :versioned_attribute_sets, default: []
     class_attribute :versioned_owner_association
     class_attribute :always_versioned_attributes, default: []
+    class_attribute :versioned_never_attributes, default: %w[created_at updated_at]
 
     after_create :record_create_version
     after_update :record_update_version
@@ -22,6 +23,12 @@ module Versioned
     # about without its record, e.g. the publication of a publication link.
     def always_versioned(*attributes)
       self.always_versioned_attributes = always_versioned_attributes + attributes.map(&:to_s)
+    end
+
+    # Changes to these attributes alone add no version, and update versions
+    # omit them, e.g. cached responses from external services.
+    def versioned_never(*attributes)
+      self.versioned_never_attributes = versioned_never_attributes + attributes.map(&:to_s)
     end
 
     # Versions belong to the history of this association's record rather than
@@ -87,9 +94,9 @@ module Versioned
   # Create and delete versions change every attribute from or to nothing,
   # retaining the full attributes: { 'rank' => [nil, 'species'] } on create and
   # { 'rank' => ['species', nil] } on delete.
-  # Only update changesets omit timestamps.
+  # Only update changesets omit timestamps and never versioned attributes.
   def versioned_changes
-    changeset = versioned_saved_changes.except('created_at', 'updated_at')
+    changeset = versioned_saved_changes.except(*versioned_never_attributes)
 
     # A polymorphic ID is only meaningful together with its record type.
     polymorphic_sets = self.class.reflect_on_all_associations(:belongs_to)

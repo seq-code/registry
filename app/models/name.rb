@@ -166,6 +166,10 @@ class Name < ApplicationRecord
 
   ETYMOLOGY_COLUMNS = column_names.grep(/\Aetymology_/).freeze
   versioned_together(:name, *ETYMOLOGY_COLUMNS)
+  versioned_never(
+    :itis_json, :itis_at, :irmng_json, :irmng_at,
+    :col_json, :col_at, :gbif_json, :gbif_at
+  )
 
   attr_accessor :only_display
   attr_accessor :nomenclatural_type_entry
