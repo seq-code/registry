@@ -22,11 +22,10 @@
           <%= f.select(
                 :tag_id, grouped_options_for_select(options),
                 { prompt: 'Apply a tag…' },
-                class: 'form-control form-control-sm mr-2'
+                class: 'form-control form-control-sm mr-2',
+                onchange: 'if (this.value) { this.form.submit(); ' \
+                          '$(this).attr("disabled", true); }'
               ) %>
-          <%= f.button(class: 'btn btn-sm btn-primary') do %>
-            <%= fa_icon('plus') %> Apply
-          <% end %>
         <% end %>
       <% end %>
     <% end %>
