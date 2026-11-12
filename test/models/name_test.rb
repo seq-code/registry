@@ -83,4 +83,21 @@ class NameTest < ActiveSupport::TestCase
 
     assert_equal 'GCA_039803745.1', name.reload.nomenclatural_type.accession
   end
+
+  test 'children and valid children exclude redirected names' do
+    parent = names(:escherichia)
+    redirected = names(:escherichia_colie)
+    redirected.update_columns(
+      parent_id: parent.id, status: 15,
+      redirect_id: names(:escherichia_coli).id
+    )
+
+    assert_includes(parent.children, names(:escherichia_coli))
+    assert_not_includes(parent.children, redirected)
+    assert_not_includes(parent.valid_children, redirected)
+
+    redirected.update_columns(redirect_id: nil)
+    assert_includes(parent.reload.children, redirected)
+    assert_includes(parent.valid_children, redirected)
+  end
 end

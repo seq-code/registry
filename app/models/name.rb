@@ -6,11 +6,12 @@ class Name < ApplicationRecord
     :name_correspondences, -> { order(:created_at) }, dependent: :destroy
   )
   has_many(
-    :children, -> { order(:name) },
+    :children, -> { where(redirect_id: nil).order(:name) },
     class_name: 'Name', foreign_key: 'parent_id', dependent: :nullify
   )
   has_many(
-    :valid_children, -> { where('names.status >= 15').order(:name) },
+    :valid_children,
+    -> { where(redirect_id: nil).where('names.status >= 15').order(:name) },
     class_name: 'Name', foreign_key: 'parent_id'
   )
   has_many(
