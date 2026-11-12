@@ -110,6 +110,9 @@ module Name::Inferences
     when /non$/
       # - Caryophanon -- Caryophan-aceae
       base.sub!(/on$/, '')
+    when /men$/
+      # - Caldifarcimen -- Caldifarci-min-aceae
+      base.sub!(/men$/, 'min')
 
     # Standard endings
 
