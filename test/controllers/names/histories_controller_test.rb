@@ -14,6 +14,17 @@ class Names::HistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_select '.name-history-version', count: 2
   end
 
+  test 'renders paratype history under its strain' do
+    name = names(:escherichia_coli)
+    strain = strains(:two)
+    NameParatype.create!(name: name, nomenclatural_type: strain, publication: publications(:two))
+
+    get name_history_path(name)
+
+    assert_response :success
+    assert_select '.name-history-record th', text: "Paratype: #{strain.title(sup: false)}"
+  end
+
   test 'does not reveal private name history' do
     name = Name.create!(
       name: 'E. coli', rank: 'species', status: 5, created_by: users(:contributor)
