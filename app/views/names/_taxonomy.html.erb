@@ -1,328 +1,330 @@
 <% if @name.taxonomic_data? || @name.can_edit?(current_user) ||
       @name.can_edit_validated?(current_user) %>
-  <dl name="taxonomy" class="main-section name-details">
+  <section name="taxonomy" class="main-section name-details">
     <h2><%= fa_icon('network-wired', class: 'float-right') %> Taxonomy</h2>
 
-    <% if @name.description? || @name.can_edit?(current_user) %>
-      <dt><%= fa_icon('file-alt') %> Description</dt>
-      <dd>
-        <%= @name.description %>
-        <% if @name.can_edit?(current_user) %>
-          <%= link_to(
-                edit_description_name_url(@name),
-                class: 'badge badge-pill badge-primary',
-                title: 'edit description'
-              ) do %>
-            <%= fa_icon('edit') %> Edit
-          <% end %>
-        <% end %>
-      </dd>
-    <% end %>
-
-    <% if @name.placement %>
-      <dt><%= fa_icon('layer-group') %> Classification</dt>
-      <dd><%= name_lineage(@name) %></dd>
-    <% end %>
-
-    <% if @name.parent || @name.incertae_sedis? ||
-          @name.can_edit_validated?(current_user) %>
-      <dt><%= fa_icon('sort-amount-up-alt') %> Parent</dt>
-      <dd>
-        <% if @name.incertae_sedis? %>
-          <div class="border-left px-3">
-            <b><%= link_to(
-                     @name.incertae_sedis_html, @name.placement.parent) %>:</b>
-            <%= @name.incertae_sedis_text %>
-          </div>
-        <% elsif @name.parent %>
-          <%= display_link(@name.parent, :name_html_correctness) %>
-          <%= placement_preference(@name.placement) %>
-        <% end %>
-
-        <% if @name.assigned_in %>
-          assigned in
-          <%= link_to(@name.assigned_in.short_citation, @name.assigned_in) %>
-        <% end %>
-
-        <% if @name.can_edit_validated?(current_user) %>
-          <%= link_to(
-                @name.placement ?
-                  edit_placement_path(@name.placement) :
-                  new_placement_path(@name),
-                class: 'badge badge-pill badge-primary',
-                title: 'edit parent'
-              ) do %>
-            <%= fa_icon('edit') %> Edit
-          <% end %>
-          <% if @name.placement %>
+    <dl class="mb-0">
+      <% if @name.description? || @name.can_edit?(current_user) %>
+        <dt><%= fa_icon('file-alt') %> Description</dt>
+        <dd>
+          <%= @name.description %>
+          <% if @name.can_edit?(current_user) %>
             <%= link_to(
-                  @name.placement,
-                  method: :delete,
+                  edit_description_name_url(@name),
                   class: 'badge badge-pill badge-primary',
-                  title: 'unlink placement'
+                  title: 'edit description'
                 ) do %>
-              <%= fa_icon('unlink') %> Unlink
+              <%= fa_icon('edit') %> Edit
             <% end %>
           <% end %>
-        <% end %>
-      </dd>
-    <% end %>
+        </dd>
+      <% end %>
+
+      <% if @name.placement %>
+        <dt><%= fa_icon('layer-group') %> Classification</dt>
+        <dd><%= name_lineage(@name) %></dd>
+      <% end %>
+
+      <% if @name.parent || @name.incertae_sedis? ||
+            @name.can_edit_validated?(current_user) %>
+        <dt><%= fa_icon('sort-amount-up-alt') %> Parent</dt>
+        <dd>
+          <% if @name.incertae_sedis? %>
+            <div class="border-left px-3">
+              <b><%= link_to(
+                       @name.incertae_sedis_html, @name.placement.parent) %>:</b>
+              <%= @name.incertae_sedis_text %>
+            </div>
+          <% elsif @name.parent %>
+            <%= display_link(@name.parent, :name_html_correctness) %>
+            <%= placement_preference(@name.placement) %>
+          <% end %>
+
+          <% if @name.assigned_in %>
+            assigned in
+            <%= link_to(@name.assigned_in.short_citation, @name.assigned_in) %>
+          <% end %>
+
+          <% if @name.can_edit_validated?(current_user) %>
+            <%= link_to(
+                  @name.placement ?
+                    edit_placement_path(@name.placement) :
+                    new_placement_path(@name),
+                  class: 'badge badge-pill badge-primary',
+                  title: 'edit parent'
+                ) do %>
+              <%= fa_icon('edit') %> Edit
+            <% end %>
+            <% if @name.placement %>
+              <%= link_to(
+                    @name.placement,
+                    method: :delete,
+                    class: 'badge badge-pill badge-primary',
+                    title: 'unlink placement'
+                  ) do %>
+                <%= fa_icon('unlink') %> Unlink
+              <% end %>
+            <% end %>
+          <% end %>
+        </dd>
+      <% end %>
 
 
-    <% if @name.alt_placements.any? ||
-          (@name.can_edit_validated?(current_user) && @name.parent) %>
-      <dt><%= fa_icon('level-up-alt') %> Alternative placements</dt>
-      <dd>
-        <% if @name.alt_placements.any? %>
-          <ul>
-            <% @name.alt_placements.each do |placement| %>
-              <li>
-                <% if placement.incertae_sedis? %>
-                  <div class="border-left px-3">
-                    <b><%= placement.incertae_sedis_html %>:</b>
-                    <%= placement.incertae_sedis_text %>
-                  </div>
-                <% elsif placement.parent %>
-                  <%= display_link(placement.parent, :name_html_correctness) %>
-                  <%= placement_preference(placement) %>
-                <% end %>
-
-                <% if placement.publication %>
-                  assigned in
-                  <%= link_to(
-                        placement.publication.short_citation,
-                        placement.publication) %>
-                <% end %>
-                <% if @name.can_edit_validated?(current_user) %>
-                  <%= link_to(
-                        edit_placement_path(placement),
-                        class: 'badge badge-pill badge-primary',
-                        title: 'edit parent'
-                      ) do %>
-                    <%= fa_icon('edit') %> Edit
+      <% if @name.alt_placements.any? ||
+            (@name.can_edit_validated?(current_user) && @name.parent) %>
+        <dt><%= fa_icon('level-up-alt') %> Alternative placements</dt>
+        <dd>
+          <% if @name.alt_placements.any? %>
+            <ul>
+              <% @name.alt_placements.each do |placement| %>
+                <li>
+                  <% if placement.incertae_sedis? %>
+                    <div class="border-left px-3">
+                      <b><%= placement.incertae_sedis_html %>:</b>
+                      <%= placement.incertae_sedis_text %>
+                    </div>
+                  <% elsif placement.parent %>
+                    <%= display_link(placement.parent, :name_html_correctness) %>
+                    <%= placement_preference(placement) %>
                   <% end %>
-                  <%= link_to(
-                        placement,
-                        method: :delete,
-                        class: 'badge badge-pill badge-primary',
-                        title: 'unlink placement'
-                      ) do %>
-                    <%= fa_icon('unlink') %> Unlink
-                  <% end %>
-                  <% if current_curator? %>
+
+                  <% if placement.publication %>
+                    assigned in
                     <%= link_to(
-                          prefer_placement_path(placement),
-                          method: :post,
+                          placement.publication.short_citation,
+                          placement.publication) %>
+                  <% end %>
+                  <% if @name.can_edit_validated?(current_user) %>
+                    <%= link_to(
+                          edit_placement_path(placement),
                           class: 'badge badge-pill badge-primary',
-                          title: 'prefer placement'
+                          title: 'edit parent'
                         ) do %>
-                      <%= fa_icon('star') %> Prefer
+                      <%= fa_icon('edit') %> Edit
+                    <% end %>
+                    <%= link_to(
+                          placement,
+                          method: :delete,
+                          class: 'badge badge-pill badge-primary',
+                          title: 'unlink placement'
+                        ) do %>
+                      <%= fa_icon('unlink') %> Unlink
+                    <% end %>
+                    <% if current_curator? %>
+                      <%= link_to(
+                            prefer_placement_path(placement),
+                            method: :post,
+                            class: 'badge badge-pill badge-primary',
+                            title: 'prefer placement'
+                          ) do %>
+                        <%= fa_icon('star') %> Prefer
+                      <% end %>
                     <% end %>
                   <% end %>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <% if @name.can_edit_validated?(current_user) %>
+            <%= link_to(
+                  new_placement_path(@name, alt: true),
+                  class: 'badge badge-pill badge-primary',
+                  title: 'add placement'
+                ) do %>
+              <%= fa_icon('plus-square') %>&nbsp; Report alternative placement
+            <% end %>
+          <% end %>
+        </dd>
+      <% end %>
+
+      <% unless @name.children.empty? %>
+        <dt><%= fa_icon('sort-amount-down-alt') %> Children
+            <span class="text-muted" id="name-<%= @name.id %>-children-count">(<%=
+                  @name.children.count %>)</span><dt>
+        <dd>
+        <% if @name.children.length >= 12 %>
+          <div id="name-<%= @name.id %>-children-filter">
+            <% {
+                 validated: 'non-validly published',
+                 correct: 'validly published but incorrect'
+               }.each do |feat, txt| %>
+              <%= link_to('#',
+                    class: 'badge badge-pill badge-primary mr-1',
+                    data: { feat: feat, visible: true, name: @name.id }
+                  ) do %>
+                <%= fa_icon('eye-slash', class: 'mr-2') %>
+                <span>Hide</span> <%= txt %> names
+              <% end %>
+            <% end %>
+          </div>
+          <script>
+            $("#name-<%= @name.id %>-children-filter a").each(function() {
+              $(this).on("click", function() {
+                var btn      = $(this);
+                var feat     = btn.data("feat");
+                var name_id  = btn.data("name");
+                var children = $(
+                  `ul#name-${name_id}-children li:has(` +
+                  `[data-type="name"][data-${feat}=0])`
+                );
+                if (btn.data("visible")) {
+                  children.hide("slow", function() { update_count(name_id) });
+                  btn.data("visible", false);
+                  btn.find("span").html("Show");
+                  btn.find("i").removeClass("fa-eye-slash");
+                  btn.find("i").addClass("fa-eye");
+                } else {
+                  children.show("slow", function() { update_count(name_id) });
+                  btn.data("visible", true);
+                  btn.find("span").html("Hide");
+                  btn.find("i").removeClass("fa-eye");
+                  btn.find("i").addClass("fa-eye-slash");
+                }
+                return false;
+              });
+            });
+
+            function update_count(name_id) {
+              var all = $(`ul#name-${name_id}-children li`).length;
+              var visible = $(`ul#name-${name_id}-children li:visible`).length;
+              $(`#name-${name_id}-children-count`)
+                .html(all == visible ? `(${all})` : `(${visible}/${all})`);
+            }
+          </script>
+        <% end %>
+        <ul class='pl-3' id="name-<%= @name.id %>-children">
+          <%
+            set_type = @name.can_edit?(current_user) && @name.rank? &&
+                       %w[genus family].include?(@name.rank)
+          %>
+          <% @name.children.each do |child| %>
+            <li>
+              <%= display_link(child, :name_html_correctness) %>
+              <%= placement_preference(child.placement) %>
+              <% if set_type && @name.nomenclatural_type != child %>
+                <%= link_to(
+                      name_url(
+                        @name,
+                        name: {
+                          nomenclatural_type_type: 'Name',
+                          nomenclatural_type_id: child.id
+                        }
+                      ),
+                      method: :patch,
+                      class: 'badge badge-pill badge-primary',
+                      data: { confirm: 'Are you sure?' }
+                    ) do %>
+                  <%= fa_icon 'clipboard-check' %> Set as type
+                <% end %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul></dd>
+      <% end %>
+
+      <% unless @name.alt_children.empty? %>
+        <dt>
+          <%= fa_icon('level-down-alt') %>
+          Alternatively placed children
+          <span class="text-muted">(<%= @name.alt_children.count %>)</span>
+        <dt>
+        <dd>
+          <ul>
+            <% @name.alt_child_placements.each do |placement| %>
+              <li>
+                <%= display_link(placement.name, :name_html_correctness) %>
+                <%= placement_preference(placement) %>
+                <% if placement.name.parent %>
+                  (preferred placement in <%=
+                    display_link(placement.name.parent, :name_html_correctness)
+                  %>)
                 <% end %>
               </li>
             <% end %>
           </ul>
-        <% end %>
-        <% if @name.can_edit_validated?(current_user) %>
-          <%= link_to(
-                new_placement_path(@name, alt: true),
-                class: 'badge badge-pill badge-primary',
-                title: 'add placement'
-              ) do %>
-            <%= fa_icon('plus-square') %>&nbsp; Report alternative placement
-          <% end %>
-        <% end %>
-      </dd>
-    <% end %>
-
-    <% unless @name.children.empty? %>
-      <dt><%= fa_icon('sort-amount-down-alt') %> Children
-          <span class="text-muted" id="name-<%= @name.id %>-children-count">(<%=
-                @name.children.count %>)</span><dt>
-      <dd>
-      <% if @name.children.length >= 12 %>
-        <div id="name-<%= @name.id %>-children-filter">
-          <% {
-               validated: 'non-validly published',
-               correct: 'validly published but incorrect'
-             }.each do |feat, txt| %>
-            <%= link_to('#',
-                  class: 'badge badge-pill badge-primary mr-1',
-                  data: { feat: feat, visible: true, name: @name.id }
-                ) do %>
-              <%= fa_icon('eye-slash', class: 'mr-2') %>
-              <span>Hide</span> <%= txt %> names
-            <% end %>
-          <% end %>
-        </div>
-        <script>
-          $("#name-<%= @name.id %>-children-filter a").each(function() {
-            $(this).on("click", function() {
-              var btn      = $(this);
-              var feat     = btn.data("feat");
-              var name_id  = btn.data("name");
-              var children = $(
-                `ul#name-${name_id}-children li:has(` +
-                `[data-type="name"][data-${feat}=0])`
-              );
-              if (btn.data("visible")) {
-                children.hide("slow", function() { update_count(name_id) });
-                btn.data("visible", false);
-                btn.find("span").html("Show");
-                btn.find("i").removeClass("fa-eye-slash");
-                btn.find("i").addClass("fa-eye");
-              } else {
-                children.show("slow", function() { update_count(name_id) });
-                btn.data("visible", true);
-                btn.find("span").html("Hide");
-                btn.find("i").removeClass("fa-eye");
-                btn.find("i").addClass("fa-eye-slash");
-              }
-              return false;
-            });
-          });
-
-          function update_count(name_id) {
-            var all = $(`ul#name-${name_id}-children li`).length;
-            var visible = $(`ul#name-${name_id}-children li:visible`).length;
-            $(`#name-${name_id}-children-count`)
-              .html(all == visible ? `(${all})` : `(${visible}/${all})`);
-          }
-        </script>
+        </dd>
       <% end %>
-      <ul class='pl-3' id="name-<%= @name.id %>-children">
-        <%
-          set_type = @name.can_edit?(current_user) && @name.rank? &&
-                     %w[genus family].include?(@name.rank)
-        %>
-        <% @name.children.each do |child| %>
-          <li>
-            <%= display_link(child, :name_html_correctness) %>
-            <%= placement_preference(child.placement) %>
-            <% if set_type && @name.nomenclatural_type != child %>
-              <%= link_to(
-                    name_url(
-                      @name,
-                      name: {
-                        nomenclatural_type_type: 'Name',
-                        nomenclatural_type_id: child.id
-                      }
-                    ),
-                    method: :patch,
-                    class: 'badge badge-pill badge-primary',
-                    data: { confirm: 'Are you sure?' }
-                  ) do %>
-                <%= fa_icon 'clipboard-check' %> Set as type
-              <% end %>
+
+      <% if @name.taxonomic_status? || @name.type_name_alt_placement.present? %>
+        <dt><%= fa_icon('clipboard-check') %> Taxonomic status</dt>
+        <dd>
+          <% if @name.taxonomic_status? %>
+            <%= @name.taxonomic_status.upcase_first %>
+          <% elsif syn = @name.type_name_alt_placement %>
+            The type <%= @name.type_name.rank %> of this <%= @name.rank %> has
+            been placed in a different taxon. If that placement is considered
+            correct, this name is a
+            <% if @name.type_is_name? && syn.type_is_name? %>
+              <%= @name.type_name == syn.type_name ? 'homo' : 'hetero' %>typic
             <% end %>
-          </li>
-        <% end %>
-      </ul></dd>
-    <% end %>
-
-    <% unless @name.alt_children.empty? %>
-      <dt>
-        <%= fa_icon('level-down-alt') %>
-        Alternatively placed children
-        <span class="text-muted">(<%= @name.alt_children.count %>)</span>
-      <dt>
-      <dd>
-        <ul>
-          <% @name.alt_child_placements.each do |placement| %>
-            <li>
-              <%= display_link(placement.name, :name_html_correctness) %>
-              <%= placement_preference(placement) %>
-              <% if placement.name.parent %>
-                (preferred placement in <%=
-                  display_link(placement.name.parent, :name_html_correctness)
-                %>)
-              <% end %>
-            </li>
+            synonym of <%= display_link(syn) %>.
           <% end %>
-        </ul>
-      </dd>
-    <% end %>
+        </dd>
+      <% end %>
 
-    <% if @name.taxonomic_status? || @name.type_name_alt_placement.present? %>
-      <dt><%= fa_icon('clipboard-check') %> Taxonomic status</dt>
-      <dd>
-        <% if @name.taxonomic_status? %>
-          <%= @name.taxonomic_status.upcase_first %>
-        <% elsif syn = @name.type_name_alt_placement %>
-          The type <%= @name.type_name.rank %> of this <%= @name.rank %> has
-          been placed in a different taxon. If that placement is considered
-          correct, this name is a
-          <% if @name.type_is_name? && syn.type_is_name? %>
-            <%= @name.type_name == syn.type_name ? 'homo' : 'hetero' %>typic
+      <% if @name.correct_name %>
+        <dt><%= fa_icon('spell-check') %> Correct name</dt>
+        <dd><%= display_link(@name.correct_name, :name_html_correctness) %></dd>
+      <% end %>
+
+      <% if @name.synonyms.present? %>
+        <dt><%= fa_icon('exchange-alt') %> Synonyms</dt>
+        <dd><ul>
+          <% @name.synonyms.each do |synonym| %>
+            <li><%= display_link(synonym, :name_html_correctness) %></li>
           <% end %>
-          synonym of <%= display_link(syn) %>.
-        <% end %>
-      </dd>
-    <% end %>
+        </ul></dd>
+      <% end %>
 
-    <% if @name.correct_name %>
-      <dt><%= fa_icon('spell-check') %> Correct name</dt>
-      <dd><%= display_link(@name.correct_name, :name_html_correctness) %></dd>
-    <% end %>
-
-    <% if @name.synonyms.present? %>
-      <dt><%= fa_icon('exchange-alt') %> Synonyms</dt>
-      <dd><ul>
-        <% @name.synonyms.each do |synonym| %>
-          <li><%= display_link(synonym, :name_html_correctness) %></li>
-        <% end %>
-      </ul></dd>
-    <% end %>
-
-    <% if @name.pseudonyms.present? || @name.corrigendum_from? ||
-          @name.can_edit_validated?(current_user) %>
-      <dt><%= fa_icon('mask') %> Pseudonyms</dt>
-      <dd>
-        <ul>
-          <% @name.pseudonyms.each do |pseudonym| %>
-            <li>
-              <%= pseudonym.pseudonym %>
-              <% if pseudonym.kind? %>
-                <span class="text-muted">(<%= pseudonym.kind_text %>)</span>
-              <% end %>
-              <% if @name.can_edit_validated?(current_user) %>
-                <%= link_to(
-                      edit_name_pseudonym_url(@name, pseudonym),
-                      class: 'badge badge-pill badge-primary',
-                      title: 'edit pseudonym'
-                    ) do %>
-                  <%= fa_icon('edit') %> Edit
+      <% if @name.pseudonyms.present? || @name.corrigendum_from? ||
+            @name.can_edit_validated?(current_user) %>
+        <dt><%= fa_icon('mask') %> Pseudonyms</dt>
+        <dd>
+          <ul>
+            <% @name.pseudonyms.each do |pseudonym| %>
+              <li>
+                <%= pseudonym.pseudonym %>
+                <% if pseudonym.kind? %>
+                  <span class="text-muted">(<%= pseudonym.kind_text %>)</span>
                 <% end %>
-                <%= link_to(
-                      name_pseudonym_url(@name, pseudonym),
-                      method: :delete,
-                      class: 'badge badge-pill badge-primary',
-                      title: 'remove pseudonym',
-                      data: { confirm: 'Are you sure?' }
-                    ) do %>
-                  <%= fa_icon('trash-alt') %> Remove
+                <% if @name.can_edit_validated?(current_user) %>
+                  <%= link_to(
+                        edit_name_pseudonym_url(@name, pseudonym),
+                        class: 'badge badge-pill badge-primary',
+                        title: 'edit pseudonym'
+                      ) do %>
+                    <%= fa_icon('edit') %> Edit
+                  <% end %>
+                  <%= link_to(
+                        name_pseudonym_url(@name, pseudonym),
+                        method: :delete,
+                        class: 'badge badge-pill badge-primary',
+                        title: 'remove pseudonym',
+                        data: { confirm: 'Are you sure?' }
+                      ) do %>
+                    <%= fa_icon('trash-alt') %> Remove
+                  <% end %>
                 <% end %>
-              <% end %>
-            </li>
+              </li>
+            <% end %>
+            <% if @name.corrigendum_from? %>
+              <li>
+                <%= @name.corrigendum_from %>
+                <span class="text-muted">(Original, corrected name)</span>
+              </li>
+            <% end %>
+          </ul>
+          <% if @name.can_edit_validated?(current_user) %>
+            <%= link_to(
+                  new_name_pseudonym_url(@name),
+                  class: 'badge badge-pill badge-primary',
+                  title: 'add new pseudonym'
+                ) do %>
+              <%= fa_icon('plus-square') %>&nbsp; Report new pseudonym
+            <% end %>
           <% end %>
-          <% if @name.corrigendum_from? %>
-            <li>
-              <%= @name.corrigendum_from %>
-              <span class="text-muted">(Original, corrected name)</span>
-            </li>
-          <% end %>
-        </ul>
-        <% if @name.can_edit_validated?(current_user) %>
-          <%= link_to(
-                new_name_pseudonym_url(@name),
-                class: 'badge badge-pill badge-primary',
-                title: 'add new pseudonym'
-              ) do %>
-            <%= fa_icon('plus-square') %>&nbsp; Report new pseudonym
-          <% end %>
-        <% end %>
-      </dd>
-    <% end %>
-  </dl>
+        </dd>
+      <% end %>
+    </dl>
+  </section>
 <% end %>

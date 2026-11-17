@@ -1,183 +1,185 @@
-<dl name="nomenclature" class="main-section name-details">
+<section name="nomenclature" class="main-section name-details">
   <h2><%= fa_icon('file-signature', class: 'float-right') %> Nomenclature</h2>
 
-  <dt><%= fa_icon 'sitemap' %> Rank</dt>
-  <dd>
-    <% if @name.rank? %>
-      <%= @name.rank.capitalize %>
-    <% else %>
-      <i><%= @name.inferred_rank.capitalize %> (inferred)</i>
-    <% end %>
-
-    <% if @name.can_edit?(current_user) %>
-      <%= link_to(
-            edit_rank_name_url(@name),
-            class: 'badge badge-pill badge-primary',
-            title: 'edit rank'
-          ) do %>
-        <%= fa_icon 'edit' %> Edit
-      <% end %>
-    <% end %>
-  </dd>
-
-  <% if @name.stem %>
-    <dt><%= fa_icon('wave-square') %> Inferred stem</dt>
+  <dl class="mb-0">
+    <dt><%= fa_icon 'sitemap' %> Rank</dt>
     <dd>
-      <%= @name.stem %>-
-      <% if @name.at_or_above_rank?(:family) &&
-            @name.base_name != "#{@name.stem}#{@name.rank_suffix}" %>
-        <span class="text-muted">
-          (unexpected name formation,
-          expected: <i><%= "#{@name.stem}#{@name.rank_suffix}" %></i>)
-        </span>
+      <% if @name.rank? %>
+        <%= @name.rank.capitalize %>
+      <% else %>
+        <i><%= @name.inferred_rank.capitalize %> (inferred)</i>
       <% end %>
-    </dd>
-  <% end %>
 
-  <% if @name.syllabication? %>
-    <dt><%= fa_icon('comment-dots') %> Syllabication</dt>
-    <dd><%= @name.syllabication %></dd>
-  <% end %>
-
-  <dt><%= fa_icon('language') %> Etymology</dt>
-  <dd>
-    <%= @name.full_etymology(true) %>
-    <% if @name.can_edit?(current_user) %>
-      <br/>
-      <%= link_to(
-            edit_etymology_name_url(@name),
-            class: 'badge badge-pill badge-primary',
-            title: 'edit etymology'
-          ) do %>
-        <%= fa_icon 'edit' %> Edit
-      <% end %>
-    <% end %>
-  </dd>
-
-  <%= render 'name_tags/tag_panel', name: @name %>
-
-  <% if @name.notes? || @name.can_edit_validated?(current_user) %>
-    <dt><%= fa_icon('sticky-note') %> Notes</dt>
-    <dd>
-      <%= @name.notes %>
-      <% if @name.can_edit_validated?(current_user) %>
+      <% if @name.can_edit?(current_user) %>
         <%= link_to(
-              edit_notes_name_url(@name),
+              edit_rank_name_url(@name),
               class: 'badge badge-pill badge-primary',
-              title: 'edit notes'
+              title: 'edit rank'
             ) do %>
           <%= fa_icon 'edit' %> Edit
         <% end %>
       <% end %>
     </dd>
-  <% end %>
 
-  <% if @name.type? || @name.can_edit_type?(current_user) %>
-    <dt><%= fa_icon('id-card') %> Nomenclatural type</dt>
+    <% if @name.stem %>
+      <dt><%= fa_icon('wave-square') %> Inferred stem</dt>
+      <dd>
+        <%= @name.stem %>-
+        <% if @name.at_or_above_rank?(:family) &&
+              @name.base_name != "#{@name.stem}#{@name.rank_suffix}" %>
+          <span class="text-muted">
+            (unexpected name formation,
+            expected: <i><%= "#{@name.stem}#{@name.rank_suffix}" %></i>)
+          </span>
+        <% end %>
+      </dd>
+    <% end %>
+
+    <% if @name.syllabication? %>
+      <dt><%= fa_icon('comment-dots') %> Syllabication</dt>
+      <dd><%= @name.syllabication %></dd>
+    <% end %>
+
+    <dt><%= fa_icon('language') %> Etymology</dt>
     <dd>
-      <% if @name.type? %>
-        <%= link_to_name_type(@name) %>
-      <% end %>
-      <% if @name.can_edit_type?(current_user) %>
+      <%= @name.full_etymology(true) %>
+      <% if @name.can_edit?(current_user) %>
+        <br/>
         <%= link_to(
-              edit_type_name_url(@name),
+              edit_etymology_name_url(@name),
               class: 'badge badge-pill badge-primary',
-              title: 'edit parent'
+              title: 'edit etymology'
             ) do %>
           <%= fa_icon 'edit' %> Edit
         <% end %>
       <% end %>
     </dd>
-  <% end %>
 
-  <% if @name.name_paratypes.any? %>
-    <dt>
-      <%= fa_icon('id-card-alt') %> Paratypes
-      <%= help_message('Paratypes') do %>
-        <% amendment = Publication.by_doi('10.1093/ismeco/ycaf238') %>
-        Paratypes provide formal recognition of strains that add to the species
-        or subspecies descriptions. Paratypes may be denoted by the original
-        authors of the description or subsequent authors and must be deposited
-        in at least one publicly accessible culture collection. Additional
-        information, including the rationale behind establishing paratypes, can
-        be found in 
-        <%= amendment ? display_link(amendment) : 'Whitman et al 2026' %>.
-      <% end %>
-    </dt>
-    <dd>
-      <ul>
-        <% @name.name_paratypes.each do |np| %>
-          <li>
-            <%= link_to(
-                  np.nomenclatural_type.title(sup: false),
-                  np.nomenclatural_type) %>
-            (Pt. <%= display_link(np.publication, :short_citation) %>)
-          </li>
+    <%= render 'name_tags/tag_panel', name: @name %>
+
+    <% if @name.notes? || @name.can_edit_validated?(current_user) %>
+      <dt><%= fa_icon('sticky-note') %> Notes</dt>
+      <dd>
+        <%= @name.notes %>
+        <% if @name.can_edit_validated?(current_user) %>
+          <%= link_to(
+                edit_notes_name_url(@name),
+                class: 'badge badge-pill badge-primary',
+                title: 'edit notes'
+              ) do %>
+            <%= fa_icon 'edit' %> Edit
+          <% end %>
         <% end %>
-      </ul>
-    </dd>
-  <% end %>
+      </dd>
+    <% end %>
 
-  <% if @name.type_genome.try(:strain).present? %>
-    <dt>
-      <%= fa_icon('flask') %> Reference strain
-      <%= help_message('Reference Strain') do %>
-        This cultured strain indicates the source of the genome used as type
-        material. However, the strain itself is not considered type material and
-        does not have standing in nomenclature unless explicitly indicated as a
-        paratype.
-      <% end %>
-    </dt>
-    <dd>
-      <%= strain_html(@name.type_genome.strain, name: @name) %>
-      <% if current_curator? &&
-            !@name.paratype_strains.include?(@name.type_genome.strain) %>
-        <%= link_to(
-              add_paratype_strain_name_url(@name, strain: @name.type_genome.strain),
-              class: 'badge badge-pill badge-primary',
-              title: 'add as paratype'
-            ) do %>
-          <%= fa_icon 'id-card-alt' %> Add as paratype
+    <% if @name.type? || @name.can_edit_type?(current_user) %>
+      <dt><%= fa_icon('id-card') %> Nomenclatural type</dt>
+      <dd>
+        <% if @name.type? %>
+          <%= link_to_name_type(@name) %>
         <% end %>
-      <% end %>
-    </dd>
-  <% end %>
-
-  <% if @name.type_strain.try(:genomes).present? %>
-    <dt>
-      <%= fa_icon('dna') %> Type strain genomes
-      <%= help_message('Type Strain Genomes') do %>
-        The genomes linked to this cultured strain serve as reference material
-        for the characterization of the taxon. However, the genome itself is not
-        considered type material and does not have standing in nomenclature.
-      <% end %>
-    </dt>
-    <dd>
-      <ul>
-        <% @name.type_strain.genomes.each do |genome| %>
-          <li><%= display_link(genome) %></li>
+        <% if @name.can_edit_type?(current_user) %>
+          <%= link_to(
+                edit_type_name_url(@name),
+                class: 'badge badge-pill badge-primary',
+                title: 'edit parent'
+              ) do %>
+            <%= fa_icon 'edit' %> Edit
+          <% end %>
         <% end %>
-      </ul>
-    </dd>
-  <% end %>
+      </dd>
+    <% end %>
 
-  <% if @name.basonym.present? %>
-    <dt><%= fa_icon('file-import') %> Basonym</dt>
-    <dd><%= display_link(@name.basonym) %></dd>
-  <% end %>
+    <% if @name.name_paratypes.any? %>
+      <dt>
+        <%= fa_icon('id-card-alt') %> Paratypes
+        <%= help_message('Paratypes') do %>
+          <% amendment = Publication.by_doi('10.1093/ismeco/ycaf238') %>
+          Paratypes provide formal recognition of strains that add to the species
+          or subspecies descriptions. Paratypes may be denoted by the original
+          authors of the description or subsequent authors and must be deposited
+          in at least one publicly accessible culture collection. Additional
+          information, including the rationale behind establishing paratypes, can
+          be found in 
+          <%= amendment ? display_link(amendment) : 'Whitman et al 2026' %>.
+        <% end %>
+      </dt>
+      <dd>
+        <ul>
+          <% @name.name_paratypes.each do |np| %>
+            <li>
+              <%= link_to(
+                    np.nomenclatural_type.title(sup: false),
+                    np.nomenclatural_type) %>
+              (Pt. <%= display_link(np.publication, :short_citation) %>)
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
 
-  <% if @name.combinational_derivatives.any? %>
-    <dt><%= fa_icon('file-export') %> Combinational derivatives</dt>
-    <dd><ul>
-      <% @name.combinational_derivatives.each do |comb_nov| %>
-        <li><%= display_link(comb_nov) %></li>
-      <% end %>
-    </ul></dd>
-  <% end %>
+    <% if @name.type_genome.try(:strain).present? %>
+      <dt>
+        <%= fa_icon('flask') %> Reference strain
+        <%= help_message('Reference Strain') do %>
+          This cultured strain indicates the source of the genome used as type
+          material. However, the strain itself is not considered type material and
+          does not have standing in nomenclature unless explicitly indicated as a
+          paratype.
+        <% end %>
+      </dt>
+      <dd>
+        <%= strain_html(@name.type_genome.strain, name: @name) %>
+        <% if current_curator? &&
+              !@name.paratype_strains.include?(@name.type_genome.strain) %>
+          <%= link_to(
+                add_paratype_strain_name_url(@name, strain: @name.type_genome.strain),
+                class: 'badge badge-pill badge-primary',
+                title: 'add as paratype'
+              ) do %>
+            <%= fa_icon 'id-card-alt' %> Add as paratype
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
 
-  <% if @name.nomenclatural_status? || @name.seqcode? %>
-    <dt><%= fa_icon('clipboard-check') %> Nomenclatural status</dt>
-    <dd><%= @name.nomenclatural_status&.upcase_first ||
-              'Validly published under the SeqCode' %></dd>
-  <% end %>
-</dl>
+    <% if @name.type_strain.try(:genomes).present? %>
+      <dt>
+        <%= fa_icon('dna') %> Type strain genomes
+        <%= help_message('Type Strain Genomes') do %>
+          The genomes linked to this cultured strain serve as reference material
+          for the characterization of the taxon. However, the genome itself is not
+          considered type material and does not have standing in nomenclature.
+        <% end %>
+      </dt>
+      <dd>
+        <ul>
+          <% @name.type_strain.genomes.each do |genome| %>
+            <li><%= display_link(genome) %></li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @name.basonym.present? %>
+      <dt><%= fa_icon('file-import') %> Basonym</dt>
+      <dd><%= display_link(@name.basonym) %></dd>
+    <% end %>
+
+    <% if @name.combinational_derivatives.any? %>
+      <dt><%= fa_icon('file-export') %> Combinational derivatives</dt>
+      <dd><ul>
+        <% @name.combinational_derivatives.each do |comb_nov| %>
+          <li><%= display_link(comb_nov) %></li>
+        <% end %>
+      </ul></dd>
+    <% end %>
+
+    <% if @name.nomenclatural_status? || @name.seqcode? %>
+      <dt><%= fa_icon('clipboard-check') %> Nomenclatural status</dt>
+      <dd><%= @name.nomenclatural_status&.upcase_first ||
+                'Validly published under the SeqCode' %></dd>
+    <% end %>
+  </dl>
+</section>

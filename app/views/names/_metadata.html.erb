@@ -1,284 +1,286 @@
-<dl name="metadata" class="main-section name-details">
+<section name="metadata" class="main-section name-details">
   <h2><%= fa_icon('table', class: 'float-right') %> Metadata</h2>
 
-  <% if @name.links? %>
-    <dt><%= fa_icon('link') %> Outside links and data sources</dt>
+  <dl class="mb-0">
+    <% if @name.links? %>
+      <dt><%= fa_icon('link') %> Outside links and data sources</dt>
+      <dd>
+        <ul>
+          <% if @name.ncbi_taxonomy? %>
+            <li>
+              <%= link_to(@name.ncbi_taxonomy_url, target: '_blank') do %>
+                NCBI Taxonomy: <%= @name.ncbi_taxonomy %>
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+
+          <% if @name.gtdb_genome? %>
+            <li>
+              <%= link_to(@name.gtdb_genome_url, target: '_blank') do %>
+                GTDB Genome: <%= @name.nomenclatural_type.accession %>
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+
+          <% if @name.gtdb_accession? %>
+            <li>
+              <%= link_to(@name.gtdb_tree_url, target: '_blank') do %>
+                GTDB Tree: <%= @name.gtdb_accession %>
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+
+          <% gbif = @name.gbif_homonyms(false, true) %>
+          <% if gbif.present? %>
+            <% id = modal('GBIF Links') do %>
+              <ul>
+                <% gbif.each do |link| %>
+                  <li>
+                    <%= link.html_safe %>
+                    <%= fa_icon('external-link-alt') %>
+                  </li>
+                <% end %>
+              </ul>
+              <div class="text-muted border-top pt-2">
+                Retrieved <%= time_ago_in_words(@name.gbif_at) %> ago
+              </div>
+            <% end %>
+            <li>
+              <%= modal_button(id, as_anchor: true) do %>
+                Global Biodiversity Information Facility (GBIF)
+              <% end %>
+            </li>
+          <% end %>
+
+          <% if @name.lpsn_url? %>
+            <li>
+              <%= link_to(@name.lpsn_url, target: '_blank') do %>
+                List of Prokaryotic names with Standing in Nomenclature (LPSN)
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+
+          <% if @name.algaebase_url.present? %>
+            <li>
+              <%= link_to(@name.algaebase_url, target: '_blank') do %>
+                AlgaeBase <%= @name.algaebase_text %>
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+
+          <% if @name.public? %>
+            <li>
+              <%= link_to(@name.wikispecies_url, target: '_blank') do %>
+                Wikispecies: <%= @name.wikispecies_entry || @name.base_name %>
+                <%= fa_icon('external-link-alt') %><% end %>
+              <% if user_signed_in? %>
+                (<%= link_to('see reference source', wiki_name_url(@name)) %>)
+              <% end %>
+            </li>
+          <% end %>
+
+          <% if @name.wikidata_url.present? %>
+            <li>
+              <%= link_to(@name.wikidata_url, target: '_blank') do %>
+                Wikidata: <%= @name.wikidata_item %>
+                <%= fa_icon('external-link-alt') %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <dt><%= fa_icon(:dna) %> Search sequences</dt>
     <dd>
       <ul>
+        <li>
+          <%= link_to(@name.ncbi_search_url, target: '_blank') do %>
+            Seach in NCBI Nucleotide
+            <%= fa_icon('external-link-alt') %>
+          <% end %>
+        </li>
         <% if @name.ncbi_taxonomy? %>
           <li>
-            <%= link_to(@name.ncbi_taxonomy_url, target: '_blank') do %>
-              NCBI Taxonomy: <%= @name.ncbi_taxonomy %>
-              <%= fa_icon('external-link-alt') %>
-            <% end %>
-          </li>
-        <% end %>
-
-        <% if @name.gtdb_genome? %>
-          <li>
-            <%= link_to(@name.gtdb_genome_url, target: '_blank') do %>
-              GTDB Genome: <%= @name.nomenclatural_type.accession %>
-              <%= fa_icon('external-link-alt') %>
-            <% end %>
-          </li>
-        <% end %>
-
-        <% if @name.gtdb_accession? %>
-          <li>
-            <%= link_to(@name.gtdb_tree_url, target: '_blank') do %>
-              GTDB Tree: <%= @name.gtdb_accession %>
-              <%= fa_icon('external-link-alt') %>
-            <% end %>
-          </li>
-        <% end %>
-
-        <% gbif = @name.gbif_homonyms(false, true) %>
-        <% if gbif.present? %>
-          <% id = modal('GBIF Links') do %>
-            <ul>
-              <% gbif.each do |link| %>
-                <li>
-                  <%= link.html_safe %>
-                  <%= fa_icon('external-link-alt') %>
-                </li>
-              <% end %>
-            </ul>
-            <div class="text-muted border-top pt-2">
-              Retrieved <%= time_ago_in_words(@name.gbif_at) %> ago
-            </div>
-          <% end %>
-          <li>
-            <%= modal_button(id, as_anchor: true) do %>
-              Global Biodiversity Information Facility (GBIF)
-            <% end %>
-          </li>
-        <% end %>
-
-        <% if @name.lpsn_url? %>
-          <li>
-            <%= link_to(@name.lpsn_url, target: '_blank') do %>
-              List of Prokaryotic names with Standing in Nomenclature (LPSN)
-              <%= fa_icon('external-link-alt') %>
-            <% end %>
-          </li>
-        <% end %>
-
-        <% if @name.algaebase_url.present? %>
-          <li>
-            <%= link_to(@name.algaebase_url, target: '_blank') do %>
-              AlgaeBase <%= @name.algaebase_text %>
-              <%= fa_icon('external-link-alt') %>
-            <% end %>
-          </li>
-        <% end %>
-
-        <% if @name.public? %>
-          <li>
-            <%= link_to(@name.wikispecies_url, target: '_blank') do %>
-              Wikispecies: <%= @name.wikispecies_entry || @name.base_name %>
-              <%= fa_icon('external-link-alt') %><% end %>
-            <% if user_signed_in? %>
-              (<%= link_to('see reference source', wiki_name_url(@name)) %>)
-            <% end %>
-          </li>
-        <% end %>
-
-        <% if @name.wikidata_url.present? %>
-          <li>
-            <%= link_to(@name.wikidata_url, target: '_blank') do %>
-              Wikidata: <%= @name.wikidata_item %>
-              <%= fa_icon('external-link-alt') %>
+            <%= link_to(@name.ncbi_genomes_url, target: '_blank') do %>
+              NCBI Genomes table
+              <%= fa_icon 'external-link-alt' %>
             <% end %>
           </li>
         <% end %>
       </ul>
     </dd>
-  <% end %>
 
-  <dt><%= fa_icon(:dna) %> Search sequences</dt>
-  <dd>
-    <ul>
-      <li>
-        <%= link_to(@name.ncbi_search_url, target: '_blank') do %>
-          Seach in NCBI Nucleotide
-          <%= fa_icon('external-link-alt') %>
-        <% end %>
-      </li>
-      <% if @name.ncbi_taxonomy? %>
-        <li>
-          <%= link_to(@name.ncbi_genomes_url, target: '_blank') do %>
-            NCBI Genomes table
-            <%= fa_icon 'external-link-alt' %>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
-  </dd>
-
-  <dt><%= fa_icon 'calendar' %> Local history</dt>
-  <dd>
-    <ul>
-      <li>
-        <% if @name.created_at == @name.updated_at %>
-          This name has not been modified since creation
-        <% else %>
-            This name was last modified
-            <%= time_ago_with_date(@name.updated_at) %>
-        <% end %>
-      </li>
-      <% if @workflow_modal_id ||= nil %>
-        <li>
-          <%= modal_button(@workflow_modal_id, as_anchor: true) do %>
-            Submission process status
-          <% end %>
-        </li>
-      <% end %>
-      <% if @name.validated? %>
-        <li>
-          <% id = modal(
-               'Quality Checks', size: 'xl',
-               async: quality_checks_name_url(@name, content: true)
-             ) %>
-          <%= modal_button(id, as_anchor: true) do %>
-            Quality checks before valid publication
-          <% end %>
-        </li>
-      <% end %>
-
-      <% if current_curator? %>
-        <li>
-          <% id = modal('Users with active alerts') do %>
-            The following users will receive email alerts whenever this name
-            changes status or when new correspondence is registered:
-            <br/><br/>
-            <ul>
-              <% @name.observers.each do |user| %>
-                <li><%= display_link(user) %></li>
-              <% end %>
-            </ul>
-          <% end %>
-          <%= modal_button(id, as_anchor: true) do %>
-            Users with active alerts (only visible to curators)
-          <% end %>
-        </li>
-
-        <% if @name.valid? %>
-          <li>
-            <% id = modal('Correspondence with curators', size: 'lg') do %>
-              <%= render(
-                    partial: 'correspondences/correspondence',
-                    locals: { correspondence_history: true, object: @name }) %>
-            <% end %>
-          <%= modal_button(id, as_anchor: true) do %>
-            Historic communication record (only visible to curators)
-          <% end %>
-          </li>
-        <% end %>
-      <% end %>
-    </ul>
-  </dd>
-
-  <% if @name.redirectors.any? %>
-    <dt><%= fa_icon('directions') %> Redirects here</dt>
+    <dt><%= fa_icon 'calendar' %> Local history</dt>
     <dd>
       <ul>
-        <% @name.redirectors.each do |name| %>
-          <li>
-            <%= link_to(name.name_html, name_url(name, no_redirect: true)) %>
-          </li>
-        <% end %>
-      </ul>
-    </dd>
-  <% end %>
-
-  <dt><%= fa_icon('user') %> Registered</dt>
-  <dd>
-    <%= time_ago_with_date(@name.created_at, true) %>
-    <% if @name.claimed_at %>
-      and claimed <%= time_ago_with_date(@name.claimed_at) %>
-    <% end %>
-    by
-    <%= @name.created_by ?
-          display_link(@name.created_by) : 'Excubia bot' %>
-  </dd>
-
-  <% if @name.submitted_by %>
-    <dt><%= fa_icon('paper-plane') %> Submitted</dt>
-    <dd>
-      <%= time_ago_with_date(@name.submitted_at, true) %>
-      by <%= display_link(@name.submitted_by) %>
-    </dd>
-  <% end %>
-
-  <% unless @name.curators.empty? %>
-    <dt><%= fa_icon('user-check') %> Curators</dt>
-    <dd>
-      <ul>
-        <% @name.curators.each do |user| %>
-          <li>
-            <%= display_link(user) %>
-            <% if @name.nomenclature_review_by?(user) %>
-              <span class="text-muted">(nomenclature)</span>
-            <% end %>
-            <% if @name.genomics_review_by?(user) %>
-              <span class="text-muted">(genomics)</span>
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-    </dd>
-  <% end %>
-
-  <% if @name.after_endorsement? && @name.endorsed_by %>
-    <dt><%= fa_icon('check-square') %> Endorsed</dt>
-    <dd>
-      <%= time_ago_with_date(@name.endorsed_at, true) %>
-      by <%= display_link(@name.endorsed_by) %>
-    </dd>
-  <% end %>
-
-  <% if @name.valid? && @name.validated_by %>
-    <% if @name.status == 15 %>
-      <dt><%= fa_icon('certificate') %> Validated</dt>
-    <% else %>
-      <dt><%= fa_icon('stamp') %> Reported valid</dt>
-    <% end %>
-    <dd>
-      <%= time_ago_with_date(@name.validated_at, true) %>
-      by <%= display_link(@name.validated_by) %>
-    </dd>
-  <% end %>
-
-  <% if @name.valid? && @name.priority_date %>
-    <dt><%= fa_icon('calendar-check') %> Date of priority</dt>
-    <dd>
-      <%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %>
-      <% if @name.affected_by_23d_amendment? %>
-        <% id = modal('Priority date notice') do %>
-          <% amendment = Publication.by_doi('10.1038/s43705-023-00303-y') %>
-          This name falls under the protection of
-          <%= amendment ? display_link(amendment) : 'Whitman et al 2023' %>,
-          which pushes the priority date back to<br/>
-          <b><%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %></b>.
-          <br/><br/>
-
-          Without this protection, the priority date would have been determined
-          <% if @name.genus_affected_by_23d_amendment? %>
-            by the validation date of the name:<br/>
-            <b><%= @name.register.priority_date
-                        .strftime('%F %I:%M %p (%Z)') %></b>.
-          <% elsif @name.type_name&.register&.priority_date.present? %>
-            by the validation date of the type genus:<br/>
-            <b><%= @name.type_name.register.priority_date
-                        .strftime('%F %I:%M %p (%Z)') %></b>.
+        <li>
+          <% if @name.created_at == @name.updated_at %>
+            This name has not been modified since creation
           <% else %>
-            by the validation date of the type genus.
+              This name was last modified
+              <%= time_ago_with_date(@name.updated_at) %>
+          <% end %>
+        </li>
+        <% if @workflow_modal_id ||= nil %>
+          <li>
+            <%= modal_button(@workflow_modal_id, as_anchor: true) do %>
+              Submission process status
+            <% end %>
+          </li>
+        <% end %>
+        <% if @name.validated? %>
+          <li>
+            <% id = modal(
+                 'Quality Checks', size: 'xl',
+                 async: quality_checks_name_url(@name, content: true)
+               ) %>
+            <%= modal_button(id, as_anchor: true) do %>
+              Quality checks before valid publication
+            <% end %>
+          </li>
+        <% end %>
+
+        <% if current_curator? %>
+          <li>
+            <% id = modal('Users with active alerts') do %>
+              The following users will receive email alerts whenever this name
+              changes status or when new correspondence is registered:
+              <br/><br/>
+              <ul>
+                <% @name.observers.each do |user| %>
+                  <li><%= display_link(user) %></li>
+                <% end %>
+              </ul>
+            <% end %>
+            <%= modal_button(id, as_anchor: true) do %>
+              Users with active alerts (only visible to curators)
+            <% end %>
+          </li>
+
+          <% if @name.valid? %>
+            <li>
+              <% id = modal('Correspondence with curators', size: 'lg') do %>
+                <%= render(
+                      partial: 'correspondences/correspondence',
+                      locals: { correspondence_history: true, object: @name }) %>
+              <% end %>
+            <%= modal_button(id, as_anchor: true) do %>
+              Historic communication record (only visible to curators)
+            <% end %>
+            </li>
           <% end %>
         <% end %>
-        <%= modal_button(id, class: 'badge badge-pill badge-info') do %>
-          <%= fa_icon('info-circle') %>&nbsp; Important note
-        <% end %>
-      <% end %>
+      </ul>
     </dd>
-  <% end %>
-</dl>
+
+    <% if @name.redirectors.any? %>
+      <dt><%= fa_icon('directions') %> Redirects here</dt>
+      <dd>
+        <ul>
+          <% @name.redirectors.each do |name| %>
+            <li>
+              <%= link_to(name.name_html, name_url(name, no_redirect: true)) %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <dt><%= fa_icon('user') %> Registered</dt>
+    <dd>
+      <%= time_ago_with_date(@name.created_at, true) %>
+      <% if @name.claimed_at %>
+        and claimed <%= time_ago_with_date(@name.claimed_at) %>
+      <% end %>
+      by
+      <%= @name.created_by ?
+            display_link(@name.created_by) : 'Excubia bot' %>
+    </dd>
+
+    <% if @name.submitted_by %>
+      <dt><%= fa_icon('paper-plane') %> Submitted</dt>
+      <dd>
+        <%= time_ago_with_date(@name.submitted_at, true) %>
+        by <%= display_link(@name.submitted_by) %>
+      </dd>
+    <% end %>
+
+    <% unless @name.curators.empty? %>
+      <dt><%= fa_icon('user-check') %> Curators</dt>
+      <dd>
+        <ul>
+          <% @name.curators.each do |user| %>
+            <li>
+              <%= display_link(user) %>
+              <% if @name.nomenclature_review_by?(user) %>
+                <span class="text-muted">(nomenclature)</span>
+              <% end %>
+              <% if @name.genomics_review_by?(user) %>
+                <span class="text-muted">(genomics)</span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
+
+    <% if @name.after_endorsement? && @name.endorsed_by %>
+      <dt><%= fa_icon('check-square') %> Endorsed</dt>
+      <dd>
+        <%= time_ago_with_date(@name.endorsed_at, true) %>
+        by <%= display_link(@name.endorsed_by) %>
+      </dd>
+    <% end %>
+
+    <% if @name.valid? && @name.validated_by %>
+      <% if @name.status == 15 %>
+        <dt><%= fa_icon('certificate') %> Validated</dt>
+      <% else %>
+        <dt><%= fa_icon('stamp') %> Reported valid</dt>
+      <% end %>
+      <dd>
+        <%= time_ago_with_date(@name.validated_at, true) %>
+        by <%= display_link(@name.validated_by) %>
+      </dd>
+    <% end %>
+
+    <% if @name.valid? && @name.priority_date %>
+      <dt><%= fa_icon('calendar-check') %> Date of priority</dt>
+      <dd>
+        <%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %>
+        <% if @name.affected_by_23d_amendment? %>
+          <% id = modal('Priority date notice') do %>
+            <% amendment = Publication.by_doi('10.1038/s43705-023-00303-y') %>
+            This name falls under the protection of
+            <%= amendment ? display_link(amendment) : 'Whitman et al 2023' %>,
+            which pushes the priority date back to<br/>
+            <b><%= @name.priority_date.strftime('%F %I:%M %p (%Z)') %></b>.
+            <br/><br/>
+
+            Without this protection, the priority date would have been determined
+            <% if @name.genus_affected_by_23d_amendment? %>
+              by the validation date of the name:<br/>
+              <b><%= @name.register.priority_date
+                          .strftime('%F %I:%M %p (%Z)') %></b>.
+            <% elsif @name.type_name&.register&.priority_date.present? %>
+              by the validation date of the type genus:<br/>
+              <b><%= @name.type_name.register.priority_date
+                          .strftime('%F %I:%M %p (%Z)') %></b>.
+            <% else %>
+              by the validation date of the type genus.
+            <% end %>
+          <% end %>
+          <%= modal_button(id, class: 'badge badge-pill badge-info') do %>
+            <%= fa_icon('info-circle') %>&nbsp; Important note
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
+  </dl>
+</section>
