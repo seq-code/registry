@@ -39,10 +39,10 @@
               justify-content-between overflow-hidden">
     <div class="navbar-nav">
       <div class="collapse navbar-collapse crumbs">
-        <%= link_to(root_url,
-              class: 'nav-item nav-link only-stuck', title: 'Home') do %>
-          <%= fa_icon('university') %>
-        <% end %>
+        <%= icon_link_to(
+              'university', 'Home', root_url,
+              class: 'nav-item nav-link only-stuck'
+            ) %>
         <% @crumbs.each do |i| %>
           <% if i.is_a?(Array) %>
             <%= link_to(i[0], i[1], class: 'nav-item nav-link') %>
@@ -53,9 +53,10 @@
       </div>
     </div>
     <div>
-      <%= modal_button(@search_id, class: 'only-stuck', tag: :a) do %>
-        <%= fa_icon('search') %>
-      <% end %>
+      <%= modal_button(
+            @search_id, class: 'only-stuck', tag: :a,
+            title: 'Search', aria: { label: 'Search' }
+          ) do %><%= fa_icon('search', aria: { hidden: true }) %><% end %>
     </div>
   </nav>
 <% end %>

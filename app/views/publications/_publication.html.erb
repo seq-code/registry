@@ -41,15 +41,13 @@
   <% entry.footer do %>
     <ul class="list-inline m-0 text-right">
       <li class="list-inline-item m-0">
-        <%= link_to(
-              publication.url,
-              title: 'Link to publication', target: '_blank'
-            ) { %><%= fa_icon('file-alt') %><% } %>
+        <%= icon_link_to(
+              'file-alt', 'Link to publication', publication.url,
+              target: '_blank'
+            ) %>
       </li>
       <li class="list-inline-item m-0">
-        <%= link_to(publication, title: 'See more') do %>
-          <%= fa_icon('arrow-circle-right') %>
-        <% end %>
+        <%= icon_link_to('arrow-circle-right', 'See more', publication) %>
       </li>
     </ul>
   <% end %>
