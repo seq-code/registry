@@ -30,8 +30,18 @@ $theme-colors: (
 // contrast ratio on light backgrounds such as .bg-light and .input-group-text
 $text-muted: #626a72;
 
+// Underline links so they can be told apart from the surrounding text without
+// relying on color. Bootstrap removes the underline from its own components,
+// such as buttons, navs, dropdowns, list groups and pagination
+$link-decoration: underline;
+
 @import "bootstrap";
 @import "font_awesome5_webfont";
+
+// Links that are not part of running text
+.navbar a, .badge, .card-header-link {
+  text-decoration: none;
+}
 
 .card-columns {
   @include media-breakpoint-only(sm) { column-count: 1; }
