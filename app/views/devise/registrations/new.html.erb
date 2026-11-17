@@ -19,15 +19,14 @@
                 required: true,
                 input_html: { autocomplete: 'username' }) %>
     <%= f.input(:family, label: 'Family name(s)',
-                input_html: { autocomplete: 'lastname' }) %>
+                input_html: { autocomplete: 'family-name' }) %>
     <%= f.input(:given, label: 'Given name(s)',
-                input_html: { autocomplete: 'firstname' }) %>
+                input_html: { autocomplete: 'given-name' }) %>
     <%= f.input(:affiliation,
                 hint: 'Institution to which you belong',
-                input_html: { autocomplete: 'affiliation' }) %>
+                input_html: { autocomplete: 'organization' }) %>
     <%= f.input(:affiliation_2, label: 'Secondary affiliation',
-                hint: 'Secondary institution',
-                input_html: { autocomplete: 'affiliation_2' }) %>
+                hint: 'Secondary institution') %>
     <%= f.input(:password,
                 required: true,
                 hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
