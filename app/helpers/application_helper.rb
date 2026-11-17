@@ -285,6 +285,18 @@ module ApplicationHelper
     return id
   end
 
+  # Link whose only content is an icon. The +label+ names the link for screen
+  # readers, which are not given the icon, and shows as a tooltip. The link is
+  # rendered without whitespace, which would otherwise show as underlined gaps
+  def icon_link_to(icon, label, url, icon_options: {}, **html_options)
+    html_options[:class] = ['icon-link', html_options[:class]].compact.join(' ')
+    html_options[:title] ||= label
+    html_options[:aria] = (html_options[:aria] || {}).merge(label: label)
+    link_to(url, html_options) do
+      fa_icon(icon, **icon_options, aria: { hidden: true })
+    end
+  end
+
   def modal_button(id, opts = {})
     opts[:type] ||= 'button'
     opts[:class] ||= 'btn btn-primary'

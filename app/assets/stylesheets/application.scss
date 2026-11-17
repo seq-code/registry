@@ -43,6 +43,12 @@ $link-decoration: underline;
   text-decoration: none;
 }
 
+// Links whose only content is an icon (see ApplicationHelper#icon_link_to),
+// which is told apart by its shape
+.icon-link, .icon-link:hover, .icon-link:focus {
+  text-decoration: none;
+}
+
 .card-columns {
   @include media-breakpoint-only(sm) { column-count: 1; }
   @include media-breakpoint-only(md) { column-count: 2; }
