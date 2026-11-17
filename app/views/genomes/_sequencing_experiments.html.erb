@@ -16,12 +16,12 @@
           <% end %>
           <%= se.title.present? ? se.title : se.sra_accession %>
           <% unless se.genomic? %>
-            <%= link_to("#seq-exp-#{se.id}",
-                  role: 'button',
-                  data: { toggle: 'collapse' }
-                ) do %>
-              <%= fa_icon('plus-circle') %>
-            <% end %>
+            <%= icon_link_to(
+                  'plus-circle', 'Show sequencing experiment details',
+                  "#seq-exp-#{se.id}",
+                  role: 'button', data: { toggle: 'collapse' },
+                  aria: { controls: "seq-exp-#{se.id}", expanded: false }
+                ) %>
           <% end %>
         </dt>
         <dd id="seq-exp-<%= se.id %>" class="<%=

@@ -3,16 +3,16 @@
   <%= link_to(
         name.abbr_name, name, class: 'badge badge-pill badge-primary') %>
   <% if current_contributor? %>
-    <%= link_to(
-          publication_name, method: :delete,
-          class: 'badge badge-pill badge-info', title: 'unlink name',
+    <%= icon_link_to(
+          'trash-alt', "Unlink #{name.abbr_name}", publication_name,
+          method: :delete, class: 'badge badge-pill badge-info',
           data: { confirm: 'Are you sure?' }
-        ) { %><%= fa_icon('trash-alt') %><% } %>
+        ) %>
   <% end %>
 <% end %>
 <% if current_contributor? %>
-  <%= link_to(
-        link_publication_name_path(publication),
-        class: 'badge badge-pill badge-info', title: 'link names'
-      ) { %><%= fa_icon('link') %><% } %>
+  <%= icon_link_to(
+        'link', 'Link names', link_publication_name_path(publication),
+        class: 'badge badge-pill badge-info'
+      ) %>
 <% end %>

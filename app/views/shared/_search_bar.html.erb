@@ -3,7 +3,7 @@
   <div class="form-row input-group">
     <div class="input-group-prepend">
       <select class="form-control custom-select btn bg-light"
-            name="what" id="search-bar-what">
+            name="what" id="search-bar-what" aria-label="Search in">
         <% %w[names genomes publications authors subjects].each do |i| %>
           <option value="<%= i %>" <%= 'selected' if @what.to_s == i %>>
             <%= i.capitalize %>
@@ -12,11 +12,13 @@
       </select>
     </div>
     <input type="text" class="form-control bg-light" id="search-bar"
-          placeholder="Search" name="q" value="<%= @q %>"
+          placeholder="Search" aria-label="Search terms" name="q"
+          value="<%= @q %>"
           <%= 'autofocus=autofocus' if autofocus %> />
     <div class="input-group-append">
       <button type="submit" class="btn btn-primary form-control">
         <%= fa_icon('search') %>
+        <span class="sr-only">Search</span>
       </button>
     </div>
   </div>

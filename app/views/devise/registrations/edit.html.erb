@@ -19,13 +19,12 @@
     </h4>
     <%= f.input :email, required: true, autofocus: true %>
     <%= f.input :given, label: 'Given name',
-                input_html: { autocomplete: 'firstname' } %>
+                input_html: { autocomplete: 'given-name' } %>
     <%= f.input :family, label: 'Family name',
-                input_html: { autocomplete: 'lastname' } %>
+                input_html: { autocomplete: 'family-name' } %>
     <%= f.input :affiliation,
-                input_html: { autocomplete: 'affiliation' } %>
-    <%= f.input :affiliation_2, label: 'Secondary affiliation',
-                input_html: { autocomplete: 'affiliation_2' } %>
+                input_html: { autocomplete: 'organization' } %>
+    <%= f.input :affiliation_2, label: 'Secondary affiliation' %>
     <br/><hr/><br/>
 
     <h4>

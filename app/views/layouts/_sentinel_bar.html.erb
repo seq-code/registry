@@ -45,14 +45,12 @@
       <% end %>
 
       <% if @name && @name.previous_register_name %>
-        <%= link_to(
+        <%= icon_link_to(
+              'caret-left', 'Previous name in register',
               [@name_page, @name.previous_register_name],
               class: 'btn btn-primary btn-sm',
-              style: 'margin-left: 0.1rem;',
-              title: 'Previous name in register', data: { toggle: 'tooltip' }
-            ) do %>
-          <%= fa_icon('caret-left', 'aria-label': 'Previous') %>
-        <% end %>
+              style: 'margin-left: 0.1rem;', data: { toggle: 'tooltip' }
+            ) %>
       <% end %>
 
       <% if @name && @name.relative_position_in_register &&
@@ -69,14 +67,12 @@
       <% end %>
 
       <% if @name && @name.next_register_name %>
-        <%= link_to(
+        <%= icon_link_to(
+              'caret-right', 'Next name in register',
               [@name_page, @name.next_register_name],
               class: 'btn btn-primary btn-sm',
-              style: 'margin-left: 0.1rem;',
-              title: 'Next name in register', data: { toggle: 'tooltip' }
-            ) do %>
-          <%= fa_icon('caret-right', 'aria-label': 'Next') %>
-        <% end %>
+              style: 'margin-left: 0.1rem;', data: { toggle: 'tooltip' }
+            ) %>
       <% end %>
     </div>
   <% end %>

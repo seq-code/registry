@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'axe/matchers/be_axe_clean'
 
 # Chrome reports elements that are no longer in the page (e.g., replaced while
 # loading) as a generic error instead of a stale element, which Capybara
@@ -37,5 +38,17 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   def sign_in(user)
     self.signed_in_user = user
+  end
+
+  # WCAG 2.1 Level A and AA, the level the Registry aims to comply with
+  AXE_STANDARDS = %i[wcag2a wcag2aa wcag21a wcag21aa].freeze
+
+  # Runs axe-core on the current page and fails with the list of violations
+  # of +AXE_STANDARDS+, except for the axe rule ids in +skipping+
+  def assert_accessible(skipping: [])
+    audit = Axe::Matchers::BeAxeClean.new.according_to(*AXE_STANDARDS)
+    audit = audit.skipping(*skipping) if skipping.any?
+
+    assert(audit.matches?(page), -> { audit.failure_message })
   end
 end

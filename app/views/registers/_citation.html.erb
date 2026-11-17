@@ -99,8 +99,10 @@
         <dt><%= fa_icon('file-signature') %> Effective publication</dt>
         <dd class="mb-4">
           <p class="mb-1">
-            <%= link_to(@register.publication, class: 'mr-1') do %>
-              <%= fa_icon('arrow-circle-right') %><% end %>
+            <%= icon_link_to(
+                  'arrow-circle-right', 'Publication page',
+                  @register.publication, class: 'mr-1'
+                ) %>
             <%= @register.publication.long_citation_html %>
           </p>
           <% if @register.can_view_publication?(current_user) %>

@@ -22,12 +22,32 @@ $theme-colors: (
   // "secondary": slategrey,
   // "info": rgb(23, 162, 184)
   "primary": rgb(38, 104, 153),
-  "secondary": slategrey,
+  "secondary": #64727f, // slategrey darkened for contrast with white text
   "info": rgb(23, 172, 184)
 );
 
+// Darker than Bootstrap's default gray (#6c757d) so muted text reaches a 4.5:1
+// contrast ratio on light backgrounds such as .bg-light and .input-group-text
+$text-muted: #626a72;
+
+// Underline links so they can be told apart from the surrounding text without
+// relying on color. Bootstrap removes the underline from its own components,
+// such as buttons, navs, dropdowns, list groups and pagination
+$link-decoration: underline;
+
 @import "bootstrap";
 @import "font_awesome5_webfont";
+
+// Links that are not part of running text
+.navbar a, .badge, .card-header-link {
+  text-decoration: none;
+}
+
+// Links whose only content is an icon (see ApplicationHelper#icon_link_to),
+// which is told apart by its shape
+.icon-link, .icon-link:hover, .icon-link:focus {
+  text-decoration: none;
+}
 
 .card-columns {
   @include media-breakpoint-only(sm) { column-count: 1; }
