@@ -26,6 +26,10 @@ $theme-colors: (
   "info": rgb(23, 172, 184)
 );
 
+// Darker than Bootstrap's default gray (#6c757d) so muted text reaches a 4.5:1
+// contrast ratio on light backgrounds such as .bg-light and .input-group-text
+$text-muted: #626a72;
+
 @import "bootstrap";
 @import "font_awesome5_webfont";
 
