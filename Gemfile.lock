@@ -67,6 +67,8 @@ GEM
     ast (2.4.3)
     autoprefixer-rails (10.6.1.0)
       execjs (~> 2)
+    axe-core-api (4.14.0)
+      dumb_delegator
     base64 (0.3.0)
     bcrypt (3.1.22)
     benchmark (0.5.0)
@@ -116,6 +118,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (2.0.0)
     dkim (1.1.0)
+    dumb_delegator (1.1.0)
     erb (6.0.7)
     erubi (1.13.1)
     execjs (2.10.2)
@@ -475,6 +478,7 @@ PLATFORMS
 
 DEPENDENCIES
   addressable
+  axe-core-api (~> 4.14)
   benchmark
   bootstrap (~> 4.6.2)
   byebug
