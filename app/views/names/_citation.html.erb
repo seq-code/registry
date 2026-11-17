@@ -1,60 +1,27 @@
-<dl name="citation" class="main-section name-details">
+<section name="citation" class="main-section name-details">
   <h2><%= fa_icon('bookmark', class: 'float-right') %> Citation</h2>
 
-  <dt><%= fa_icon('signature') %> Formal styling</dt>
-  <dd><%= @name.formal_html %></dd>
+  <dl class="mb-0">
+    <dt><%= fa_icon('signature') %> Formal styling</dt>
+    <dd><%= @name.formal_html %></dd>
 
-  <% if @name.proposed_in %>
-    <dt>
-      <%= fa_icon('star') %> Effective publication
-      <%= help_message('Effective Publication') do %>
-        For the purposes of the SeqCode, an <b>effective publication</b>
-        refers to the peer-reviewed publication in which a name and evidence
-        for the taxon first appears. Under the SeqCode, preprints are not
-        eligible as an effective publication.<br/><br/>
-        See <%= link_to_rule('24a', 'Rule 24') %> for additional
-        explanation.
-      <% end %>
-    </dt>
-    <dd>
-      <%= display_link(@name.proposed_in, :short_citation) %>
-      <% if @name.can_edit?(current_user) %>
-        <%= link_to(
-              proposed_in_name_url(@name, @name.proposed_in, not: true),
-              class: 'badge badge-pill badge-primary',
-              method: :post, title: 'Did not propose this name',
-              data: { confirm: 'Are you sure?' }
-            ) do %>
-          <%= fa_icon('unlink') %> Unlink
+    <% if @name.proposed_in %>
+      <dt>
+        <%= fa_icon('star') %> Effective publication
+        <%= help_message('Effective Publication') do %>
+          For the purposes of the SeqCode, an <b>effective publication</b>
+          refers to the peer-reviewed publication in which a name and evidence
+          for the taxon first appears. Under the SeqCode, preprints are not
+          eligible as an effective publication.<br/><br/>
+          See <%= link_to_rule('24a', 'Rule 24') %> for additional
+          explanation.
         <% end %>
-      <% end %>
-    </dd>
-  <% elsif !@publication_names.empty? %>
-    <dt><%= fa_icon('history') %> Oldest registered citation</dt>
-    <dd>
-      <%= link_to(@oldest_publication.short_citation, @oldest_publication) %>
-    </dd>
-  <% end %>
-
-  <% if @name.not_validly_proposed_in.present? %>
-    <dt>
-      <%= fa_icon('firstdraft', type: :fab) %>
-      Original (not valid) publication
-      <%= help_message('Not Valid Publication of Proposal') do %>
-        This is the original publication proposing the name or the
-        establishment of this taxon, but it did not meet all minimum
-        criteria for valid publication under the SeqCode. For example, it
-        proposed this name on the basis of marker genes or low-quality
-        genomes as nomenclatural type, or used a non-validly published
-        name as type.
-      <% end %>
-    </dt>
-    <dd>
-      <% @name.not_validly_proposed_in.each do |publication| %>
-        <%= display_link(publication, :short_citation) %>
+      </dt>
+      <dd>
+        <%= display_link(@name.proposed_in, :short_citation) %>
         <% if @name.can_edit?(current_user) %>
           <%= link_to(
-                not_validly_proposed_in_name_url(@name, publication, not: true),
+                proposed_in_name_url(@name, @name.proposed_in, not: true),
                 class: 'badge badge-pill badge-primary',
                 method: :post, title: 'Did not propose this name',
                 data: { confirm: 'Are you sure?' }
@@ -62,83 +29,118 @@
             <%= fa_icon('unlink') %> Unlink
           <% end %>
         <% end %>
-        <br/>
-      <% end %>
-    </dd>
-  <% end %>
+      </dd>
+    <% elsif !@publication_names.empty? %>
+      <dt><%= fa_icon('history') %> Oldest registered citation</dt>
+      <dd>
+        <%= link_to(@oldest_publication.short_citation, @oldest_publication) %>
+      </dd>
+    <% end %>
 
-  <% if @name.corrigendum_from? || @name.corrigendum_in %>
-    <dt><%= fa_icon('pen-fancy') %> Corrigendum</dt>
-    <dd>
-      <% if @name.corrigendum_in %>
-        <%= display_link(@name.corrigendum_in, :short_citation) %>
-      <% else %>
-        <%= @name.corrigendum_source %>
-      <% end %>
-
-      <% if @name.corrigendum_from? %>
-        from &#8220;<%= @name.corrigendum_from %>&#8221; (sic)
-      <% end %>
-
-      <% if @name.can_edit?(current_user) %>
-        <%= link_to(
-              corrigendum_in_name_url(
-                @name, publication_id: @name.corrigendum_in_id
-              ),
-              class: 'badge badge-pill badge-primary',
-              title: 'Edit original name'
-            ) do %>
-          <%= fa_icon('edit') %> Edit
+    <% if @name.not_validly_proposed_in.present? %>
+      <dt>
+        <%= fa_icon('firstdraft', type: :fab) %>
+        Original (not valid) publication
+        <%= help_message('Not Valid Publication of Proposal') do %>
+          This is the original publication proposing the name or the
+          establishment of this taxon, but it did not meet all minimum
+          criteria for valid publication under the SeqCode. For example, it
+          proposed this name on the basis of marker genes or low-quality
+          genomes as nomenclatural type, or used a non-validly published
+          name as type.
         <% end %>
-        <%= link_to(
-              corrigendum_name_url(@name, delete_corrigenda: true),
-              method: :post,
-              class: 'badge badge-pill badge-primary',
-              title: 'Did not correct this name',
-              data: { confirm: 'Are you sure?' }
-            ) do %>
-          <%= fa_icon('unlink') %> Unlink
+      </dt>
+      <dd>
+        <% @name.not_validly_proposed_in.each do |publication| %>
+          <%= display_link(publication, :short_citation) %>
+          <% if @name.can_edit?(current_user) %>
+            <%= link_to(
+                  not_validly_proposed_in_name_url(@name, publication, not: true),
+                  class: 'badge badge-pill badge-primary',
+                  method: :post, title: 'Did not propose this name',
+                  data: { confirm: 'Are you sure?' }
+                ) do %>
+              <%= fa_icon('unlink') %> Unlink
+            <% end %>
+          <% end %>
+          <br/>
         <% end %>
-      <% end %>
-    </dd>
-  <% end %>
+      </dd>
+    <% end %>
 
-  <% if @name.emended_in.present? %>
-    <dt><%= fa_icon 'asterisk' %> Emended in</dt>
-    <dd>
-      <% @name.emended_in.each do |publication| %>
-        <%= display_link(publication, :short_citation) %>
+    <% if @name.corrigendum_from? || @name.corrigendum_in %>
+      <dt><%= fa_icon('pen-fancy') %> Corrigendum</dt>
+      <dd>
+        <% if @name.corrigendum_in %>
+          <%= display_link(@name.corrigendum_in, :short_citation) %>
+        <% else %>
+          <%= @name.corrigendum_source %>
+        <% end %>
+
+        <% if @name.corrigendum_from? %>
+          from &#8220;<%= @name.corrigendum_from %>&#8221; (sic)
+        <% end %>
+
         <% if @name.can_edit?(current_user) %>
           <%= link_to(
-                emended_in_name_url(@name, publication, not: true),
+                corrigendum_in_name_url(
+                  @name, publication_id: @name.corrigendum_in_id
+                ),
                 class: 'badge badge-pill badge-primary',
-                method: :post, title: 'Did not emend this name',
+                title: 'Edit original name'
+              ) do %>
+            <%= fa_icon('edit') %> Edit
+          <% end %>
+          <%= link_to(
+                corrigendum_name_url(@name, delete_corrigenda: true),
+                method: :post,
+                class: 'badge badge-pill badge-primary',
+                title: 'Did not correct this name',
                 data: { confirm: 'Are you sure?' }
               ) do %>
             <%= fa_icon('unlink') %> Unlink
           <% end %>
         <% end %>
-        <br/>
-      <% end %>
-    </dd>
-  <% end %>
+      </dd>
+    <% end %>
 
-  <dt><%= fa_icon('clipboard-check') %> SeqCode status</dt>
-  <dd>
-    <%= @name.status_name %>
-    <%= help_message(@name.status_name) { @name.status_help } %>
-  </dd>
+    <% if @name.emended_in.present? %>
+      <dt><%= fa_icon 'asterisk' %> Emended in</dt>
+      <dd>
+        <% @name.emended_in.each do |publication| %>
+          <%= display_link(publication, :short_citation) %>
+          <% if @name.can_edit?(current_user) %>
+            <%= link_to(
+                  emended_in_name_url(@name, publication, not: true),
+                  class: 'badge badge-pill badge-primary',
+                  method: :post, title: 'Did not emend this name',
+                  data: { confirm: 'Are you sure?' }
+                ) do %>
+              <%= fa_icon('unlink') %> Unlink
+            <% end %>
+          <% end %>
+          <br/>
+        <% end %>
+      </dd>
+    <% end %>
 
-  <% if @name.register&.can_view?(current_user, cookies[:reviewer_token]) %>
-    <dt><%= fa_icon('clipboard-list') %> Register List</dt>
+    <dt><%= fa_icon('clipboard-check') %> SeqCode status</dt>
     <dd>
-      <%= link_to(@name.register.acc_url, @name.register) %>
-      (<%= @name.register.status_name %>)
+      <%= @name.status_name %>
+      <%= help_message(@name.status_name) { @name.status_help } %>
     </dd>
-  <% end %>
 
-  <dt><%= fa_icon('barcode') %> Canonical URL</dt>
-  <dd class="copyable">
-    <%= @name.seqcode_url %>
-  </dd>
-</dl>
+    <% if @name.register&.can_view?(current_user, cookies[:reviewer_token]) %>
+      <dt><%= fa_icon('clipboard-list') %> Register List</dt>
+      <dd>
+        <%= link_to(@name.register.acc_url, @name.register) %>
+        (<%= @name.register.status_name %>)
+      </dd>
+    <% end %>
+
+    <dt><%= fa_icon('barcode') %> Canonical URL</dt>
+    <dd class="copyable">
+      <%= @name.seqcode_url %>
+    </dd>
+  </dl>
+</section>

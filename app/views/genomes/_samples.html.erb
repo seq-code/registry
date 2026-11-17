@@ -1,7 +1,7 @@
 <% genome ||= @genome %>
 <% nolayout ||= false %>
 <% if genome.try(:source_hash).present? %>
-  <dl name="samples" class="main-section name-details">
+  <section name="samples" class="main-section name-details">
     <% unless nolayout %>
       <h2>
         <%= fa_icon('atlas', class: 'float-right') %>
@@ -9,173 +9,175 @@
       </h2>
     <% end %>
 
-    <% if genome.biosample_accessions.present? %>
-      <dt><%= fa_icon('database') %> BioSample entries</dt>
-      <dd>
-        <%= longer_list('All entries') do %>
-          <% genome.biosample_accessions.map do |acc| %>
-            <%= link_to("https://www.ncbi.nlm.nih.gov/biosample/#{acc}",
-                        target: '_blank') do %>
-              BioSample: <%= acc %> <%= fa_icon('external-link-alt') %>
+    <dl class="mb-0">
+      <% if genome.biosample_accessions.present? %>
+        <dt><%= fa_icon('database') %> BioSample entries</dt>
+        <dd>
+          <%= longer_list('All entries') do %>
+            <% genome.biosample_accessions.map do |acc| %>
+              <%= link_to("https://www.ncbi.nlm.nih.gov/biosample/#{acc}",
+                          target: '_blank') do %>
+                BioSample: <%= acc %> <%= fa_icon('external-link-alt') %>
+              <% end %>
             <% end %>
           <% end %>
-        <% end %>
-      </dd>
-    <% end %>
+        </dd>
+      <% end %>
 
-    <%
-      attributes_icon = {
-        date: 'calendar', location: 'map-marked', toponym: 'map-signs',
-        environment: 'leaf', other: 'binoculars', package: 'cubes'
-      }
-    %>
-    <% attributes_icon.each do |group, icon| %>
-      <dt><%= fa_icon(icon) %> <%= group.to_s.capitalize %></dt>
-      <dd>
-        <% if genome.sample_set.grouped_attributes[group].present? %>
-          <% genome.sample_set.grouped_attributes[group].each do |k, v_att| %>
-            <% v = v_att.map(&:value_to_s) %>
-            <div>
-              <b><%= k.to_s.tr('_', ' ').titleize %>:</b>
-              <%
-                # Key-based formatting
-                case group
-                when :environment
-                  osl4_base = "https://www.ebi.ac.uk/ols4/ontologies"
-                  v.map! do |i|
-                    y = sanitize(i)
-                    %w[ENVO PCO UBERON OHMI].each do |ont|
-                      osl4 = "#{osl4_base}/#{ont.downcase}/classes/"
-                      purl = "http://purl.obolibrary.org/obo/#{ont}_"
-                      lnk  = osl4 + ERB::Util.u(purl)
-                      y = y.gsub(
-                        /(^\s*|[^A-Z\d])#{ont}[:_](\d{7,8})(\s*$|[^A-Z\d])/i,
-                        "\\1<a href='#{lnk}\\2' target=_blank>#{ont}:\\2</a>\\3"
+      <%
+        attributes_icon = {
+          date: 'calendar', location: 'map-marked', toponym: 'map-signs',
+          environment: 'leaf', other: 'binoculars', package: 'cubes'
+        }
+      %>
+      <% attributes_icon.each do |group, icon| %>
+        <dt><%= fa_icon(icon) %> <%= group.to_s.capitalize %></dt>
+        <dd>
+          <% if genome.sample_set.grouped_attributes[group].present? %>
+            <% genome.sample_set.grouped_attributes[group].each do |k, v_att| %>
+              <% v = v_att.map(&:value_to_s) %>
+              <div>
+                <b><%= k.to_s.tr('_', ' ').titleize %>:</b>
+                <%
+                  # Key-based formatting
+                  case group
+                  when :environment
+                    osl4_base = "https://www.ebi.ac.uk/ols4/ontologies"
+                    v.map! do |i|
+                      y = sanitize(i)
+                      %w[ENVO PCO UBERON OHMI].each do |ont|
+                        osl4 = "#{osl4_base}/#{ont.downcase}/classes/"
+                        purl = "http://purl.obolibrary.org/obo/#{ont}_"
+                        lnk  = osl4 + ERB::Util.u(purl)
+                        y = y.gsub(
+                          /(^\s*|[^A-Z\d])#{ont}[:_](\d{7,8})(\s*$|[^A-Z\d])/i,
+                          "\\1<a href='#{lnk}\\2' target=_blank>#{ont}:\\2</a>\\3"
+                        )
+                      end
+                      y
+                    end
+                  when :toponym
+                    mrg = 'http://marineregions.org/mrgid/'
+                    v.map! do |i|
+                      sanitize(i).gsub(
+                        /(^\s*|[^A-Z\d])MRGID:(\d+)(\s*$|[^A-Z\d])/,
+                        "\\1<a href='#{mrg}\\2' target='_blank'>MRGID:\\2</a>\\3"
                       )
                     end
-                    y
+                  when :package
+                    # ENA Checklists
+                    ena = 'https://www.ebi.ac.uk/ena/browser/view/'
+                    v.map! do |i|
+                      sanitize(i).sub(
+                        /(^\s*)(ERC\d{6})(\s*$)/i,
+                        "\\1<a href='#{ena}\\2' target='_blank'>\\2</a>\\3"
+                      )
+                    end
+                    # BioSample Packages
+                    ncbi = 'https://www.ncbi.nlm.nih.gov/biosample/docs/packages/'
+                    top = /(?:#{%w[
+                      OneHealthEnteric Microbe Model\\.organism Metagenome
+                      Invertebrate Human Plant Virus Beta-lactamase Pathogen
+                      MIGS MIMAG MIMARKS MIMS MISAG MIUVIG
+                    ].join('|')})/
+                    ver = /(?:\.[\d\.]+)?/
+                    v.map! do |i|
+                      i.sub(
+                        /(^\s*)(#{top}(?:\.[A-Z\.\-_]+)?#{ver})(\s*$)/i,
+                        "\\1<a href='#{ncbi}\\2' target='_blank'>\\2</a>\\3"
+                      )
+                    end
+                  else
+                    v.map! { |i| sanitize(i) }
                   end
-                when :toponym
-                  mrg = 'http://marineregions.org/mrgid/'
-                  v.map! do |i|
-                    sanitize(i).gsub(
-                      /(^\s*|[^A-Z\d])MRGID:(\d+)(\s*$|[^A-Z\d])/,
-                      "\\1<a href='#{mrg}\\2' target='_blank'>MRGID:\\2</a>\\3"
-                    )
-                  end
-                when :package
-                  # ENA Checklists
-                  ena = 'https://www.ebi.ac.uk/ena/browser/view/'
-                  v.map! do |i|
-                    sanitize(i).sub(
-                      /(^\s*)(ERC\d{6})(\s*$)/i,
-                      "\\1<a href='#{ena}\\2' target='_blank'>\\2</a>\\3"
-                    )
-                  end
-                  # BioSample Packages
-                  ncbi = 'https://www.ncbi.nlm.nih.gov/biosample/docs/packages/'
-                  top = /(?:#{%w[
-                    OneHealthEnteric Microbe Model\\.organism Metagenome
-                    Invertebrate Human Plant Virus Beta-lactamase Pathogen
-                    MIGS MIMAG MIMARKS MIMS MISAG MIUVIG
-                  ].join('|')})/
-                  ver = /(?:\.[\d\.]+)?/
-                  v.map! do |i|
-                    i.sub(
-                      /(^\s*)(#{top}(?:\.[A-Z\.\-_]+)?#{ver})(\s*$)/i,
-                      "\\1<a href='#{ncbi}\\2' target='_blank'>\\2</a>\\3"
-                    )
-                  end
-                else
-                  v.map! { |i| sanitize(i) }
-                end
-              %>
-              <%= v.join(' • ').html_safe %>
-            </div>
-          <% end %>
-          <% if group == :location %>
-            <% id = modal(
-                      'Sampling locations', size: :lg,
-                      async: sample_map_genome_url(genome, content: true)
-                    ) {} %>
-            <%= modal_button(id, as_anchor: true) do %>
-              View map of sampling locations
+                %>
+                <%= v.join(' • ').html_safe %>
+              </div>
             <% end %>
-          <% end %>
-        <% else %>
-          <%= fa_icon('exclamation-triangle', class: 'text-warning mr-1') %>
-          Not detected
-        <% end %>
-      </dd>
-    <% end%>
-
-    <% if genome.sample_set.extra_biosamples.present? %>
-      <dt><%= fa_icon('link') %> Additional Accessions</dt>
-      <dd>
-        <%= genome.sample_set.extra_biosamples.join(', ') %>
-        <% if genome.can_edit?(current_user) &&
-              genome.source_database == 'biosample' %>
-          <%
-            par = { genome: {}, return_to: genome_path(genome) }
-            par[:genome][:source_accession] =
-              genome.source_accession + ', ' +
-              genome.sample_set.extra_biosamples.join(', ')
-          %>
-          <%= link_to(
-                genome_url(genome, par),
-                method: :patch,
-                class: 'badge badge-pill badge-info'
-              ) do %>
-            <%= fa_icon('plus-square') %> Append as BioSamples
-          <% end %>
-        <% end %>
-      </dd>
-    <% end %>
-
-    <dt><%= fa_icon('flask') %> All retrieved samples</dt>
-    <dd>
-      <% if genome.source_hash[:samples].empty? %>
-        <div class="alert alert-warning">
-          No BioSample metadata was found associated to this genome.
-        </div>
-      <% else %>
-        <ul>
-          <% genome.source_hash[:samples].each do |acc, sample| %>
-            <% id = modal(acc, size: 'lg') do %>
-              <% if sample[:from_sra] || sample[:api] %>
-                <div class="alert alert-info">
-                  Metadata retrieved
-                  <% if sample[:api] %>
-                    using the <%= sample[:api] %> API
-                  <% end %>
-                  <% if sample[:from_sra] %>
-                    via <%= to_sentence(sample[:from_sra]) %>
-                    (linked through the EBI API)
-                  <% end %>
-                </div>
-              <% end %>
-              <p class="lead mx-2"><%= sample[:description] %></p>
-              <dl class="main-section">
-                <% if sample[:biosample_accessions].present? %>
-                  <dt>BioSample Accession(s)</dt>
-                  <dd><%= sample[:biosample_accessions].join(', ') %></dd>
-                <% end %>
-                <% sample[:attributes].each do |k, v| %>
-                  <dt><%= k %></dt>
-                  <dd><%= v %></dd>
-                <% end if sample[:attributes].present? %>
-              </dl>
-            <% end %>
-
-            <li>
+            <% if group == :location %>
+              <% id = modal(
+                        'Sampling locations', size: :lg,
+                        async: sample_map_genome_url(genome, content: true)
+                      ) {} %>
               <%= modal_button(id, as_anchor: true) do %>
-                <b><%= acc %></b>: <%= sample[:title] %>
-               <% end %>
-            </li>
+                View map of sampling locations
+              <% end %>
+            <% end %>
+          <% else %>
+            <%= fa_icon('exclamation-triangle', class: 'text-warning mr-1') %>
+            Not detected
           <% end %>
-        </ul>
+        </dd>
+      <% end%>
+
+      <% if genome.sample_set.extra_biosamples.present? %>
+        <dt><%= fa_icon('link') %> Additional Accessions</dt>
+        <dd>
+          <%= genome.sample_set.extra_biosamples.join(', ') %>
+          <% if genome.can_edit?(current_user) &&
+                genome.source_database == 'biosample' %>
+            <%
+              par = { genome: {}, return_to: genome_path(genome) }
+              par[:genome][:source_accession] =
+                genome.source_accession + ', ' +
+                genome.sample_set.extra_biosamples.join(', ')
+            %>
+            <%= link_to(
+                  genome_url(genome, par),
+                  method: :patch,
+                  class: 'badge badge-pill badge-info'
+                ) do %>
+              <%= fa_icon('plus-square') %> Append as BioSamples
+            <% end %>
+          <% end %>
+        </dd>
       <% end %>
-    </dd>
+
+      <dt><%= fa_icon('flask') %> All retrieved samples</dt>
+      <dd>
+        <% if genome.source_hash[:samples].empty? %>
+          <div class="alert alert-warning">
+            No BioSample metadata was found associated to this genome.
+          </div>
+        <% else %>
+          <ul>
+            <% genome.source_hash[:samples].each do |acc, sample| %>
+              <% id = modal(acc, size: 'lg') do %>
+                <% if sample[:from_sra] || sample[:api] %>
+                  <div class="alert alert-info">
+                    Metadata retrieved
+                    <% if sample[:api] %>
+                      using the <%= sample[:api] %> API
+                    <% end %>
+                    <% if sample[:from_sra] %>
+                      via <%= to_sentence(sample[:from_sra]) %>
+                      (linked through the EBI API)
+                    <% end %>
+                  </div>
+                <% end %>
+                <p class="lead mx-2"><%= sample[:description] %></p>
+                <dl class="main-section">
+                  <% if sample[:biosample_accessions].present? %>
+                    <dt>BioSample Accession(s)</dt>
+                    <dd><%= sample[:biosample_accessions].join(', ') %></dd>
+                  <% end %>
+                  <% sample[:attributes].each do |k, v| %>
+                    <dt><%= k %></dt>
+                    <dd><%= v %></dd>
+                  <% end if sample[:attributes].present? %>
+                </dl>
+              <% end %>
+
+              <li>
+                <%= modal_button(id, as_anchor: true) do %>
+                  <b><%= acc %></b>: <%= sample[:title] %>
+                 <% end %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </dd>
+    </dl>
 
     <% if !nolayout && genome.source_hash[:retrieved_at] %>
       <div class="text-muted">
@@ -187,5 +189,5 @@
         <% end %>
       </div>
     <% end %>
-  </dl>
+  </section>
 <% end %>

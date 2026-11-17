@@ -1,118 +1,118 @@
-<dl name="metadata" class="main-section name-details">
-  <h2><%= fa_icon('table', class: 'float-right') %> Metadata</h3>
+<section name="metadata" class="main-section name-details">
+  <h2><%= fa_icon('table', class: 'float-right') %> Metadata</h2>
 
-  <dt><%= fa_icon('map-marked') %> Sample locations</dt>
-  <dd>
-    <% id = modal(
-          'Sampling locations', size: :lg,
-          async: sample_map_register_url(@register, content: true)
-        ) {} %>
-    <%= modal_button(id, as_anchor: true) do %>
-      View map of sampling locations
-    <% end %>
-  </dd>
-
-  <dt><%= fa_icon('sitemap') %> Tree view</dt>
-  <dd>
-    <%= link_to(tree_register_url(@register)) do %>
-      See all names in their taxonomic context
-    <% end %>
-  </dd>
-
-  <dt><%= fa_icon(:user) %> Created</dt>
-  <dd>
-    <%= time_ago_with_date(@register.created_at, true) %>
-    by <%= display_link(@register.created_by) %>
-  </dd>
-
-  <% if @register.coauthors.present? %>
-    <dt><%= fa_icon('user-friends') %> Coauthors</dt>
-    <dd><ul>
-      <% @register.register_coauthors.each do |rc| %>
-        <li>
-          <%= display_link(rc.user) %>, added
-          <%= time_ago_with_date(rc.created_at) %>
-        </li>
+  <dl class="mb-0">
+    <dt><%= fa_icon('map-marked') %> Sample locations</dt>
+    <dd>
+      <% id = modal(
+            'Sampling locations', size: :lg,
+            async: sample_map_register_url(@register, content: true)
+          ) {} %>
+      <%= modal_button(id, as_anchor: true) do %>
+        View map of sampling locations
       <% end %>
-    </ul></dd>
-  <% end %>
+    </dd>
 
-  <dt><%= fa_icon 'calendar' %> Local history</dt>
-  <dd>
-    <ul>
-      <li>
-        <% if @register.created_at == @register.updated_at %>
-          This list has not been modified since creation
-        <% else %>
-          This list was last modified
-          <%= time_ago_with_date(@register.updated_at) %>
+    <dt><%= fa_icon('sitemap') %> Tree view</dt>
+    <dd>
+      <%= link_to(tree_register_url(@register)) do %>
+        See all names in their taxonomic context
+      <% end %>
+    </dd>
+
+    <dt><%= fa_icon(:user) %> Created</dt>
+    <dd>
+      <%= time_ago_with_date(@register.created_at, true) %>
+      by <%= display_link(@register.created_by) %>
+    </dd>
+
+    <% if @register.coauthors.present? %>
+      <dt><%= fa_icon('user-friends') %> Coauthors</dt>
+      <dd><ul>
+        <% @register.register_coauthors.each do |rc| %>
+          <li>
+            <%= display_link(rc.user) %>, added
+            <%= time_ago_with_date(rc.created_at) %>
+          </li>
         <% end %>
-      </li>
+      </ul></dd>
+    <% end %>
 
-      <% if current_curator? %>
-        <li>
-          <% id = modal('Users with active alerts') do %>
-            The following users will receive email alerts whenever this list
-            changes status or when new correspondence is registered:
-            <br/><br/>
-            <ul>
-              <% @register.observers.each do |user| %>
-                <li><%= display_link(user) %></li>
-              <% end %>
-            </ul>
-          <% end %>
-          <%= modal_button(id, as_anchor: true) do %>
-            Users with active alerts (only visible to curators)
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
-  </dd>
-
-  <% unless @register.curators.empty? %>
-    <dt><%= fa_icon('user-check') %> Curators</dt>
+    <dt><%= fa_icon 'calendar' %> Local history</dt>
     <dd>
       <ul>
-        <% @register.curators.each do |user| %>
+        <li>
+          <% if @register.created_at == @register.updated_at %>
+            This list has not been modified since creation
+          <% else %>
+            This list was last modified
+            <%= time_ago_with_date(@register.updated_at) %>
+          <% end %>
+        </li>
+
+        <% if current_curator? %>
           <li>
-            <%= display_link(user) %>
-            <% if @register.nomenclature_review_by?(user) %>
-              <span class="text-muted">(nomenclature)</span>
+            <% id = modal('Users with active alerts') do %>
+              The following users will receive email alerts whenever this list
+              changes status or when new correspondence is registered:
+              <br/><br/>
+              <ul>
+                <% @register.observers.each do |user| %>
+                  <li><%= display_link(user) %></li>
+                <% end %>
+              </ul>
             <% end %>
-            <% if @register.genomics_review_by?(user) %>
-              <span class="text-muted">(genomics)</span>
+            <%= modal_button(id, as_anchor: true) do %>
+              Users with active alerts (only visible to curators)
             <% end %>
           </li>
         <% end %>
       </ul>
     </dd>
-  <% end %>
 
-  <% if @register.notes? %>
-    <dt><%= fa_icon('sticky-note') %> Notes</dt>
-    <dd><%= @register.notes %></dd>
-  <% end %>
+    <% unless @register.curators.empty? %>
+      <dt><%= fa_icon('user-check') %> Curators</dt>
+      <dd>
+        <ul>
+          <% @register.curators.each do |user| %>
+            <li>
+              <%= display_link(user) %>
+              <% if @register.nomenclature_review_by?(user) %>
+                <span class="text-muted">(nomenclature)</span>
+              <% end %>
+              <% if @register.genomics_review_by?(user) %>
+                <span class="text-muted">(genomics)</span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </dd>
+    <% end %>
 
-  <% if @register.validated? %>
-    <dt><%= fa_icon('certificate') %> Validated</dt>
-    <dd>
-      <%= time_ago_with_date(@register.validated_at, true) %>
-      by
-      <% if @register.validated_by %>
-        <%= display_link(@register.validated_by) %>
-      <% else %>
-        an unknown curator
-      <% end %>
-    </dd>
-  <% end %>
+    <% if @register.notes? %>
+      <dt><%= fa_icon('sticky-note') %> Notes</dt>
+      <dd><%= @register.notes %></dd>
+    <% end %>
 
-  <% if @register.published? %>
-    <dt><%= fa_icon('newspaper') %> Published</dt>
-    <dd>
-      <%= time_ago_with_date(@register.published_at, true) %>
-      by <%= display_link(@register.published_by) %> (handling editor)
-    </dd>
-  <% end %>
+    <% if @register.validated? %>
+      <dt><%= fa_icon('certificate') %> Validated</dt>
+      <dd>
+        <%= time_ago_with_date(@register.validated_at, true) %>
+        by
+        <% if @register.validated_by %>
+          <%= display_link(@register.validated_by) %>
+        <% else %>
+          an unknown curator
+        <% end %>
+      </dd>
+    <% end %>
 
-</dl>
-
+    <% if @register.published? %>
+      <dt><%= fa_icon('newspaper') %> Published</dt>
+      <dd>
+        <%= time_ago_with_date(@register.published_at, true) %>
+        by <%= display_link(@register.published_by) %> (handling editor)
+      </dd>
+    <% end %>
+  </dl>
+</section>

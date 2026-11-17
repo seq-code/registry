@@ -5,41 +5,43 @@
 <h1><%= @publication.title_html %></h1>
 <hr/>
 
-<dl class="main-section name-details">
+<section class="main-section name-details">
   <h2>
     <%= fa_icon('newspaper', class: 'float-right') %>
     Publication
   </h2>
-  <%= render partial: 'basic_info', locals: { publication: @publication } %>
-  <dt>
-    <% n = @publication.publication_authors.size %>
-    <%= fa_icon('user-friends') %>
-    <%= n == 1 ? 'Author' : 'Authors' %>
-  </dt>
-  <dd>
-    <% @publication.publication_authors.each_with_index do |p_author, k| %>
-      <% author = p_author.author %>
-      <%= link_to author.full_name, author %><%= '; ' if k < n - 1 %>
-    <% end %>
-  </dd>
-  <dt><%= fa_icon('calendar-day') %> Publication date</dt>
-  <dd><%= @publication.journal_date %></dd>
-  <% if @publication.doi.present? %>
-    <dt><%= fa_icon('directions') %> DOI</dt>
+  <dl class="mb-0">
+    <%= render partial: 'basic_info', locals: { publication: @publication } %>
+    <dt>
+      <% n = @publication.publication_authors.size %>
+      <%= fa_icon('user-friends') %>
+      <%= n == 1 ? 'Author' : 'Authors' %>
+    </dt>
     <dd>
-      <%= link_to(@publication.url, target: '_blank') do %>
-        <%= @publication.doi %>&nbsp;
-        <%= fa_icon('external-link-alt') %>
+      <% @publication.publication_authors.each_with_index do |p_author, k| %>
+        <% author = p_author.author %>
+        <%= link_to author.full_name, author %><%= '; ' if k < n - 1 %>
       <% end %>
     </dd>
-  <% end %>
-  <% if @publication.url.present? %>
-    <dt><%= fa_icon('link') %> URL</dt>
-    <dd>
-      <%= link_to(@publication.url, @publication.url, target: '_blank') %>
-    </dd>
-  <% end %>
-</dl>
+    <dt><%= fa_icon('calendar-day') %> Publication date</dt>
+    <dd><%= @publication.journal_date %></dd>
+    <% if @publication.doi.present? %>
+      <dt><%= fa_icon('directions') %> DOI</dt>
+      <dd>
+        <%= link_to(@publication.url, target: '_blank') do %>
+          <%= @publication.doi %>&nbsp;
+          <%= fa_icon('external-link-alt') %>
+        <% end %>
+      </dd>
+    <% end %>
+    <% if @publication.url.present? %>
+      <dt><%= fa_icon('link') %> URL</dt>
+      <dd>
+        <%= link_to(@publication.url, @publication.url, target: '_blank') %>
+      </dd>
+    <% end %>
+  </dl>
+</section>
 <%= render(partial: 'curator') %>
 <br/>
 <%= render(partial: 'shared/cc') %>
