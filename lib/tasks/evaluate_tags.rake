@@ -31,14 +31,16 @@ namespace :tags do
       limit: limit, offset: offset, rank: ENV['RANK'], tag: ENV['TAG'],
       include_partial: ENV['INCLUDE_PARTIAL'] == '1'
     ).to_a
-    backend = TaggingService.backend
+    # Also checks that the backend is reachable before evaluating any name
+    model =
+      begin
+        TaggingService.backend.model_label
+      rescue TaggingService::Error => e
+        abort "Tagging backend unavailable: #{e.message}"
+      end
     header = {
       'Backend' => Rails.configuration.tagging_backend,
-      'Model' =>
-        if backend.respond_to?(:model_label) then backend.model_label
-        elsif backend.const_defined?(:MODEL) then backend.const_get(:MODEL)
-        else 'n/a'
-        end,
+      'Model' => model,
       'Timestamp' => Time.now.utc.iso8601,
       'Names' => names.size,
       'Runs' => runs

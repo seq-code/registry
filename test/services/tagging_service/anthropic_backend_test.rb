@@ -36,6 +36,15 @@ class TaggingService::AnthropicBackendTest < ActiveSupport::TestCase
       'usage' => usage }.compact
   end
 
+  test 'model_label is the model, without any request' do
+    Net::HTTP.stub(:new, ->(*) { flunk('Unexpected request') }) do
+      assert_equal(
+        TaggingService::AnthropicBackend::MODEL,
+        TaggingService::AnthropicBackend.model_label
+      )
+    end
+  end
+
   test 'propose makes no request when external APIs are bypassed' do
     name = names(:bacillus)
     name.etymology_xx_description = 'a small rod'

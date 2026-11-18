@@ -173,7 +173,7 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
     )
   end
 
-  test 'model_label reports the served model, or unknown' do
+  test 'model_label reports the served model' do
     requests = []
     body = { 'data' => [{ 'id' => 'olmo-3-7b-instruct-q8_0.gguf' }] }
     Net::HTTP.stub(:new, fake_http(body, requests)) do
@@ -183,9 +183,46 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
       )
     end
     assert_equal('/v1/models', requests.first.path)
+  end
 
-    Net::HTTP.stub(:new, ->(*) { raise Errno::ECONNREFUSED }) do
-      assert_equal('unknown', TaggingService::LocalBackend.model_label)
+  test 'model_label is unknown if the server reports no model' do
+    [{ 'data' => [] }, { 'data' => [{}] }, []].each do |body|
+      Net::HTTP.stub(:new, fake_http(body, [])) do
+        assert_equal('unknown', TaggingService::LocalBackend.model_label)
+      end
     end
+  end
+
+  test 'model_label raises if the server is unreachable or fails' do
+    Net::HTTP.stub(:new, ->(*) { raise Errno::ECONNREFUSED }) do
+      error = assert_raises(TaggingService::Error) do
+        TaggingService::LocalBackend.model_label
+      end
+      assert_match('Local model connection error', error.message)
+    end
+
+    Net::HTTP.stub(:new, fake_http({ 'error' => 'boom' }, [], code: '500')) do
+      error = assert_raises(TaggingService::Error) do
+        TaggingService::LocalBackend.model_label
+      end
+      assert_match('Local model error 500', error.message)
+    end
+  end
+
+  test 'requests carry the API key if configured' do
+    backend = TaggingService::LocalBackend.new
+    settings = ->(key) { key == :local_api_key ? 'secret' : nil }
+    requests = []
+    backend.stub(:setting, settings) do
+      _, requests = propose_with(chat_body({ 'tags' => [] }), backend: backend)
+      Net::HTTP.stub(:new, fake_http({ 'data' => [] }, requests)) do
+        backend.server_model
+      end
+    end
+    assert_equal(2, requests.size)
+    requests.each { |req| assert_equal('Bearer secret', req['Authorization']) }
+
+    _, requests = propose_with(chat_body({ 'tags' => [] }))
+    assert_nil(requests.first['Authorization'])
   end
 end

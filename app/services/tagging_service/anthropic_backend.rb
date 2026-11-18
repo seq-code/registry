@@ -8,6 +8,11 @@ class TaggingService::AnthropicBackend
   MODEL   = 'claude-sonnet-5-5'
   MAX_TOKENS = 1024
 
+  # Model identifier, for evaluation reports
+  def self.model_label
+    MODEL
+  end
+
   def propose(name)
     etym = etymology_text(name)
     raise TaggingService::Error, "No etymology for #{name.name}" if etym.blank?

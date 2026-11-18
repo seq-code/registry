@@ -25,10 +25,10 @@ class TaggingService::LocalBackend
   DEFAULT_TIMEOUT = 300
   DEFAULT_MAX_TOKENS = 1024
 
-  # Identifier of the model loaded by the server, for evaluation reports,
-  # or 'unknown' if the server can't be reached
+  # Identifier of the model loaded by the server, for evaluation reports
+  # (see server_model)
   def self.model_label
-    new.send(:server_model) || 'unknown'
+    new.server_model
   end
 
   def propose(name)
@@ -38,6 +38,16 @@ class TaggingService::LocalBackend
     response = call_api(build_messages(name, etym))
     TaggingService.record_usage(usage(response))
     parse_response(response)
+  end
+
+  # Identifier of the model loaded by the server, or 'unknown' if the
+  # server doesn't report one. Raises TaggingService::Error if the server
+  # can't be reached, so callers can stop before sending any names
+  def server_model
+    body = request(Net::HTTP::Get.new(endpoint('/v1/models')), 10)
+    data = body['data'] if body.is_a?(Hash)
+    model = data.first if data.is_a?(Array)
+    (model['id'] if model.is_a?(Hash)).presence || 'unknown'
   end
 
   private
@@ -54,7 +64,6 @@ class TaggingService::LocalBackend
   def call_api(messages)
     req = Net::HTTP::Post.new(endpoint('/v1/chat/completions'))
     req['Content-Type'] = 'application/json'
-    req['Authorization'] = "Bearer #{api_key}" if api_key.present?
     req.body = JSON.generate(
       messages: messages,
       max_tokens: max_tokens,
@@ -64,7 +73,14 @@ class TaggingService::LocalBackend
         json_schema: { name: 'tags', strict: true, schema: response_schema }
       }
     )
-    JSON.parse(http(timeout).request(req).tap { |res| check!(res) }.body)
+    request(req, timeout)
+  end
+
+  # Send +req+ (with the API key, if any) and return its parsed JSON body,
+  # raising TaggingService::Error on any failure
+  def request(req, read_timeout)
+    req['Authorization'] = "Bearer #{api_key}" if api_key.present?
+    JSON.parse(http(read_timeout).request(req).tap { |res| check!(res) }.body)
   rescue Net::OpenTimeout, Net::ReadTimeout => e
     raise TaggingService::Error, "Local model timeout: #{e.message}"
   rescue SocketError, SystemCallError, IOError, OpenSSL::SSL::SSLError => e
@@ -126,17 +142,6 @@ class TaggingService::LocalBackend
       'cache_read_input_tokens' => cached,
       'output_tokens' => usage['completion_tokens'].to_i
     }
-  end
-
-  def server_model
-    req = Net::HTTP::Get.new(endpoint('/v1/models'))
-    req['Authorization'] = "Bearer #{api_key}" if api_key.present?
-    res = http(10).request(req)
-    return unless res.is_a?(Net::HTTPSuccess)
-
-    JSON.parse(res.body).dig('data', 0, 'id')
-  rescue StandardError
-    nil
   end
 
   def http(read_timeout)
