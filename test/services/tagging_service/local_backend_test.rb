@@ -2,7 +2,7 @@ require 'test_helper'
 require 'minitest/mock'
 
 class TaggingService::LocalBackendTest < ActiveSupport::TestCase
-  def fake_http(body, requests, code: '200')
+  def fake_http(body, requests, code: '200', raises: nil)
     klass = code == '200' ? Net::HTTPOK : Net::HTTPInternalServerError
     response = klass.new('1.1', code, '').tap do |res|
       res.instance_variable_set(:@read, true)
@@ -12,16 +12,25 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
       http.define_singleton_method(:use_ssl=) { |_| }
       http.define_singleton_method(:open_timeout=) { |_| }
       http.define_singleton_method(:read_timeout=) { |_| }
-      http.define_singleton_method(:request) { |req| requests << req; response }
+      http.define_singleton_method(:request) do |req|
+        requests << req
+        raise raises if raises
+
+        response
+      end
     end
   end
 
-  def propose_with(body, name = names(:bacillus), code: '200')
+  def propose_with(
+    body, name = names(:bacillus), code: '200', raises: nil,
+    backend: TaggingService::LocalBackend.new
+  )
     name.etymology_xx_description = 'a small rod'
     requests = []
     result = nil
-    Net::HTTP.stub(:new, fake_http(body, requests, code: code)) do
-      result = TaggingService::LocalBackend.new.propose(name)
+    http = fake_http(body, requests, code: code, raises: raises)
+    Net::HTTP.stub(:new, http) do
+      result = backend.propose(name)
     end
     [result, requests]
   end
@@ -87,6 +96,30 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
       propose_with({ 'error' => 'boom' }, code: '500')
     end
     assert_match('Local model error 500', error.message)
+  end
+
+  test 'propose maps connection and SSL errors to TaggingService::Error' do
+    [Errno::ECONNREFUSED, OpenSSL::SSL::SSLError].each do |klass|
+      error = assert_raises(TaggingService::Error) do
+        propose_with(chat_body({ 'tags' => [] }), raises: klass)
+      end
+      assert_match('Local model connection error', error.message)
+    end
+  end
+
+  test 'propose keeps the path prefix of local_url' do
+    backend = TaggingService::LocalBackend.new
+    settings = ->(key) { key == :local_url ? 'http://gpu:8080/llama' : nil }
+    requests = nil
+    backend.stub(:setting, settings) do
+      _, requests = propose_with(chat_body({ 'tags' => [] }), backend: backend)
+    end
+    assert_equal('/llama/v1/chat/completions', requests.first.path)
+  end
+
+  test 'propose uses the default URL without a path prefix' do
+    _, requests = propose_with(chat_body({ 'tags' => [] }))
+    assert_equal('/v1/chat/completions', requests.first.path)
   end
 
   test 'propose totals the token usage, separating cached prompt tokens' do

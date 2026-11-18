@@ -65,7 +65,7 @@ class TaggingService::LocalBackend
     JSON.parse(http(timeout).request(req).tap { |res| check!(res) }.body)
   rescue Net::OpenTimeout, Net::ReadTimeout => e
     raise TaggingService::Error, "Local model timeout: #{e.message}"
-  rescue SocketError, SystemCallError, IOError => e
+  rescue SocketError, SystemCallError, IOError, OpenSSL::SSL::SSLError => e
     raise TaggingService::Error, "Local model connection error: #{e.message}"
   rescue JSON::ParserError => e
     raise TaggingService::Error, "Local model invalid JSON: #{e.message}"
@@ -129,8 +129,11 @@ class TaggingService::LocalBackend
     end
   end
 
+  # +path+ relative to the configured URL, keeping any path prefix it has
+  # (e.g. http://host/llama for a server behind a reverse proxy)
   def endpoint(path)
-    URI.join(setting(:local_url).presence || DEFAULT_URL, path)
+    base = (setting(:local_url).presence || DEFAULT_URL).chomp('/') + '/'
+    URI.join(base, path.delete_prefix('/'))
   end
 
   def api_key
