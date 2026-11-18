@@ -1,0 +1,123 @@
+require 'test_helper'
+require 'minitest/mock'
+
+class TaggingService::LocalBackendTest < ActiveSupport::TestCase
+  def fake_http(body, requests, code: '200')
+    klass = code == '200' ? Net::HTTPOK : Net::HTTPInternalServerError
+    response = klass.new('1.1', code, '').tap do |res|
+      res.instance_variable_set(:@read, true)
+      res.instance_variable_set(:@body, JSON.generate(body))
+    end
+    Object.new.tap do |http|
+      http.define_singleton_method(:use_ssl=) { |_| }
+      http.define_singleton_method(:open_timeout=) { |_| }
+      http.define_singleton_method(:read_timeout=) { |_| }
+      http.define_singleton_method(:request) { |req| requests << req; response }
+    end
+  end
+
+  def propose_with(body, name = names(:bacillus), code: '200')
+    name.etymology_xx_description = 'a small rod'
+    requests = []
+    result = nil
+    Net::HTTP.stub(:new, fake_http(body, requests, code: code)) do
+      result = TaggingService::LocalBackend.new.propose(name)
+    end
+    [result, requests]
+  end
+
+  def chat_body(json, finish_reason: 'stop', usage: nil)
+    { 'choices' => [{ 'finish_reason' => finish_reason,
+                      'message' => { 'role' => 'assistant',
+                                     'content' => JSON.generate(json) } }],
+      'usage' => usage }.compact
+  end
+
+  test 'propose sends the shared prompt to the local endpoint' do
+    _, requests = propose_with(chat_body({ 'tags' => [] }))
+    req = requests.first
+    body = JSON.parse(req.body)
+
+    assert_equal('/v1/chat/completions', req.path)
+    assert_equal(%w[system user], body['messages'].map { |m| m['role'] })
+    assert_equal(
+      TaggingService::LocalBackend.new.system_prompt,
+      body.dig('messages', 0, 'content')
+    )
+    assert_match(/^Name: Bacillus$/, body.dig('messages', 1, 'content'))
+  end
+
+  test 'propose ignores bypass_external_apis' do
+    assert(Rails.configuration.bypass_external_apis)
+    result, = propose_with(chat_body({ 'tags' => [] }))
+    assert_equal([], result)
+  end
+
+  test 'propose requests structured output constrained to known slugs' do
+    _, requests = propose_with(chat_body({ 'tags' => [] }))
+
+    format = JSON.parse(requests.first.body)['response_format']
+    assert_equal('json_schema', format['type'])
+    slugs = format.dig(
+      'json_schema', 'schema', 'properties', 'tags', 'items', 'properties',
+      'slug', 'enum'
+    )
+    assert_equal(Tag.order(:slug).pluck(:slug), slugs)
+  end
+
+  test 'propose returns proposals from the structured response' do
+    result, = propose_with(
+      chat_body({ 'tags' => [
+        { 'slug' => 'eponym', 'confidence' => 'high' },
+        { 'slug' => 'not-a-tag', 'confidence' => 'low' }
+      ] })
+    )
+    assert_equal([{ 'slug' => 'eponym', 'confidence' => 'high' }], result)
+  end
+
+  test 'propose raises on truncated output' do
+    error = assert_raises(TaggingService::Error) do
+      propose_with(chat_body({ 'tags' => [] }, finish_reason: 'length'))
+    end
+    assert_match('truncated', error.message)
+  end
+
+  test 'propose raises on server errors' do
+    error = assert_raises(TaggingService::Error) do
+      propose_with({ 'error' => 'boom' }, code: '500')
+    end
+    assert_match('Local model error 500', error.message)
+  end
+
+  test 'propose totals the token usage, separating cached prompt tokens' do
+    TaggingService.reset_usage
+    usage = {
+      'prompt_tokens' => 2030, 'completion_tokens' => 50,
+      'prompt_tokens_details' => { 'cached_tokens' => 2000 }
+    }
+    2.times { propose_with(chat_body({ 'tags' => [] }, usage: usage)) }
+
+    assert_equal(
+      { 'requests' => 2, 'input_tokens' => 60,
+        'cache_creation_input_tokens' => 0,
+        'cache_read_input_tokens' => 4000, 'output_tokens' => 100 },
+      TaggingService.usage
+    )
+  end
+
+  test 'model_label reports the served model, or unknown' do
+    requests = []
+    body = { 'data' => [{ 'id' => 'olmo-3-7b-instruct-q8_0.gguf' }] }
+    Net::HTTP.stub(:new, fake_http(body, requests)) do
+      assert_equal(
+        'olmo-3-7b-instruct-q8_0.gguf',
+        TaggingService::LocalBackend.model_label
+      )
+    end
+    assert_equal('/v1/models', requests.first.path)
+
+    Net::HTTP.stub(:new, ->(*) { raise Errno::ECONNREFUSED }) do
+      assert_equal('unknown', TaggingService::LocalBackend.model_label)
+    end
+  end
+end

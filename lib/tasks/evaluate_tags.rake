@@ -35,7 +35,10 @@ namespace :tags do
     header = {
       'Backend' => Rails.configuration.tagging_backend,
       'Model' =>
-        backend.const_defined?(:MODEL) ? backend.const_get(:MODEL) : 'n/a',
+        if backend.respond_to?(:model_label) then backend.model_label
+        elsif backend.const_defined?(:MODEL) then backend.const_get(:MODEL)
+        else 'n/a'
+        end,
       'Timestamp' => Time.now.utc.iso8601,
       'Names' => names.size,
       'Runs' => runs
