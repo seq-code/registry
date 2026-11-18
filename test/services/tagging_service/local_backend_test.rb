@@ -98,6 +98,41 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
     assert_match('Local model error 500', error.message)
   end
 
+  test 'propose raises on responses of unexpected shape' do
+    [[], { 'tags' => 'eponym' }, 'eponym'].each do |json|
+      error = assert_raises(TaggingService::Error) do
+        propose_with(chat_body(json))
+      end
+      assert_match('Unexpected model response', error.message)
+    end
+
+    error = assert_raises(TaggingService::Error) { propose_with([]) }
+    assert_match('no choices', error.message)
+  end
+
+  test 'propose ignores tag entries that are not objects' do
+    result, = propose_with(
+      chat_body({ 'tags' => ['eponym', { 'slug' => 'eponym',
+                                         'confidence' => 'high' }] })
+    )
+    assert_equal([{ 'slug' => 'eponym', 'confidence' => 'high' }], result)
+  end
+
+  test 'propose sends max_tokens from local_max_tokens, or the default' do
+    _, requests = propose_with(chat_body({ 'tags' => [] }))
+    assert_equal(
+      TaggingService::LocalBackend::DEFAULT_MAX_TOKENS,
+      JSON.parse(requests.first.body)['max_tokens']
+    )
+
+    backend = TaggingService::LocalBackend.new
+    settings = ->(key) { key == :local_max_tokens ? '4096' : nil }
+    backend.stub(:setting, settings) do
+      _, requests = propose_with(chat_body({ 'tags' => [] }), backend: backend)
+    end
+    assert_equal(4096, JSON.parse(requests.first.body)['max_tokens'])
+  end
+
   test 'propose maps connection and SSL errors to TaggingService::Error' do
     [Errno::ECONNREFUSED, OpenSSL::SSL::SSLError].each do |klass|
       error = assert_raises(TaggingService::Error) do

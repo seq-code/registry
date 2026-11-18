@@ -12,6 +12,8 @@ require 'json'
 #     local_url: http://127.0.0.1:8080   # default
 #     local_api_key: ...                 # if the server uses --api-key
 #     local_timeout: 300                 # seconds per name (default 300)
+#     local_max_tokens: 1024             # output tokens per name (default
+#                                        # 1024; raise for reasoning models)
 #
 # The server is expected to be under our control (on this host or reached
 # through an SSH tunnel), so data sent to it doesn't leave our
@@ -21,7 +23,7 @@ class TaggingService::LocalBackend
 
   DEFAULT_URL = 'http://127.0.0.1:8080'.freeze
   DEFAULT_TIMEOUT = 300
-  MAX_TOKENS = 1024
+  DEFAULT_MAX_TOKENS = 1024
 
   # Identifier of the model loaded by the server, for evaluation reports,
   # or 'unknown' if the server can't be reached
@@ -55,7 +57,7 @@ class TaggingService::LocalBackend
     req['Authorization'] = "Bearer #{api_key}" if api_key.present?
     req.body = JSON.generate(
       messages: messages,
-      max_tokens: MAX_TOKENS,
+      max_tokens: max_tokens,
       temperature: 0,
       response_format: {
         type: 'json_schema',
@@ -80,15 +82,28 @@ class TaggingService::LocalBackend
     )
   end
 
+  # The response is checked for shape (not only parsed), as servers that
+  # ignore response_format may return any JSON
   def parse_response(body)
-    choice = Array(body['choices']).first or
-      raise(TaggingService::Error, 'Local model returned no choices')
+    choice = Array(body['choices']).first if body.is_a?(Hash)
+    unless choice.is_a?(Hash)
+      raise TaggingService::Error, 'Local model returned no choices'
+    end
     if choice['finish_reason'] == 'length'
       raise TaggingService::Error, 'Model response truncated (max_tokens)'
     end
 
     text = choice.dig('message', 'content').to_s
-    filter_proposals(JSON.parse(text)['tags'] || [])
+    parsed = JSON.parse(text)
+    tags = parsed['tags'] || [] if parsed.is_a?(Hash)
+    unless tags.is_a?(Array)
+      raise(
+        TaggingService::Error,
+        "Unexpected model response: #{text.truncate(200)}"
+      )
+    end
+
+    filter_proposals(tags.grep(Hash))
   rescue JSON::ParserError => e
     raise(
       TaggingService::Error,
@@ -97,10 +112,14 @@ class TaggingService::LocalBackend
   end
 
   # OpenAI-style usage mapped to TaggingService::USAGE_FIELDS: prompt_tokens
-  # includes the tokens served from the prompt cache
+  # includes the tokens served from the prompt cache. Returns nil if the
+  # response has no usage (or isn't an object; see parse_response)
   def usage(body)
-    usage = body['usage'] or return
-    cached = usage.dig('prompt_tokens_details', 'cached_tokens').to_i
+    usage = body['usage'] if body.is_a?(Hash)
+    return unless usage.is_a?(Hash)
+
+    details = usage['prompt_tokens_details']
+    cached = details.is_a?(Hash) ? details['cached_tokens'].to_i : 0
     {
       'input_tokens' => usage['prompt_tokens'].to_i - cached,
       'cache_creation_input_tokens' => 0,
@@ -142,6 +161,10 @@ class TaggingService::LocalBackend
 
   def timeout
     (setting(:local_timeout).presence || DEFAULT_TIMEOUT).to_i
+  end
+
+  def max_tokens
+    (setting(:local_max_tokens).presence || DEFAULT_MAX_TOKENS).to_i
   end
 
   def setting(key)
