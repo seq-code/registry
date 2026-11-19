@@ -133,6 +133,18 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
     assert_equal(4096, JSON.parse(requests.first.body)['max_tokens'])
   end
 
+  test 'propose sends temperature from local_temperature, or the default' do
+    _, requests = propose_with(chat_body({ 'tags' => [] }))
+    assert_equal(0.0, JSON.parse(requests.first.body)['temperature'])
+
+    backend = TaggingService::LocalBackend.new
+    settings = ->(key) { key == :local_temperature ? 0.7 : nil }
+    backend.stub(:setting, settings) do
+      _, requests = propose_with(chat_body({ 'tags' => [] }), backend: backend)
+    end
+    assert_equal(0.7, JSON.parse(requests.first.body)['temperature'])
+  end
+
   test 'propose maps connection and SSL errors to TaggingService::Error' do
     [Errno::ECONNREFUSED, OpenSSL::SSL::SSLError].each do |klass|
       error = assert_raises(TaggingService::Error) do

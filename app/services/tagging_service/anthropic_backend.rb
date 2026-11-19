@@ -22,9 +22,8 @@ class TaggingService::AnthropicBackend
     parse_response(response)
   end
 
-  # The static part of the prompt, as a system block marked for caching.
-  # It must not depend on the name (or anything else that varies between
-  # requests), so the cached prefix is reused across names
+  # The static part of the prompt (see Prompt#system_prompt), as a system
+  # block marked for caching
   def system_blocks
     [
       { type: 'text', text: system_prompt,

@@ -14,6 +14,8 @@ require 'json'
 #     local_timeout: 300                 # seconds per name (default 300)
 #     local_max_tokens: 1024             # output tokens per name (default
 #                                        # 1024; raise for reasoning models)
+#     local_temperature: 0               # sampling temperature (default 0,
+#                                        # i.e., greedy and deterministic)
 #
 # The server is expected to be under our control (on this host or reached
 # through an SSH tunnel), so data sent to it doesn't leave our
@@ -24,6 +26,7 @@ class TaggingService::LocalBackend
   DEFAULT_URL = 'http://127.0.0.1:8080'.freeze
   DEFAULT_TIMEOUT = 300
   DEFAULT_MAX_TOKENS = 1024
+  DEFAULT_TEMPERATURE = 0
 
   # Identifier of the model loaded by the server, for evaluation reports
   # (see server_model)
@@ -67,7 +70,7 @@ class TaggingService::LocalBackend
     req.body = JSON.generate(
       messages: messages,
       max_tokens: max_tokens,
-      temperature: 0,
+      temperature: temperature,
       response_format: {
         type: 'json_schema',
         json_schema: { name: 'tags', strict: true, schema: response_schema }
@@ -128,8 +131,11 @@ class TaggingService::LocalBackend
   end
 
   # OpenAI-style usage mapped to TaggingService::USAGE_FIELDS: prompt_tokens
-  # includes the tokens served from the prompt cache. Returns nil if the
-  # response has no usage (or isn't an object; see parse_response)
+  # includes the tokens served from the prompt cache. Only recent builds of
+  # llama-server report prompt_tokens_details.cached_tokens; older ones
+  # count every prompt token as input, even when the cache was used.
+  # Returns nil if the response has no usage (or isn't an object; see
+  # parse_response)
   def usage(body)
     usage = body['usage'] if body.is_a?(Hash)
     return unless usage.is_a?(Hash)
@@ -170,6 +176,10 @@ class TaggingService::LocalBackend
 
   def max_tokens
     (setting(:local_max_tokens).presence || DEFAULT_MAX_TOKENS).to_i
+  end
+
+  def temperature
+    (setting(:local_temperature).presence || DEFAULT_TEMPERATURE).to_f
   end
 
   def setting(key)

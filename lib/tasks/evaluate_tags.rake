@@ -14,7 +14,9 @@ namespace :tags do
       INCLUDE_PARTIAL=1
                      also evaluate names with pending proposals (flagged as
                      partial)
-      RUNS=3         query the backend N times per name (default: 1)
+      RUNS=3         query the backend N times per name (default: 1); only
+                     informative if the backend samples (e.g., the local
+                     backend with a local_temperature above 0)
       OUTPUT=path    also write the full results as JSON
   DESC
   task evaluate: :environment do
