@@ -7,6 +7,12 @@ class EvaluateTagsTest < ActiveSupport::TestCase
     Rails.application.load_tasks unless Rake::Task.task_defined?('tags:evaluate')
     @task = Rake::Task['tags:evaluate']
     @task.reenable
+    Rake::Task['tags:backend'].reenable
+    @tagging_backend_env = ENV.delete('TAGGING_BACKEND')
+  end
+
+  teardown do
+    ENV['TAGGING_BACKEND'] = @tagging_backend_env
   end
 
   test 'aborts before evaluating any name if the backend is unavailable' do

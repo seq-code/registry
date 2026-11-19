@@ -273,6 +273,9 @@ class TaggingService
     [{ 'slug' => slug, 'confidence' => confidence, 'basis' => basis }]
   end
 
+  # Names of the backends, as set in Rails.configuration.tagging_backend
+  BACKENDS = %i[anthropic local].freeze
+
   def self.backend
     case Rails.configuration.tagging_backend
     when :anthropic ; TaggingService::AnthropicBackend
@@ -280,7 +283,8 @@ class TaggingService
     else
       raise(
         Error,
-        "Unknown tagging backend: #{Rails.configuration.tagging_backend}"
+        "Unknown tagging backend: #{Rails.configuration.tagging_backend} " \
+          "(expected one of: #{BACKENDS.join(', ')})"
       )
     end
   end

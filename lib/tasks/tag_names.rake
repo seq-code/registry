@@ -20,8 +20,11 @@ namespace :tags do
                      only keep proposals at or above this confidence (high,
                      medium, or low; default: low), applied after implied
                      tags are added
+      TAGGING_BACKEND=local
+                     use this backend (anthropic or local) instead of the
+                     one configured in credentials
   DESC
-  task propose: :environment do
+  task propose: %i[environment backend] do
     dry_run = ENV['DRY_RUN'] == '1'
     limit   = ENV['LIMIT']&.to_i
     offset  = ENV['OFFSET'].to_i

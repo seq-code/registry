@@ -7,14 +7,39 @@ class TagNamesTest < ActiveSupport::TestCase
     Rails.application.load_tasks unless Rake::Task.task_defined?('tags:propose')
     @task = Rake::Task['tags:propose']
     @task.reenable
-    @env = ENV.to_h.slice('LIMIT', 'RANK', 'DRY_RUN')
+    Rake::Task['tags:backend'].reenable
+    @env = ENV.to_h.slice(*ENV_KEYS)
+    @backend = Rails.configuration.tagging_backend
     ENV['LIMIT'] = '1'
     ENV['RANK'] = 'genus'
     ENV.delete('DRY_RUN')
+    ENV.delete('TAGGING_BACKEND')
   end
 
   teardown do
-    %w[LIMIT RANK DRY_RUN].each { |key| ENV[key] = @env[key] }
+    ENV_KEYS.each { |key| ENV[key] = @env[key] }
+    Rails.configuration.tagging_backend = @backend
+  end
+
+  ENV_KEYS = %w[LIMIT RANK DRY_RUN TAGGING_BACKEND].freeze
+
+  test 'uses the backend from TAGGING_BACKEND' do
+    ENV['TAGGING_BACKEND'] = 'local'
+    backend = Class.new do
+      def self.model_label
+        'test-model.gguf'
+      end
+
+      def propose(_name)
+        []
+      end
+    end
+
+    out, = TaggingService.stub(:backend, backend) do
+      capture_io { @task.invoke }
+    end
+    assert_equal(:local, Rails.configuration.tagging_backend)
+    assert_match(/^Backend: local$/, out)
   end
 
   test 'aborts before processing any name if the backend is unavailable' do

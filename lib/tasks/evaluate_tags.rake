@@ -18,8 +18,11 @@ namespace :tags do
                      informative if the backend samples (e.g., the local
                      backend with a local_temperature above 0)
       OUTPUT=path    also write the full results as JSON
+      TAGGING_BACKEND=local
+                     use this backend (anthropic or local) instead of the
+                     one configured in credentials
   DESC
-  task evaluate: :environment do
+  task evaluate: %i[environment backend] do
     limit  = (ENV['LIMIT'].presence || 50).to_i
     offset = ENV['OFFSET'].to_i
     abort 'OFFSET must not be negative' if offset.negative?
