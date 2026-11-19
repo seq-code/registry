@@ -14,9 +14,11 @@
 #     local_temperature: 0               # sampling temperature (default 0,
 #                                        # i.e., greedy and deterministic)
 #
-# The server is expected to be under our control (on this host or reached
-# through an SSH tunnel), so data sent to it doesn't leave our
-# infrastructure. For that reason, bypass_external_apis does not apply.
+# bypass_external_apis does not apply: the server is expected to be under
+# our control (on this host or reached through an SSH tunnel), and requests
+# carry only public data (the prompt and the etymology of each name). This
+# is not enforced, though: names are sent to whatever local_url points to,
+# so it should only point to servers we trust.
 class TaggingService::LocalBackend
   include TaggingService::Prompt
   include TaggingService::HttpBackend
@@ -44,9 +46,11 @@ class TaggingService::LocalBackend
   # Identifier of the model loaded by the server, or 'unknown' if the
   # server doesn't report one. Without --alias, llama-server reports the
   # model path, so only its file name is kept (as it's stored in the notes
-  # of the proposals). Raises TaggingService::Error if the server can't be
-  # reached, so callers can stop before sending any names
+  # of the proposals). Raises TaggingService::Error if the settings are
+  # invalid or the server can't be reached, so callers can stop before
+  # sending any names
   def server_model
+    check_settings
     body = request(Net::HTTP::Get.new(endpoint('/v1/models')), 10)
     data = body['data'] if body.is_a?(Hash)
     model = data.first if data.is_a?(Array)
@@ -149,15 +153,48 @@ class TaggingService::LocalBackend
   end
 
   def timeout
-    (setting(:local_timeout).presence || DEFAULT_TIMEOUT).to_i
+    number_setting(:local_timeout, DEFAULT_TIMEOUT, :positive_integer)
   end
 
   def max_tokens
-    (setting(:local_max_tokens).presence || DEFAULT_MAX_TOKENS).to_i
+    number_setting(:local_max_tokens, DEFAULT_MAX_TOKENS, :positive_integer)
   end
 
   def temperature
-    (setting(:local_temperature).presence || DEFAULT_TEMPERATURE).to_f
+    number_setting(:local_temperature, DEFAULT_TEMPERATURE, :non_negative)
+  end
+
+  # Raise TaggingService::Error if any setting is invalid, so callers can
+  # stop before sending any names (see server_model)
+  def check_settings
+    base_url
+    timeout
+    max_tokens
+    temperature
+  end
+
+  # The setting +key+ (or +default+ if unset) as a number of +kind+: a
+  # :positive_integer, or a :non_negative Float. Raises TaggingService::Error
+  # otherwise, as a 0 from a typo would make every request fail (e.g. a read
+  # timeout of 0 seconds or max_tokens of 0)
+  def number_setting(key, default, kind)
+    value = setting(key)
+    value = default if value.blank?
+    number =
+      if kind == :positive_integer
+        Integer(value.to_s, 10, exception: false) # Not octal for '010'
+      else
+        Float(value.to_s, exception: false)
+      end
+    valid = kind == :positive_integer ? number&.positive? : number&.>=(0)
+    return number if valid
+
+    expected =
+      kind == :positive_integer ? 'a positive integer' : 'a number >= 0'
+    raise(
+      TaggingService::Error,
+      "Invalid #{key}: #{value.inspect} (expected #{expected})"
+    )
   end
 
   def setting(key)

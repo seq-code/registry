@@ -133,6 +133,55 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
     assert_equal(4096, JSON.parse(requests.first.body)['max_tokens'])
   end
 
+  test 'propose rejects invalid numeric settings before any request' do
+    name = names(:bacillus)
+    name.etymology_xx_description = 'a small rod'
+    {
+      local_timeout: [0, '-5', 'abc', '1.5'],
+      local_max_tokens: [0, 'lots'],
+      local_temperature: [-0.1, 'warm']
+    }.each do |key, values|
+      values.each do |value|
+        backend = TaggingService::LocalBackend.new
+        settings = ->(k) { value if k == key }
+        error = backend.stub(:setting, settings) do
+          Net::HTTP.stub(:new, ->(*) { flunk("Request with #{key}") }) do
+            assert_raises(TaggingService::Error) { backend.propose(name) }
+          end
+        end
+        assert_match("Invalid #{key}: #{value.inspect}", error.message)
+      end
+    end
+  end
+
+  test 'propose accepts numeric settings given as strings or numbers' do
+    backend = TaggingService::LocalBackend.new
+    values = {
+      local_timeout: '60', local_max_tokens: 2048, local_temperature: '0'
+    }
+    requests = nil
+    backend.stub(:setting, ->(key) { values[key] }) do
+      _, requests = propose_with(chat_body({ 'tags' => [] }), backend: backend)
+    end
+    body = JSON.parse(requests.first.body)
+    assert_equal(2048, body['max_tokens'])
+    assert_equal(0.0, body['temperature'])
+  end
+
+  test 'model_label raises on invalid settings without any request' do
+    backend = TaggingService::LocalBackend.new
+    backend.stub(:setting, ->(key) { 0 if key == :local_max_tokens }) do
+      TaggingService::LocalBackend.stub(:new, backend) do
+        Net::HTTP.stub(:new, ->(*) { flunk('Unexpected request') }) do
+          error = assert_raises(TaggingService::Error) do
+            TaggingService::LocalBackend.model_label
+          end
+          assert_match('Invalid local_max_tokens', error.message)
+        end
+      end
+    end
+  end
+
   test 'propose sends temperature from local_temperature, or the default' do
     _, requests = propose_with(chat_body({ 'tags' => [] }))
     assert_equal(0.0, JSON.parse(requests.first.body)['temperature'])
