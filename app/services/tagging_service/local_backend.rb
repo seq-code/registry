@@ -42,13 +42,16 @@ class TaggingService::LocalBackend
   end
 
   # Identifier of the model loaded by the server, or 'unknown' if the
-  # server doesn't report one. Raises TaggingService::Error if the server
-  # can't be reached, so callers can stop before sending any names
+  # server doesn't report one. Without --alias, llama-server reports the
+  # model path, so only its file name is kept (as it's stored in the notes
+  # of the proposals). Raises TaggingService::Error if the server can't be
+  # reached, so callers can stop before sending any names
   def server_model
     body = request(Net::HTTP::Get.new(endpoint('/v1/models')), 10)
     data = body['data'] if body.is_a?(Hash)
     model = data.first if data.is_a?(Array)
-    (model['id'] if model.is_a?(Hash)).presence || 'unknown'
+    id = model['id'].to_s if model.is_a?(Hash)
+    File.basename(id.to_s).presence || 'unknown'
   end
 
   private

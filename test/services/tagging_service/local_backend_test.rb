@@ -224,6 +224,15 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
     assert_equal('/v1/models', requests.first.path)
   end
 
+  test 'model_label keeps only the file name of a model path' do
+    body = { 'data' => [{ 'id' => '/srv/models/olmo-3-7b-q8_0.gguf' }] }
+    Net::HTTP.stub(:new, fake_http(body, [])) do
+      assert_equal(
+        'olmo-3-7b-q8_0.gguf', TaggingService::LocalBackend.model_label
+      )
+    end
+  end
+
   test 'model_label is unknown if the server reports no model' do
     [{ 'data' => [] }, { 'data' => [{}] }, []].each do |body|
       Net::HTTP.stub(:new, fake_http(body, [])) do

@@ -3,7 +3,8 @@ namespace :tags do
     Propose tags for untagged names using the configured tagging backend.
     Only processes genera, species, and subspecies with no existing NameTag
     (of any status).
-    Creates NameTag records with status: proposed, proposed_by: "llm".
+    Creates NameTag records with status: proposed, proposed_by: "llm", and
+    the model that proposed them in their notes.
     Names are processed in order of ID, so OFFSET/LIMIT windows are
     reproducible. Note that names with any NameTag are excluded, so a run
     without DRY_RUN shifts later offsets: windows are only stable between dry
@@ -55,8 +56,17 @@ namespace :tags do
     skipped  = 0
     failed   = 0
 
+    # Also checks that the backend is reachable before processing any name
+    model =
+      begin
+        TaggingService.backend.model_label
+      rescue TaggingService::Error => e
+        abort "Tagging backend unavailable: #{e.message}"
+      end
+
     puts "Processing #{total} names#{ " (dry run)" if dry_run }..."
     puts "Backend: #{Rails.configuration.tagging_backend}"
+    puts "Model: #{model}"
     puts
     TaggingService.reset_usage
     # The etymology as sent to the backend, printed under each name
@@ -113,6 +123,7 @@ namespace :tags do
               nt.notes += proposal['direct'] ? '; also' : ';'
               nt.notes += " implied by: #{proposal['implied_by'].join(', ')}"
             end
+            nt.notes += "; model: #{model}"
           end
         end
       end
