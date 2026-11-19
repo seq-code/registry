@@ -195,6 +195,22 @@ class TagTest < ActiveSupport::TestCase
     assert_equal('low', result['eponym']['confidence'])
   end
 
+  test 'normalize_basis trims punctuation and whitespace at both edges' do
+    assert_equal('bacter', Tag.normalize_basis(' -Bacter. '))
+    assert_equal('van niel', Tag.normalize_basis('"Van Niel"'))
+    assert_equal('a-b', Tag.normalize_basis('--a-b--'))
+    assert_equal('', Tag.normalize_basis(' -.- '))
+    assert_equal('', Tag.normalize_basis(nil))
+  end
+
+  test 'normalize_basis is linear on long runs of punctuation' do
+    basis = "#{'- ' * 200_000}a#{' -' * 200_000}"
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    assert_equal('a', Tag.normalize_basis(basis))
+    elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
+    assert_operator(elapsed, :<, 1)
+  end
+
   test 'expand normalizes unknown confidences to low' do
     result = expanded([
       { 'slug' => 'masculine', 'confidence' => 'certain' },
