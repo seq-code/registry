@@ -1,8 +1,6 @@
-require 'net/http'
-require 'json'
-
 class TaggingService::AnthropicBackend
   include TaggingService::Prompt
+  include TaggingService::HttpBackend
 
   API_URI = URI('https://api.anthropic.com/v1/messages').freeze
   MODEL   = 'claude-sonnet-5-5'
@@ -61,50 +59,24 @@ class TaggingService::AnthropicBackend
         format: { type: 'json_schema', schema: response_schema }
       }
     )
-
-    http = Net::HTTP.new(API_URI.host, API_URI.port)
-    http.use_ssl = true
-    http.open_timeout = 10
-    http.read_timeout = 30
-
-    response = http.request(req)
-
-    unless response.is_a?(Net::HTTPSuccess)
-      raise(
-        TaggingService::Error,
-        "Anthropic API error #{response.code}: #{response.body.truncate(200)}"
-      )
-    end
-
-    JSON.parse(response.body)
-  rescue Net::OpenTimeout, Net::ReadTimeout => e
-    raise TaggingService::Error, "Anthropic API timeout: #{e.message}"
-  rescue SocketError, SystemCallError, IOError, OpenSSL::SSL::SSLError => e
-    raise TaggingService::Error, "Anthropic API connection error: #{e.message}"
-  rescue JSON::ParserError => e
-    raise TaggingService::Error, "Anthropic API invalid JSON: #{e.message}"
+    send_request(req, API_URI, 30)
   end
 
+  def service_name
+    'Anthropic API'
+  end
 
   def parse_response(body)
     case body['stop_reason']
     when 'refusal'
       raise TaggingService::Error, 'Model declined to tag this name'
     when 'max_tokens'
-      raise TaggingService::Error, 'Model response truncated (max_tokens)'
+      raise_truncated
     end
 
     # The text may not be the first content block (e.g., after thinking)
     text_block = Array(body['content']).find { |b| b['type'] == 'text' }
-    text = text_block&.dig('text').to_s
-    parsed = JSON.parse(text)
-    proposals = parsed['tags'] || []
-    filter_proposals(proposals)
-  rescue JSON::ParserError => e
-    raise(
-      TaggingService::Error,
-      "Could not parse model response: #{e.message} — #{text.truncate(200)}"
-    )
+    parse_proposals(text_block&.dig('text'))
   end
 
   def api_key

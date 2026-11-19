@@ -1,6 +1,3 @@
-require 'net/http'
-require 'json'
-
 # Tagging backend for a self-hosted model served by llama.cpp's llama-server
 # (or any server with an OpenAI-compatible chat completions endpoint that
 # accepts a JSON schema as response_format). It sends the same prompt and
@@ -22,6 +19,7 @@ require 'json'
 # infrastructure. For that reason, bypass_external_apis does not apply.
 class TaggingService::LocalBackend
   include TaggingService::Prompt
+  include TaggingService::HttpBackend
 
   DEFAULT_URL = 'http://127.0.0.1:8080'.freeze
   DEFAULT_TIMEOUT = 300
@@ -79,55 +77,26 @@ class TaggingService::LocalBackend
     request(req, timeout)
   end
 
-  # Send +req+ (with the API key, if any) and return its parsed JSON body,
-  # raising TaggingService::Error on any failure
+  # Send +req+ with the API key, if any (see HttpBackend#send_request)
   def request(req, read_timeout)
     req['Authorization'] = "Bearer #{api_key}" if api_key.present?
-    JSON.parse(http(read_timeout).request(req).tap { |res| check!(res) }.body)
-  rescue Net::OpenTimeout, Net::ReadTimeout => e
-    raise TaggingService::Error, "Local model timeout: #{e.message}"
-  rescue SocketError, SystemCallError, IOError, OpenSSL::SSL::SSLError => e
-    raise TaggingService::Error, "Local model connection error: #{e.message}"
-  rescue JSON::ParserError => e
-    raise TaggingService::Error, "Local model invalid JSON: #{e.message}"
+    send_request(req, endpoint('/'), read_timeout)
   end
 
-  def check!(response)
-    return if response.is_a?(Net::HTTPSuccess)
-
-    raise(
-      TaggingService::Error,
-      "Local model error #{response.code}: #{response.body.to_s.truncate(200)}"
-    )
+  def service_name
+    'Local model'
   end
 
-  # The response is checked for shape (not only parsed), as servers that
-  # ignore response_format may return any JSON
+  # As servers may ignore response_format, the choice is checked for shape
+  # too (see HttpBackend#parse_proposals)
   def parse_response(body)
     choice = Array(body['choices']).first if body.is_a?(Hash)
     unless choice.is_a?(Hash)
       raise TaggingService::Error, 'Local model returned no choices'
     end
-    if choice['finish_reason'] == 'length'
-      raise TaggingService::Error, 'Model response truncated (max_tokens)'
-    end
+    raise_truncated if choice['finish_reason'] == 'length'
 
-    text = choice.dig('message', 'content').to_s
-    parsed = JSON.parse(text)
-    tags = parsed['tags'] || [] if parsed.is_a?(Hash)
-    unless tags.is_a?(Array)
-      raise(
-        TaggingService::Error,
-        "Unexpected model response: #{text.truncate(200)}"
-      )
-    end
-
-    filter_proposals(tags.grep(Hash))
-  rescue JSON::ParserError => e
-    raise(
-      TaggingService::Error,
-      "Could not parse model response: #{e.message} — #{text.truncate(200)}"
-    )
+    parse_proposals(choice.dig('message', 'content'))
   end
 
   # OpenAI-style usage mapped to TaggingService::USAGE_FIELDS: prompt_tokens
@@ -148,15 +117,6 @@ class TaggingService::LocalBackend
       'cache_read_input_tokens' => cached,
       'output_tokens' => usage['completion_tokens'].to_i
     }
-  end
-
-  def http(read_timeout)
-    uri = endpoint('/')
-    Net::HTTP.new(uri.host, uri.port).tap do |http|
-      http.use_ssl = uri.scheme == 'https'
-      http.open_timeout = 10
-      http.read_timeout = read_timeout
-    end
   end
 
   # +path+ relative to the configured URL, keeping any path prefix it has
