@@ -22,11 +22,16 @@ class TaggingService
       end
 
       JSON.parse(res.body)
-    rescue Net::OpenTimeout, Net::ReadTimeout => e
+    rescue Timeout::Error => e # Including Net::{Open,Read,Write}Timeout
       raise TaggingService::Error, "#{service_name} timeout: #{e.message}"
     rescue SocketError, SystemCallError, IOError, OpenSSL::SSL::SSLError => e
       raise(
         TaggingService::Error, "#{service_name} connection error: #{e.message}"
+      )
+    rescue Net::HTTPBadResponse, Net::ProtocolError => e
+      # E.g., a server that doesn't speak HTTP (or not on that scheme)
+      raise(
+        TaggingService::Error, "#{service_name} protocol error: #{e.message}"
       )
     rescue JSON::ParserError => e
       raise TaggingService::Error, "#{service_name} invalid JSON: #{e.message}"

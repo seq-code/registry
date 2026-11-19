@@ -154,6 +154,33 @@ class TaggingService::LocalBackendTest < ActiveSupport::TestCase
     end
   end
 
+  test 'propose maps timeouts and protocol errors to TaggingService::Error' do
+    {
+      Net::OpenTimeout => 'Local model timeout',
+      Net::WriteTimeout => 'Local model timeout',
+      Net::HTTPBadResponse => 'Local model protocol error'
+    }.each do |klass, message|
+      error = assert_raises(TaggingService::Error) do
+        propose_with(chat_body({ 'tags' => [] }), raises: klass)
+      end
+      assert_match(message, error.message)
+    end
+  end
+
+  test 'propose rejects an invalid local_url before any request' do
+    name = names(:bacillus)
+    name.etymology_xx_description = 'a small rod'
+    ['127.0.0.1:8080', 'localhost:8080', 'ftp://host', 'http://'].each do |url|
+      backend = TaggingService::LocalBackend.new
+      error = backend.stub(:setting, ->(key) { url if key == :local_url }) do
+        Net::HTTP.stub(:new, ->(*) { flunk("Connection opened for #{url}") }) do
+          assert_raises(TaggingService::Error) { backend.propose(name) }
+        end
+      end
+      assert_match("Invalid local_url: #{url}", error.message)
+    end
+  end
+
   test 'propose keeps the path prefix of local_url' do
     backend = TaggingService::LocalBackend.new
     settings = ->(key) { key == :local_url ? 'http://gpu:8080/llama' : nil }

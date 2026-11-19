@@ -122,8 +122,23 @@ class TaggingService::LocalBackend
   # +path+ relative to the configured URL, keeping any path prefix it has
   # (e.g. http://host/llama for a server behind a reverse proxy)
   def endpoint(path)
-    base = (setting(:local_url).presence || DEFAULT_URL).chomp('/') + '/'
-    URI.join(base, path.delete_prefix('/'))
+    URI.join(base_url.chomp('/') + '/', path.delete_prefix('/'))
+  end
+
+  # The configured URL, if it's an http(s) URL with a host. Raises
+  # TaggingService::Error otherwise (e.g. "localhost:8080", missing the
+  # scheme), before any request is sent
+  def base_url
+    url = setting(:local_url).presence || DEFAULT_URL
+    uri = URI.parse(url)
+    return url if uri.is_a?(URI::HTTP) && uri.host.present?
+
+    raise URI::InvalidURIError
+  rescue URI::InvalidURIError
+    raise(
+      TaggingService::Error,
+      "Invalid local_url: #{url} (expected e.g. #{DEFAULT_URL})"
+    )
   end
 
   def api_key
