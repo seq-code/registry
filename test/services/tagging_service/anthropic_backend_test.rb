@@ -94,6 +94,27 @@ class TaggingService::AnthropicBackendTest < ActiveSupport::TestCase
     assert_match('truncated', error.message)
   end
 
+  test 'propose raises on model responses of unexpected shape' do
+    body = { 'stop_reason' => 'end_turn',
+             'content' => [{ 'type' => 'text', 'text' => '["eponym"]' }] }
+    error = assert_raises(TaggingService::Error) { propose_with(body) }
+    assert_match('Unexpected model response', error.message)
+  end
+
+  test 'propose maps connection errors to TaggingService::Error' do
+    backend = TaggingService::AnthropicBackend.new
+    name = names(:bacillus)
+    name.etymology_xx_description = 'a small rod'
+    error = assert_raises(TaggingService::Error) do
+      Rails.configuration.stub(:bypass_external_apis, false) do
+        Net::HTTP.stub(:new, ->(*) { raise Errno::ECONNREFUSED }) do
+          backend.stub(:api_key, 'test-key') { backend.propose(name) }
+        end
+      end
+    end
+    assert_match('Anthropic API connection error', error.message)
+  end
+
   test 'prompt passes the genus gender for species only' do
     prompt = lambda do |name|
       _, requests = propose_with(text_body({ 'tags' => [] }), name)
