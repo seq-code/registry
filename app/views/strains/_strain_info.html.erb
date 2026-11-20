@@ -134,10 +134,21 @@
         <dd><ul>
           <% data[:literature].each do |lit| %>
             <li>
-              <% if lit[:doi] %>
+              <% if lit[:doi] && current_contributor? %>
+                <%# POST link (registers the publication); never render it
+                    for anonymous visitors, since crawlers follow the href
+                    as a GET and land on an endless /publications URL space %>
                 <%= link_to(
                       publications_url('publication[doi]' => lit[:doi]),
-                      method: 'post',
+                      method: 'post', rel: 'nofollow',
+                      class: 'badge badge-pull badge-primary'
+                    ) do %>
+                  DOI: <%= lit[:doi] %>
+                <% end %>
+              <% elsif lit[:doi] %>
+                <%= link_to(
+                      "https://doi.org/#{lit[:doi]}",
+                      target: '_blank', rel: 'noopener',
                       class: 'badge badge-pull badge-primary'
                     ) do %>
                   DOI: <%= lit[:doi] %>
