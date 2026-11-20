@@ -52,17 +52,17 @@ namespace :lpsn do
       # Check first the current name record
       name = Name.find_or_create_by(name: pars[:name])
       if name.status > 5 && name.status < 20
-        warn "- Name in SeqCode, bypassing: #{name.name}"
+        $stderr.puts "- Name in SeqCode, bypassing: #{name.name}"
         bypassed_names[row['record_no']] = name.id
         next
       end
       if name.status > 20
-        warn "- Name in a different code, bypassing: #{name.name}"
+        $stderr.puts "- Name in a different code, bypassing: #{name.name}"
         bypassed_names[row['record_no']] = name.id
         next
       end
       if name.redirect_id.present?
-        warn "- Name is deprecated, bypassing: #{name.name}"
+        $stderr.puts "- Name is deprecated, bypassing: #{name.name}"
         bypassed_names[row['record_no']] = name.redirect_id
         next
       end
@@ -97,8 +97,8 @@ namespace :lpsn do
         if (id = linked_id.(entry[:correct_name]))
           pars[:correct_name_id] = id
         else
-          warn "- Correct name not in parsed names: #{entry[:name_id]} " \
-               "(#{entry[:correct_name]})"
+          $stderr.puts "- Correct name not in parsed names: #{entry[:name_id]} " \
+                       "(#{entry[:correct_name]})"
         end
       end
       if entry[:type_name].present?
@@ -106,8 +106,8 @@ namespace :lpsn do
           pars[:nomenclatural_type_type] = 'Name'
           pars[:nomenclatural_type_id] = id
         else
-          warn "- Type name not in parsed names: #{entry[:name_id]} " + 
-               "(#{entry[:type_name]})"
+          $stderr.puts "- Type name not in parsed names: #{entry[:name_id]} " + 
+                       "(#{entry[:type_name]})"
         end
       end
       Name.find(entry[:name_id]).update(pars) unless pars.empty?
