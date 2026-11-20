@@ -10590,6 +10590,10 @@ unsimar.ac.id
 ntc.edu.vn
 ltu.se
 tust.edu.cn
+lifewest.edu
+palmer.edu
+parker.edu
+sherman.edu
 mpi-bremen.de
 mpg.de
 uni-due.de
