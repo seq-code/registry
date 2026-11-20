@@ -57,6 +57,15 @@ class TagEvaluationServiceTest < ActiveSupport::TestCase
     )
   end
 
+  test 'gold names can be restricted to given names' do
+    assert_equal(
+      [names(:escherichia_colie)],
+      TagEvaluationService.gold_names(
+        names: [names(:escherichia_colie).name, 'Nonexistent name']
+      ).to_a
+    )
+  end
+
   test 'evaluate expands curator tags and keeps proposals in memory' do
     name = names(:escherichia)
     NameTag.create!(name: name, tag: tags(:toponym),
@@ -162,6 +171,37 @@ class TagEvaluationServiceTest < ActiveSupport::TestCase
     assert_equal(0, high['rejected_hits'])
   end
 
+  test 'metrics can ignore gender tags' do
+    results = [
+      result(curator: %w[masculine econym],
+             runs: [[proposal('neuter'), proposal('econym', 'low')]])
+    ]
+
+    any = TagEvaluationService.metrics(results, except: Tag::GENDER_SLUGS)
+    assert_equal([1, 0, 0], any.values_at('tp', 'fp', 'fn'))
+    high = TagEvaluationService.metrics(
+      results, min_confidence: 'high', except: Tag::GENDER_SLUGS
+    )
+    assert_equal([0, 0, 1], high.values_at('tp', 'fp', 'fn'))
+    assert_nil(high['precision'])
+  end
+
+  test 'missed tags list curator tags absent from any run' do
+    results = [
+      result(curator: %w[masculine econym classical],
+             runs: [[proposal('econym', 'low')], []]),
+      result(curator: %w[eponym], runs: [[proposal('eponym')], [proposal('eponym')]])
+    ]
+
+    assert_equal(
+      [{ 'name' => 'Foo bar', 'rank' => 'species', 'slug' => 'econym',
+         'missed_runs' => 1, 'runs' => 2 },
+       { 'name' => 'Foo bar', 'rank' => 'species', 'slug' => 'classical',
+         'missed_runs' => 2, 'runs' => 2 }],
+      TagEvaluationService.missed_tags(results, except: Tag::GENDER_SLUGS)
+    )
+  end
+
   test 'gender confusion compares curator and proposed genders per run' do
     results = [
       result(curator: %w[masculine eponym],
@@ -213,5 +253,22 @@ class TagEvaluationServiceTest < ActiveSupport::TestCase
     )
     assert(lines.any? { |l| l.start_with?('High-confidence proposals:') })
     assert_match(/masculine\s+1\z/, lines.last)
+  end
+
+  test 'summary report has non-gender metrics and missed tags' do
+    results = [
+      result(curator: %w[masculine econym classical],
+             runs: [[proposal('masculine'), proposal('econym', 'low')]])
+    ]
+    lines = TagEvaluationService.summary_report(results, {})
+
+    assert_equal(
+      ['', 'Non-gender tags',
+       '  Recall at any confidence: 0.500 (tp 1, fn 1)',
+       '  Precision at high confidence: n/a (tp 0, fp 0)',
+       '  Missed curator tags (not proposed at any confidence):',
+       '    Foo bar (species): classical'],
+      lines.first(6)
+    )
   end
 end

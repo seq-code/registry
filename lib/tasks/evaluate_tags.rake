@@ -11,6 +11,9 @@ namespace :tags do
       OFFSET=100     skip the first N names before applying LIMIT (default: 0)
       RANK=genus     only evaluate names of this rank
       TAG=eponym     only evaluate names whose curator tags include this slug
+      NAMES="Aadella gelida,Cenoporarchaeum"
+                     only evaluate these names (full names, comma-separated);
+                     names not found among the gold names are listed
       INCLUDE_PARTIAL=1
                      also evaluate names with pending proposals (flagged as
                      partial)
@@ -32,10 +35,13 @@ namespace :tags do
       abort "Unknown tag: #{ENV['TAG']}"
     end
 
+    requested = ENV['NAMES'].to_s.split(',').map(&:strip).compact_blank
     names = TagEvaluationService.gold_names(
       limit: limit, offset: offset, rank: ENV['RANK'], tag: ENV['TAG'],
-      include_partial: ENV['INCLUDE_PARTIAL'] == '1'
+      include_partial: ENV['INCLUDE_PARTIAL'] == '1', names: requested
     ).to_a
+    missing = requested - names.map(&:name)
+    puts "Not among the gold names: #{missing.join(', ')}" if missing.any?
     # Also checks that the backend is reachable before evaluating any name
     model =
       begin

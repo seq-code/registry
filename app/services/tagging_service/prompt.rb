@@ -74,13 +74,41 @@ class TaggingService
 
         ## Rules
         - Assign ALL tags that apply; they are not mutually exclusive
-        - Tag what the name itself refers to, not places, institutions, or
-          other context that the etymology mentions only to explain the name
-          (e.g. Bilamarchaeum means "turtle lands"; the study site mentioned
-          is context, not a `toponym`). Likewise, habitat details that appear
-          only in the explanation (e.g. "occur in the subsurface", "presence
-          in brackish water", "living in darkness") do not justify `econym`
-          or `geographic` unless the name itself refers to them.
+        - Recall over precision: if a tag plausibly applies, propose it at low
+          confidence rather than omit it. When torn between two tags (e.g.
+          `phenonym` vs. `econym`), propose both, and give the less likely
+          one lower confidence. Rules below that say a tag never applies in a
+          given case still hold.
+        - Tag every component: evaluate each etymological component of the
+          name separately, and then the stated meaning of the name as a
+          whole. Propose every tag supported by any one of them, even when
+          another component is more salient (e.g. a habitat root in a name
+          whose most striking root is a person's name gets `econym` as well
+          as `eponym`).
+        - The stated meaning of the name counts: when the gloss or meaning
+          given for the name or one of its components refers to a property,
+          habitat, or other taggable content (e.g. "associated with
+          phototrophy", "referring to the isolation of the lake"), propose
+          the corresponding tag even when no single root carries that
+          meaning, such as when the meaning is conveyed through an allusion
+          to a mythological figure (which also gets `mythonym`). The
+          remoteness or isolation of a place is `geographic`.
+        - Tag what the name itself refers to, including its stated meaning,
+          not places, institutions, or other context that the etymology
+          mentions only to explain the name (e.g. Bilamarchaeum means "turtle
+          lands"; the study site mentioned is context, not a `toponym`).
+          Likewise, habitat details that appear only in the explanation (e.g.
+          "occur in the subsurface", "presence in brackish water", "living in
+          darkness") do not justify `econym` or `geographic` unless the name
+          or its stated meaning refers to them.
+        - Isolation source: any word naming the material, substrate, or
+          environment from which the organism was recovered (e.g. waste,
+          refuse, sludge, sediment, mud, water, a body cavity or pore) is
+          `econym`, whether or not it is a place, and whether it is a root,
+          a genitive epithet, or part of the stated meaning. A property of
+          that environment (e.g. "the cold of the lake") is `econym` as
+          well; add `phenonym` at low confidence only when the word could
+          also describe the organism itself.
         - A word derived from a place name but used generically (e.g.
           geysiri, "of a geyser", from Icelandic Geysir) is `econym`, not
           `toponym`. `indigenous` is only for Indigenous languages and
@@ -210,6 +238,11 @@ class TaggingService
           neologism is not `classical`, even when every root is classical
           (e.g. Elulimicrobium). If you propose `classical` for a compound at
           all, use low confidence.
+        - A name or epithet that is a word attested in classical Latin or
+          Ancient Greek, used largely unmodified, gets `classical` (at least
+          at low confidence) even when the etymology labels it "N.L.": the
+          label is often given to genuine classical words (e.g. aquatilis,
+          "living in water", is classical Latin).
         - The etymology is authoritative: when it explicitly states a gender, a
           formation type (e.g. "arbitrary name"), or the source of a reference,
           follow it even if the word's form suggests otherwise.
@@ -217,19 +250,21 @@ class TaggingService
           from what the etymology states. "medium": the tag is reasonable but
           relies on a conventional or borderline reading (e.g. a shape suffix
           alone). "low": the tag requires interpretation beyond what is
-          stated, or the name could plausibly fit other categories. When
-          confidence would be low, prefer omitting the tag — a missed tag is
-          less harmful than a wrong one, since proposals are reviewed by
-          curators. This does not apply to gender tags, which should always be
-          assigned for genus, species, and subspecies ranks (see above).
+          stated, or the name could plausibly fit other categories. Propose
+          low-confidence tags rather than omitting them: high-confidence
+          proposals may be accepted automatically, but the others are
+          reviewed by curators, so a missed tag is more harmful than a wrong
+          low-confidence one.
         - For every tag, set `basis` to the specific root, word, or name in the
           etymology on which the tag is based, written as it appears in the
           etymology (e.g. `Svalbard`, `telma`, `Vincent Gauci`, `ANSTO`). Use
-          the root or word itself, not its gloss or grammar. For a gender
-          taken from the genus, use the genus name, and for the gender of a
-          genitive noun, its nominative, genitive, and gender (see above). If
-          any other tag has no specific basis in the etymology, do not propose
-          it.
+          the root or word itself, not its gloss or grammar. For a tag
+          supported only by the stated meaning (see above), use the shortest
+          phrase of that meaning that supports it (e.g. `phototrophy`). For a
+          gender taken from the genus, use the genus name, and for the gender
+          of a genitive noun, its nominative, genitive, and gender (see
+          above). If any other tag has no specific basis in the etymology,
+          including its stated meanings, do not propose it.
 
       PROMPT
     end
