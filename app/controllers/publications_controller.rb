@@ -11,6 +11,11 @@ class PublicationsController < ApplicationController
   # GET /publications
   # GET /publications.json
   def index
+    # Stray `publication[...]` params come from crawlers following POST-only
+    # links as GETs; with pagination they span an endless URL space. Answer
+    # with an empty 410 so bots drop them (and no analytics script loads).
+    return head(:gone) if params[:publication].present?
+
     @sort = params[:sort]
     @publications =
       case @sort

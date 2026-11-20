@@ -7,6 +7,17 @@ class PublicationsControllerTest < ActionDispatch::IntegrationTest
     @publication = publications(:one)
   end
 
+  test 'index renders normally' do
+    get(publications_url(page: 2))
+    assert_response :success
+  end
+
+  test 'index answers 410 to stray publication params from crawlers' do
+    get(publications_url(page: 3, 'publication[doi]' => '10.1099/ijs.0.1'))
+    assert_response :gone
+    assert_empty @response.body
+  end
+
   test 'curator sees the manual-entry form with an 1900-based year range' do
     sign_in(users(:curator))
 
