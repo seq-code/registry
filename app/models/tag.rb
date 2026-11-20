@@ -58,10 +58,13 @@ class Tag < ApplicationRecord
     end
 
     # Downcased +basis+ without surrounding whitespace, hyphens, or
-    # punctuation (e.g., "-Bacter" → "bacter")
+    # punctuation (e.g., "-Bacter" → "bacter"). The trailing edge is trimmed
+    # on the reversed string, as an unanchored /[...]+\z/ can take
+    # polynomial time on long runs of punctuation (the basis comes from the
+    # model)
     def normalize_basis(basis)
-      edges = /\A[[:punct:][:space:]]+|[[:punct:][:space:]]+\z/
-      basis.to_s.downcase.gsub(edges, '')
+      leading = /\A[[:punct:][:space:]]+/
+      basis.to_s.downcase.sub(leading, '').reverse.sub(leading, '').reverse
     end
 
     # Expand tag +proposals+ (Array of Hash with String keys 'slug' and

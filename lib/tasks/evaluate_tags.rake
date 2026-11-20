@@ -11,13 +11,21 @@ namespace :tags do
       OFFSET=100     skip the first N names before applying LIMIT (default: 0)
       RANK=genus     only evaluate names of this rank
       TAG=eponym     only evaluate names whose curator tags include this slug
+      NAMES="Aadella gelida,Cenoporarchaeum"
+                     only evaluate these names (full names, comma-separated);
+                     names not found among the gold names are listed
       INCLUDE_PARTIAL=1
                      also evaluate names with pending proposals (flagged as
                      partial)
-      RUNS=3         query the backend N times per name (default: 1)
+      RUNS=3         query the backend N times per name (default: 1); only
+                     informative if the backend samples (e.g., the local
+                     backend with a local_temperature above 0)
       OUTPUT=path    also write the full results as JSON
+      TAGGING_BACKEND=local
+                     use this backend (anthropic or local) instead of the
+                     one configured in credentials
   DESC
-  task evaluate: :environment do
+  task evaluate: %i[environment backend] do
     limit  = (ENV['LIMIT'].presence || 50).to_i
     offset = ENV['OFFSET'].to_i
     abort 'OFFSET must not be negative' if offset.negative?
@@ -27,15 +35,23 @@ namespace :tags do
       abort "Unknown tag: #{ENV['TAG']}"
     end
 
+    requested = ENV['NAMES'].to_s.split(',').map(&:strip).compact_blank
     names = TagEvaluationService.gold_names(
       limit: limit, offset: offset, rank: ENV['RANK'], tag: ENV['TAG'],
-      include_partial: ENV['INCLUDE_PARTIAL'] == '1'
+      include_partial: ENV['INCLUDE_PARTIAL'] == '1', names: requested
     ).to_a
-    backend = TaggingService.backend
+    missing = requested - names.map(&:name)
+    puts "Not among the gold names: #{missing.join(', ')}" if missing.any?
+    # Also checks that the backend is reachable before evaluating any name
+    model =
+      begin
+        TaggingService.backend.model_label
+      rescue TaggingService::Error => e
+        abort "Tagging backend unavailable: #{e.message}"
+      end
     header = {
       'Backend' => Rails.configuration.tagging_backend,
-      'Model' =>
-        backend.const_defined?(:MODEL) ? backend.const_get(:MODEL) : 'n/a',
+      'Model' => model,
       'Timestamp' => Time.now.utc.iso8601,
       'Names' => names.size,
       'Runs' => runs

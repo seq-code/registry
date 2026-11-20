@@ -318,6 +318,64 @@ class TaggingServiceTest < ActiveSupport::TestCase
     assert_equal([%w[masculine medium]], genders)
   end
 
+  # Gender proposals for the species +name+ with a genitive epithet, as
+  # [slug, confidence, basis]
+  def eponym_genders_with(*proposals, name:, grammar: 'gen. n.')
+    species = Name.find(names(:bacillus_subtilis).id)
+    species.name = name
+    species.etymology_xx_lang = 'N.L.'
+    species.etymology_xx_grammar = grammar
+    proposals_with(*proposals, name: species)
+      .select { |p| Tag::GENDER_SLUGS.include?(p['slug']) }
+      .map { |p| p.values_at('slug', 'confidence', 'basis') }
+  end
+
+  test 'propose derives the gender of the genitive of a personal name' do
+    {
+      'Bacillus huangii' => ['masculine', 'genitive of personal name (-ii)'],
+      'Bacillus muelleri' => ['masculine', 'genitive of personal name (-i)'],
+      'Bacillus dongiae' => ['feminine', 'genitive of personal name (-iae)'],
+      'Bacillus willemsae' => ['feminine', 'genitive of personal name (-ae)']
+    }.each do |name, (slug, basis)|
+      genders = eponym_genders_with(proposal('eponym', 'high'), name: name)
+
+      assert_equal([[slug, 'medium', basis]], genders, name)
+    end
+  end
+
+  test 'propose keeps a matching model gender for a personal name' do
+    genders = eponym_genders_with(
+      proposal('eponym', 'high'), proposal('masculine', 'high', 'Huang'),
+      name: 'Bacillus huangii'
+    )
+
+    assert_equal([%w[masculine medium]], genders.map { |g| g.first(2) })
+  end
+
+  test 'propose derives no gender from a genitive without eponym' do
+    genders = eponym_genders_with(
+      proposal('toponym', 'high'), name: 'Bacillus abyssi'
+    )
+
+    assert_empty(genders)
+  end
+
+  test 'propose derives no gender from other personal name endings' do
+    ['Bacillus smithorum', 'Bacillus smithiarum'].each do |name|
+      genders = eponym_genders_with(proposal('eponym', 'high'), name: name)
+
+      assert_empty(genders, name)
+    end
+  end
+
+  test 'propose derives no gender from a non-genitive personal name' do
+    genders = eponym_genders_with(
+      proposal('eponym', 'high'), name: 'Bacillus huangii', grammar: 'adj.'
+    )
+
+    assert_empty(genders)
+  end
+
   test 'propose drops gender proposals for ranks without gender' do
     genders = gender_proposals_with(
       proposal('feminine', 'high'), rank: 'family', declared: %w[feminine]
@@ -393,15 +451,11 @@ class TaggingServiceTest < ActiveSupport::TestCase
     end
   end
 
-  test 'propose leaves classical to the model otherwise' do
+  test 'propose leaves classical of a single component to the model' do
     {
       'New Latin' => { [:xx, :lang] => 'N.L.' },
       'Greek' => { [:xx, :lang] => 'Gr.' },
-      'another word' => { [:p1, :lang] => 'L.', [:p1, :particle] => 'rubid-' },
-      'several components' => {
-        [:xx, :lang] => 'L.', [:p1, :lang] => 'L.',
-        [:p1, :particle] => 'rubidus'
-      }
+      'another word' => { [:p1, :lang] => 'L.', [:p1, :particle] => 'rubid-' }
     }.each do |label, fields|
       classical = classical_proposals_with(proposal('classical', 'low'), fields)
       assert_equal(['low'], classical.map { |p| p['confidence'] }, label)
@@ -409,14 +463,44 @@ class TaggingServiceTest < ActiveSupport::TestCase
     end
   end
 
+  test 'propose caps classical of a single non-Latin component' do
+    classical = classical_proposals_with(
+      proposal('classical', 'high', 'rhodon'), { [:xx, :lang] => 'Gr.' }
+    )
+
+    assert_equal(
+      [{ 'slug' => 'classical', 'confidence' => 'medium', 'basis' => 'rhodon',
+         'capped' => true, 'direct' => true }],
+      classical
+    )
+  end
+
+  test 'propose drops classical of several components' do
+    {
+      'Latin' => {
+        [:xx, :lang] => 'L.', [:p1, :lang] => 'L.',
+        [:p1, :particle] => 'rubidus'
+      },
+      'Greek' => {
+        [:p1, :lang] => 'Gr.', [:p1, :particle] => 'neos',
+        [:p2, :lang] => 'Gr.', [:p2, :particle] => 'thrix'
+      }
+    }.each do |label, fields|
+      classical =
+        classical_proposals_with(proposal('classical', 'high'), fields)
+      assert_empty(classical, label)
+      Tag.find_by(slug: 'classical').destroy!
+    end
+  end
+
   test 'propose leaves classical to the model for higher ranks' do
     classical = classical_proposals_with(
-      proposal('classical', 'low'),
+      proposal('classical', 'high'),
       { [:xx, :lang] => 'L.', [:xx, :grammar] => 'fem. pl. n.' },
       genus: 'Rubidaceae', rank: 'family'
     )
 
-    assert_equal(['low'], classical.map { |p| p['confidence'] })
+    assert_equal(['medium'], classical.map { |p| p['confidence'] })
   end
 
   test 'propose leaves classical to the model for free-text etymologies' do
@@ -427,6 +511,18 @@ class TaggingServiceTest < ActiveSupport::TestCase
     assert_nil(TaggingService.classical_component(name))
     name.etymology_text = nil
     assert_equal(:xx, TaggingService.classical_component(name))
+  end
+
+  test 'propose caps classical for free-text etymologies' do
+    # Several structured components, which would otherwise drop it
+    name = Name.find(names(:bacillus).id)
+    name.etymology_text = 'Gr. adj. neos, new; Gr. fem. n. thrix, hair'
+    name.set_etymology(:p1, :lang, 'Gr.')
+    name.set_etymology(:p2, :lang, 'Gr.')
+    capped = TaggingService.assign_classical(
+      name, [proposal('classical', 'high')]
+    )
+    assert_equal(['medium'], capped.map { |p| p['confidence'] })
   end
 
   test 'genus gender prefers the accepted tag of the genus' do

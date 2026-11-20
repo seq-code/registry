@@ -29,13 +29,16 @@ class TagEvaluationService
     # Names with at least one accepted tag and, unless +include_partial+, no
     # proposed tags left, in order of ID, skipping the first +offset+. If
     # +tag+ (a slug) is given, only names whose curator set includes it,
-    # directly or implied
+    # directly or implied. If +names+ (an Array of full names) is given, only
+    # those names
     def gold_names(
-      limit: nil, offset: 0, rank: nil, tag: nil, include_partial: false
+      limit: nil, offset: 0, rank: nil, tag: nil, include_partial: false,
+      names: nil
     )
       accepted = NameTag.where(status_int: status_int(:accepted))
       scope = Name.order(:id)
       scope = scope.where(rank: rank) if rank.present?
+      scope = scope.where(name: names) if names.present?
       unless include_partial
         proposed = NameTag.where(status_int: status_int(:proposed))
         scope = scope.where.not(id: proposed.select(:name_id))
@@ -118,18 +121,19 @@ class TagEvaluationService
     end
 
     # Precision and recall over all runs of +results+ (each run counts as an
-    # instance), considering only proposals at or above +min_confidence+:
+    # instance), considering only proposals at or above +min_confidence+ and
+    # ignoring the tags in +except+ (slugs) on both sides:
     #   'tp', 'fp', 'fn', 'precision', 'recall' (nil when undefined)
     #   'rejected_hits' => false positives on a curator-rejected tag
     #   'per_tag' => { slug => { 'tp', 'fp', 'fn', 'precision', 'recall' } },
     #                sorted by number of errors (fp + fn), most first
-    def metrics(results, min_confidence: nil)
+    def metrics(results, min_confidence: nil, except: [])
       totals = counts.merge('rejected_hits' => 0)
       per_tag = Hash.new { |h, k| h[k] = counts }
       each_run(results) do |result, run|
         proposed = run.select { |p| confident?(p, min_confidence) }
-                      .map { |p| p['slug'] }.uniq
-        curator = result['curator']
+                      .map { |p| p['slug'] }.uniq - except
+        curator = result['curator'] - except
         { 'tp' => proposed & curator, 'fp' => proposed - curator,
           'fn' => curator - proposed }.each do |kind, slugs|
           totals[kind] += slugs.size
@@ -141,6 +145,22 @@ class TagEvaluationService
       with_rates(totals).merge(
         'per_tag' => per_tag.to_h { |slug, c| [slug, with_rates(c)] }
       )
+    end
+
+    # Curator tags of +results+ not proposed at any confidence in at least
+    # one run, ignoring the tags in +except+, as [{ 'name', 'rank', 'slug',
+    # 'missed_runs', 'runs' }] in the order of +results+
+    def missed_tags(results, except: [])
+      results.flat_map do |result|
+        runs = result['runs']
+        (result['curator'] - except).filter_map do |slug|
+          missed = runs.count { |run| run.none? { |p| p['slug'] == slug } }
+          next if missed.zero?
+
+          { 'name' => result['name'], 'rank' => result['rank'],
+            'slug' => slug, 'missed_runs' => missed, 'runs' => runs.size }
+        end
+      end
     end
 
     # Curator gender vs. proposed gender for every run of the +results+ of
@@ -186,6 +206,8 @@ class TagEvaluationService
     # Lines summarizing +results+, starting with the entries of +header+
     def summary_report(results, header)
       lines = header.map { |key, value| "#{key}: #{value}" }
+      lines << ''
+      lines.concat(non_gender_report(results))
       { 'All proposals' => nil, 'High-confidence proposals' => 'high' }
         .each do |title, min_confidence|
         m = metrics(results, min_confidence: min_confidence)
@@ -199,6 +221,29 @@ class TagEvaluationService
       lines << ''
       lines << 'Gender (rows: curator, columns: proposed; one count per run)'
       lines.concat(confusion_table(gender_confusion(results)))
+    end
+
+    # Lines with the recall at any confidence and the precision at high
+    # confidence of the non-gender tags of +results+, followed by every
+    # non-gender curator tag missed at any confidence (see missed_tags)
+    def non_gender_report(results)
+      any = metrics(results, except: Tag::GENDER_SLUGS)
+      high = metrics(results, min_confidence: 'high',
+                              except: Tag::GENDER_SLUGS)
+      rate = ->(value) { value.nil? ? 'n/a' : format('%.3f', value) }
+      missed = missed_tags(results, except: Tag::GENDER_SLUGS)
+      [
+        'Non-gender tags',
+        "  Recall at any confidence: #{rate[any['recall']]} " \
+          "(tp #{any['tp']}, fn #{any['fn']})",
+        "  Precision at high confidence: #{rate[high['precision']]} " \
+          "(tp #{high['tp']}, fp #{high['fp']})",
+        '  Missed curator tags (not proposed at any confidence):' \
+          "#{' (none)' if missed.empty?}"
+      ] + missed.map do |m|
+        runs = m['runs'] > 1 ? " (#{m['missed_runs']}/#{m['runs']} runs)" : ''
+        "    #{m['name']} (#{m['rank']}): #{m['slug']}#{runs}"
+      end
     end
 
     private
