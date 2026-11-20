@@ -89,7 +89,32 @@ class TaggingService
 
       proposal.merge('confidence' => 'medium', 'capped' => true)
     end
-    single_gender(check_gender_basis(name, capped))
+    single_gender(
+      check_gender_basis(name, capped) + eponym_gender(name, proposals)
+    )
+  end
+
+  # Gender of a species or subspecies epithet that is the genitive of a
+  # personal name, as nomenclature rules derive it from the ending: -i or -ii
+  # is masculine, and -ae or -iae feminine. Proposed at medium confidence,
+  # like other genders not stated in the etymology, and only when the model
+  # proposed `eponym`, as a bare genitive in -i is otherwise ambiguous
+  # between -us and -um nouns (e.g. abyssi). Other endings (e.g. -orum,
+  # -arum, for several people) are left to the model
+  def self.eponym_gender(name, proposals)
+    return [] unless proposals.any? { |p| p['slug'] == 'eponym' } &&
+                     epithet_grammar?(name, /gen(\.|itive)/)
+
+    epithet = name.last_epithet.to_s.downcase
+    slug, ending =
+      if (ending = epithet[/i?ae\z/]) then ['feminine', ending]
+      elsif (ending = epithet[/ii?\z/]) then ['masculine', ending]
+      end
+    return [] unless slug
+
+    declared_proposal(
+      slug, "genitive of personal name (-#{ending})", 'medium'
+    )
   end
 
   # Gender markers ending the basis of the gender of a genitive noun (e.g.
@@ -210,15 +235,27 @@ class TaggingService
   # Replace the classical proposals with one decided from the etymology if
   # it is a single Latin word identical to the name or epithet (see
   # classical_component and classical_confidence). Otherwise, the model's
-  # proposals are kept
+  # proposals are dropped if the structured etymology has several
+  # components, as a compound is never classical, and capped at medium
+  # confidence (carrying 'capped' => true) if not, as the code can't yet
+  # tell a transliteration from a form with an undeclared suffix
   def self.assign_classical(name, proposals)
-    component = classical_component(name) or return proposals
+    if (component = classical_component(name))
+      word = name.etymology(component, :particle)
+      return proposals.reject { |p| p['slug'] == 'classical' } +
+             declared_proposal(
+               'classical', "L. #{word}", classical_confidence(name, component)
+             )
+    end
 
-    word = name.etymology(component, :particle)
-    proposals.reject { |p| p['slug'] == 'classical' } +
-      declared_proposal(
-        'classical', "L. #{word}", classical_confidence(name, component)
-      )
+    compound = !name.etymology_text? && etymology_components(name).size > 1
+    proposals.filter_map do |proposal|
+      next proposal unless proposal['slug'] == 'classical'
+      next if compound
+      next proposal unless proposal['confidence'] == 'high'
+
+      proposal.merge('confidence' => 'medium', 'capped' => true)
+    end
   end
 
   # The only component of the structured etymology of +name+, if its
@@ -231,18 +268,24 @@ class TaggingService
     return if name.etymology_text? ||
               !Helpers::GENDER_RANKS.include?(name.rank)
 
-    components = Name.etymology_particles.select do |component|
-      Name.etymology_fields.any? do |field|
-        next if component == :xx && field == :particle # Always the epithet
-
-        name.etymology(component, field).present?
-      end
-    end
+    components = etymology_components(name)
     return unless components.size == 1 &&
                   name.etymology(components.first, :lang) == 'L.'
 
     word = name.etymology(components.first, :particle)
     components.first if word.present? && word.casecmp?(name.last_epithet)
+  end
+
+  # Components of the structured etymology of +name+ with any field set,
+  # ignoring the particle of :xx (always the name or epithet itself)
+  def self.etymology_components(name)
+    Name.etymology_particles.select do |component|
+      Name.etymology_fields.any? do |field|
+        next if component == :xx && field == :particle
+
+        name.etymology(component, field).present?
+      end
+    end
   end
 
   # High confidence if the classical +component+ of +name+ has a grammar
