@@ -2,6 +2,3 @@
 User-agent: *
 Disallow: /set/list
 
-User-agent: ChatGPT-User
-Disallow: /
-
