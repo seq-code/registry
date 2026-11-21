@@ -4,9 +4,9 @@
   <% end %>
   <div class="input-group my-3 mr-1">
     <div class="input-group-prepend">
-      <span class="input-group-text">
+      <label class="input-group-text mb-0" for="filter-rank">
         <%= fa_icon('filter', class: 'mr-2') %> Filter by rank
-      </span>
+      </label>
     </div>
     <% opts = [['All', nil]] + Name.ranks.map { |i| [i.titleize, i] }%>
     <%= select_tag(

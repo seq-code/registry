@@ -12,18 +12,18 @@
 %>
 <dt class="<%= warn_class %>">
   <span class="check-links">
-    <%= link_to('#', title: 'Skip',
-                data: { do: 'skip', kind: warn.type, name: warn.name.id }) do %>
-      <%= fa_icon('minus-circle') %>
-    <% end %>
-    <%= link_to('#', title: 'Pass',
-                data: { do: 'pass', kind: warn.type, name: warn.name.id }) do %>
-      <%= fa_icon('check-circle') %>
-    <% end %>
-    <%= link_to('#', title: 'Fail',
-                data: { do: 'fail', kind: warn.type, name: warn.name.id }) do %>
-      <%= fa_icon('exclamation-circle') %>
-    <% end %>
+    <%= icon_link_to(
+          'minus-circle', 'Skip', '#',
+          data: { do: 'skip', kind: warn.type, name: warn.name.id }
+        ) %>
+    <%= icon_link_to(
+          'check-circle', 'Pass', '#',
+          data: { do: 'pass', kind: warn.type, name: warn.name.id }
+        ) %>
+    <%= icon_link_to(
+          'exclamation-circle', 'Fail', '#',
+          data: { do: 'fail', kind: warn.type, name: warn.name.id }
+        ) %>
   </span>
   <span><%= warn.title %></span>
 </dt>

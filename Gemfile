@@ -76,6 +76,11 @@ group :development, :test do
   gem 'selenium-webdriver'
 end
 
+group :test do
+  # Checks pages for accessibility violations in system tests
+  gem 'axe-core-api', '~> 4.14'
+end
+
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   # Spring speeds up development by keeping your application running in the

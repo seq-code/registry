@@ -122,17 +122,15 @@
             <% end %>
           </td>
           <td>
-            <%= link_to(
+            <%= icon_link_to(
+                  'eraser', 'Unlink from register list',
                   name_url(
                     name, name: { register: nil },
                     return_to: url_for(@register)
                   ), method: :patch,
                   class: 'btn text-danger',
-                  title: 'Unlink from register list',
                   data: { confirm: 'Are you sure?', toggle: 'tooltip' }
-                ) do %>
-              <%= fa_icon('eraser') %>
-            <% end %>
+                ) %>
           </td>
         <% end %>
       </tr>

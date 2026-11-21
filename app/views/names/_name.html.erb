@@ -44,30 +44,24 @@
     <ul class="list-inline m-0 text-right">
       <% if name.genome %>
         <li class="list-inline-item m-0">
-          <%= link_to(name.genome, title: 'Genome page') do %>
-            <%= fa_icon('dna') %>
-          <% end %>
+          <%= icon_link_to('dna', 'Genome page', name.genome) %>
         </li>
       <% end %>
       <% if user_signed_in? %>
         <li class="list-inline-item m-0">
           <% if name.observing?(current_user) %>
-            <%= link_to(unobserve_name_url(name),
-                  title: 'Disable notifications') do %>
-              <%= fa_icon('bell-slash') %>
-            <% end %>
+            <%= icon_link_to(
+                  'bell-slash', 'Disable notifications', unobserve_name_url(name)
+                ) %>
           <% else %>
-            <%= link_to(observe_name_url(name),
-                  title: 'Enable notifications') do %>
-              <%= fa_icon('bell') %>
-            <% end %>
+            <%= icon_link_to(
+                  'bell', 'Enable notifications', observe_name_url(name)
+                ) %>
           <% end %>
         </li>
       <% end %>
       <li class="list-inline-item m-0">
-        <%= link_to(name, title: 'See more') do %>
-          <%= fa_icon 'arrow-circle-right' %>
-        <% end %>
+        <%= icon_link_to('arrow-circle-right', 'See more', name) %>
       </li>
     </ul>
   <% end %>

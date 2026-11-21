@@ -14,23 +14,27 @@
              data-href="<%= polymorphic_url(alert)%>"
              onclick="location.href=$(this).data('href');">
           <div class="col-8">
-            <%= link_to(toggle_seen_notification_url(alert),
-                  method: :post,
-                  title: "Mark as #{'un' unless alert.seen?}seen",
-                  class: 'btn btn-sm') do %>
-              <%= fa_icon('circle', class: 'text-info',
-                    type: alert.seen? ? :regular : :solid) %>
-            <% end %>
+            <%= icon_link_to(
+                  'circle', "Mark as #{'un' unless alert.seen?}seen",
+                  toggle_seen_notification_url(alert),
+                  method: :post, class: 'btn btn-sm',
+                  icon_options: {
+                    class: 'text-info', type: alert.seen? ? :regular : :solid
+                  }
+                ) %>
             <%= alert.title || alert.action %>
           </div>
           <div class="col-4 text-right">
             <%= time_ago_with_date(alert.created_at) %>
-            <%= link_to(alert, method: :delete, class: 'btn btn-sm') do %>
-              <%= fa_icon('trash', class: 'text-danger') %>
-            <% end %>
-            <%= link_to(alert, class: 'btn btn-sm') do %>
-              <%= fa_icon('arrow-circle-right', class: 'text-primary') %>
-            <% end %>
+            <%= icon_link_to(
+                  'trash', 'Delete notification', alert,
+                  method: :delete, class: 'btn btn-sm',
+                  icon_options: { class: 'text-danger' }
+                ) %>
+            <%= icon_link_to(
+                  'arrow-circle-right', 'See notification', alert,
+                  class: 'btn btn-sm', icon_options: { class: 'text-primary' }
+                ) %>
           </div>
         </div>
       <% end %>

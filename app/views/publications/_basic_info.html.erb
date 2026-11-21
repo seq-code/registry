@@ -13,19 +13,21 @@
         <%= link_to(
               name.abbr_name, name, class: 'badge badge-pill badge-primary') %>
         <% if current_contributor? %>
-          <%= link_to(
-                publication_name, method: :delete,
-                class: 'badge badge-pill badge-info px-2', title: 'unlink name',
+          <%= icon_link_to(
+                'unlink', "Unlink #{name.abbr_name}", publication_name,
+                method: :delete, class: 'badge badge-pill badge-info px-2',
                 data: { confirm: 'Are you sure?' }
-              ) { %><%= fa_icon('unlink') %><% } %>
+              ) %>
         <% end %>
       </div>
     <% end %>
     <% if current_contributor? %>
       <%= link_to(
             link_publication_name_path(publication),
-            class: 'badge badge-pill badge-info', title: 'link names'
-          ) { %><%= fa_icon('plus') %> <%= fa_icon('link') %><% } %>
+            class: 'badge badge-pill badge-info',
+            title: 'Link names', aria: { label: 'Link names' }
+          ) { %><%= fa_icon('plus', aria: { hidden: true }) %>
+          <%= fa_icon('link', aria: { hidden: true }) %><% } %>
     <% end %>
   </dd>
 <% end %>
