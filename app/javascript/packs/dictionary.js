@@ -36,10 +36,12 @@ function dictionary_search(dict_id, comp) {
   var modal_body = $("#" + dict_id + " div.modal-body");
   var part = $(select + " #name_etymology_" + comp + "_particle").val();
   var spinner = '<i class="fas fa-spinner fa-spin mr-1"> <i>';
-  var definition = $("<div class='definition mb-3'>Looking up " +
-    part + "...</div>");
+  // The particle may come from a saved etymology, so it's always text
+  var definition = $("<div class='definition mb-3'></div>")
+    .text("Looking up " + part + "...");
   definition.prepend(spinner);
-  var grammar = $("<div class='analyses'>Analysing " + part + "...</div>");
+  var grammar = $("<div class='analyses'></div>")
+    .text("Analysing " + part + "...");
   grammar.prepend(spinner);
   var footer = $("<div></div>");
   footer.append("<hr/>");
@@ -113,11 +115,9 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
         });
         texts.push(text);
         var item = $("<li></li>");
-        var lemma_anchor = $(
-          '<a href="#" data-lemma="' + lemma + '">' +
-            '<i class="far fa-bookmark small"> </i> ' + lemma +
-          '</a>'
-        );
+        var lemma_anchor = $('<a href="#"></a>').attr("data-lemma", lemma);
+        lemma_anchor.append('<i class="far fa-bookmark small"> </i> ');
+        lemma_anchor.append(document.createTextNode(lemma));
         lemma_anchor.on("click", function() {
           dictionary_search_definition(dict_id, comp, modal_body, lemma, 1);
           return false;
@@ -131,8 +131,9 @@ function dictionary_search_grammar(dict_id, comp, modal_body) {
         });
 
         // Build item and add to list
-        item.append("<b>" + analysis.children("form").text() + "</b>");
-        item.append(text);
+        // Content from Perseus is always added as text
+        item.append($("<b></b>").text(analysis.children("form").text()));
+        item.append(document.createTextNode(text));
         item.append(" (");
         item.append(lemma_anchor);
         item.append(")");
@@ -162,14 +163,15 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
   var spinner = '<i class="fas fa-spinner fa-spin mr-1 ml-2"> <i>';
   var cont = modal_body.children('.definition');
   cont.append(spinner);
-  cont.append("Looking up " + part + "...");
+  // The term may be a lemma from Perseus, so it's always text, and it's
+  // compared to the lemmata rather than placed in a selector
+  cont.append(document.createTextNode("Looking up " + part + "..."));
   var bold = "font-weight-bold";
-  modal_body.find('.analyses a[data-lemma]').removeClass(bold);
-  modal_body.find('.analyses a[data-lemma] i').removeClass('fas');
-  modal_body.find('.analyses a[data-lemma] i').removeClass('far');
-  modal_body.find('.analyses a[data-lemma="' + part + '"]').addClass(bold);
-  modal_body.find('.analyses a[data-lemma="' + part + '"]  i').addClass('fas');
-  modal_body.find('.analyses a[data-lemma!="' + part + '"]  i').addClass('far');
+  modal_body.find('.analyses a[data-lemma]').each(function() {
+    var current = $(this).attr("data-lemma") === part;
+    $(this).toggleClass(bold, current);
+    $(this).find('i').toggleClass('fas', current).toggleClass('far', !current);
+  });
   var title = $('<h2 class="input-group">Definition in</h2>');
   var title_src = $(
     '<select class="custom-select ml-2" id="dictionary-title-src"></select>'
@@ -202,8 +204,18 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
     data: { doc: dicts[src] + ':entry=' + part },
     dataType: 'text'
   }).done(function(data) {
-    // Fix result for embedding (parseHTML drops any scripts)
+    // Fix result for embedding: parseHTML drops scripts, but not other
+    // active content or inline event handlers, so remove those too
     var result = $('<div></div>').append($.parseHTML(data));
+    result.find(
+      "script, style, iframe, frame, object, embed, form, base, link, meta"
+    ).remove();
+    result.find("*").each(function() {
+      var element = this;
+      Array.from(element.attributes).forEach(function(attr) {
+        if (/^on/i.test(attr.name)) element.removeAttribute(attr.name);
+      });
+    });
     result.find("a").each(function() {
       var href = $(this).attr("href");
       $(this).attr("href", perseus + href);
@@ -225,7 +237,7 @@ function dictionary_search_definition(dict_id, comp, modal_body, part, src) {
         target.val(description);
         flash_modal(dict_id, target);
       });
-      item.append(description);
+      item.append(document.createTextNode(description));
       item.append(anchor);
       list.append(item);
     });
