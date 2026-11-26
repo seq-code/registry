@@ -10,6 +10,9 @@ $(document).on("turbolinks:load", function() {
       if(data["ranks"] !== undefined) {
         url.searchParams.set("ranks", data["ranks"].join(","));
       }
+      if(data["exclude"] !== undefined) {
+        url.searchParams.set("exclude", data["exclude"]);
+      }
       return url.toString();
     },
     getValue: "value",

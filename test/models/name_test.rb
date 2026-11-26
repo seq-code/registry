@@ -100,4 +100,34 @@ class NameTest < ActiveSupport::TestCase
     assert_includes(parent.reload.children, redirected)
     assert_includes(parent.valid_children, redirected)
   end
+
+  test 'rejects a redirect to the name itself' do
+    name = names(:escherichia_coli)
+
+    assert_not name.update(redirect: name)
+    assert_includes name.errors[:redirect], 'cannot be the name itself'
+  end
+
+  test 'rejects a redirect that loops back through another name' do
+    name = names(:escherichia_coli)
+    names(:escherichia_colie).update_columns(redirect_id: name.id)
+
+    assert_not name.update(redirect: names(:escherichia_colie))
+    assert_includes name.errors[:redirect], 'loops back to this name through Escherichia colie'
+  end
+
+  test 'rejects a redirect into an existing loop' do
+    names(:escherichia_colie).update_columns(redirect_id: names(:escherichia).id)
+    names(:escherichia).update_columns(redirect_id: names(:escherichia_colie).id)
+
+    assert_not names(:escherichia_coli).update(redirect: names(:escherichia_colie))
+    assert_includes names(:escherichia_coli).errors[:redirect], 'leads into a redirect loop at Escherichia colie'
+  end
+
+  test 'accepts a redirect chain that ends' do
+    names(:escherichia_coli).update_columns(redirect_id: names(:escherichia).id)
+
+    assert names(:escherichia_colie).update(redirect: names(:escherichia_coli))
+  end
+
 end

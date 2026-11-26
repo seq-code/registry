@@ -150,6 +150,7 @@ class Name < ApplicationRecord
     presence: { if: :nomenclatural_type_type? }
   )
   validate(:nomenclatural_type_genome_is_valid)
+  validate(:redirect_does_not_loop, if: :redirect_id_changed?)
 
   include HasObservers
   include HasExternalResources
@@ -1493,6 +1494,27 @@ class Name < ApplicationRecord
     return if nomenclatural_type_entry.nil?
 
     self.nomenclatural_type = nomenclatural_type_from_entry
+  end
+
+  # Following redirects from this name must end at a name without one;
+  # otherwise its show page redirects forever.
+  def redirect_does_not_loop
+    return if redirect.nil?
+    return errors.add(:redirect, 'cannot be the name itself') if redirect == self
+
+    seen = []
+    target = redirect
+    while target
+      if target == self
+        return errors.add(:redirect, "loops back to this name through #{redirect.name}")
+      end
+      if seen.include?(target)
+        return errors.add(:redirect, "leads into a redirect loop at #{target.name}")
+      end
+
+      seen << target
+      target = target.redirect
+    end
   end
 
   ##
