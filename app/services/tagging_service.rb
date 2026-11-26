@@ -320,6 +320,10 @@ class TaggingService
   BACKENDS = %i[anthropic local].freeze
 
   def self.backend
+    TaggingService::CachingBackend.wrap(base_backend)
+  end
+
+  def self.base_backend
     case Rails.configuration.tagging_backend
     when :anthropic ; TaggingService::AnthropicBackend
     when :local     ; TaggingService::LocalBackend
