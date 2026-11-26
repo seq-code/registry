@@ -12,6 +12,7 @@ class TaggingService
   # Raises TaggingService::Error on unrecoverable failure
   def self.propose(name)
     proposals = drop_excluded_bases(backend.new.propose(name))
+    proposals = cap_unstated_formation(name, proposals)
     Tag.expand(assign_classical(name, assign_gender(name, proposals)))
   end
 
@@ -52,6 +53,26 @@ class TaggingService
     'feminine' => :feminine?,
     'neuter' => :neuter?
   }.freeze
+
+  # Words in an etymology that state how a name was constructed
+  FORMATION_TERMS =
+    /arbitrar|anagram|acronym|abbreviat|initials|letters|portmanteau/i
+
+  # Cap direct `formed` and `arbitrary` proposals at low confidence (with
+  # 'capped' => true) unless the etymology of +name+ says how the name was
+  # constructed: models tend to propose them for ordinary compounds, with the
+  # whole name as basis. Acronyms imply `formed` through Tag.expand, which
+  # runs later, so they are unaffected
+  def self.cap_unstated_formation(name, proposals)
+    return proposals if name.full_etymology(false).to_s.match?(FORMATION_TERMS)
+
+    proposals.map do |proposal|
+      next proposal unless %w[formed arbitrary].include?(proposal['slug']) &&
+                           proposal['confidence'] != 'low'
+
+      proposal.merge('confidence' => 'low', 'capped' => true)
+    end
+  end
 
   def self.drop_excluded_bases(proposals)
     excluded =

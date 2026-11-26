@@ -544,4 +544,37 @@ class TaggingServiceTest < ActiveSupport::TestCase
       helpers.genus_gender(Name.find(species.id))
     )
   end
+
+  # Tags `formed` and `arbitrary` (under `formed`) for the formation tests
+  def create_formation_tags
+    formed = Tag.create!(name: 'formed', slug: 'formed', color: '#000000')
+    Tag.create!(name: 'arbitrary', slug: 'arbitrary', color: '#000000',
+                parent: formed)
+  end
+
+  test 'propose caps formation tags when the etymology does not state it' do
+    create_formation_tags
+    name = names(:bacillus)
+    name.etymology_xx_description = 'a small rod'
+    result = proposals_with(
+      proposal('arbitrary', 'high', 'Bacillus'),
+      proposal('formed', 'medium', 'Bacillus'), name: name
+    )
+
+    arbitrary = result.find { |p| p['slug'] == 'arbitrary' }
+    assert_equal(['low', true], arbitrary.values_at('confidence', 'capped'))
+    formed = result.find { |p| p['slug'] == 'formed' }
+    assert_equal('low', formed['confidence'])
+  end
+
+  test 'propose keeps formation tags when the etymology states it' do
+    create_formation_tags
+    name = names(:bacillus)
+    name.etymology_xx_description = 'arbitrary name, a small rod'
+    result = proposals_with(proposal('arbitrary', 'high', 'Bacillus'), name: name)
+
+    arbitrary = result.find { |p| p['slug'] == 'arbitrary' }
+    assert_equal('high', arbitrary['confidence'])
+    assert_nil(arbitrary['capped'])
+  end
 end
