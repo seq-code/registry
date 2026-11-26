@@ -352,15 +352,21 @@ diminutive_bases = %w[
 dweller_bases = %w[cola incola enecus hospes]
 # Mere position relative to a host or habitat ("inside", "outside")
 position_bases = %w[endo endon ekto ektos ecto intra extra]
+# Verbs of general activity with no specific property (e.g. ciens,
+# rousing, in ruminiciens)
+activity_bases = %w[ciens]
 tag_excluded_bases = {
-  'phenonym' => trait_bases + diminutive_bases,
+  'phenonym' => trait_bases + diminutive_bases + position_bases +
+                activity_bases,
   'lifestyle' => trait_bases + position_bases,
-  'trait' => trait_bases + diminutive_bases,
+  'trait' => trait_bases + diminutive_bases + position_bases +
+             activity_bases,
   'dimensional' => diminutive_bases,
   'classical' => generic_bases,
   # Body parts and organs used as habitat are econym (e.g. rumen)
   'organonym' => generic_bases + dweller_bases + %w[rumen],
-  'econym' => dweller_bases + position_bases
+  'econym' => dweller_bases + position_bases,
+  'geographic' => dweller_bases + position_bases
 }
 
 # Tags added automatically whenever another tag is proposed (beyond the
