@@ -13,6 +13,7 @@ class TaggingService
   def self.propose(name)
     proposals = drop_excluded_bases(backend.new.propose(name))
     proposals = cap_unstated_formation(name, proposals)
+    proposals = drop_foreign_bases(name, proposals)
     Tag.expand(assign_classical(name, assign_gender(name, proposals)))
   end
 
@@ -72,6 +73,40 @@ class TaggingService
 
       proposal.merge('confidence' => 'low', 'capped' => true)
     end
+  end
+
+  # Drop proposals for a species or subspecies whose basis does not occur
+  # in the name's own etymology, which only covers the epithet: models
+  # sometimes tag the genus name instead (e.g. `lifestyle` with basis
+  # Poriferisocius for Poriferisocius aerobius), or a truncated root. Gender
+  # proposals are exempt, as their basis can legitimately be the genus or a
+  # nominative absent from the etymology. Words are compared without case or
+  # diacritics, ignoring those shorter than three letters; a proposal is
+  # kept if any word of its basis occurs in the etymology
+  def self.drop_foreign_bases(name, proposals)
+    return proposals unless %w[species subspecies].include?(name.rank)
+
+    etymology = fold_text(name.full_etymology(false))
+    return proposals if etymology.blank?
+
+    proposals.reject do |proposal|
+      next false if Tag::GENDER_SLUGS.include?(proposal['slug'])
+
+      words = basis_words(proposal['basis'])
+      words.any? && words.none? { |w| etymology.include?(w) }
+    end
+  end
+
+  # Words of +basis+ of at least three letters, folded (see fold_text) and
+  # without hyphens or trailing dots (e.g. "Sulfurit-" -> "sulfurit")
+  def self.basis_words(basis)
+    fold_text(basis).split(%r{[\s,;/()'"]+})
+                    .map { |w| w.gsub(/\A-+|[-.]+\z/, '') }
+                    .select { |w| w.length >= 3 }
+  end
+
+  def self.fold_text(text)
+    I18n.transliterate(text.to_s, replacement: '').downcase
   end
 
   def self.drop_excluded_bases(proposals)

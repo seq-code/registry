@@ -337,7 +337,10 @@ class TaggingServiceTest < ActiveSupport::TestCase
       'Bacillus dongiae' => ['feminine', 'genitive of personal name (-iae)'],
       'Bacillus willemsae' => ['feminine', 'genitive of personal name (-ae)']
     }.each do |name, (slug, basis)|
-      genders = eponym_genders_with(proposal('eponym', 'high'), name: name)
+      # Realistic basis: the epithet, which the etymology contains
+      genders = eponym_genders_with(
+        proposal('eponym', 'high', name.split.last), name: name
+      )
 
       assert_equal([[slug, 'medium', basis]], genders, name)
     end
@@ -345,7 +348,8 @@ class TaggingServiceTest < ActiveSupport::TestCase
 
   test 'propose keeps a matching model gender for a personal name' do
     genders = eponym_genders_with(
-      proposal('eponym', 'high'), proposal('masculine', 'high', 'Huang'),
+      proposal('eponym', 'high', 'Huang'),
+      proposal('masculine', 'high', 'Huang'),
       name: 'Bacillus huangii'
     )
 
@@ -576,5 +580,43 @@ class TaggingServiceTest < ActiveSupport::TestCase
     arbitrary = result.find { |p| p['slug'] == 'arbitrary' }
     assert_equal('high', arbitrary['confidence'])
     assert_nil(arbitrary['capped'])
+  end
+
+  # A species of the genus Poriferisocius with the etymology of aerobius
+  def aerobius
+    names(:bacillus).tap do |name|
+      name.name = 'Poriferisocius aerobius'
+      name.rank = 'species'
+      name.etymology_xx_description = 'one who lives with air'
+      name.etymology_p1_lang = 'Gr.'
+      name.etymology_p1_particle = 'aer'
+      name.etymology_p1_description = 'air'
+    end
+  end
+
+  test 'propose drops species proposals based outside the epithet etymology' do
+    result = proposals_with(
+      proposal('chemonym', 'high', 'Poriferisocius'),
+      proposal('phenonym', 'high', 'socius'), name: aerobius
+    )
+    assert_empty(result.map { |p| p['slug'] } & %w[chemonym phenonym])
+  end
+
+  test 'propose keeps species proposals based on the epithet etymology' do
+    result = proposals_with(
+      proposal('chemonym', 'high', 'aer'),
+      proposal('phenonym', 'high', 'lives with Air'), name: aerobius
+    )
+    assert_includes(result.map { |p| p['slug'] }, 'chemonym')
+    assert_includes(result.map { |p| p['slug'] }, 'phenonym')
+  end
+
+  test 'propose does not check bases of genera or of gender proposals' do
+    genus = proposals_with(proposal('chemonym', 'high', 'unrelated'))
+    assert_includes(genus.map { |p| p['slug'] }, 'chemonym')
+
+    gender = proposals_with(proposal('feminine', 'medium', 'Poriferisocius'),
+                            name: aerobius)
+    assert_includes(gender.map { |p| p['slug'] }, 'feminine')
   end
 end
