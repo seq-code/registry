@@ -347,12 +347,20 @@ diminutive_bases = %w[
   ulus ula ulum culus cula culum olus ola olum
   ellus ella ellum illus illa illum
 ]
+# Generic words for an inhabitant or host, which name no organism or habitat
+# by themselves (e.g. -cola, incola, enecus "inhabitant", hospes "host")
+dweller_bases = %w[cola incola enecus hospes]
+# Mere position relative to a host or habitat ("inside", "outside")
+position_bases = %w[endo endon ekto ektos ecto intra extra]
 tag_excluded_bases = {
   'phenonym' => trait_bases + diminutive_bases,
-  'lifestyle' => trait_bases,
+  'lifestyle' => trait_bases + position_bases,
   'trait' => trait_bases + diminutive_bases,
   'dimensional' => diminutive_bases,
-  'classical' => generic_bases
+  'classical' => generic_bases,
+  # Body parts and organs used as habitat are econym (e.g. rumen)
+  'organonym' => generic_bases + dweller_bases + %w[rumen],
+  'econym' => dweller_bases + position_bases
 }
 
 # Tags added automatically whenever another tag is proposed (beyond the
