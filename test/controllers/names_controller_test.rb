@@ -90,6 +90,16 @@ class NamesControllerTest < ActionDispatch::IntegrationTest
     assert_includes autocomplete_values, names(:escherichia_coli).name
   end
 
+  test 'autocomplete leaves out the excluded name' do
+    get autocomplete_names_url(
+      format: :json, q: 'Escherichia', exclude: names(:escherichia_coli).id
+    )
+
+    assert_response :success
+    assert_includes autocomplete_values, names(:escherichia).name
+    assert_not_includes autocomplete_values, names(:escherichia_coli).name
+  end
+
   test 'add_paratype_strain_commit ignores a tampered name_id' do
     sign_in(users(:curator))
     target_name = names(:unregistered)

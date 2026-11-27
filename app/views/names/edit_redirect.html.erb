@@ -13,7 +13,7 @@
       :redirect, label: 'Redirect to name',
       input_html: {
         value: @name.redirect&.name,
-        data: { behavior: 'autocomplete', autocomplete: 'names' }
+        data: { behavior: 'autocomplete', autocomplete: 'names', exclude: @name.id }
       }
     )
   %>

@@ -55,6 +55,7 @@ class NamesController < ApplicationController
   # GET /names/autocomplete.json?q=Maco
   # GET /names/autocomplete.json?q=Allo&ranks=genus
   # GET /names/autocomplete.json?q=Pseu&ranks=domain,phylum,class
+  # GET /names/autocomplete.json?q=Esch&exclude=7302
   def autocomplete
     name = params[:q].downcase
     @names =
@@ -64,6 +65,7 @@ class NamesController < ApplicationController
     if params.key?(:ranks)
       @names = @names.where(rank: params[:ranks].downcase.split(','))
     end
+    @names = @names.where.not(id: params[:exclude]) if params[:exclude].present?
     @names = @names.where(redirect: nil)
   end
 
@@ -336,7 +338,9 @@ class NamesController < ApplicationController
       else
         format.html do
           render(
-            if name_params[:name]
+            if params[:edit] == 'redirect'
+              :edit_redirect
+            elsif name_params[:name]
               :edit
             elsif name_params.key?(:nomenclatural_type_type)
               :edit_type
